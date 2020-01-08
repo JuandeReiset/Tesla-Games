@@ -26,6 +26,10 @@
 
 - Github: [@JDhilon](https://github.com/JDhilon)
 
+👤 **Asjad Hassan Malick**
+
+- Github: [@AsjadMalick](https://github.com/AsjadMalick)
+
 👤 **Juan Luis de Reiset**
 
 - Github: [@JuandeReiset](https://github.com/JuandeReiset)
