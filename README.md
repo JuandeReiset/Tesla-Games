@@ -22,7 +22,7 @@
 
 ## Author
 
-👤 **Jashanjhot Dhilon **
+👤 **Jashanjhot Dhilon**
 
 - Github: [@JDhilon](https://github.com/JDhilon)
 
