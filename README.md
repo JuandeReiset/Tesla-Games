@@ -22,17 +22,22 @@
 
 ## Author
 
-👤 **Jashanjhot Dhilon**
-
-- Github: [@JDhilon](https://github.com/JDhilon)
-
 👤 **Asjad Hassan Malick**
 
 - Github: [@AsjadMalick](https://github.com/AsjadMalick)
 
+👤 **Jashanjhot Dhilon**
+
+- Github: [@JDhilon](https://github.com/JDhilon)
+
+
 👤 **Juan Luis de Reiset**
 
 - Github: [@JuandeReiset](https://github.com/JuandeReiset)
+
+👤 **Yuzhe Yi**
+
+- Github: [@YZ-Yi](https://github.com/YZ-Yi)
 
 ## 🤝 Contributing
 
