@@ -20,7 +20,7 @@
 
 
 
-## Author
+## Authors
 
 👤 **Asjad Hassan Malick**
 
