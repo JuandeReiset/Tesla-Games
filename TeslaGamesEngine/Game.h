@@ -12,6 +12,7 @@ class Game
 {
 public:
 	Game();
+	void AddObject(Object* obj);
 	void Play();
 	~Game();
 

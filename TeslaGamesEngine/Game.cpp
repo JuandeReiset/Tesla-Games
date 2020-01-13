@@ -5,6 +5,11 @@ Game::Game()
 {
 }
 
+void Game::AddObject(Object* obj)
+{
+	objects.push_back(obj);
+}
+
 void Game::Play()
 {
 	while (1) {
