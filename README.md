@@ -10,6 +10,7 @@
 
 ### 🏠 [Homepage](https://github.com/JuandeReiset/Tesla-Games)
 
+A project made by CPSC undergrads at the University of Calgary for the course CPSC 585
 
 
 ## Install
