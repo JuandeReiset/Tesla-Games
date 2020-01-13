@@ -36,13 +36,15 @@ A project made by CPSC undergrads at the University of Calgary for the course CP
 
 - Github: [@JuandeReiset](https://github.com/JuandeReiset)
 
+👤 **Stephen Dios**
+
+- Github: [@stephenDiosDev](https://github.com/stephenDiosDev)
+
 👤 **Yuzhe Yi**
 
 - Github: [@YZ-Yi](https://github.com/YZ-Yi)
 
-👤 **Stephen Dios**
 
-- Github: [@stephenDiosDev](https://github.com/stephenDiosDev)
 
 ## 🤝 Contributing
 
