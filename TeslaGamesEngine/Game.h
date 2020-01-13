@@ -17,7 +17,7 @@ public:
 
 private:
 	// List of all objects in this world to iterate over
-	std::vector<Object> objects;
+	std::vector<Object*> objects;
 	// Renderer to handle all drawing
 	Renderer renderer;
 	// Physics engine to handle all physics calculations

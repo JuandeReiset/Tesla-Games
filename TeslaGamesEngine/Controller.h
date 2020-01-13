@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Entity.h"
+#include "Component.h"
 
 /*
  * Abstract class for defining controller characters in game
  */
-class Controller : public Entity
+class Controller : public Component
 {
 public:
 	Controller();

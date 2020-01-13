@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Entity.h"
+#include "Component.h"
 
 /*
  * Class representing a camera in the game
  */
-class Camera : public Entity
+class Camera : public Component
 {
 public:
 	Camera();
@@ -21,7 +21,6 @@ public:
 	~Camera();
 
 private:
-	Transform transform;
 	float moveSpeed;
 	float turnSpeed;
 };

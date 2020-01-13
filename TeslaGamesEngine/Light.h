@@ -9,7 +9,7 @@ public:
 	Light();
 	~Light();
 
-private:
+protected:
 	// glm::vec3 colour
 };
 

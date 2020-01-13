@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Transform.h"
-#include "Entity.h"
+#include "Component.h"
 
 /*
  * Abstract class representing game objects in the world
@@ -14,11 +14,11 @@ public:
 	// Frame update function for all objects to overrirde
 	virtual void Tick(float deltaTime) = 0;
 
-	virtual Transform GetTransform() = 0;
-	virtual void SetTransform() = 0;
+	Transform GetTransform();
+	void SetTransform(Transform t);
 	~Object();
 
-private:
+protected:
 	// Absolute position/rotation of an object in the world
 	Transform transform;
 	// When extending an object, list it's entity as private variable and include Getters/Setters
