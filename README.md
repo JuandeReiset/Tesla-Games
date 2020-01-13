@@ -26,7 +26,7 @@
 
 - Github: [@AsjadMalick](https://github.com/AsjadMalick)
 
-👤 **Jashanjhot Dhilon**
+👤 **Jashanjot Dhilon**
 
 - Github: [@JDhilon](https://github.com/JDhilon)
 
