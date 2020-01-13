@@ -40,6 +40,10 @@ A project made by CPSC undergrads at the University of Calgary for the course CP
 
 - Github: [@YZ-Yi](https://github.com/YZ-Yi)
 
+👤 **Stephen Dios**
+
+- Github: [@stephenDiosDev](https://github.com/stephenDiosDev)
+
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/JuandeReiset/Tesla-Games/issues).
