@@ -21,7 +21,7 @@ A project made by CPSC undergrads at the University of Calgary for the course CP
 
 
 
-## The Five Musk-ateers (Authors)
+## The 5 Musk-ateers (Authors)
 
 👤 **Asjad Hassan Malick**
 
