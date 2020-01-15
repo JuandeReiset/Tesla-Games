@@ -15,6 +15,7 @@ public:
 	Renderer();
 
 	// Draws a specific model to the window
+	// TODO: This should instead be included in the Mesh/Model classes and they should have access to the renderer
 	void DrawModel(Model m);
 
 	~Renderer();

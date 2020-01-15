@@ -7,6 +7,7 @@
 #include <string.h>
 #include <cmath>
 #include <vector>
+#include <PhysX/PxPhysicsAPI.h>
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>

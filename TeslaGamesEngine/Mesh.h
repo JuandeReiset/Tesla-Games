@@ -2,6 +2,8 @@
 
 #include <GL\glew.h>
 
+// TODO: Mesh should really be a component that you attach to an object
+
 /*
  * Class representing a mesh. Used by Model to load an obj
  */
