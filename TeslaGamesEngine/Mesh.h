@@ -1,5 +1,9 @@
 #pragma once
 
+#include <GL\glew.h>
+
+// TODO: Mesh should really be a component that you attach to an object
+
 /*
  * Class representing a mesh. Used by Model to load an obj
  */
@@ -7,16 +11,18 @@ class Mesh
 {
 public:
 	Mesh();
-	// Takes an array of vertices and indices to create an OpenGL mesh
-	void CreateMesh(float *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices);
-	// Clears the mesh and frees the memory
+	// Method for creating a mesh with a given set of vertices and indices
+	void CreateMesh(GLfloat *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices);
+	// Method for showing the mesh on the window
+	void RenderMesh();
+	// Method to clear memory being used mesh and freeing it
 	void ClearMesh();
+
 	~Mesh();
 
 private:
-	/* Uncomment after getting OpenGL working
 	GLuint VAO, VBO, IBO;
 	GLsizei indexCount;
-	*/
 };
+
 

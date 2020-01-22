@@ -1,22 +1,39 @@
 #pragma once
 
+#include "stdio.h"
+
+#include <GL\glew.h>
+#include <GLFW\glfw3.h>
+
 /*
- * Class representing the wndow on which models are displayed
+ * Class representing the window on which models are displayed
  */
+
 class Window
 {
 public:
+	// Create a defaul 800 x 600 window
 	Window();
-	void Initialize(float h, float w);
-	void CloseWindow();
+
+	// Create a window of specified size
+	Window(GLint windowWidth, GLint windowHeight);
+
+	// Initialise the window for viewing
+	int Initialise();
+
+	// Accessors
+	GLint getBufferWidth() { return bufferWidth; }
+	GLint getBufferHeight() { return bufferHeight; }
+	bool getShouldClose() { return glfwWindowShouldClose(mainWindow); }
+
+	void swapBuffers() { glfwSwapBuffers(mainWindow); }
+
 	~Window();
 
 private:
-	// Initializes the callback functions for this window using glfw
-	void CreateCallbacks();
+	GLFWwindow* mainWindow;
 
-	// GLFWwindow window;
-	float height;
-	float width;
+	GLint width, height;
+	GLint bufferWidth, bufferHeight;
 };
 

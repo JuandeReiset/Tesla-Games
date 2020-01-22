@@ -7,6 +7,8 @@
 #include "Texture.h"
 #include "Mesh.h"
 
+// TODO: Model should be a component
+
 /*
  * Class representing a drawable component in the game
  */

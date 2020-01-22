@@ -12,11 +12,18 @@ void Game::AddObject(Object* obj)
 
 void Game::Play()
 {
+	// 
+	double last = glfwGetTime();
 	while (1) {
 		// Get input
 
 		// Get change in time
-		float deltaTime = 0.0f;
+		double now = glfwGetTime();
+		double deltaTime = now - last;
+		double last = now;
+		std::cout << deltaTime << std::endl;
+
+		// Calculate framerate
 
 		// Simulate all objects
 		for (auto object : objects) {
@@ -24,6 +31,7 @@ void Game::Play()
 		}
 
 		// Repeat
+
 	}
 }
 
