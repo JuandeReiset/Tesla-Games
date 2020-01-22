@@ -87,9 +87,17 @@ int main()
 	GLuint uniformProjection = 0, uniformModel = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
+	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
+	double last = glfwGetTime();
+	double now = glfwGetTime();
 	while (!mainWindow.getShouldClose())
 	{
+		now = glfwGetTime();
+		double deltaTime = now - last;
+		double fps = 1.0 / deltaTime;
+		last = now;
+		std::cout << "FPS: " << (int) fps << std::endl;
 		// Get + Handle User Input
 		glfwPollEvents();
 
@@ -97,6 +105,7 @@ int main()
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
