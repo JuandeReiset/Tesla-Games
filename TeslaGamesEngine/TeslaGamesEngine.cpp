@@ -136,11 +136,15 @@ int main()
 	// Imgui setting END
 	while (!mainWindow.getShouldClose())
 	{
+		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		/*
 		now = glfwGetTime();
 		double deltaTime = now - last;
 		double fps = 1.0 / deltaTime;
 		last = now;
 		std::cout << "FPS: " << (int) fps << std::endl;
+		*/
 		// Get + Handle User Input
 		glfwPollEvents();
 
@@ -167,20 +171,21 @@ int main()
 		glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
 		glViewport(0, 0, display_w, display_h);
 		//glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		//glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			//
 		// imgui ends here
 
-		/*
-		// Clear the window    CURRENTLY THIS SHOWS THE MESHES BEING RENDERED
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		*/
+
+		// Clear the window    CURRENTLY THIS SHOWS ONLY THE MESHES BEING RENDERED
+		//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
 
+		
 		//Rendering of Meshes (Triangle and vertices)
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
@@ -201,8 +206,10 @@ int main()
 		meshList[1]->RenderMesh();
 		
 		glUseProgram(0);
-
+		
 		mainWindow.swapBuffers();
+
+		
 	}
 	// Cleanup
 	ImGui_ImplOpenGL3_Shutdown();
