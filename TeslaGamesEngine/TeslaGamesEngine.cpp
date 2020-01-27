@@ -137,7 +137,7 @@ int main()
 	while (!mainWindow.getShouldClose())
 	{
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/*
 		now = glfwGetTime();
 		double deltaTime = now - last;
@@ -148,11 +148,16 @@ int main()
 		// Get + Handle User Input
 		glfwPollEvents();
 
+
+		
+
 		// Start the Dear ImGui frame
 		
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
+
+		
 		{
 			static float f = 0.0f;
 			static int counter = 0;
@@ -173,20 +178,7 @@ int main()
 		//glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		//glClear(GL_COLOR_BUFFER_BIT);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-			//
-		// imgui ends here
-
-
-		// Clear the window    CURRENTLY THIS SHOWS ONLY THE MESHES BEING RENDERED
-		//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
-
-		
-		//Rendering of Meshes (Triangle and vertices)
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
@@ -204,11 +196,20 @@ int main()
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		meshList[1]->RenderMesh();
+
+
+
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+			//
+		// imgui ends here
+
 		
-		glUseProgram(0);
+		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
+
 		
 		mainWindow.swapBuffers();
-
+		
 		
 	}
 	// Cleanup
