@@ -98,7 +98,7 @@ int main()
 	double last = glfwGetTime();
 	double now = glfwGetTime();
 
-
+	glfwSwapInterval(1);
 	// imGui setting BEGINNING
 	/*
 #if __APPLE__
@@ -156,6 +156,8 @@ int main()
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
+
+			
 
 		
 		{
