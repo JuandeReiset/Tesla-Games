@@ -28,6 +28,7 @@ public:
 
 	void swapBuffers() { glfwSwapBuffers(mainWindow); }
 
+	GLFWwindow* getWindow() { return mainWindow;  }
 	~Window();
 
 private:
