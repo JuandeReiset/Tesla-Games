@@ -19,6 +19,8 @@
 #include "Window.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "AudioEngine.h"
+#include "AudioBoomBox.h"
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -134,8 +136,16 @@ int main()
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	// Imgui setting END
+	AudioBoomBox* audioObject = new AudioBoomBox("finalCount.wav");
+	AudioBoomBox* audioObject2 = new AudioBoomBox("bounce.wav");
+	audioObject->initialize();
+	audioObject2->initialize();
+	audioObject->playSound();
+	audioObject2->playSound();
+
 	while (!mainWindow.getShouldClose())
 	{
+		
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/*
@@ -208,11 +218,7 @@ int main()
 
 		
 		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
-
-		
 		mainWindow.swapBuffers();
-		
-		
 	}
 	// Cleanup
 	ImGui_ImplOpenGL3_Shutdown();

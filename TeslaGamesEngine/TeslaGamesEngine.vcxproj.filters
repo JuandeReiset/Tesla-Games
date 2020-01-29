@@ -81,7 +81,10 @@
     <ClInclude Include="imgui_impl_opengl3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="audioEngine.h">
+    <ClInclude Include="AudioBoomBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -149,13 +152,11 @@
     <ClCompile Include="imgui_imple_opengl3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="audioEngine.cpp">
+    <ClCompile Include="AudioBoomBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="..\..\..\..\..\Downloads\bounce.wav">
-      <Filter>Resource Files</Filter>
-    </Media>
+    <ClCompile Include="AudioEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
