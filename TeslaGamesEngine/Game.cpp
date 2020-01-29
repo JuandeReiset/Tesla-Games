@@ -20,7 +20,7 @@ void Game::Play()
 		// Get change in time
 		double now = glfwGetTime();
 		double deltaTime = now - last;
-		double last = now;
+		last = now;
 		std::cout << deltaTime << std::endl;
 
 		// Calculate framerate

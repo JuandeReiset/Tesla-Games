@@ -176,7 +176,10 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="DamageComponent.h" />
+    <ClInclude Include="DamagingObject.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_internal.h" />
@@ -194,13 +197,17 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Vihecle.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="DamageComponent.cpp" />
+    <ClCompile Include="DamagingObject.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -222,6 +229,7 @@
     <ClCompile Include="TeslaGamesEngine.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Vihecle.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
