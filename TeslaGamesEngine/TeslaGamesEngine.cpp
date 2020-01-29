@@ -17,8 +17,10 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
 
+#include "Object.h"
 #include "Game.h"
 #include "Vihecle.h"
+#include "DamagingObject.h"
 
 // Stuff for imgui
 #include "ImGui/imgui.h"
@@ -33,12 +35,14 @@ using namespace physx;
 // End of stuff TA Ben added
 
 int main(void) {
-	std::cout << "Hello, world!" << std::endl;
-
 	Game mainGame;
-	Vihecle* car = new Vihecle();
+	Object* car = new Vihecle(1);
+	Object* bullet = new DamagingObject(20, 1);
 
 	mainGame.AddObject(car);
+	mainGame.AddObject(bullet);
+
+	mainGame.Play();
 
 	return 0;
 }

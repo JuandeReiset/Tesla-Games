@@ -174,11 +174,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Combat.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="DamageComponent.h" />
     <ClInclude Include="DamagingObject.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Global.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -194,6 +196,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
@@ -202,11 +205,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Combat.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="DamageComponent.cpp" />
     <ClCompile Include="DamagingObject.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Global.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
@@ -234,6 +239,9 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="..\..\..\..\..\Downloads\bounce.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TeslaGamesEngine.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

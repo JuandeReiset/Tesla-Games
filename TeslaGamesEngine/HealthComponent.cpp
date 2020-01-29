@@ -1,8 +1,8 @@
 #include "HealthComponent.h"
 
 HealthComponent::HealthComponent(){}
-
 HealthComponent::HealthComponent(double h) : localHealth(h) {}
+HealthComponent::~HealthComponent() {};
 
 double HealthComponent::GetHealth() {
 	return localHealth;

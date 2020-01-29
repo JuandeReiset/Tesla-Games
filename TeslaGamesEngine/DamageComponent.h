@@ -14,7 +14,9 @@ public:
 	~DamageComponent();
 
 	double GetDamage();
+	int GetTargetID();
 	void SetDamage(double d);
+	void SetTargetID(int id);
 	void Tick(float deltaTime);
 
 private:

@@ -1,8 +1,8 @@
 #include "DamageComponent.h"
 
 DamageComponent::DamageComponent() {}
-
 DamageComponent::DamageComponent(double d) : localDamage(d) {}
+DamageComponent::~DamageComponent() {}
 
 double DamageComponent::GetDamage() {
 	return localDamage;
