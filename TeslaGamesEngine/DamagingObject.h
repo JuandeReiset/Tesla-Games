@@ -16,7 +16,7 @@ public:
     ~DamagingObject();
     
     void Tick(float deltaTime);
-    double sendDamage();
+    double sendDamage();                                            //send damage to the combat class to give damage to the target vihecle
     int GetTargetId();
     void SetTargetId(int id);
 

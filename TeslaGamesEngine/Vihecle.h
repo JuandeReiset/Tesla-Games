@@ -15,8 +15,8 @@ public:
 	~Vihecle();
 
 	void Tick(float deltaTime);
-	double currentHealth();
-	void getDamage(double damage);
+	double currentHealth();											//get the current health
+	void getDamage(double damage);									//get damage for damaging object
 
 private:
 	HealthComponent health = HealthComponent(100);

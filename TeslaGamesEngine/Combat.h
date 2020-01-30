@@ -14,7 +14,7 @@ public:
     double GetDamage();
 
 private:
-    int targetID;
-    double damage;
+    int targetID;                                                   
+    double damage;                                                  
 };
 
