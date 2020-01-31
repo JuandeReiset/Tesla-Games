@@ -19,6 +19,8 @@
 #include "Window.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "AudioEngine.h"
+#include "AudioBoomBox.h"
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -134,8 +136,21 @@ int main()
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	// Imgui setting END
+
+	//Audio system setup
+	AudioEngine audioSystem = AudioEngine();
+	AudioBoomBox audioObject = audioSystem.createBoomBox(2);
+	AudioBoomBox audioObject2 = audioSystem.createBoomBox(3);
+
+	//The key is now that multiple sounds can be played at once. As long as sound card can support it
+	//Comment out one sound if you dont wanna hear it
+	audioObject.playSound();
+	audioObject2.playSound();
+
+	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
 	{
+		
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/*
@@ -148,18 +163,10 @@ int main()
 		// Get + Handle User Input
 		glfwPollEvents();
 
-
-		
-
 		// Start the Dear ImGui frame
-		
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
-
-			
-
-		
 		{
 			static float f = 0.0f;
 			static int counter = 0;
@@ -200,19 +207,11 @@ int main()
 		meshList[1]->RenderMesh();
 
 
-
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-			//
 		// imgui ends here
 
-		
 		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
-
-		
 		mainWindow.swapBuffers();
-		
-		
 	}
 	// Cleanup
 	ImGui_ImplOpenGL3_Shutdown();
