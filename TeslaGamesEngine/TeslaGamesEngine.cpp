@@ -101,66 +101,66 @@ void parseControllerInput(Controller* controller)
 	//Is button Pressed demo
 	if (controller->isButtonPressed(XButtons.A)) {
 		
-		std::cout << "A PRESSED" << std::endl;
+		std::cout << controller->getIndex() << " " <<"A PRESSED" << std::endl;
 	}
 	if (controller->isButtonPressed(XButtons.X)) {
-		std::cout << "X PRESSED" << std::endl;
+		std::cout << controller->getIndex() << " " << "X PRESSED" << std::endl;
 	}
 	
 	//Is button down demo (more useful IMO)
 	if (controller->isButtonDown(XButtons.Y)) {
-		std::cout << "Y PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "Y PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.B)) {
-		std::cout << "B PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "B PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.L_Shoulder)) {
-		std::cout << "LB PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
-		std::cout << "RB PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
-		std::cout << "D-Pad Up PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.DPad_Down)) {
-		std::cout << "D-Pad Down PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "D-Pad Down PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.DPad_Right)) {
-		std::cout << "D-Pad Right PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "D-Pad Right PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.DPad_Left)) {
-		std::cout << "D-Pad Left PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "D-Pad Left PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.Start)) {
-		std::cout << "Start PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "Start PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.Back)) {
-		std::cout << "Back PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.Back)) {
-		std::cout << "Back PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.L_Thumbstick)) {
-		std::cout << "L3 PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "L3 PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.R_Thumbstick)) {
-		std::cout << "R3 PRESSED and HELD" << std::endl;
+		std::cout << controller->getIndex() << " " << "R3 PRESSED and HELD" << std::endl;
 	}
 
 	//Sticks and triggers may hurt some n********...
 	// It was 'neighbors' geez....
 	if (!controller->LStick_InDeadzone()) {
-		std::cout << "LS: " << controller->leftStick_X() << std::endl;
+		std::cout << controller->getIndex() << " " << "LS: " << controller->leftStick_X() << std::endl;
 	}
 	if (!controller->RStick_InDeadzone()) {
-		std::cout << "RS: " << controller->rightStick_X() << std::endl;
+		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
 	}
 	if (controller->rightTrigger() > 0.0) {
-		std::cout << "Right Trigger: " << controller->rightTrigger() << std::endl;
+		std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
 	}
 	if (controller->leftTrigger() > 0.0) {
-		std::cout << "Left Trigger: " << controller->leftTrigger() << std::endl;
+		std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
 	}
 
 	// Update the gamepad for next frame MUST BE LAST
@@ -248,11 +248,22 @@ int main()
 
 	//Controller
 	Controller player1 = Controller(1);
+	Controller player2 = Controller(2);
+
+	bool P1Connected = player1.isConnected();
+	bool P2Connected = player2.isConnected();
+
+	std::cout << "Player1 connected: " << P1Connected << std::endl;
+	std::cout << "Player2 connected: " << P2Connected << std::endl;
 
 	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
 	{
-		parseControllerInput(&player1);
+		if(P1Connected)
+			parseControllerInput(&player1);
+		if(P2Connected)
+			parseControllerInput(&player2);
+		//parseControllerInput(&player2);
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/*

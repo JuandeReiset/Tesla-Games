@@ -17,7 +17,7 @@ class Controller
 
 		XINPUT_STATE getState(); // Return gamepad state
 		int getIndex();          // Return gamepad index
-		bool connected();        // Return true if gamepad is connected
+		bool isConnected();        // Return true if gamepad is connected
 
 		 // Thumbstick functions (LS and RS)
 		 // - Return true if stick is inside deadzone, false if outside

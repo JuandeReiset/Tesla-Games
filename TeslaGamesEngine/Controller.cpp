@@ -68,7 +68,7 @@ int Controller::getIndex()
 {
 	return playerIndex;
 }
-bool Controller::connected()
+bool Controller::isConnected()
 {
 	// Zero memory
 	RtlSecureZeroMemory(&controllerState, sizeof(XINPUT_STATE));
