@@ -31,6 +31,9 @@
 #include "AudioEngine.h"
 #include "AudioBoomBox.h"
 
+//Controller stuff
+#include "Controller.h"
+
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -85,6 +88,83 @@ void CreateShaders()
 	Shader* shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
+}
+
+// A function to obtain input, called each frame
+void parseControllerInput(Controller* controller)
+{
+	// Update controller object with current input MUST BE FIRST
+	controller->update();
+
+	//IMPLEMENT THINGS In the IFs
+
+	//Is button Pressed demo
+	if (controller->isButtonPressed(XButtons.A)) {
+		
+		std::cout << "A PRESSED" << std::endl;
+	}
+	if (controller->isButtonPressed(XButtons.X)) {
+		std::cout << "X PRESSED" << std::endl;
+	}
+	
+	//Is button down demo (more useful IMO)
+	if (controller->isButtonDown(XButtons.Y)) {
+		std::cout << "Y PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.B)) {
+		std::cout << "B PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.L_Shoulder)) {
+		std::cout << "LB PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.R_Shoulder)) {
+		std::cout << "RB PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Up)) {
+		std::cout << "D-Pad Up PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Down)) {
+		std::cout << "D-Pad Down PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Right)) {
+		std::cout << "D-Pad Right PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Left)) {
+		std::cout << "D-Pad Left PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.Start)) {
+		std::cout << "Start PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.Back)) {
+		std::cout << "Back PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.Back)) {
+		std::cout << "Back PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.L_Thumbstick)) {
+		std::cout << "L3 PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.R_Thumbstick)) {
+		std::cout << "R3 PRESSED and HELD" << std::endl;
+	}
+
+	//Sticks and triggers may hurt some n********...
+	// It was 'neighbors' geez....
+	if (!controller->LStick_InDeadzone()) {
+		std::cout << "LS: " << controller->leftStick_X() << std::endl;
+	}
+	if (!controller->RStick_InDeadzone()) {
+		std::cout << "RS: " << controller->rightStick_X() << std::endl;
+	}
+	if (controller->rightTrigger() > 0.0) {
+		std::cout << "Right Trigger: " << controller->rightTrigger() << std::endl;
+	}
+	if (controller->leftTrigger() > 0.0) {
+		std::cout << "Left Trigger: " << controller->leftTrigger() << std::endl;
+	}
+
+	// Update the gamepad for next frame MUST BE LAST
+	controller->refreshState();
 }
 
 int main()
@@ -166,9 +246,13 @@ int main()
 	//audioObject.playSound();
 	audioObject2.playSound();
 
+	//Controller
+	Controller player1 = Controller(1);
+
 	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
 	{
+		parseControllerInput(&player1);
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/*
