@@ -24,7 +24,7 @@
 #include "Combat.h"
 #include "HealthComponent.h"
 #include "DamagingObject.h"
-#include "Vihecle.h"
+#include "Vehicle.h"
 #include "Game.h"
 
 //AudioStuff
@@ -95,10 +95,12 @@ int main()
 	mainWindow.Initialise();
 
 	Game mainGame;
-	Object* car = new Vihecle(1);
+	Object* car = new Vehicle(1);
+	Object* car2 = new Vehicle(2);
 	Object* bullet = new DamagingObject(20, 1);
 
 	mainGame.AddObject(car);
+	mainGame.AddObject(car2);
 	mainGame.AddObject(bullet);
 
 	mainGame.Play();
