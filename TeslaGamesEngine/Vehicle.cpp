@@ -1,11 +1,11 @@
-#include "Vihecle.h"
+#include "Vehicle.h"
 #include <iostream>
 
-Vihecle::Vihecle() {}
-Vihecle::Vihecle(int id) : ID(id) {}
-Vihecle::~Vihecle() {}
+Vehicle::Vehicle() {}
+Vehicle::Vehicle(int id) : ID(id) {}
+Vehicle::~Vehicle() {}
 
-void Vihecle::Tick(float deltaTime) {
+void Vehicle::Tick(float deltaTime) {
 	std::cout << "Current health:" << currentHealth() << std::endl;
 	if (currentHealth() <= 0)
 		dead_flag = 1;
@@ -14,11 +14,11 @@ void Vihecle::Tick(float deltaTime) {
 		getDamage(combat.GetDamage());
 }
 
-double Vihecle::currentHealth() {
+double Vehicle::currentHealth() {
 	return health.GetHealth();
 }
 
-void Vihecle::getDamage(double damage) {
+void Vehicle::getDamage(double damage) {
 	double h = health.GetHealth();
 	health.SetHealth(h - damage);
 

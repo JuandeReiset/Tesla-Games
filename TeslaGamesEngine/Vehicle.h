@@ -5,14 +5,14 @@
 #include "Global.h"
 
 /*
- * Vihecle class inherits from Object class, with values like health, speed, etc.
+ * Vehicle class inherits from Object class, with values like health, speed, etc.
  */
-class Vihecle : public Object
+class Vehicle : public Object
 {
 public:
-	Vihecle();
-	Vihecle(int id);
-	~Vihecle();
+	Vehicle();
+	Vehicle(int id);
+	~Vehicle();
 
 	void Tick(float deltaTime);
 	double currentHealth();											//get the current health
