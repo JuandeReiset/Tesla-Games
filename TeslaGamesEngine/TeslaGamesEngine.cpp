@@ -19,11 +19,17 @@
 #include "Window.h"
 #include "Mesh.h"
 #include "Shader.h"
+
+//Health stuff
 #include "Combat.h"
 #include "HealthComponent.h"
 #include "DamagingObject.h"
 #include "Vihecle.h"
 #include "Game.h"
+
+//AudioStuff
+#include "AudioEngine.h"
+#include "AudioBoomBox.h"
 
 // Stuff for imgui
 #include "imGui/imgui.h"
@@ -150,10 +156,19 @@ int main()
 
 	// Imgui setting END
 
-	
+	//Audio system setup
+	AudioEngine audioSystem = AudioEngine();
+	AudioBoomBox audioObject = audioSystem.createBoomBox(2);
+	AudioBoomBox audioObject2 = audioSystem.createBoomBox(3);
+
+	//The key is now that multiple sounds can be played at once. As long as sound card can support it
+	//Comment out one sound if you dont wanna hear it
+	audioObject.playSound();
+	audioObject2.playSound();
+
+	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
 	{
-
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/*
@@ -167,9 +182,10 @@ int main()
 		glfwPollEvents();
 
 		// Start the Dear ImGui frame
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
 		{
 			static float f = 0.0f;
 			static int counter = 0;
