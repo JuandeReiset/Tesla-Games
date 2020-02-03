@@ -158,12 +158,12 @@ int main()
 
 	//Audio system setup
 	AudioEngine audioSystem = AudioEngine();
-	AudioBoomBox audioObject = audioSystem.createBoomBox(2);
-	AudioBoomBox audioObject2 = audioSystem.createBoomBox(3);
+	AudioBoomBox audioObject = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
+	AudioBoomBox audioObject2 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
-	audioObject.playSound();
+	//audioObject.playSound();
 	audioObject2.playSound();
 
 	//End of audio system setup/demo

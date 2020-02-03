@@ -1,8 +1,7 @@
 #pragma once
 //We are using fopen, silence the error
 #define _CRT_SECURE_NO_WARNINGS
-#include <openAL/al.h>
-#include <openAL/alc.h>
+#include "AudioBoomBox.h"
 #include <string>
 #include <cstdio>
 #include <cstdlib>
@@ -10,7 +9,14 @@
 #include <cstring>
 #include <vector>
 #include <memory>
-#include "AudioBoomBox.h"
+
+namespace audioConstants
+{
+	const int SOUND_FILE_BOUNCE = 0;
+	const int SOUND_FILE_FINALCOUNT = 1;
+	const int SOUND_FILE_TTG_MAIN_MENU = 2;
+	const int SOUND_FILE_TTG_RACE = 3;
+}
 
 class AudioEngine
 {
