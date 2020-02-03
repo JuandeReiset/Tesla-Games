@@ -19,8 +19,18 @@
 #include "Window.h"
 #include "Mesh.h"
 #include "Shader.h"
+
+//Health stuff
+#include "Combat.h"
+#include "HealthComponent.h"
+#include "DamagingObject.h"
+#include "Vihecle.h"
+#include "Game.h"
+
+//AudioStuff
 #include "AudioEngine.h"
 #include "AudioBoomBox.h"
+
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -61,18 +71,18 @@ void CreateObjects()
 		0.0f, 1.0f, 0.0f
 	};
 
-	Mesh *obj1 = new Mesh();
+	Mesh* obj1 = new Mesh();
 	obj1->CreateMesh(vertices, indices, 12, 12);
 	meshList.push_back(obj1);
 
-	Mesh *obj2 = new Mesh();
+	Mesh* obj2 = new Mesh();
 	obj2->CreateMesh(vertices, indices, 12, 12);
 	meshList.push_back(obj2);
 }
 
 void CreateShaders()
 {
-	Shader *shader1 = new Shader();
+	Shader* shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
@@ -83,6 +93,15 @@ int main()
 	const char* glsl_version = "#version 130"; // USED FOR IMGUI SETTING
 	mainWindow = Window(800, 600);
 	mainWindow.Initialise();
+
+	Game mainGame;
+	Object* car = new Vihecle(1);
+	Object* bullet = new DamagingObject(20, 1);
+
+	mainGame.AddObject(car);
+	mainGame.AddObject(bullet);
+
+	mainGame.Play();
 
 	CreateObjects();
 	CreateShaders();
@@ -112,14 +131,14 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
 	// GL 3.0 + GLSL 130
-	
+
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
 */
-	 // Setup Dear ImGui context
+// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -131,7 +150,7 @@ int main()
 	//ImGui::StyleColorsClassic();
 
 	// Setup Platform/Renderer bindings
-	
+
 	ImGui_ImplGlfw_InitForOpenGL(mainWindow.getWindow(), true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
@@ -150,7 +169,6 @@ int main()
 	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
 	{
-		
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/*
@@ -164,6 +182,7 @@ int main()
 		glfwPollEvents();
 
 		// Start the Dear ImGui frame
+
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
@@ -218,6 +237,6 @@ int main()
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 
-	
+
 	return 0;
 }

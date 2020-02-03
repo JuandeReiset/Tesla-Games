@@ -176,9 +176,14 @@
     <ClInclude Include="AudioBoomBox.h" />
     <ClInclude Include="AudioEngine.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Combat.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="DamageComponent.h" />
+    <ClInclude Include="DamagingObject.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Global.h" />
+    <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_internal.h" />
@@ -193,18 +198,25 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Vihecle.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioBoomBox.cpp" />
     <ClCompile Include="AudioEngine.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Combat.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="DamageComponent.cpp" />
+    <ClCompile Include="DamagingObject.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Global.cpp" />
+    <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -226,6 +238,7 @@
     <ClCompile Include="TeslaGamesEngine.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Vihecle.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
