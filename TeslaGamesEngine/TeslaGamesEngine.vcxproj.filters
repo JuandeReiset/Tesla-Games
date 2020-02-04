@@ -30,6 +30,10 @@
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Vehicle.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioBoomBox.h" />
@@ -63,5 +67,9 @@
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Vehicle.h" />
+    <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="SpotLight.h" />
   </ItemGroup>
 </Project>
