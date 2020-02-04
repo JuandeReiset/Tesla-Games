@@ -41,6 +41,9 @@
 #include "AudioEngine.h"
 #include "AudioBoomBox.h"
 
+//Controller stuff
+#include "Controller.h"
+
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -164,6 +167,83 @@ void CreateShaders()
 	Shader *shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
+}
+
+// A function to obtain input, called each frame
+void parseControllerInput(Controller* controller)
+{
+	// Update controller object with current input MUST BE FIRST
+	controller->update();
+
+	//IMPLEMENT THINGS In the IFs
+
+	//Is button Pressed demo
+	if (controller->isButtonPressed(XButtons.A)) {
+		
+		std::cout << controller->getIndex() << " " <<"A PRESSED" << std::endl;
+	}
+	if (controller->isButtonPressed(XButtons.X)) {
+		std::cout << controller->getIndex() << " " << "X PRESSED" << std::endl;
+	}
+	
+	//Is button down demo (more useful IMO)
+	if (controller->isButtonDown(XButtons.Y)) {
+		std::cout << controller->getIndex() << " " << "Y PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.B)) {
+		std::cout << controller->getIndex() << " " << "B PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.L_Shoulder)) {
+		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.R_Shoulder)) {
+		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Up)) {
+		std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Down)) {
+		std::cout << controller->getIndex() << " " << "D-Pad Down PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Right)) {
+		std::cout << controller->getIndex() << " " << "D-Pad Right PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Left)) {
+		std::cout << controller->getIndex() << " " << "D-Pad Left PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.Start)) {
+		std::cout << controller->getIndex() << " " << "Start PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.Back)) {
+		std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.Back)) {
+		std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.L_Thumbstick)) {
+		std::cout << controller->getIndex() << " " << "L3 PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.R_Thumbstick)) {
+		std::cout << controller->getIndex() << " " << "R3 PRESSED and HELD" << std::endl;
+	}
+
+	//Sticks and triggers may hurt some n********...
+	// It was 'neighbors' geez....
+	if (!controller->LStick_InDeadzone()) {
+		std::cout << controller->getIndex() << " " << "LS: " << controller->leftStick_X() << std::endl;
+	}
+	if (!controller->RStick_InDeadzone()) {
+		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
+	}
+	if (controller->rightTrigger() > 0.0) {
+		std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
+	}
+	if (controller->leftTrigger() > 0.0) {
+		std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
+	}
+
+	// Update the gamepad for next frame MUST BE LAST
+	controller->refreshState();
 }
 
 int main()
@@ -295,9 +375,24 @@ int main()
 	//audioObject.playSound();
 	audioObject2.playSound();
 
+	//Controller
+	Controller player1 = Controller(1);
+	Controller player2 = Controller(2);
+
+	bool P1Connected = player1.isConnected();
+	bool P2Connected = player2.isConnected();
+
+	std::cout << "Player1 connected: " << P1Connected << std::endl;
+	std::cout << "Player2 connected: " << P2Connected << std::endl;
+
 	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
 	{
+		if(P1Connected)
+			parseControllerInput(&player1);
+		if(P2Connected)
+			parseControllerInput(&player2);
+
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		lastTime = now;
