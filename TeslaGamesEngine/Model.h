@@ -3,6 +3,10 @@
 #include <string>
 #include <vector>
 
+#include <assimp\Importer.hpp>
+#include <assimp\scene.h>
+#include <assimp\postprocess.h>
+
 #include "Shader.h"
 #include "Texture.h"
 #include "Mesh.h"
@@ -17,24 +21,20 @@ class Model
 public:
 	Model();
 	// Loads the model from a given file name
-	void LoadModel(std::string filename);
-	// Loads the materials for the model and binds them as needed
-	void LoadMaterials();
+	void LoadModel(const std::string& fileName);
+	// Renders the model
+	void RenderModel();
 	// Clears model, freeing memory for other models to use
 	void ClearModel();
 	~Model();
 
 private:
-	// Loads a mesh node (How assimp loads objs)
-	void LoadNode();
+	void LoadNode(aiNode *node, const aiScene *scene);
+	void LoadMesh(aiMesh *mesh, const aiScene *scene);
+	void LoadMaterials(const aiScene *scene);
 
-	// Mapping of meshes to their textures. Allows reusing textures
-	std::vector<int> meshToTex;
-	// List of all the meshes in the model
-	std::vector<Mesh> meshList;
-	// List of all the textures in the model
-	std::vector<Texture> texList;
-	// Shader used by the model
-	Shader shader;
+	std::vector<Mesh*> meshList;
+	std::vector<Texture*> textureList;
+	std::vector<unsigned int> meshToTex;
 };
 
