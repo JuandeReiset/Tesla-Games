@@ -4,10 +4,18 @@
 
 Renderer::Renderer()
 {
+	window = Window();
+	camera = Camera();
+}
+
+Renderer::Renderer(Window w, Camera c)
+{
+	window = w;
+	camera = c;
 }
 
 
-void Renderer::DrawModel(Model m)
+void Renderer::DrawModel(Model m, Shader s, Material mat, glm::mat4 modelMatrix)
 {
 	// Take Model m
 	// Load it's textures and shaders
