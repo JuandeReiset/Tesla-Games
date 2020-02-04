@@ -1,5 +1,12 @@
 #pragma once
 
+#include <GL\glew.h>
+
+#include <glm\glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+
+#include <GLFW\glfw3.h>
+
 #include "Component.h"
 
 /*
@@ -9,19 +16,34 @@ class Camera : public Component
 {
 public:
 	Camera();
+	Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed);
+
+	void keyControl(bool* keys, GLfloat deltaTime);
+	void mouseControl(GLfloat xChange, GLfloat yChange);
+
+	glm::vec3 getCameraPosition();
+	glm::vec3 getCameraDirection();
+
+	glm::mat4 calculateViewMatrix();
 
 	// Camera's frame update
 	void Tick(float deltaTime);
 
-	// New transform for the camera
-
-	void MoveCamera(Transform moveTo);
-	// TODO: Uncomment and define after getting OpenGL working
-	// glm::mat4 GetViewMatrix();
 	~Camera();
 
 private:
-	float moveSpeed;
-	float turnSpeed;
+	glm::vec3 position;
+	glm::vec3 front;
+	glm::vec3 up;
+	glm::vec3 right;
+	glm::vec3 worldUp;
+
+	GLfloat yaw;
+	GLfloat pitch;
+
+	GLfloat moveSpeed;
+	GLfloat turnSpeed;
+
+	void update();
 };
 
