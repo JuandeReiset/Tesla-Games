@@ -3,20 +3,23 @@
 #include "Transform.h"
 #include "Window.h"
 #include "Model.h"
+#include "Shader.h"
+#include "Material.h"
+#include "Transform.h"
 #include "Camera.h"
 #include "Light.h"
 
 /*
- * Class responsible for all rendering in the game. Only rednering related class referenced by the game directly
+ * Class responsible for all rendering in the game. Only rendering related class referenced by the game directly
  */
 class Renderer
 {
 public:
 	Renderer();
+	Renderer(Window w, Camera c);
 
 	// Draws a specific model to the window
-	// TODO: This should instead be included in the Mesh/Model classes and they should have access to the renderer
-	void DrawModel(Model m);
+	void DrawModel(Model m, Shader s, Material mat, glm::mat4 modelMatrix);
 
 	~Renderer();
 

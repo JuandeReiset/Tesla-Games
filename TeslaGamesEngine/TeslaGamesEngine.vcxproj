@@ -182,6 +182,7 @@
     <ClInclude Include="DamageComponent.h" />
     <ClInclude Include="DamagingObject.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="DrawableModel.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="HealthComponent.h" />
@@ -219,6 +220,7 @@
     <ClCompile Include="DamageComponent.cpp" />
     <ClCompile Include="DamagingObject.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="DrawableModel.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
