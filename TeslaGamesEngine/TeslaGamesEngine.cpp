@@ -27,6 +27,8 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
+#include "Model.h"
+
 
 //Health stuff
 #include "Combat.h"
@@ -65,6 +67,8 @@ Texture plainTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
+
+Model xwing;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -164,7 +168,6 @@ void CreateShaders()
 
 int main()
 {
-
 	const char* glsl_version = "#version 130"; // USED FOR IMGUI SETTING
 	mainWindow = Window(800, 600);
 	mainWindow.Initialise();
@@ -231,6 +234,9 @@ int main()
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
+
+	xwing = Model();
+	xwing.LoadModel("Models/x-wing.obj");
 
 	// Stuff TA Ben added
 	PxDefaultAllocator allocator;
@@ -382,6 +388,12 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		xwing.RenderModel();
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		// imgui ends here
