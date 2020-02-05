@@ -1,6 +1,13 @@
 #include "Vehicle.h"
 #include <iostream>
 
+
+/* TO DO
+
+Apply PhysX to this class using the snippet 4W code
+
+*/
+
 Vehicle::Vehicle() {}
 Vehicle::Vehicle(int id) : ID(id) {}
 Vehicle::~Vehicle() {}
