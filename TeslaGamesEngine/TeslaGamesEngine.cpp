@@ -72,6 +72,7 @@ Material shinyMaterial;
 Material dullMaterial;
 
 Model xwing;
+Model Tesla_car;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -318,6 +319,9 @@ int main()
 	xwing = Model();
 	xwing.LoadModel("Models/x-wing.obj");
 
+	Tesla_car = Model();
+	Tesla_car.LoadModel("Models/TeslaGameTruck.obj");
+	
 	// Stuff TA Ben added
 	PxDefaultAllocator allocator;
 	PxDefaultErrorCallback errorCallback;
@@ -483,12 +487,21 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 
+		
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
 		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(7.0f, 0.0f, 2.0f));
+		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Tesla_car.RenderModel();
+		
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		// imgui ends here

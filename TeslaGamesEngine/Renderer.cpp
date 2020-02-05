@@ -4,7 +4,7 @@
 
 Renderer::Renderer()
 {
-	window = Window();
+	//window = Window();
 	camera = Camera();
 }
 
