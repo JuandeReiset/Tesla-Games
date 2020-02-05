@@ -41,6 +41,9 @@
 #include "AudioEngine.h"
 #include "AudioBoomBox.h"
 
+//HUD stuff
+#include "HUD.h"
+
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -59,6 +62,7 @@ const float toRadians = 3.14159265f / 180.0f;
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
+std::vector<HUD*> HUDList;
 Camera camera;
 
 Texture brickTexture;
@@ -82,6 +86,12 @@ static const char* vShader = "Shaders/shader.vert";
 
 // Fragment Shader
 static const char* fShader = "Shaders/shader.frag";
+
+// Vertex Shader of HUD_shader
+static const char* vHshader = "Shaders/HUD_shader.vert";
+
+//Fragment shader of HUD_shader
+static const char* fHshader = "Shaders/HUD_shader.frag";
 
 /* End of rendering variables */
 
@@ -164,6 +174,28 @@ void CreateShaders()
 	Shader *shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
+
+	Shader* shader2 = new Shader();
+	shader2->CreateFromFiles(vHshader, fHshader);
+	shaderList.push_back(*shader2);	
+}
+
+void CreateHUDs() {
+	unsigned int HUDindecis[] = {
+		0, 1, 3,
+		2, 1, 3
+	};
+
+	GLfloat HUDvertices[] = {
+		0.0, 0.0, 0.0,							//bottom left
+		0.0, 5.0, 0.0,							//top left
+		5.0, 5.0, 0.0,							//top right
+		5.0, 0.0, 0.0							//bottom right
+	};
+
+	HUD* HUD1 = new HUD();
+	HUD1->createHUD(HUDvertices, HUDindecis, 12, 6);
+	HUDList.push_back(HUD1);
 }
 
 int main()
@@ -186,6 +218,7 @@ int main()
 	// Rendering setup
 	CreateObjects();
 	CreateShaders();
+	CreateHUDs();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
@@ -399,6 +432,24 @@ int main()
 		// imgui ends here
 
 		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
+
+		//Rendering HUD
+		shaderList[1].UseShader();
+		uniformModel = shaderList[1].GetModelLocation();
+		uniformProjection = shaderList[1].GetProjectionLocation();
+
+		glm::mat4 ortho = glm::ortho(0.0f, (float)mainWindow.getWidth(), (float)mainWindow.getHeight(), 0.0f);						//orthograohic projection
+
+		glDisable(GL_DEPTH_TEST);																									//disable the depth-testing
+
+		model = glm::mat4(1.0f);
+
+		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		HUDList[0]->renderHUD();
+
+		glEnable(GL_DEPTH_TEST);
+
 		mainWindow.swapBuffers();
 	}
 	// Cleanup

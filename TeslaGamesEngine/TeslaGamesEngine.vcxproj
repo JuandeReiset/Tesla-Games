@@ -185,6 +185,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_internal.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
+    <ClCompile Include="HUD.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
