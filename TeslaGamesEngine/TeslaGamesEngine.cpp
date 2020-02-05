@@ -252,7 +252,9 @@ int main()
 	mainWindow = Window(800, 600);
 	mainWindow.Initialise();
 
-	Game mainGame;
+	Renderer r = Renderer(mainWindow, camera);
+
+	Game mainGame = Game(r);
 	Object* car = new Vehicle(1);
 	Object* car2 = new Vehicle(2);
 	Object* bullet = new DamagingObject(20, 1);
@@ -315,7 +317,6 @@ int main()
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
-	// xwing = Model();
 	xwing.LoadModel("Models/x-wing.obj");
 
 	// Stuff TA Ben added
@@ -325,8 +326,6 @@ int main()
 
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
-	double last = glfwGetTime();
-	double now = glfwGetTime();
 
 	glfwSwapInterval(1);
 	// imGui setting BEGINNING
@@ -388,10 +387,6 @@ int main()
 	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
 	{
-		if(P1Connected)
-			parseControllerInput(&player1);
-		if(P2Connected)
-			parseControllerInput(&player2);
 
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
@@ -399,6 +394,10 @@ int main()
 
 		// Get + Handle User Input
 		glfwPollEvents();
+		if (P1Connected)
+			parseControllerInput(&player1);
+		if (P2Connected)
+			parseControllerInput(&player2);
 
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
@@ -428,6 +427,48 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
+		shaderList[0].UseShader();
+		uniformModel = shaderList[0].GetModelLocation();
+		uniformProjection = shaderList[0].GetProjectionLocation();
+
+		// Draw pyramid one
+		glm::mat4 model = glm::mat4(1.0f);
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
+		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		brickTexture.UseTexture();
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[0]->RenderMesh();
+
+		// Draw pyramid two
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 4.0f, -2.5f));
+		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dirtTexture.UseTexture();
+		dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[1]->RenderMesh();
+
+		// Draw base
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dirtTexture.UseTexture();
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[2]->RenderMesh();
+
+		// Draw X-Wing
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		xwing.RenderModel();
+
+		// End of rendering 
+
 		// Start the Dear ImGui frame
 
 			ImGui_ImplOpenGL3_NewFrame();
@@ -453,42 +494,6 @@ int main()
 		//glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		//glClear(GL_COLOR_BUFFER_BIT);
-
-		shaderList[0].UseShader();
-		uniformModel = shaderList[0].GetModelLocation();
-		uniformProjection = shaderList[0].GetProjectionLocation();
-
-		glm::mat4 model = glm::mat4(1.0f);
-
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
-		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		brickTexture.UseTexture();
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[0]->RenderMesh();
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 4.0f, -2.5f));
-		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		dirtTexture.UseTexture();
-		dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[1]->RenderMesh();
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
-		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		dirtTexture.UseTexture();
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[2]->RenderMesh();
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
-		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		xwing.RenderModel();
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		// imgui ends here

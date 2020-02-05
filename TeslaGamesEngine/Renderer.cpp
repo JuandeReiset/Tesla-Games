@@ -2,13 +2,15 @@
 #include "Renderer.h"
 
 
+/*
 Renderer::Renderer()
 {
-	window = Window();
-	camera = Camera();
+	// window = Window();
+	// camera = Camera();
 }
+*/
 
-Renderer::Renderer(Window w, Camera c)
+Renderer::Renderer(Window& w, Camera& c) : window(w), camera(c)
 {
 	window = w;
 	camera = c;
