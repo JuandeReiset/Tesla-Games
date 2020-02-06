@@ -2,10 +2,13 @@
 
 in vec2 TexCoord;
 
-out vec4 color;
+out vec4 colour;
+
 
 uniform sampler2D theTexture;
 
-void main(){
-	color = texture(theTexture, TexCoord);
+
+void main()
+{	
+	colour = texture(theTexture, TexCoord);
 }

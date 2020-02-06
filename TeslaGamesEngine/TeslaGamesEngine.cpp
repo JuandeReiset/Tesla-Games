@@ -183,24 +183,24 @@ void CreateShaders()
 }
 
 void CreateHUDs() {
-	unsigned int HUDindecis[] = {
-		0, 1, 3,
-		2, 1, 3
+	unsigned int HUDindecis[] = {						// 0 -----3
+		0, 1, 3,										// |	  |
+		2, 1, 3											// 1 -----2
 	};
 
 	GLfloat HUDvertices[] = {
 	//	x	 y	  z			u	 v
-		0.0, 0.0, 0.0,		0.0, 1.0,								//bottom left
-		0.0, 100.0, 0.0,	0.0, 0.0,								//top left
-		100.0, 100, 0.0,	1.0, 0.0,								//top right
-		100.0, 0.0, 0.0,	1.0, 1.0								//bottom right
+		0.0, 0.0, 0.0,		0.0, 0.0,								//bottom left
+		0.0, 100.0, 0.0,	0.0, 1.0,								//top left
+		100.0, 100, 0.0,	1.0, 1.0,								//top right
+		100.0, 0.0, 0.0,	1.0, 0.0								//bottom right
 	};
-
+	/*
 	unsigned int HUDindecis2[] = {
 		0, 1, 3,
 		2, 1, 3
 	};
-	/*
+	
 	GLfloat HUDvertices2[] = {
 		500.0, 500.0, 0.0,							//bottom left
 		500.0, 550.0, 0.0,							//top left
@@ -209,7 +209,7 @@ void CreateHUDs() {
 	};
 	*/
 	HUD* HUD1 = new HUD();
-	HUD1->createHUD(HUDvertices, HUDindecis, 12, 6);
+	HUD1->createHUD(HUDvertices, HUDindecis, 20, 6);
 	HUDList.push_back(HUD1);
 
 	//HUD* HUD2 = new HUD();
