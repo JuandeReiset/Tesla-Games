@@ -72,6 +72,7 @@ Material shinyMaterial;
 Material dullMaterial;
 
 Model xwing;
+Model TeslaCar;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -318,7 +319,7 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
 	xwing.LoadModel("Models/x-wing.obj");
-
+	TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
 	// Stuff TA Ben added
 	PxDefaultAllocator allocator;
 	PxDefaultErrorCallback errorCallback;
@@ -467,6 +468,13 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
 
+		// Draw Tesla car
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-7.0f, -1.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		TeslaCar.RenderModel();
 		// End of rendering 
 
 		// Start the Dear ImGui frame
