@@ -70,6 +70,7 @@ Shader hudShader;
 Texture brickTexture;
 Texture dirtTexture;
 Texture plainTexture;
+Texture TTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
@@ -188,15 +189,32 @@ void CreateHUDs() {
 	};
 
 	GLfloat HUDvertices[] = {
-		0.0, 0.0, 0.0,							//bottom left
-		0.0, 50.0, 0.0,							//top left
-		100.0, 50, 0.0,							//top right
-		100.0, 0.0, 0.0							//bottom right
+	//	x	 y	  z			u	 v
+		0.0, 0.0, 0.0,		0.0, 1.0,								//bottom left
+		0.0, 100.0, 0.0,	0.0, 0.0,								//top left
+		100.0, 100, 0.0,	1.0, 0.0,								//top right
+		100.0, 0.0, 0.0,	1.0, 1.0								//bottom right
 	};
 
+	unsigned int HUDindecis2[] = {
+		0, 1, 3,
+		2, 1, 3
+	};
+	/*
+	GLfloat HUDvertices2[] = {
+		500.0, 500.0, 0.0,							//bottom left
+		500.0, 550.0, 0.0,							//top left
+		600.0, 550, 0.0,							//top right
+		600.0, 500.0, 0.0							//bottom right
+	};
+	*/
 	HUD* HUD1 = new HUD();
 	HUD1->createHUD(HUDvertices, HUDindecis, 12, 6);
 	HUDList.push_back(HUD1);
+
+	//HUD* HUD2 = new HUD();
+	//HUD2->createHUD(HUDvertices2, HUDindecis2, 12, 6);
+	//HUDList.push_back(HUD2);
 }
 
 int main()
@@ -229,6 +247,8 @@ int main()
 	dirtTexture.LoadTexture();
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTexture();
+	TTexture = Texture("Textures/T.png");
+	TTexture.LoadTexture();
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
@@ -447,7 +467,9 @@ int main()
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		TTexture.UseTexture();
 		HUDList[0]->renderHUD();
+		//HUDList[1]->renderHUD();
 
 		glEnable(GL_DEPTH_TEST);
 
