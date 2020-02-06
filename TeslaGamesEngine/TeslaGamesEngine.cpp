@@ -65,6 +65,8 @@ std::vector<Shader> shaderList;
 std::vector<HUD*> HUDList;
 Camera camera;
 
+Shader hudShader;
+
 Texture brickTexture;
 Texture dirtTexture;
 Texture plainTexture;
@@ -174,10 +176,9 @@ void CreateShaders()
 	Shader *shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
+	
+	hudShader.createHUDFromFiles(vHshader, fHshader);
 
-	Shader* shader2 = new Shader();
-	shader2->CreateFromFiles(vHshader, fHshader);
-	shaderList.push_back(*shader2);	
 }
 
 void CreateHUDs() {
@@ -188,9 +189,9 @@ void CreateHUDs() {
 
 	GLfloat HUDvertices[] = {
 		0.0, 0.0, 0.0,							//bottom left
-		0.0, 5.0, 0.0,							//top left
-		5.0, 5.0, 0.0,							//top right
-		5.0, 0.0, 0.0							//bottom right
+		0.0, 50.0, 0.0,							//top left
+		100.0, 50, 0.0,							//top right
+		100.0, 0.0, 0.0							//bottom right
 	};
 
 	HUD* HUD1 = new HUD();
@@ -344,7 +345,7 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		
 		// Setup shader
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
@@ -392,7 +393,6 @@ int main()
 		//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		//glClear(GL_COLOR_BUFFER_BIT);
 
-		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
 
@@ -434,21 +434,24 @@ int main()
 		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
 
 		//Rendering HUD
-		shaderList[1].UseShader();
-		uniformModel = shaderList[1].GetModelLocation();
-		uniformProjection = shaderList[1].GetProjectionLocation();
+		hudShader.UseShader();
+		uniformModel = hudShader.GetModelLocation();
+		uniformProjection = hudShader.GetProjectionLocation();
 
 		glm::mat4 ortho = glm::ortho(0.0f, (float)mainWindow.getWidth(), (float)mainWindow.getHeight(), 0.0f);						//orthograohic projection
 
 		glDisable(GL_DEPTH_TEST);																									//disable the depth-testing
 
 		model = glm::mat4(1.0f);
+		//glm::mat4 model = glm::mat4(1.0f);
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		HUDList[0]->renderHUD();
 
 		glEnable(GL_DEPTH_TEST);
+
+		//HUD ends here
 
 		mainWindow.swapBuffers();
 	}
