@@ -15,8 +15,8 @@
 class Renderer
 {
 public:
-	Renderer();
-	Renderer(Window w, Camera c);
+	// Renderer();
+	Renderer(Window& w, Camera& c);
 
 	// Draws a specific model to the window
 	void DrawModel(Model m, Shader s, Material mat, glm::mat4 modelMatrix);
@@ -24,8 +24,8 @@ public:
 	~Renderer();
 
 private: 
-	Window window;
-	Camera camera;
+	Window& window;
+	Camera& camera;
 	// TODO: Change this to be vectors of different light types when added
 	std::vector<Light> lights;
 };
