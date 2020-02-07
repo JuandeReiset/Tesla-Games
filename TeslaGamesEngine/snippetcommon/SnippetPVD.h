@@ -27,38 +27,10 @@
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
-#ifndef PX_VEHICLE_UTILHELPER_H
-#define PX_VEHICLE_UTILHELPER_H
-/** \addtogroup vehicle
-  @{
-*/
 
-#include "../foundation/Px.h"
+#ifndef PHYSX_SNIPPET_PVD_H
+#define PHYSX_SNIPPET_PVD_H
 
-#if !PX_DOXYGEN
-namespace physx
-{
-#endif
+#define PVD_HOST "127.0.0.1"	//Set this to the IP address of the system running the PhysX Visual Debugger that you want to connect to.
 
-struct PxVehicleWheelQueryResult;
-
-/**
-\brief Test if all wheels of a vehicle are in the air by querying the wheel query data 
-stored in the last call to PxVehicleUpdates. If all wheels are in the air then true is returned.  
-
-\note False is returned if any wheel can reach to the ground.
-
-\note If vehWheelQueryResults.wheelQueryResults is NULL or vehWheelQueryResults.nbWheelQueryResults is 0 then true is returned.
-This function does not account for wheels that have been disabled since the last execution of PxVehicleUpdates so it is possible
-that wheels disabled more recently than the last call to PxVehicleUpdates report are treated as touching the ground.
-
-\return True if the vehicle is in the air, false if any wheel is touching the ground.
-*/
-bool PxVehicleIsInAir(const PxVehicleWheelQueryResult& vehWheelQueryResults);
-
-#if !PX_DOXYGEN
-} // namespace physx
-#endif
-
-/** @} */
-#endif //PX_VEHICLE_UTILHELPER_H
+#endif //PHYSX_SNIPPET_PVD_H

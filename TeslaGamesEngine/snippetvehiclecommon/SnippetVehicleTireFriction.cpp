@@ -27,38 +27,43 @@
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
-#ifndef PX_VEHICLE_UTILHELPER_H
-#define PX_VEHICLE_UTILHELPER_H
-/** \addtogroup vehicle
-  @{
-*/
+#include <new>
+#include "SnippetVehicleTireFriction.h"
+#include "PxPhysicsAPI.h"
 
-#include "../foundation/Px.h"
-
-#if !PX_DOXYGEN
-namespace physx
+namespace snippetvehicle
 {
-#endif
 
-struct PxVehicleWheelQueryResult;
+using namespace physx;
 
-/**
-\brief Test if all wheels of a vehicle are in the air by querying the wheel query data 
-stored in the last call to PxVehicleUpdates. If all wheels are in the air then true is returned.  
+//Tire model friction for each combination of drivable surface type and tire type.
+static PxF32 gTireFrictionMultipliers[MAX_NUM_SURFACE_TYPES][MAX_NUM_TIRE_TYPES]=
+{
+	//NORMAL,	WORN
+	{1.00f,		0.1f}//TARMAC
+};
 
-\note False is returned if any wheel can reach to the ground.
+PxVehicleDrivableSurfaceToTireFrictionPairs* createFrictionPairs(const PxMaterial* defaultMaterial)
+{
+	PxVehicleDrivableSurfaceType surfaceTypes[1];
+	surfaceTypes[0].mType = SURFACE_TYPE_TARMAC;
 
-\note If vehWheelQueryResults.wheelQueryResults is NULL or vehWheelQueryResults.nbWheelQueryResults is 0 then true is returned.
-This function does not account for wheels that have been disabled since the last execution of PxVehicleUpdates so it is possible
-that wheels disabled more recently than the last call to PxVehicleUpdates report are treated as touching the ground.
+	const PxMaterial* surfaceMaterials[1];
+	surfaceMaterials[0] = defaultMaterial;
 
-\return True if the vehicle is in the air, false if any wheel is touching the ground.
-*/
-bool PxVehicleIsInAir(const PxVehicleWheelQueryResult& vehWheelQueryResults);
+	PxVehicleDrivableSurfaceToTireFrictionPairs* surfaceTirePairs =
+		PxVehicleDrivableSurfaceToTireFrictionPairs::allocate(MAX_NUM_TIRE_TYPES,MAX_NUM_SURFACE_TYPES);
 
-#if !PX_DOXYGEN
-} // namespace physx
-#endif
+	surfaceTirePairs->setup(MAX_NUM_TIRE_TYPES, MAX_NUM_SURFACE_TYPES, surfaceMaterials, surfaceTypes);
 
-/** @} */
-#endif //PX_VEHICLE_UTILHELPER_H
+	for(PxU32 i = 0; i < MAX_NUM_SURFACE_TYPES; i++)
+	{
+		for(PxU32 j = 0; j < MAX_NUM_TIRE_TYPES; j++)
+		{
+			surfaceTirePairs->setTypePairFriction(i,j,gTireFrictionMultipliers[i][j]);
+		}
+	}
+	return surfaceTirePairs;
+}
+
+} // namespace snippetvehicle

@@ -27,38 +27,34 @@
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
-#ifndef PX_VEHICLE_UTILHELPER_H
-#define PX_VEHICLE_UTILHELPER_H
-/** \addtogroup vehicle
-  @{
-*/
+#ifndef SNIPPET_VEHICLE_TIREFRICTION_H
+#define SNIPPET_VEHICLE_TIREFRICTION_H
 
-#include "../foundation/Px.h"
+#include "../../include/PhysX/PxPhysicsAPI.h"
 
-#if !PX_DOXYGEN
-namespace physx
+
+namespace snippetvehicle
 {
-#endif
 
-struct PxVehicleWheelQueryResult;
+using namespace physx;
 
-/**
-\brief Test if all wheels of a vehicle are in the air by querying the wheel query data 
-stored in the last call to PxVehicleUpdates. If all wheels are in the air then true is returned.  
+//Drivable surface types.
+enum
+{
+	SURFACE_TYPE_TARMAC,
+	MAX_NUM_SURFACE_TYPES
+};
 
-\note False is returned if any wheel can reach to the ground.
+//Tire types.
+enum
+{
+	TIRE_TYPE_NORMAL=0,
+	TIRE_TYPE_WORN,
+	MAX_NUM_TIRE_TYPES
+};
 
-\note If vehWheelQueryResults.wheelQueryResults is NULL or vehWheelQueryResults.nbWheelQueryResults is 0 then true is returned.
-This function does not account for wheels that have been disabled since the last execution of PxVehicleUpdates so it is possible
-that wheels disabled more recently than the last call to PxVehicleUpdates report are treated as touching the ground.
+PxVehicleDrivableSurfaceToTireFrictionPairs* createFrictionPairs(const PxMaterial* defaultMaterial);
 
-\return True if the vehicle is in the air, false if any wheel is touching the ground.
-*/
-bool PxVehicleIsInAir(const PxVehicleWheelQueryResult& vehWheelQueryResults);
+} // namespace snippetvehicle
 
-#if !PX_DOXYGEN
-} // namespace physx
-#endif
-
-/** @} */
-#endif //PX_VEHICLE_UTILHELPER_H
+#endif //SNIPPET_VEHICLE_TIREFRICTION_H

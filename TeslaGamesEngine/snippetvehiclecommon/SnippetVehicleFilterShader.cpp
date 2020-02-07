@@ -27,38 +27,32 @@
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
-#ifndef PX_VEHICLE_UTILHELPER_H
-#define PX_VEHICLE_UTILHELPER_H
-/** \addtogroup vehicle
-  @{
-*/
+#include <new>
+#include "SnippetVehicleFilterShader.h"
+#include "PxPhysicsAPI.h"
 
-#include "../foundation/Px.h"
-
-#if !PX_DOXYGEN
-namespace physx
+namespace snippetvehicle
 {
-#endif
 
-struct PxVehicleWheelQueryResult;
+using namespace physx;
 
-/**
-\brief Test if all wheels of a vehicle are in the air by querying the wheel query data 
-stored in the last call to PxVehicleUpdates. If all wheels are in the air then true is returned.  
+PxFilterFlags VehicleFilterShader
+(PxFilterObjectAttributes attributes0, PxFilterData filterData0, 
+ PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+ PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+{
+	PX_UNUSED(attributes0);
+	PX_UNUSED(attributes1);
+	PX_UNUSED(constantBlock);
+	PX_UNUSED(constantBlockSize);
 
-\note False is returned if any wheel can reach to the ground.
+	if( (0 == (filterData0.word0 & filterData1.word1)) && (0 == (filterData1.word0 & filterData0.word1)) )
+		return PxFilterFlag::eSUPPRESS;
 
-\note If vehWheelQueryResults.wheelQueryResults is NULL or vehWheelQueryResults.nbWheelQueryResults is 0 then true is returned.
-This function does not account for wheels that have been disabled since the last execution of PxVehicleUpdates so it is possible
-that wheels disabled more recently than the last call to PxVehicleUpdates report are treated as touching the ground.
+	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+	pairFlags |= PxPairFlags(PxU16(filterData0.word2 | filterData1.word2));
 
-\return True if the vehicle is in the air, false if any wheel is touching the ground.
-*/
-bool PxVehicleIsInAir(const PxVehicleWheelQueryResult& vehWheelQueryResults);
+	return PxFilterFlags();
+}
 
-#if !PX_DOXYGEN
-} // namespace physx
-#endif
-
-/** @} */
-#endif //PX_VEHICLE_UTILHELPER_H
+} // namespace snippetvehicle

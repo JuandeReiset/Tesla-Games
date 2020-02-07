@@ -27,38 +27,36 @@
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
-#ifndef PX_VEHICLE_UTILHELPER_H
-#define PX_VEHICLE_UTILHELPER_H
-/** \addtogroup vehicle
-  @{
-*/
+#ifndef SNIPPET_VEHICLE_FILTERSHADER_H
+#define SNIPPET_VEHICLE_FILTERSHADER_H
 
-#include "../foundation/Px.h"
+#include "../../include/PhysX/PxPhysicsAPI.h"
 
-#if !PX_DOXYGEN
-namespace physx
+namespace snippetvehicle
 {
-#endif
 
-struct PxVehicleWheelQueryResult;
+using namespace physx;
 
-/**
-\brief Test if all wheels of a vehicle are in the air by querying the wheel query data 
-stored in the last call to PxVehicleUpdates. If all wheels are in the air then true is returned.  
+enum
+{
+	COLLISION_FLAG_GROUND			=	1 << 0,
+	COLLISION_FLAG_WHEEL			=	1 << 1,
+	COLLISION_FLAG_CHASSIS			=	1 << 2,
+	COLLISION_FLAG_OBSTACLE			=	1 << 3,
+	COLLISION_FLAG_DRIVABLE_OBSTACLE=	1 << 4,
 
-\note False is returned if any wheel can reach to the ground.
+	COLLISION_FLAG_GROUND_AGAINST	=															COLLISION_FLAG_CHASSIS | COLLISION_FLAG_OBSTACLE | COLLISION_FLAG_DRIVABLE_OBSTACLE,
+	COLLISION_FLAG_WHEEL_AGAINST	=									COLLISION_FLAG_WHEEL |	COLLISION_FLAG_CHASSIS | COLLISION_FLAG_OBSTACLE,
+	COLLISION_FLAG_CHASSIS_AGAINST	=			COLLISION_FLAG_GROUND | COLLISION_FLAG_WHEEL |	COLLISION_FLAG_CHASSIS | COLLISION_FLAG_OBSTACLE | COLLISION_FLAG_DRIVABLE_OBSTACLE,
+	COLLISION_FLAG_OBSTACLE_AGAINST	=			COLLISION_FLAG_GROUND | COLLISION_FLAG_WHEEL |	COLLISION_FLAG_CHASSIS | COLLISION_FLAG_OBSTACLE | COLLISION_FLAG_DRIVABLE_OBSTACLE,
+	COLLISION_FLAG_DRIVABLE_OBSTACLE_AGAINST=	COLLISION_FLAG_GROUND 						 |	COLLISION_FLAG_CHASSIS | COLLISION_FLAG_OBSTACLE | COLLISION_FLAG_DRIVABLE_OBSTACLE
+};
 
-\note If vehWheelQueryResults.wheelQueryResults is NULL or vehWheelQueryResults.nbWheelQueryResults is 0 then true is returned.
-This function does not account for wheels that have been disabled since the last execution of PxVehicleUpdates so it is possible
-that wheels disabled more recently than the last call to PxVehicleUpdates report are treated as touching the ground.
+PxFilterFlags VehicleFilterShader
+(PxFilterObjectAttributes attributes0, PxFilterData filterData0, 
+ PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+ PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize);
 
-\return True if the vehicle is in the air, false if any wheel is touching the ground.
-*/
-bool PxVehicleIsInAir(const PxVehicleWheelQueryResult& vehWheelQueryResults);
+} // namespace snippetvehicle
 
-#if !PX_DOXYGEN
-} // namespace physx
-#endif
-
-/** @} */
-#endif //PX_VEHICLE_UTILHELPER_H
+#endif //SNIPPET_VEHICLE_FILTERSHADER_H
