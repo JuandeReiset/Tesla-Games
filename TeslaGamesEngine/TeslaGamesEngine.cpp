@@ -38,6 +38,11 @@
 
 // end of stuff for imgui
 
+
+/*
+	DO WE REALLY NEED PHYSX THINGS IN THE MAIN CLASS, OR JUST IN THE PHYSICS FILE AND PHYSICS OBJECTS?
+*/
+
 // Stuff TA Ben added
 #include <PhysX/PxPhysicsAPI.h>
 using namespace physx;
@@ -166,7 +171,7 @@ int main()
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	audioObject2.playSound();
+	//audioObject2.playSound();
 
 	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
