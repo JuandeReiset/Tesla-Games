@@ -320,6 +320,7 @@ int main()
 
 	xwing.LoadModel("Models/x-wing.obj");
 	TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
+
 	// Stuff TA Ben added
 	PxDefaultAllocator allocator;
 	PxDefaultErrorCallback errorCallback;
@@ -459,7 +460,7 @@ int main()
 		dirtTexture.UseTexture();
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
-
+		
 		// Draw X-Wing
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
@@ -467,7 +468,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
-
+		
 		// Draw Tesla car
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-7.0f, -1.0f, 10.0f));

@@ -34,6 +34,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="ShootComp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioBoomBox.h" />
@@ -71,5 +72,6 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="ShootComp.h" />
   </ItemGroup>
 </Project>
