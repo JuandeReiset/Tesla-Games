@@ -30,6 +30,7 @@ bool Texture::LoadTexture()
 		return false;
 	}
 
+
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 

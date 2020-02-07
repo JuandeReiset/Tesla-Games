@@ -71,6 +71,7 @@ Texture brickTexture;
 Texture dirtTexture;
 Texture plainTexture;
 Texture TTexture;
+Texture meterTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
@@ -190,10 +191,23 @@ void CreateHUDs() {
 
 	GLfloat HUDvertices[] = {
 	//	x	 y	  z			u	 v
-		0.0, 0.0, 0.0,		0.0, 0.0,								//bottom left
-		0.0, 100.0, 0.0,	0.0, 1.0,								//top left
-		100.0, 100, 0.0,	1.0, 1.0,								//top right
-		100.0, 0.0, 0.0,	1.0, 0.0								//bottom right
+		0.0, 450.0, 0.0,	0.0, 0.0,								//bottom left
+		0.0, 600.0, 0.0,	0.0, 1.0,								//top left
+		150.0, 600, 0.0,	1.0, 1.0,								//top right
+		150.0, 450.0, 0.0,	1.0, 0.0								//bottom right
+	};
+	
+	unsigned int HUD1indecis[] = {						// 0 -----3
+		0, 1, 3,										// |	  |
+		2, 1, 3											// 1 -----2
+	};
+
+	GLfloat HUD1vertices[] = {
+	//	x	 y	  z			u	 v
+		0.0, 500.0, 1.0,	0.0, 0.0,								//bottom left
+		0.0, 600.0, 1.0,	0.0, 1.0,								//top left
+		100.0, 600, 1.0,	1.0, 1.0,								//top right
+		100.0, 500.0, 1.0,	1.0, 0.0								//bottom right
 	};
 	/*
 	unsigned int HUDindecis2[] = {
@@ -212,9 +226,9 @@ void CreateHUDs() {
 	HUD1->createHUD(HUDvertices, HUDindecis, 20, 6);
 	HUDList.push_back(HUD1);
 
-	//HUD* HUD2 = new HUD();
-	//HUD2->createHUD(HUDvertices2, HUDindecis2, 12, 6);
-	//HUDList.push_back(HUD2);
+	HUD* HUD2 = new HUD();
+	HUD2->createHUD(HUD1vertices, HUD1indecis, 20, 6);
+	HUDList.push_back(HUD2);
 }
 
 int main()
@@ -247,8 +261,10 @@ int main()
 	dirtTexture.LoadTexture();
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTexture();
-	TTexture = Texture("Textures/T.png");
-	TTexture.LoadTexture();
+	TTexture = Texture("Textures/t.png");
+	TTexture.LoadTextureAlpha();
+	meterTexture = Texture("Textures/meter.png");
+	meterTexture.LoadTextureAlpha();
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
@@ -448,10 +464,6 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
 
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		// imgui ends here
-
-		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
 
 		//Rendering HUD
 		hudShader.UseShader();
@@ -467,13 +479,22 @@ int main()
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		TTexture.UseTexture();
+
+		//TTexture.UseTexture();
+		meterTexture.UseTexture();
 		HUDList[0]->renderHUD();
+		
 		//HUDList[1]->renderHUD();
 
 		glEnable(GL_DEPTH_TEST);
 
 		//HUD ends here
+
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		// imgui ends here
+
+		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
+
 
 		mainWindow.swapBuffers();
 	}
