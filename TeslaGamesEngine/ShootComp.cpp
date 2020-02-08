@@ -25,10 +25,13 @@ void ShootComp::SetBulletSpeed(double h) {
 }
 
 void ShootComp::fire() {
-	ammo = ammo - 1;
 
-	if (ammo =< 0) {
-		std::cout << "Out of ammo" << std::endl;
+
+	if (ammo <= 0) {
+		//std::cout << "Out of ammo" << std::endl;
+	}
+	else {
+		ammo = ammo - 1;
 	}
 	return;
 }
