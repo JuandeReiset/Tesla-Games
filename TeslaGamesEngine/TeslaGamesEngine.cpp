@@ -374,7 +374,7 @@ int main()
 	dig1Texture = Texture("Textures/numbers/1.png");
 	dig1Texture.LoadTextureAlpha();
 	healthTexture = Texture("Textures/healthBar.png");
-	healthTexture.LoadTexture();
+	healthTexture.LoadTextureAlpha();
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
