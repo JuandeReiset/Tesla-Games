@@ -41,6 +41,9 @@
 #include "AudioEngine.h"
 #include "AudioBoomBox.h"
 
+//Controller stuff
+#include "Controller.h"
+
 //HUD stuff
 #include "HUD.h"
 
@@ -254,13 +257,92 @@ void CreateHUDs() {
 	HUDList.push_back(HUD5);
 }
 
+// A function to obtain input, called each frame
+void parseControllerInput(Controller* controller)
+{
+	// Update controller object with current input MUST BE FIRST
+	controller->update();
+
+	//IMPLEMENT THINGS In the IFs
+
+	//Is button Pressed demo
+	if (controller->isButtonPressed(XButtons.A)) {
+		
+		std::cout << controller->getIndex() << " " <<"A PRESSED" << std::endl;
+	}
+	if (controller->isButtonPressed(XButtons.X)) {
+		std::cout << controller->getIndex() << " " << "X PRESSED" << std::endl;
+	}
+	
+	//Is button down demo (more useful IMO)
+	if (controller->isButtonDown(XButtons.Y)) {
+		std::cout << controller->getIndex() << " " << "Y PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.B)) {
+		std::cout << controller->getIndex() << " " << "B PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.L_Shoulder)) {
+		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.R_Shoulder)) {
+		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Up)) {
+		std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Down)) {
+		std::cout << controller->getIndex() << " " << "D-Pad Down PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Right)) {
+		std::cout << controller->getIndex() << " " << "D-Pad Right PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.DPad_Left)) {
+		std::cout << controller->getIndex() << " " << "D-Pad Left PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.Start)) {
+		std::cout << controller->getIndex() << " " << "Start PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.Back)) {
+		std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.Back)) {
+		std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.L_Thumbstick)) {
+		std::cout << controller->getIndex() << " " << "L3 PRESSED and HELD" << std::endl;
+	}
+	if (controller->isButtonDown(XButtons.R_Thumbstick)) {
+		std::cout << controller->getIndex() << " " << "R3 PRESSED and HELD" << std::endl;
+	}
+
+	//Sticks and triggers may hurt some n********...
+	// It was 'neighbors' geez....
+	if (!controller->LStick_InDeadzone()) {
+		std::cout << controller->getIndex() << " " << "LS: " << controller->leftStick_X() << std::endl;
+	}
+	if (!controller->RStick_InDeadzone()) {
+		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
+	}
+	if (controller->rightTrigger() > 0.0) {
+		std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
+	}
+	if (controller->leftTrigger() > 0.0) {
+		std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
+	}
+
+	// Update the gamepad for next frame MUST BE LAST
+	controller->refreshState();
+}
+
 int main()
 {
 	const char* glsl_version = "#version 130"; // USED FOR IMGUI SETTING
 	mainWindow = Window(800, 600);
 	mainWindow.Initialise();
 
-	Game mainGame;
+	Renderer r = Renderer(mainWindow, camera);
+
+	Game mainGame = Game(r);
 	Object* car = new Vehicle(1);
 	Object* car2 = new Vehicle(2);
 	Object* bullet = new DamagingObject(20, 1);
@@ -279,10 +361,11 @@ int main()
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
 	brickTexture = Texture("Textures/brick.png");
-	brickTexture.LoadTexture();
+	brickTexture.LoadTextureAlpha();
 	dirtTexture = Texture("Textures/dirt.png");
-	dirtTexture.LoadTexture();
+	dirtTexture.LoadTextureAlpha();
 	plainTexture = Texture("Textures/plain.png");
+	plainTexture.LoadTextureAlpha();
 	plainTexture.LoadTexture();
 	TTexture = Texture("Textures/t.png");
 	TTexture.LoadTextureAlpha();
@@ -297,7 +380,7 @@ int main()
 	dullMaterial = Material(0.3f, 4);
 
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
-								0.1f, 0.1f,
+								0.5f, 0.5f,
 								0.0f, 0.0f, -1.0f);
 
 	unsigned int pointLightCount = 0;
@@ -332,7 +415,6 @@ int main()
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
-	xwing = Model();
 	xwing.LoadModel("Models/x-wing.obj");
 
 	// Stuff TA Ben added
@@ -342,8 +424,6 @@ int main()
 
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
-	double last = glfwGetTime();
-	double now = glfwGetTime();
 
 	glfwSwapInterval(1);
 	// imGui setting BEGINNING
@@ -392,15 +472,30 @@ int main()
 	//audioObject.playSound();
 	audioObject2.playSound();
 
+	//Controller
+	Controller player1 = Controller(1);
+	Controller player2 = Controller(2);
+
+	bool P1Connected = player1.isConnected();
+	bool P2Connected = player2.isConnected();
+
+	std::cout << "Player1 connected: " << P1Connected << std::endl;
+	std::cout << "Player2 connected: " << P2Connected << std::endl;
+
 	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
 	{
+
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		lastTime = now;
 
 		// Get + Handle User Input
 		glfwPollEvents();
+		if (P1Connected)
+			parseControllerInput(&player1);
+		if (P2Connected)
+			parseControllerInput(&player2);
 
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
@@ -430,35 +525,11 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-		// Start the Dear ImGui frame
-
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplGlfw_NewFrame();
-			ImGui::NewFrame();
-		{
-			static float f = 0.0f;
-			static int counter = 0;
-
-			ImGui::Begin("FPS COUNTER");                          // Create a window called "Hello, world!" and append into it.
-
-			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::End();
-		}
-
-		// Rendering imgui
-		ImGui::Render();
-		int display_w, display_h;
-		glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
-		glViewport(0, 0, display_w, display_h);
-		//glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-		//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		//glClear(GL_COLOR_BUFFER_BIT);
-
+		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
 
+		// Draw pyramid one
 		glm::mat4 model = glm::mat4(1.0f);
 
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
@@ -468,6 +539,7 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[0]->RenderMesh();
 
+		// Draw pyramid two
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 4.0f, -2.5f));
 		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
@@ -476,6 +548,7 @@ int main()
 		dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[1]->RenderMesh();
 
+		// Draw base
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
 		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
@@ -484,6 +557,7 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 
+		// Draw X-Wing
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
 		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
@@ -527,6 +601,34 @@ int main()
 		glEnable(GL_DEPTH_TEST);
 
 		//HUD ends here
+
+		// End of rendering 
+
+		// Start the Dear ImGui frame
+
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+		{
+			static float f = 0.0f;
+			static int counter = 0;
+
+			ImGui::Begin("FPS COUNTER");                          // Create a window called "Hello, world!" and append into it.
+
+			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::End();
+		}
+
+		// Rendering imgui
+		ImGui::Render();
+		int display_w, display_h;
+		glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
+		glViewport(0, 0, display_w, display_h);
+		//glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+		//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		//glClear(GL_COLOR_BUFFER_BIT);
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		// imgui ends here

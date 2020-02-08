@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Global.h"
 
-Game::Game()
+Game::Game(Renderer& r) : renderer(r)
 {
 }
 
