@@ -72,6 +72,8 @@ Texture dirtTexture;
 Texture plainTexture;
 Texture TTexture;
 Texture meterTexture;
+Texture dig1Texture;
+Texture healthTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
@@ -202,33 +204,54 @@ void CreateHUDs() {
 		2, 1, 3											// 1 -----2
 	};
 
-	GLfloat HUD1vertices[] = {
-	//	x	 y	  z			u	 v
-		0.0, 500.0, 1.0,	0.0, 0.0,								//bottom left
-		0.0, 600.0, 1.0,	0.0, 1.0,								//top left
-		100.0, 600, 1.0,	1.0, 1.0,								//top right
-		100.0, 500.0, 1.0,	1.0, 0.0								//bottom right
-	};
-	/*
-	unsigned int HUDindecis2[] = {
-		0, 1, 3,
-		2, 1, 3
-	};
 	
-	GLfloat HUDvertices2[] = {
-		500.0, 500.0, 0.0,							//bottom left
-		500.0, 550.0, 0.0,							//top left
-		600.0, 550, 0.0,							//top right
-		600.0, 500.0, 0.0							//bottom right
+	GLfloat firstDigtVertices[] = {
+		30.0, 505.0, 1.0,	0.0, 0.0,
+		30.0, 555.0, 1.0,	0.0, 1.0,
+		55.0, 555.0, 1.0,	1.0, 1.0,
+		55.0, 505.0, 1.0,	1.0, 0.0
 	};
-	*/
+
+	GLfloat secondDigVertices[]{
+		60.0, 505.0, 1.0,	0.0, 0.0,
+		60.0, 555.0, 1.0,	0.0, 1.0,
+		85.0, 555.0, 1.0,	1.0, 1.0,
+		85.0, 505.0, 1.0,	1.0, 0.0
+	};	
+	
+	GLfloat thirdDigVertices[]{
+		90.0, 505.0, 1.0,	0.0, 0.0,
+		90.0, 555.0, 1.0,	0.0, 1.0,
+		115.0, 555.0, 1.0,	1.0, 1.0,
+		115.0, 505.0, 1.0,	1.0, 0.0
+	};
+
+	GLfloat healthBarVertices[]{
+		0.0, 430, 0.0,		0.0, 0.0,
+		0.0, 450, 0.0,		0.0, 1.0,
+		150.0, 450.0, 0.0,	1.0, 1.0,
+		150.0, 430.0, 0.0,	1.0, 0.0
+	};
+
 	HUD* HUD1 = new HUD();
 	HUD1->createHUD(HUDvertices, HUDindecis, 20, 6);
 	HUDList.push_back(HUD1);
 
 	HUD* HUD2 = new HUD();
-	HUD2->createHUD(HUD1vertices, HUD1indecis, 20, 6);
+	HUD2->createHUD(firstDigtVertices, HUD1indecis, 20, 6);
 	HUDList.push_back(HUD2);
+
+	HUD* HUD3 = new HUD();
+	HUD3->createHUD(secondDigVertices, HUD1indecis, 20, 6);
+	HUDList.push_back(HUD3);	
+	
+	HUD* HUD4 = new HUD();
+	HUD4->createHUD(thirdDigVertices, HUD1indecis, 20, 6);
+	HUDList.push_back(HUD4);
+	
+	HUD* HUD5 = new HUD();
+	HUD5->createHUD(healthBarVertices, HUD1indecis, 20, 6);
+	HUDList.push_back(HUD5);
 }
 
 int main()
@@ -265,6 +288,10 @@ int main()
 	TTexture.LoadTextureAlpha();
 	meterTexture = Texture("Textures/meter.png");
 	meterTexture.LoadTextureAlpha();
+	dig1Texture = Texture("Textures/numbers/1.png");
+	dig1Texture.LoadTextureAlpha();
+	healthTexture = Texture("Textures/healthBar.png");
+	healthTexture.LoadTexture();
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
@@ -480,11 +507,22 @@ int main()
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
-		//TTexture.UseTexture();
+		//meter
 		meterTexture.UseTexture();
 		HUDList[0]->renderHUD();
+
+		dig1Texture.UseTexture();
+		HUDList[1]->renderHUD();
+
+		dig1Texture.UseTexture();
+		HUDList[2]->renderHUD();
 		
-		//HUDList[1]->renderHUD();
+		dig1Texture.UseTexture();
+		HUDList[3]->renderHUD();
+		
+		//health bar
+		healthTexture.UseTexture();
+		HUDList[4]->renderHUD();
 
 		glEnable(GL_DEPTH_TEST);
 
