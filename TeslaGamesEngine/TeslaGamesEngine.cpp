@@ -498,6 +498,8 @@ int main()
 			
 			
 			ImGui::Begin("FPS COUNTER");                          // Create a window called "Hello, world!" and append into it.
+
+			/*    EXAMPLE OF DEBUGGING WITH IMGUI
 			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 
 
@@ -507,6 +509,7 @@ int main()
 			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 				counter++;
 			ImGui::SameLine();
+			*/
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
