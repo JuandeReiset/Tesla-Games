@@ -1,13 +1,24 @@
 #include "Vehicle.h"
 #include <iostream>
+#include <ctype.h>
+
+#include "physx/PxPhysicsAPI.h"
+
+#include "physx/vehicle/PxVehicleUtil.h"
+#include "snippetvehiclecommon/SnippetVehicleSceneQuery.h"
+#include "snippetvehiclecommon/SnippetVehicleFilterShader.h"
+#include "snippetvehiclecommon/SnippetVehicleTireFriction.h"
+#include "snippetvehiclecommon/SnippetVehicleCreate.h"
+
+#include "snippetcommon/SnippetPrint.h"
+#include "snippetcommon/SnippetPVD.h"
+#include "snippetutils/SnippetUtils.h"
 
 
-/* TO DO
+using namespace physx;
+using namespace snippetvehicle;
 
-Apply PhysX to this class using the snippet 4W code
 
-*/
-/*
 Vehicle::Vehicle() {}
 Vehicle::Vehicle(int id) : ID(id) {}
 Vehicle::~Vehicle() {}
@@ -31,25 +42,9 @@ void Vehicle::getDamage(double damage) {
 
 	return;
 }
-*/
-
-#include <ctype.h>
-
-#include "physx/PxPhysicsAPI.h"
-
-#include "physx/vehicle/PxVehicleUtil.h"
-#include "snippetvehiclecommon/SnippetVehicleSceneQuery.h"
-#include "snippetvehiclecommon/SnippetVehicleFilterShader.h"
-#include "snippetvehiclecommon/SnippetVehicleTireFriction.h"
-#include "snippetvehiclecommon/SnippetVehicleCreate.h"
-
-#include "snippetcommon/SnippetPrint.h"
-#include "snippetcommon/SnippetPVD.h"
-#include "snippetutils/SnippetUtils.h"
 
 
-using namespace physx;
-using namespace snippetvehicle;
+
 
 PxDefaultAllocator		gAllocator;
 PxDefaultErrorCallback	gErrorCallback;

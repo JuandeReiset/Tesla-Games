@@ -7,7 +7,6 @@
 #include <string.h>
 #include <cmath>
 #include <vector>
-#include <PhysX/PxPhysicsAPI.h>
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -39,14 +38,6 @@
 // end of stuff for imgui
 
 
-/*
-	DO WE REALLY NEED PHYSX THINGS IN THE MAIN CLASS, OR JUST IN THE PHYSICS FILE AND PHYSICS OBJECTS?
-*/
-
-// Stuff TA Ben added
-#include <PhysX/PxPhysicsAPI.h>
-using namespace physx;
-// End of stuff TA Ben added
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -113,10 +104,6 @@ int main()
 	CreateObjects();
 	CreateShaders();
 
-	// Stuff TA Ben added
-	PxDefaultAllocator allocator;
-	PxDefaultErrorCallback errorCallback;
-	// End of stuff TA Ben added
 
 	GLuint uniformProjection = 0, uniformModel = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
