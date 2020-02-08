@@ -207,6 +207,7 @@
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Turret.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
@@ -248,6 +249,7 @@
     <ClCompile Include="TeslaGamesEngine.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>

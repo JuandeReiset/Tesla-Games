@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "HealthComponent.h"
+#include "ShootComp.h"
 #include "Global.h"
 
 /*
@@ -20,6 +21,7 @@ public:
 
 private:
 	HealthComponent health = HealthComponent(100);
+	ShootComp turret = ShootComp(10);
 	int ID;															//each vihecle has a unique number for recognizition
 };
 

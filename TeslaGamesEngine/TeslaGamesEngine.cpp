@@ -319,7 +319,7 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
 	xwing.LoadModel("Models/x-wing.obj");
-	TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
+	TeslaCar.LoadModel("Models/Truck.obj");
 
 	// Stuff TA Ben added
 	PxDefaultAllocator allocator;
@@ -352,8 +352,8 @@ int main()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
@@ -387,6 +387,11 @@ int main()
 	std::cout << "Player2 connected: " << P2Connected << std::endl;
 
 	//End of audio system setup/demo
+
+	//translation vector helper
+	glm::vec3 cartranslation(4,0,0);
+	//
+
 	while (!mainWindow.getShouldClose())
 	{
 
@@ -469,9 +474,12 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
 		
+		
+
+		glm::vec3 playerview = camera.getCameraPosition() + glm::vec3(4, -1, 0);
 		// Draw Tesla car
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-7.0f, -1.0f, 10.0f));
+		model = glm::translate(model, playerview);
 		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -487,8 +495,18 @@ int main()
 			static float f = 0.0f;
 			static int counter = 0;
 
+			
+			
 			ImGui::Begin("FPS COUNTER");                          // Create a window called "Hello, world!" and append into it.
+			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 
+
+			ImGui::SliderFloat("float", &cartranslation.x, 0.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+
+
+			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+				counter++;
+			ImGui::SameLine();
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

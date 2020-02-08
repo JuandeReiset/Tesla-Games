@@ -14,6 +14,9 @@ class ShootComp :
 		double getBulletDir();     //Need to change to proper direction value
 		void SetBulletSpeed(double h);
 		void SetBulletDirection(double p);
+		void fire();
+
+		void Tick(float deltaTime);
 
 private:
 	double bullet_speed;

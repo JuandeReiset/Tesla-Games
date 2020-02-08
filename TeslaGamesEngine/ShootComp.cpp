@@ -24,3 +24,13 @@ void ShootComp::SetBulletSpeed(double h) {
 	return;
 }
 
+void ShootComp::fire() {
+	ammo = ammo - 1;
+
+	if (ammo =< 0) {
+		std::cout << "Out of ammo" << std::endl;
+	}
+	return;
+}
+
+void ShootComp::Tick(float deltaTime) {}
