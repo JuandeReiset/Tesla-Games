@@ -38,9 +38,9 @@
 
 #include <ctype.h>
 
-#include "PxPhysicsAPI.h"
+#include "../../include/PxPhysicsAPI.h"
 
-#include "vehicle/PxVehicleUtil.h"
+#include "../../include/vehicle/PxVehicleUtil.h"
 #include "../snippetvehiclecommon/SnippetVehicleSceneQuery.h"
 #include "../snippetvehiclecommon/SnippetVehicleFilterShader.h"
 #include "../snippetvehiclecommon/SnippetVehicleTireFriction.h"

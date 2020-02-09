@@ -29,7 +29,7 @@
 
 #include <new>
 #include "SnippetVehicleTireFriction.h"
-#include "PxPhysicsAPI.h"
+#include "../../include/PxPhysicsAPI.h"
 
 namespace snippetvehicle
 {

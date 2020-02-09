@@ -100,6 +100,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -200,7 +201,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PhysicsObject.h" />
-	<ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleConcurrency.h" />
+    <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleConcurrency.h" />
     <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleCreate.h" />
     <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleFilterShader.h" />
     <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleSceneQuery.h" />
@@ -244,7 +245,7 @@
     </ClCompile>
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="PhysicsObject.cpp" />
-	<ClCompile Include="PhysX\vehicle4W\snippetvehicle4w\SnippetVehicle4W.cpp" />
+    <ClCompile Include="PhysX\vehicle4W\snippetvehicle4w\SnippetVehicle4W.cpp" />
     <ClCompile Include="PhysX\vehicle4W\snippetvehicle4w\SnippetVehicle4WRender.cpp" />
     <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicle4WCreate.cpp" />
     <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleCreate.cpp" />
