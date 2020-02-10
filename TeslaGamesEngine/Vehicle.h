@@ -18,7 +18,7 @@ public:
 	void Tick(float deltaTime);
 	double currentHealth();											//get the current health
 	void getDamage(double damage);									//get damage for damaging object
-
+	void firelazer();
 private:
 	HealthComponent health = HealthComponent(100);
 	ShootComp turret = ShootComp(10);

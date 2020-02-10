@@ -24,3 +24,7 @@ void Vehicle::getDamage(double damage) {
 
 	return;
 }
+
+void Vehicle::firelazer() {
+	turret.fire();
+}
