@@ -73,10 +73,7 @@ Shader hudShader;
 Texture brickTexture;
 Texture dirtTexture;
 Texture plainTexture;
-Texture TTexture;
-Texture meterTexture;
 Texture dig1Texture;
-Texture healthTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
@@ -194,67 +191,18 @@ void CreateHUDs() {
 		2, 1, 3											// 1 -----2
 	};
 
-	GLfloat HUDvertices[] = {
+	GLfloat weaponUI[] = {
 	//	x	 y	  z			u	 v
-		0.0, 450.0, 0.0,	0.0, 0.0,								//bottom left
+		0.0, 415.0, 0.0,	0.0, 0.0,								//bottom left
 		0.0, 600.0, 0.0,	0.0, 1.0,								//top left
-		150.0, 600, 0.0,	1.0, 1.0,								//top right
-		150.0, 450.0, 0.0,	1.0, 0.0								//bottom right
+		90.0, 600, 0.0,		1.0, 1.0,								//top right
+		90.0, 4150.0, 0.0,	1.0, 0.0								//bottom right
 	};
 	
-	unsigned int HUD1indecis[] = {						// 0 -----3
-		0, 1, 3,										// |	  |
-		2, 1, 3											// 1 -----2
-	};
 
-	
-	GLfloat firstDigtVertices[] = {
-		30.0, 505.0, 1.0,	0.0, 0.0,
-		30.0, 555.0, 1.0,	0.0, 1.0,
-		55.0, 555.0, 1.0,	1.0, 1.0,
-		55.0, 505.0, 1.0,	1.0, 0.0
-	};
-
-	GLfloat secondDigVertices[]{
-		60.0, 505.0, 1.0,	0.0, 0.0,
-		60.0, 555.0, 1.0,	0.0, 1.0,
-		85.0, 555.0, 1.0,	1.0, 1.0,
-		85.0, 505.0, 1.0,	1.0, 0.0
-	};	
-	
-	GLfloat thirdDigVertices[]{
-		90.0, 505.0, 1.0,	0.0, 0.0,
-		90.0, 555.0, 1.0,	0.0, 1.0,
-		115.0, 555.0, 1.0,	1.0, 1.0,
-		115.0, 505.0, 1.0,	1.0, 0.0
-	};
-
-	GLfloat healthBarVertices[]{
-		0.0, 430, 0.0,		0.0, 0.0,
-		0.0, 450, 0.0,		0.0, 1.0,
-		150.0, 450.0, 0.0,	1.0, 1.0,
-		150.0, 430.0, 0.0,	1.0, 0.0
-	};
-
-	HUD* HUD1 = new HUD();
-	HUD1->createHUD(HUDvertices, HUDindecis, 20, 6);
-	HUDList.push_back(HUD1);
-
-	HUD* HUD2 = new HUD();
-	HUD2->createHUD(firstDigtVertices, HUD1indecis, 20, 6);
-	HUDList.push_back(HUD2);
-
-	HUD* HUD3 = new HUD();
-	HUD3->createHUD(secondDigVertices, HUD1indecis, 20, 6);
-	HUDList.push_back(HUD3);	
-	
-	HUD* HUD4 = new HUD();
-	HUD4->createHUD(thirdDigVertices, HUD1indecis, 20, 6);
-	HUDList.push_back(HUD4);
-	
-	HUD* HUD5 = new HUD();
-	HUD5->createHUD(healthBarVertices, HUD1indecis, 20, 6);
-	HUDList.push_back(HUD5);
+	HUD* weapon = new HUD();
+	weapon->createHUD(weapon, HUDindecis, 20, 6);
+	HUDList.push_back(weapon);
 }
 
 // A function to obtain input, called each frame

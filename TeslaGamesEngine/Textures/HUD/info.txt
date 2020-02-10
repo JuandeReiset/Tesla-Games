@@ -1,0 +1,4 @@
+bar size: 2 x 15	
+flag: 259 x 194
++, nitro, alive : square
+weaponUI: 37 x 18
