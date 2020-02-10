@@ -1,25 +1,26 @@
 #pragma once
 
-#include <string>
+#include <GL\glew.h>
 
-/*
- * Class for loading and using textures in OpenGL
- */
+#include <stb_image.h>
+
 class Texture
 {
 public:
 	Texture();
-	// Loads a texture with NO alpha channels
-	void LoadTexture();
-	// Loads a texture with alpha channels
-	void LoadTextureAlpha();
+	Texture(const char* fileLoc);
+
+	bool LoadTexture();
+	bool LoadTextureAlpha();
+	void UseTexture();
+	void ClearTexture();
+
 	~Texture();
 
 private:
-	int width;
-	int height;
-	int bitdepth;
+	GLuint textureID;
+	int width, height, bitDepth;
 
-	std::string fileLocation;
+	const char* fileLocation;
 };
 

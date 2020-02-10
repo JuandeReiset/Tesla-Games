@@ -41,6 +41,11 @@
     <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleSceneQuery.cpp" />
     <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleTankCreate.cpp" />
     <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleTireFriction.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="HUD.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -82,5 +87,10 @@
     <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleSceneQuery.h" />
     <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleTireFriction.h" />
     <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h" />
+    <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="HUD.h" />
   </ItemGroup>
 </Project>

@@ -7,39 +7,93 @@
 
 #include <GL\glew.h>
 
-/*
- * Class responsible for loading shaders and aplpying them during rendering
- */
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "SpotLight.h"
+
+const int MAX_POINT_LIGHTS = 3;
+const int MAX_SPOT_LIGHTS = 3;
+
 class Shader
 {
 public:
 	Shader();
 
-	// Create a shader from hard coded functions
 	void CreateFromString(const char* vertexCode, const char* fragmentCode);
-	// Load a shader from provided files
 	void CreateFromFiles(const char* vertexLocation, const char* fragmentLocation);
 
-	// Helper method for file IO
+	//for hud shaders
+	void createHUDFromFiles(const char* vertexLocation, const char* fragmentLocation);
+
+
 	std::string ReadFile(const char* fileLocation);
 
-	// Accessors for applying uniform locations to the shader
 	GLuint GetProjectionLocation();
 	GLuint GetModelLocation();
+	GLuint GetViewLocation();
+	GLuint GetAmbientIntensityLocation();
+	GLuint GetAmbientColourLocation();
+	GLuint GetDiffuseIntensityLocation();
+	GLuint GetDirectionLocation();
+	GLuint GetSpecularIntensityLocation();
+	GLuint GetShininessLocation();
+	GLuint GetEyePositionLocation();
 
-	// Use the shader in rendering
+	void SetDirectionalLight(DirectionalLight * dLight);
+	void SetPointLights(PointLight * pLight, unsigned int lightCount);
+	void SetSpotLights(SpotLight * sLight, unsigned int lightCount);
+
 	void UseShader();
-	// Clear the shader from memory + free the memory
 	void ClearShader();
 
 	~Shader();
 
 private:
-	GLuint shaderID, uniformProjection, uniformModel;
+	int pointLightCount;
+	int spotLightCount;
 
-	// Helper method for converting shader string to executable code
+	GLuint shaderID, uniformProjection, uniformModel, uniformView, uniformEyePosition,
+		uniformSpecularIntensity, uniformShininess;
+
+	struct {
+		GLuint uniformColour;
+		GLuint uniformAmbientIntensity;
+		GLuint uniformDiffuseIntensity;
+
+		GLuint uniformDirection;
+	} uniformDirectionalLight;
+
+	GLuint uniformPointLightCount;
+
+	struct {
+		GLuint uniformColour;
+		GLuint uniformAmbientIntensity;
+		GLuint uniformDiffuseIntensity;
+
+		GLuint uniformPosition;
+		GLuint uniformConstant;
+		GLuint uniformLinear;
+		GLuint uniformExponent;
+	} uniformPointLight[MAX_POINT_LIGHTS];
+
+	GLuint uniformSpotLightCount;
+
+	struct {
+		GLuint uniformColour;
+		GLuint uniformAmbientIntensity;
+		GLuint uniformDiffuseIntensity;
+
+		GLuint uniformPosition;
+		GLuint uniformConstant;
+		GLuint uniformLinear;
+		GLuint uniformExponent;
+
+		GLuint uniformDirection;
+		GLuint uniformEdge;
+	} uniformSpotLight[MAX_SPOT_LIGHTS];
+
 	void CompileShader(const char* vertexCode, const char* fragmentCode);
-	// Helper method to add a shader to the shader program
+	void compileHUDShader(const char* vertexCode, const char* fragmentCode);
 	void AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType);
 };
 

@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Global.h"
 
-Game::Game()
+Game::Game(Renderer& r) : renderer(r)
 {
 }
 
@@ -22,7 +22,7 @@ void Game::Play()
 		double now = glfwGetTime();
 		double deltaTime = now - last;
 		last = now;
-		std::cout << deltaTime << std::endl;
+		//std::cout << deltaTime << std::endl;
 
 		// Calculate framerate
 
