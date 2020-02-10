@@ -22,6 +22,10 @@ public:
 	void CreateFromString(const char* vertexCode, const char* fragmentCode);
 	void CreateFromFiles(const char* vertexLocation, const char* fragmentLocation);
 
+	//for hud shaders
+	void createHUDFromFiles(const char* vertexLocation, const char* fragmentLocation);
+
+
 	std::string ReadFile(const char* fileLocation);
 
 	GLuint GetProjectionLocation();
@@ -89,6 +93,7 @@ private:
 	} uniformSpotLight[MAX_SPOT_LIGHTS];
 
 	void CompileShader(const char* vertexCode, const char* fragmentCode);
+	void compileHUDShader(const char* vertexCode, const char* fragmentCode);
 	void AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType);
 };
 

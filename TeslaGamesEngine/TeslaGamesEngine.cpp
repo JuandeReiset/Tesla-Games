@@ -44,6 +44,9 @@
 //Controller stuff
 #include "Controller.h"
 
+//HUD stuff
+#include "HUD.h"
+
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -62,11 +65,18 @@ const float toRadians = 3.14159265f / 180.0f;
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
+std::vector<HUD*> HUDList;
 Camera camera;
+
+Shader hudShader;
 
 Texture brickTexture;
 Texture dirtTexture;
 Texture plainTexture;
+Texture TTexture;
+Texture meterTexture;
+Texture dig1Texture;
+Texture healthTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
@@ -85,6 +95,12 @@ static const char* vShader = "Shaders/shader.vert";
 
 // Fragment Shader
 static const char* fShader = "Shaders/shader.frag";
+
+// Vertex Shader of HUD_shader
+static const char* vHshader = "Shaders/HUD_shader.vert";
+
+//Fragment shader of HUD_shader
+static const char* fHshader = "Shaders/HUD_shader.frag";
 
 /* End of rendering variables */
 
@@ -167,6 +183,78 @@ void CreateShaders()
 	Shader *shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
+	
+	hudShader.createHUDFromFiles(vHshader, fHshader);
+
+}
+
+void CreateHUDs() {
+	unsigned int HUDindecis[] = {						// 0 -----3
+		0, 1, 3,										// |	  |
+		2, 1, 3											// 1 -----2
+	};
+
+	GLfloat HUDvertices[] = {
+	//	x	 y	  z			u	 v
+		0.0, 450.0, 0.0,	0.0, 0.0,								//bottom left
+		0.0, 600.0, 0.0,	0.0, 1.0,								//top left
+		150.0, 600, 0.0,	1.0, 1.0,								//top right
+		150.0, 450.0, 0.0,	1.0, 0.0								//bottom right
+	};
+	
+	unsigned int HUD1indecis[] = {						// 0 -----3
+		0, 1, 3,										// |	  |
+		2, 1, 3											// 1 -----2
+	};
+
+	
+	GLfloat firstDigtVertices[] = {
+		30.0, 505.0, 1.0,	0.0, 0.0,
+		30.0, 555.0, 1.0,	0.0, 1.0,
+		55.0, 555.0, 1.0,	1.0, 1.0,
+		55.0, 505.0, 1.0,	1.0, 0.0
+	};
+
+	GLfloat secondDigVertices[]{
+		60.0, 505.0, 1.0,	0.0, 0.0,
+		60.0, 555.0, 1.0,	0.0, 1.0,
+		85.0, 555.0, 1.0,	1.0, 1.0,
+		85.0, 505.0, 1.0,	1.0, 0.0
+	};	
+	
+	GLfloat thirdDigVertices[]{
+		90.0, 505.0, 1.0,	0.0, 0.0,
+		90.0, 555.0, 1.0,	0.0, 1.0,
+		115.0, 555.0, 1.0,	1.0, 1.0,
+		115.0, 505.0, 1.0,	1.0, 0.0
+	};
+
+	GLfloat healthBarVertices[]{
+		0.0, 430, 0.0,		0.0, 0.0,
+		0.0, 450, 0.0,		0.0, 1.0,
+		150.0, 450.0, 0.0,	1.0, 1.0,
+		150.0, 430.0, 0.0,	1.0, 0.0
+	};
+
+	HUD* HUD1 = new HUD();
+	HUD1->createHUD(HUDvertices, HUDindecis, 20, 6);
+	HUDList.push_back(HUD1);
+
+	HUD* HUD2 = new HUD();
+	HUD2->createHUD(firstDigtVertices, HUD1indecis, 20, 6);
+	HUDList.push_back(HUD2);
+
+	HUD* HUD3 = new HUD();
+	HUD3->createHUD(secondDigVertices, HUD1indecis, 20, 6);
+	HUDList.push_back(HUD3);	
+	
+	HUD* HUD4 = new HUD();
+	HUD4->createHUD(thirdDigVertices, HUD1indecis, 20, 6);
+	HUDList.push_back(HUD4);
+	
+	HUD* HUD5 = new HUD();
+	HUD5->createHUD(healthBarVertices, HUD1indecis, 20, 6);
+	HUDList.push_back(HUD5);
 }
 
 // A function to obtain input, called each frame
@@ -268,6 +356,7 @@ int main()
 	// Rendering setup
 	CreateObjects();
 	CreateShaders();
+	CreateHUDs();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
@@ -277,6 +366,15 @@ int main()
 	dirtTexture.LoadTextureAlpha();
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureAlpha();
+	plainTexture.LoadTexture();
+	TTexture = Texture("Textures/t.png");
+	TTexture.LoadTextureAlpha();
+	meterTexture = Texture("Textures/meter.png");
+	meterTexture.LoadTextureAlpha();
+	dig1Texture = Texture("Textures/numbers/1.png");
+	dig1Texture.LoadTextureAlpha();
+	healthTexture = Texture("Textures/healthBar.png");
+	healthTexture.LoadTextureAlpha();
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
@@ -405,7 +503,7 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		
 		// Setup shader
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
@@ -467,6 +565,43 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
 
+
+		//Rendering HUD
+		hudShader.UseShader();
+		uniformModel = hudShader.GetModelLocation();
+		uniformProjection = hudShader.GetProjectionLocation();
+
+		glm::mat4 ortho = glm::ortho(0.0f, (float)mainWindow.getWidth(), (float)mainWindow.getHeight(), 0.0f);						//orthograohic projection
+
+		glDisable(GL_DEPTH_TEST);																									//disable the depth-testing
+
+		model = glm::mat4(1.0f);
+		//glm::mat4 model = glm::mat4(1.0f);
+
+		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		//meter
+		meterTexture.UseTexture();
+		HUDList[0]->renderHUD();
+
+		dig1Texture.UseTexture();
+		HUDList[1]->renderHUD();
+
+		dig1Texture.UseTexture();
+		HUDList[2]->renderHUD();
+		
+		dig1Texture.UseTexture();
+		HUDList[3]->renderHUD();
+		
+		//health bar
+		healthTexture.UseTexture();
+		HUDList[4]->renderHUD();
+
+		glEnable(GL_DEPTH_TEST);
+
+		//HUD ends here
+
 		// End of rendering 
 
 		// Start the Dear ImGui frame
@@ -499,6 +634,8 @@ int main()
 		// imgui ends here
 
 		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
+
+
 		mainWindow.swapBuffers();
 	}
 	// Cleanup
