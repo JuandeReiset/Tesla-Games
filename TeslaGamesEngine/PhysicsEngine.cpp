@@ -18,6 +18,7 @@
 using namespace physx;
 using namespace snippetvehicle;
 
+
 PxF32 gSteerVsForwardSpeedData[2 * 8] =
 {
 	0.0f,		0.75f,
@@ -205,6 +206,7 @@ void PhysicsEngine::startHandbrakeTurnRightMode()
 }
 
 
+
 void PhysicsEngine::releaseAllControls()
 {
 	if (gMimicKeyInputs)
@@ -224,17 +226,22 @@ void PhysicsEngine::releaseAllControls()
 	}
 }
 
+//constructor
 PhysicsEngine::PhysicsEngine()
 {
+	//make foundation, init pvd
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 	gPvd = PxCreatePvd(*gFoundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
 	gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+	//set physics
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
+	//set scene
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 
+	//cpu worker thread setup and add to sceneDesc
 	PxU32 numWorkers = 1;
 	gDispatcher = PxDefaultCpuDispatcherCreate(numWorkers);
 	sceneDesc.cpuDispatcher = gDispatcher;
@@ -316,27 +323,35 @@ void PhysicsEngine::incrementDrivingMode(const PxF32 timestep)
 		switch (eDriveMode)
 		{
 		case DriveMode::eDRIVE_MODE_ACCEL_FORWARDS:
+			modeType = 1;
 			startAccelerateForwardsMode();
 			break;
 		case DriveMode::eDRIVE_MODE_ACCEL_REVERSE:
+			modeType = 2;
 			startAccelerateReverseMode();
 			break;
 		case DriveMode::eDRIVE_MODE_HARD_TURN_LEFT:
+			modeType = 3;
 			startTurnHardLeftMode();
 			break;
 		case DriveMode::eDRIVE_MODE_HANDBRAKE_TURN_LEFT:
+			modeType = 4;
 			startHandbrakeTurnLeftMode();
 			break;
 		case DriveMode::eDRIVE_MODE_HARD_TURN_RIGHT:
+			modeType = 5;
 			startTurnHardRightMode();
 			break;
 		case DriveMode::eDRIVE_MODE_HANDBRAKE_TURN_RIGHT:
+			modeType = 6;
 			startHandbrakeTurnRightMode();
 			break;
 		case DriveMode::eDRIVE_MODE_BRAKE:
+			modeType = 7;
 			startBrakeMode();
 			break;
 		case DriveMode::eDRIVE_MODE_NONE:
+			modeType = 8;
 			break;
 		};
 
@@ -346,6 +361,13 @@ void PhysicsEngine::incrementDrivingMode(const PxF32 timestep)
 			gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
 		}
 	}
+}
+
+//expand to modular later
+physx::PxVec3 PhysicsEngine::GetPosition()
+{
+	PxVec3 position = gVehicle4W->getRigidDynamicActor()->getGlobalPose().p;
+	return position;
 }
 
 void PhysicsEngine::stepPhysics()
@@ -383,6 +405,11 @@ void PhysicsEngine::stepPhysics()
 	//Scene update.
 	gScene->simulate(timestep);
 	gScene->fetchResults(true);
+}
+
+int PhysicsEngine::getModeType()
+{
+	return modeType;
 }
 
 void PhysicsEngine::cleanupPhysics()

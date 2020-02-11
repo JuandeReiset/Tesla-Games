@@ -480,6 +480,7 @@ int main()
 	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
 	{
+		physEng.stepPhysics();
 
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
@@ -553,8 +554,9 @@ int main()
 		meshList[2]->RenderMesh();
 
 		// Draw X-Wing
+		physx::PxVec3 xwingPos = physEng.GetPosition();
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
 		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -607,12 +609,17 @@ int main()
 		{
 			static float f = 0.0f;
 			static int counter = 0;
-
+/*
 			ImGui::Begin("FPS COUNTER");                          // Create a window called "Hello, world!" and append into it.
 
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+*/
+			ImGui::Begin("Debug");
+			ImGui::Text("Driving mode and Position");
+			ImGui::Text("Drivemode: %i Xpos: %d Ypos: %d Zpos: %d", physEng.getModeType(), xwingPos.x, xwingPos.y, xwingPos.z);
+
 			ImGui::End();
 		}
 
@@ -637,6 +644,7 @@ int main()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
+	
 
 
 	return 0;
