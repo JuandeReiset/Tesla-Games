@@ -8,7 +8,6 @@
 #include <string.h>
 #include <cmath>
 #include <vector>
-#include <PhysX/PxPhysicsAPI.h>
 
 // Rendering includes
 #include <GL\glew.h>
@@ -44,6 +43,9 @@
 //Controller stuff
 #include "Controller.h"
 
+//HUD stuff
+#include "HUD.h"
+
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -51,10 +53,7 @@
 
 // end of stuff for imgui
 
-// Stuff TA Ben added
-#include <PhysX/PxPhysicsAPI.h>
-using namespace physx;
-// End of stuff TA Ben added
+
 
 /* Rendering variables */
 const float toRadians = 3.14159265f / 180.0f;
@@ -62,11 +61,31 @@ const float toRadians = 3.14159265f / 180.0f;
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
+std::vector<HUD*> HUDList;
 Camera camera;
+
+Shader hudShader;
 
 Texture brickTexture;
 Texture dirtTexture;
 Texture plainTexture;
+
+//digit textures
+Texture dig0Texture;
+Texture dig1Texture;
+Texture dig2Texture;
+Texture dig3Texture;
+
+//HUD textures
+Texture weaponUITexture;
+Texture emptyBarTexture;
+Texture healthBarTexture;
+Texture nitroBarTexture;
+Texture plusSymbolTexture;
+Texture nitroSymbolTexture;
+Texture flagTexture;
+Texture personTexture;
+Texture cupTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
@@ -87,6 +106,12 @@ static const char* vShader = "Shaders/shader.vert";
 
 // Fragment Shader
 static const char* fShader = "Shaders/shader.frag";
+
+// Vertex Shader of HUD_shader
+static const char* vHshader = "Shaders/HUD_shader.vert";
+
+//Fragment shader of HUD_shader
+static const char* fHshader = "Shaders/HUD_shader.frag";
 
 /* End of rendering variables */
 
@@ -131,7 +156,7 @@ void CreateObjects()
 
 	GLfloat vertices[] = {
 		//	x      y      z			u	  v			nx	  ny    nz
-			-1.0f, -1.0f, -0.6f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+			-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 			0.0f, -1.0f, 1.0f,		0.5f, 0.0f,		0.0f, 0.0f, 0.0f,
 			1.0f, -1.0f, -0.6f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f,		0.5f, 1.0f,		0.0f, 0.0f, 0.0f
@@ -169,6 +194,190 @@ void CreateShaders()
 	Shader *shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
+	
+	hudShader.createHUDFromFiles(vHshader, fHshader);
+
+}
+
+void CreateHUDs() {
+	unsigned int HUDindecis[] = {						// 0 -----3
+		0, 1, 3,										// |	  |
+		2, 1, 3											// 1 -----2
+	};
+
+	GLfloat weaponUIVertices[] = {
+	//	x	 y	  z			u	 v
+		0.0, 474.0, 0.0,	0.0, 0.0,								//bottom left
+		0.0, 600.0, 0.0,	0.0, 1.0,								//top left
+		259.0, 600, 0.0,	1.0, 1.0,								//top right
+		259.0, 474.0, 0.0,	1.0, 0.0								//bottom right
+	};
+	
+	GLfloat numOfWeaponVertices[] = {
+		120.125, 500.5, 1.0,		0.0, 0.0,
+		120.125, 532.0, 1.0,		0.0, 1.0,
+		138.875, 532.0, 1.0,		1.0, 1.0,
+		138.875, 500.5, 1.0,		1.0, 0.0
+	};
+
+	GLfloat emptyBar1Vertices[] = {
+		600.0, 580.0, 0.0,		0.0, 0.0,
+		600.0, 600.0, 0.0,		0.0, 1.0,
+		800.0, 600.0, 0.0,		1.0, 1.0,
+		800.0, 580.0, 0.0,		1.0, 0.0
+	};	
+	
+	GLfloat emptyBar2Vertices[] = {
+		600.0, 555.0, 0.0,		0.0, 0.0,
+		600.0, 575.0, 0.0,		0.0, 1.0,
+		800.0, 575.0, 0.0,		1.0, 1.0,
+		800.0, 555.0, 0.0,		1.0, 0.0
+	};
+
+	GLfloat plusVertices[] = {
+		690.0, 580.0, 0.0,		0.0, 0.0,
+		690.0, 600.0, 0.0,		0.0, 1.0,
+		710.0, 600.0, 0.0,		1.0, 1.0,
+		710.0, 580.0, 0.0,		1.0, 0.0
+	};	
+	
+	GLfloat nitroSymbolVertices[] = {
+		690.0, 555.0, 0.0,		0.0, 0.0,
+		690.0, 575.0, 0.0,		0.0, 1.0,
+		710.0, 575.0, 0.0,		1.0, 1.0,
+		710.0, 555.0, 0.0,		1.0, 0.0
+	};
+
+	GLfloat cupVertices[] = {
+		695.0, 10.0, 0.0,		0.0, 0.0,
+		695.0, 40.0, 0.0,		0.0, 1.0,
+		725.0, 40.0, 0.0,		1.0, 1.0,
+		725.0, 10.0, 0.0,		1.0, 0.0
+	};
+	
+	GLfloat rank1numVertices[] = {
+		730.0, 10.0, 0.0,		0.0, 0.0,
+		730.0, 40.0, 0.0,		0.0, 1.0,
+		760.0, 40.0, 0.0,		1.0, 1.0,
+		760.0, 10.0, 0.0,		1.0, 0.0
+	};
+	
+	GLfloat rank2numVertices[] = {
+		765.0, 10.0, 0.0,		0.0, 0.0,
+		765.0, 40.0, 0.0,		0.0, 1.0,
+		795.0, 40.0, 0.0,		1.0, 1.0,
+		795.0, 10.0, 0.0,		1.0, 0.0
+	};
+	
+	GLfloat flagVertices[] = {
+		695.0, 50.0, 0.0,		0.0, 0.0,
+		695.0, 80.0, 0.0,		0.0, 1.0,
+		725.0, 80.0, 0.0,		1.0, 1.0,
+		725.0, 50.0, 0.0,		1.0, 0.0
+	};
+
+	GLfloat lap1numVertices[] = {
+		730.0, 50.0, 0.0,		0.0, 0.0,
+		730.0, 80.0, 0.0,		0.0, 1.0,
+		760.0, 80.0, 0.0,		1.0, 1.0,
+		760.0, 50.0, 0.0,		1.0, 0.0
+	};
+
+	GLfloat lap2numVertices[] = {
+		765.0, 50.0, 0.0,		0.0, 0.0,
+		765.0, 80.0, 0.0,		0.0, 1.0,
+		795.0, 80.0, 0.0,		1.0, 1.0,
+		795.0, 50.0, 0.0,		1.0, 0.0
+	};
+
+	GLfloat personVertices[] = {
+		695.0, 90.0, 0.0,		0.0, 0.0,
+		695.0, 120.0, 0.0,		0.0, 1.0,
+		725.0, 120.0, 0.0,		1.0, 1.0,
+		725.0, 90.0, 0.0,		1.0, 0.0
+	};
+
+	GLfloat alive1numVertices[] = {
+		730.0, 90.0, 0.0,		0.0, 0.0,
+		730.0, 120.0, 0.0,		0.0, 1.0,
+		760.0, 120.0, 0.0,		1.0, 1.0,
+		760.0, 90.0, 0.0,		1.0, 0.0
+	};
+
+	GLfloat alive2numVertices[] = {
+		765.0, 90.0, 0.0,		0.0, 0.0,
+		765.0, 120.0, 0.0,		0.0, 1.0,
+		795.0, 120.0, 0.0,		1.0, 1.0,
+		795.0, 90.0, 0.0,		1.0, 0.0
+	};
+
+	HUD* weaponUI = new HUD();
+	weaponUI->createHUD(weaponUIVertices, HUDindecis, 20, 6);
+	HUDList.push_back(weaponUI);
+
+	HUD* numOfWeapon = new HUD();
+	numOfWeapon->createHUD(numOfWeaponVertices, HUDindecis, 20, 6);
+	HUDList.push_back(numOfWeapon);
+
+	HUD* bar1 = new HUD();
+	bar1->createHUD(emptyBar1Vertices, HUDindecis, 20, 6);
+	HUDList.push_back(bar1);
+
+	HUD* bar2 = new HUD();
+	bar2->createHUD(emptyBar2Vertices, HUDindecis, 20, 6);
+	HUDList.push_back(bar2);
+
+	HUD* healthBar = new HUD();
+	healthBar->createHUD(emptyBar1Vertices, HUDindecis, 20, 6);
+	HUDList.push_back(healthBar);
+
+	HUD* nitroBar = new HUD();
+	nitroBar->createHUD(emptyBar2Vertices, HUDindecis, 20, 6);
+	HUDList.push_back(nitroBar);
+
+	HUD* plusSymbol = new HUD();
+	plusSymbol->createHUD(plusVertices, HUDindecis, 20, 6);
+	HUDList.push_back(plusSymbol);
+
+	HUD* nitroSymbol = new HUD();
+	nitroSymbol->createHUD(nitroSymbolVertices, HUDindecis, 20, 6);
+	HUDList.push_back(nitroSymbol);
+
+	HUD* cupUI = new HUD();
+	cupUI->createHUD(cupVertices, HUDindecis, 20, 6);
+	HUDList.push_back(cupUI);
+
+	HUD* rank1num = new HUD();
+	rank1num->createHUD(rank1numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(rank1num);
+	
+	HUD* rank2num = new HUD();
+	rank2num->createHUD(rank2numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(rank2num);
+
+	HUD* flagUI = new HUD();
+	flagUI->createHUD(flagVertices, HUDindecis, 20, 6);
+	HUDList.push_back(flagUI);
+
+	HUD* lap1num = new HUD();
+	lap1num->createHUD(lap1numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(lap1num);
+
+	HUD* lap2num = new HUD();
+	lap2num->createHUD(lap2numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(lap2num);
+
+	HUD* personUI = new HUD();
+	personUI->createHUD(personVertices, HUDindecis, 20, 6);
+	HUDList.push_back(personUI);
+
+	HUD* alive1num = new HUD();
+	alive1num->createHUD(alive1numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(alive1num);
+	
+	HUD* alive2num = new HUD();
+	alive2num->createHUD(alive2numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(alive2num);
 }
 
 // A function to obtain input, called each frame
@@ -270,6 +479,7 @@ int main()
 	// Rendering setup
 	CreateObjects();
 	CreateShaders();
+	CreateHUDs();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
@@ -279,6 +489,36 @@ int main()
 	dirtTexture.LoadTextureAlpha();
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureAlpha();
+
+	//load digits textures
+	dig0Texture = Texture("Textures/numbers/0.png");
+	dig0Texture.LoadTextureAlpha();
+	dig1Texture = Texture("Textures/numbers/1.png");
+	dig1Texture.LoadTextureAlpha();
+	dig2Texture = Texture("Textures/numbers/2.png");
+	dig2Texture.LoadTextureAlpha();
+	dig3Texture = Texture("Textures/numbers/3.png");
+	dig3Texture.LoadTextureAlpha();
+
+	//load HUD textures
+	weaponUITexture = Texture("Textures/HUD/WeaponsUI.png");
+	weaponUITexture.LoadTextureAlpha();
+	emptyBarTexture = Texture("Textures/HUD/emptybar.png");
+	emptyBarTexture.LoadTextureAlpha();
+	healthBarTexture = Texture("Textures/HUD/healthbar.png");
+	healthBarTexture.LoadTextureAlpha();
+	nitroBarTexture = Texture("Textures/HUD/nitro.png");
+	nitroBarTexture.LoadTextureAlpha();
+	plusSymbolTexture = Texture("Textures/HUD/plus.png");
+	plusSymbolTexture.LoadTextureAlpha();
+	nitroSymbolTexture = Texture("Textures/HUD/nitrosymbol.png");
+	nitroSymbolTexture.LoadTextureAlpha();
+	personTexture = Texture("Textures/HUD/alive.png");
+	personTexture.LoadTextureAlpha();
+	cupTexture = Texture("Textures/HUD/cup.png");
+	cupTexture.LoadTextureAlpha();
+	flagTexture = Texture("Textures/HUD/flags.png");
+	flagTexture.LoadTextureAlpha();
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
@@ -323,10 +563,6 @@ int main()
 	TeslaCar.LoadModel("Models/Truck.obj");
 	racetrack.LoadModel("Models/track1.obj");
 
-	// Stuff TA Ben added
-	PxDefaultAllocator allocator;
-	PxDefaultErrorCallback errorCallback;
-	// End of stuff TA Ben added
 
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
@@ -375,7 +611,7 @@ int main()
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
-	//audioObject.playSound();
+	audioObject.playSound();
 	audioObject2.playSound();
 
 	//Controller
@@ -414,7 +650,7 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		
 		// Setup shader
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
@@ -496,7 +732,82 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		racetrack.RenderModel();
+
+		//Rendering HUD
+		hudShader.UseShader();
+		uniformModel = hudShader.GetModelLocation();
+		uniformProjection = hudShader.GetProjectionLocation();
+
+		glm::mat4 ortho = glm::ortho(0.0f, (float)mainWindow.getWidth(), (float)mainWindow.getHeight(), 0.0f);						//orthograohic projection
+
+		glDisable(GL_DEPTH_TEST);																									//disable the depth-testing
+
+		model = glm::mat4(1.0f);
+		//glm::mat4 model = glm::mat4(1.0f);
+
+		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		//weapon UI
+		weaponUITexture.UseTexture();
+		HUDList[0]->renderHUD();
 		
+		//number of charges
+		dig3Texture.UseTexture();
+		HUDList[1]->renderHUD();
+
+		//TODO: if out of charges, change ui
+
+		//bars
+		//empty bar1
+		emptyBarTexture.UseTexture();
+		HUDList[2]->renderHUD();
+
+		//empty bar2
+		emptyBarTexture.UseTexture();
+		HUDList[3]->renderHUD();
+
+		//health bar
+		healthBarTexture.UseTexture();
+		HUDList[4]->renderHUD();
+
+		//nitro bar
+		nitroBarTexture.UseTexture();
+		HUDList[5]->renderHUD();
+		
+		//plus symbol
+		plusSymbolTexture.UseTexture();
+		HUDList[6]->renderHUD();
+
+		//nitro symbol
+		nitroSymbolTexture.UseTexture();
+		HUDList[7]->renderHUD();
+
+		//race info
+		//current rank
+		cupTexture.UseTexture();
+		HUDList[8]->renderHUD();
+		dig2Texture.UseTexture();
+		HUDList[10]->renderHUD();
+
+		//current laps
+		flagTexture.UseTexture();
+		HUDList[11]->renderHUD();
+		dig3Texture.UseTexture();
+		HUDList[13]->renderHUD();
+
+		//current alive
+		personTexture.UseTexture();
+		HUDList[14]->renderHUD();
+		dig1Texture.UseTexture();
+		HUDList[15]->renderHUD();
+		dig0Texture.UseTexture();
+		HUDList[16]->renderHUD();
+
+		glEnable(GL_DEPTH_TEST);
+
+
+		//HUD ends here
 		// End of rendering 
 
 		// Start the Dear ImGui frame
@@ -542,6 +853,8 @@ int main()
 		// imgui ends here
 
 		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
+
+
 		mainWindow.swapBuffers();
 
 

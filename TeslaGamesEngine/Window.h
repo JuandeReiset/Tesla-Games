@@ -24,6 +24,8 @@ public:
 	// Accessors
 	GLint getBufferWidth() { return bufferWidth; }
 	GLint getBufferHeight() { return bufferHeight; }
+	GLint getWidth() { return width; };
+	GLint getHeight() { return height; };
 	bool getShouldClose() { return glfwWindowShouldClose(mainWindow); }
 
 	bool* getsKeys() { return keys; }

@@ -1,5 +1,7 @@
 #include "Vehicle.h"
 #include <iostream>
+#include <ctype.h>
+
 
 Vehicle::Vehicle() {}
 Vehicle::Vehicle(int id) : ID(id) {}
@@ -32,3 +34,4 @@ void Vehicle::getDamage(double damage) {
 void Vehicle::firelazer() {
 	turret.fire();
 }
+
