@@ -45,6 +45,8 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="ShootComp.cpp" />
+    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="HUD.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +93,8 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="ShootComp.h" />
+    <ClInclude Include="Turret.h" />
     <ClInclude Include="HUD.h" />
   </ItemGroup>
 </Project>
