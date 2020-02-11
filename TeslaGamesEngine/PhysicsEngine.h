@@ -18,6 +18,7 @@ public:
 	void stepPhysics();
 	int modeType = -1;
 	int getModeType();
+	void increaseForwards();
 
 	enum class DriveMode
 	{
@@ -33,6 +34,7 @@ public:
 private:
 	physx::PxRigidDynamic* CreateDynamic(const physx::PxTransform& t, const physx::PxGeometry& geometry, const physx::PxVec3& velocity);
 	snippetvehicle::VehicleDesc initVehicleDesc();
+	void initVehicle();
 	void startBrakeMode();
 	void keyPress(unsigned char key, const physx::PxTransform& camera);
 	void startAccelerateForwardsMode();
@@ -72,7 +74,7 @@ private:
 	physx::PxVehicleDrive4WRawInputData gVehicleInputData;
 
 	physx::PxF32 gSteerVsForwardSpeedData[2 * 8];
-	bool					gIsVehicleInAir = true;
+	bool gIsVehicleInAir = true;
 	physx::PxFixedSizeLookupTable<8> gSteerVsForwardSpeedTable;
 
 	DriveMode gDriveModeOrder[8];

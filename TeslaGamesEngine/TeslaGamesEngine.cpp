@@ -477,9 +477,13 @@ int main()
 	std::cout << "Player1 connected: " << P1Connected << std::endl;
 	std::cout << "Player2 connected: " << P2Connected << std::endl;
 
+	float randx = 0.001f;
+
 	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
 	{
+
+		randx += 0.01f;
 		physEng.stepPhysics();
 
 		GLfloat now = glfwGetTime();
@@ -554,6 +558,7 @@ int main()
 		meshList[2]->RenderMesh();
 
 		// Draw X-Wing
+		physEng.increaseForwards();
 		physx::PxVec3 xwingPos = physEng.GetPosition();
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
@@ -618,7 +623,7 @@ int main()
 */
 			ImGui::Begin("Debug");
 			ImGui::Text("Driving mode and Position");
-			ImGui::Text("Drivemode: %i Xpos: %d Ypos: %d Zpos: %d", physEng.getModeType(), xwingPos.x, xwingPos.y, xwingPos.z);
+			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng.getModeType(), xwingPos.x, xwingPos.y, xwingPos.z);
 
 			ImGui::End();
 		}
