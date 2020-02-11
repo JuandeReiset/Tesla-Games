@@ -28,7 +28,6 @@
 #include "Material.h"
 #include "Model.h"
 
-
 //Health stuff
 #include "Combat.h"
 #include "HealthComponent.h"
@@ -197,6 +196,7 @@ void CreateShaders()
 
 }
 
+//Now all the image default positions are based on the window size 1600 x 900 (16 : 9) 
 void CreateHUDs() {
 	unsigned int HUDindecis[] = {						// 0 -----3
 		0, 1, 3,										// |	  |
@@ -204,18 +204,19 @@ void CreateHUDs() {
 	};
 
 	GLfloat weaponUIVertices[] = {
-	//	x	 y	  z			u	 v
-		0.0, 474.0, 0.0,	0.0, 0.0,								//bottom left
-		0.0, 600.0, 0.0,	0.0, 1.0,								//top left
-		259.0, 600, 0.0,	1.0, 1.0,								//top right
-		259.0, 474.0, 0.0,	1.0, 0.0								//bottom right
+	//	x									y									 z			u	 v
+		0.0 / 1600 * mainWindow.getWidth(), 720.0 / 900.0 * mainWindow.getHeight(), 0.0,	0.0, 0.0,								//bottom left
+		0.0 / 1600 * mainWindow.getWidth(), 900.0 / 900 * mainWindow.getHeight(), 0.0,		0.0, 1.0,								//top left
+		370.0 / 1600 * mainWindow.getWidth(), 900 /900 * mainWindow.getHeight(), 0.0,		1.0, 1.0,								//top right
+		370.0 / 1600 * mainWindow.getWidth(), 720.0 / 900 * mainWindow.getHeight(), 0.0,	1.0, 0.0								//bottom right
 	};
 	
+
 	GLfloat numOfWeaponVertices[] = {
-		120.125, 500.5, 1.0,		0.0, 0.0,
-		120.125, 532.0, 1.0,		0.0, 1.0,
-		138.875, 532.0, 1.0,		1.0, 1.0,
-		138.875, 500.5, 1.0,		1.0, 0.0
+		177.5 / 1600 * mainWindow.getWidth(), 770 / 900.0 * mainWindow.getHeight(), 1.0,		0.0, 0.0,
+		177.5 / 1600 * mainWindow.getWidth(), 800 / 900.0 * mainWindow.getHeight(), 1.0,		0.0, 1.0,
+		192.5 / 1600 * mainWindow.getWidth(), 800 / 900.0 * mainWindow.getHeight(), 1.0,		1.0, 1.0,
+		192.5 / 1600 * mainWindow.getWidth(), 770 / 900.0 * mainWindow.getHeight(), 1.0,		1.0, 0.0
 	};
 
 	GLfloat emptyBar1Vertices[] = {
@@ -458,7 +459,7 @@ void parseControllerInput(Controller* controller)
 int main()
 {
 	const char* glsl_version = "#version 130"; // USED FOR IMGUI SETTING
-	mainWindow = Window(800, 600);
+	mainWindow = Window(1024, 576);
 	mainWindow.Initialise();
 
 	Renderer r = Renderer(mainWindow, camera);
@@ -558,7 +559,6 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
 	xwing.LoadModel("Models/x-wing.obj");
-
 
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
