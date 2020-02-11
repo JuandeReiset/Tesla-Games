@@ -36,6 +36,10 @@ void Game::Play()
 			break;
 		}
 
+		if (!armed) {
+			std::cout << "YOU ARE OUT OF AMMO" << std::endl;
+			break;
+		}
 		// Repeat
 
 	}
