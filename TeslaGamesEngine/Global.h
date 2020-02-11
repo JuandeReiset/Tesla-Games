@@ -3,3 +3,4 @@
 
 extern int dead_flag;
 extern Combat combat;
+extern bool armed;
