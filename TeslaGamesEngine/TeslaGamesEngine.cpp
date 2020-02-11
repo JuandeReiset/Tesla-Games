@@ -530,6 +530,11 @@ int main()
 
 		// TODO: Load shader in a material struct in the model (Basically all of the following code refactored to being in model
 		mainWindow.swapBuffers();
+
+
+		//Shooting actions
+		
+		
 	}
 	// Cleanup
 	ImGui_ImplOpenGL3_Shutdown();

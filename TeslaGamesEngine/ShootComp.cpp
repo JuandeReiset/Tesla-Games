@@ -28,8 +28,7 @@ void ShootComp::fire() {
 
 
 	if (ammo <= 0) {
-		//std::cout << "Out of ammo" << std::endl;
-		armed = false;
+		ammo = 0;
 	}
 	else {
 		ammo = ammo - 1;
@@ -37,12 +36,11 @@ void ShootComp::fire() {
 	return;
 }
 
-bool ShootComp::has_ammo() {
-	return armed;
-}
-
 void ShootComp:: refill_ammo() {
 	ammo = ammo + 10;
 }
 
+int ShootComp::get_ammo_counter() {
+	return ammo;
+}
 void ShootComp::Tick(float deltaTime) {}
