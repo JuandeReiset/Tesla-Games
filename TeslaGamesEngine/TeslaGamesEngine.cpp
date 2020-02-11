@@ -8,7 +8,6 @@
 #include <string.h>
 #include <cmath>
 #include <vector>
-#include <PhysX/PxPhysicsAPI.h>
 
 // Rendering includes
 #include <GL\glew.h>
@@ -54,10 +53,7 @@
 
 // end of stuff for imgui
 
-// Stuff TA Ben added
-#include <PhysX/PxPhysicsAPI.h>
-using namespace physx;
-// End of stuff TA Ben added
+
 
 /* Rendering variables */
 const float toRadians = 3.14159265f / 180.0f;
@@ -563,10 +559,6 @@ int main()
 
 	xwing.LoadModel("Models/x-wing.obj");
 
-	// Stuff TA Ben added
-	PxDefaultAllocator allocator;
-	PxDefaultErrorCallback errorCallback;
-	// End of stuff TA Ben added
 
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
@@ -616,7 +608,7 @@ int main()
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	audioObject2.playSound();
+	//audioObject2.playSound();
 
 	//Controller
 	Controller player1 = Controller(1);

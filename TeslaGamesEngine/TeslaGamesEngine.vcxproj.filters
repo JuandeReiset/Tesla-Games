@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="AudioBoomBox.cpp" />
-    <ClCompile Include="AudioEngine.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Combat.cpp" />
     <ClCompile Include="Controller.cpp" />
@@ -30,6 +28,19 @@
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Vehicle.cpp" />
+    <ClCompile Include="PhysicsEngine.cpp" />
+    <ClCompile Include="AudioBoomBox.cpp" />
+    <ClCompile Include="audioEngine.cpp" />
+    <ClCompile Include="PhysicsObject.cpp" />
+    <ClCompile Include="PhysX\vehicle4W\snippetvehicle4w\SnippetVehicle4W.cpp" />
+    <ClCompile Include="PhysX\vehicle4W\snippetvehicle4w\SnippetVehicle4WRender.cpp" />
+    <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicle4WCreate.cpp" />
+    <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleCreate.cpp" />
+    <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleFilterShader.cpp" />
+    <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleNoDriveCreate.cpp" />
+    <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleSceneQuery.cpp" />
+    <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleTankCreate.cpp" />
+    <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleTireFriction.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="PointLight.cpp" />
@@ -37,8 +48,6 @@
     <ClCompile Include="HUD.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AudioBoomBox.h" />
-    <ClInclude Include="AudioEngine.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Combat.h" />
     <ClInclude Include="Controller.h" />
@@ -68,6 +77,16 @@
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Vehicle.h" />
+    <ClInclude Include="PhysicsEngine.h" />
+    <ClInclude Include="AudioBoomBox.h" />
+    <ClInclude Include="audioEngine.h" />
+    <ClInclude Include="PhysicsObject.h" />
+    <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleConcurrency.h" />
+    <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleCreate.h" />
+    <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleFilterShader.h" />
+    <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleSceneQuery.h" />
+    <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleTireFriction.h" />
+    <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="PointLight.h" />
