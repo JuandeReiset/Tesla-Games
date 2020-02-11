@@ -43,6 +43,9 @@
 //Controller stuff
 #include "Controller.h"
 
+//PhysX and Physics Engine
+#include "PhysicsEngine.h"
+
 //HUD stuff
 #include "HUD.h"
 
@@ -76,6 +79,8 @@ Texture healthTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
+
+PhysicsEngine physEng;
 
 Model xwing;
 
@@ -311,8 +316,6 @@ void parseControllerInput(Controller* controller)
 		std::cout << controller->getIndex() << " " << "R3 PRESSED and HELD" << std::endl;
 	}
 
-	//Sticks and triggers may hurt some n********...
-	// It was 'neighbors' geez....
 	if (!controller->LStick_InDeadzone()) {
 		std::cout << controller->getIndex() << " " << "LS: " << controller->leftStick_X() << std::endl;
 	}
