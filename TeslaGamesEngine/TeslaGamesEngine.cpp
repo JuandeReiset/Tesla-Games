@@ -73,6 +73,7 @@ Material dullMaterial;
 
 Model xwing;
 Model TeslaCar;
+Model racetrack;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -320,6 +321,7 @@ int main()
 
 	xwing.LoadModel("Models/x-wing.obj");
 	TeslaCar.LoadModel("Models/Truck.obj");
+	racetrack.LoadModel("Models/track1.obj");
 
 	// Stuff TA Ben added
 	PxDefaultAllocator allocator;
@@ -475,7 +477,7 @@ int main()
 		xwing.RenderModel();
 		
 		
-
+		/*
 		glm::vec3 playerview = camera.getCameraPosition() + glm::vec3(4, -1, 0);
 		// Draw Tesla car
 		model = glm::mat4(1.0f);
@@ -484,6 +486,17 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TeslaCar.RenderModel();
+
+		*/
+
+		// Draw racing track
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
+		//model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		racetrack.RenderModel();
+		
 		// End of rendering 
 
 		// Start the Dear ImGui frame
