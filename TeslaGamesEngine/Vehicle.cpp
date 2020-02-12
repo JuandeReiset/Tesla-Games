@@ -14,6 +14,10 @@ void Vehicle::Tick(float deltaTime) {
 
 	if (ID == combat.GetTargetID())
 		getDamage(combat.GetDamage());
+
+	if (turret.get_ammo_counter()<=0)
+		armed = false;
+		
 }
 
 double Vehicle::currentHealth() {
@@ -26,3 +30,8 @@ void Vehicle::getDamage(double damage) {
 
 	return;
 }
+
+void Vehicle::firelazer() {
+	turret.fire();
+}
+
