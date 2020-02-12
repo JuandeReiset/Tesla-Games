@@ -22,7 +22,7 @@ using namespace snippetvehicle;
 
 
 PhysicsEngine::PhysicsEngine() {
-	PxF32 gSteerVsForwardSpeedData[2 * 8] =
+	PxF32 gSteerVsForwardSpeedData[] =
 	{
 		0.0f,		0.75f,
 		5.0f,		0.75f,
@@ -33,9 +33,9 @@ PhysicsEngine::PhysicsEngine() {
 		PX_MAX_F32, PX_MAX_F32,
 		PX_MAX_F32, PX_MAX_F32
 	};
-	PxFixedSizeLookupTable<8> gSteerVsForwardSpeedTable(gSteerVsForwardSpeedData, 4);
+	gSteerVsForwardSpeedTable = PxFixedSizeLookupTable<8>(gSteerVsForwardSpeedData, 4);
 
-	PxVehicleKeySmoothingData gKeySmoothingData =
+	gKeySmoothingData =
 	{
 		{
 			6.0f,	//rise rate eANALOG_INPUT_ACCEL
@@ -53,7 +53,7 @@ PhysicsEngine::PhysicsEngine() {
 		}
 	};
 
-	PxVehiclePadSmoothingData gPadSmoothingData =
+	gPadSmoothingData =
 	{
 		{
 			6.0f,	//rise rate eANALOG_INPUT_ACCEL
@@ -75,8 +75,6 @@ PhysicsEngine::PhysicsEngine() {
 
 	initVehicle();
 }
-
-PxVehicleDrive4WRawInputData gVehicleInputData;
 
 VehicleDesc PhysicsEngine::initVehicleDesc()
 {
@@ -198,8 +196,8 @@ void PhysicsEngine::initVehicle()
 	//make foundation, init pvd
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 	gPvd = PxCreatePvd(*gFoundation);
-	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-	gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+	//PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+	//gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 	//set physics
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
@@ -250,22 +248,6 @@ void PhysicsEngine::initVehicle()
 	gVehicle4W->getRigidDynamicActor()->setGlobalPose(startTransform);
 	gScene->addActor(*gVehicle4W->getRigidDynamicActor());
 
-	//add box to test vehicle collisions
-/*	PxShape* cubeShape = gPhysics->createShape(PxBoxGeometry(PxVec3(10.f, 10.f, 1.f)), *gMaterial);
-	PxTransform t(PxVec3(0.f, 0.f, 15.f)*1.f);
-	box = gPhysics->createRigidStatic(t);
-	box->attachShape(*cubeShape);
-	gScene->addActor(*box);
-	*/
-
-	shape = gPhysics->createShape(PxBoxGeometry(3.f, 3.f, 15.f), *gMaterial);
-	PxTransform boxTransform(PxVec3(9.f, 2.f, 10.f), PxQuat(PxIdentity));
-	shape->setLocalPose(boxTransform);
-	box = gPhysics->createRigidStatic(boxTransform);
-	//box->setGlobalPose(boxTransform);
-	box->attachShape(*shape);
-	gScene->addActor(*box);
-
 	//Set the vehicle to rest in first gear.
 	//Set the vehicle to use auto-gears.
 	gVehicle4W->setToRestState();
@@ -290,18 +272,15 @@ void PhysicsEngine::upwards() {
 //go forwards a little
 void PhysicsEngine::forwards(float magnitude)
 {
-	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
-	std::cout << "";
-	gVehicleInputData.setAnalogAccel(true);
-	//gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, (1500.f * magnitude)), PxForceMode::eIMPULSE);
-	//startAccelerateForwardsMode(magnitude);
+	gVehicleInputData.setAnalogAccel(1.0f);
 }
 
 
 void PhysicsEngine::reverse(float magnitude)
 {
+	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
 	startAccelerateReverseMode(magnitude);
-	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, -1500.f * magnitude), PxForceMode::eIMPULSE);
+	//gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, -1500.f * magnitude), PxForceMode::eIMPULSE);
 }
 
 void PhysicsEngine::turn(float magnitude) {
@@ -335,75 +314,6 @@ void PhysicsEngine::brake()
 	//dont know what to put here yet
 }
 
-
-void PhysicsEngine::incrementDrivingMode(const PxF32 timestep)
-{/*
-	gVehicleModeTimer += timestep;
-	if (gVehicleModeTimer > gVehicleModeLifetime)
-	{
-		//If the mode just completed was eDRIVE_MODE_ACCEL_REVERSE then switch back to forward gears.
-		if (DriveMode::eDRIVE_MODE_ACCEL_REVERSE == gDriveModeOrder[gVehicleOrderProgress])
-		{
-			gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
-		}
-
-		//Increment to next driving mode.
-		gVehicleModeTimer = 0.0f;
-		gVehicleOrderProgress++;
-		releaseAllControls();
-
-		//If we are at the end of the list of driving modes then start again.
-		if (DriveMode::eDRIVE_MODE_NONE == gDriveModeOrder[gVehicleOrderProgress])
-		{
-			gVehicleOrderProgress = 0;
-			gVehicleOrderComplete = true;
-		}
-
-		//Start driving in the selected mode.
-		DriveMode eDriveMode = gDriveModeOrder[gVehicleOrderProgress];
-		switch (eDriveMode)
-		{
-		case DriveMode::eDRIVE_MODE_ACCEL_FORWARDS:
-			modeType = 1;
-			startAccelerateForwardsMode();
-			break;
-		case DriveMode::eDRIVE_MODE_ACCEL_REVERSE:
-			modeType = 2;
-			startAccelerateReverseMode();
-			break;
-		case DriveMode::eDRIVE_MODE_HARD_TURN_LEFT:
-			modeType = 3;
-			startTurnHardLeftMode();
-			break;
-		case DriveMode::eDRIVE_MODE_HANDBRAKE_TURN_LEFT:
-			modeType = 4;
-			startHandbrakeTurnLeftMode();
-			break;
-		case DriveMode::eDRIVE_MODE_HARD_TURN_RIGHT:
-			modeType = 5;
-			startTurnHardRightMode();
-			break;
-		case DriveMode::eDRIVE_MODE_HANDBRAKE_TURN_RIGHT:
-			modeType = 6;
-			startHandbrakeTurnRightMode();
-			break;
-		case DriveMode::eDRIVE_MODE_BRAKE:
-			modeType = 7;
-			startBrakeMode();
-			break;
-		case DriveMode::eDRIVE_MODE_NONE:
-			modeType = 8;
-			break;
-		};
-
-		//If the mode about to start is eDRIVE_MODE_ACCEL_REVERSE then switch to reverse gears.
-		if (DriveMode::eDRIVE_MODE_ACCEL_REVERSE == gDriveModeOrder[gVehicleOrderProgress])
-		{
-			gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
-		}
-	}*/
-}
-
 //expand to modular later
 physx::PxVec3 PhysicsEngine::GetPosition()
 {
@@ -420,18 +330,7 @@ void PhysicsEngine::stepPhysics()
 {
 	const PxF32 timestep = 1.0f / 60.0f;
 
-	//Cycle through the driving modes to demonstrate how to accelerate/reverse/brake/turn etc.
-	incrementDrivingMode(timestep);
-
-	//Update the control inputs for the vehicle.
-	if (gMimicKeyInputs)
-	{
-		PxVehicleDrive4WSmoothDigitalRawInputsAndSetAnalogInputs(gKeySmoothingData, gSteerVsForwardSpeedTable, gVehicleInputData, timestep, gIsVehicleInAir, *gVehicle4W);
-	}
-	else
-	{
-		PxVehicleDrive4WSmoothAnalogRawInputsAndSetAnalogInputs(gPadSmoothingData, gSteerVsForwardSpeedTable, gVehicleInputData, timestep, gIsVehicleInAir, *gVehicle4W);
-	}
+	PxVehicleDrive4WSmoothAnalogRawInputsAndSetAnalogInputs(gPadSmoothingData, gSteerVsForwardSpeedTable, gVehicleInputData, timestep, gIsVehicleInAir, *gVehicle4W);
 
 	//Raycasts.
 	PxVehicleWheels* vehicles[1] = { gVehicle4W };

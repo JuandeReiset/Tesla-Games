@@ -319,15 +319,16 @@ void parseControllerInput(Controller* controller)
 	}
 
 	if (!controller->LStick_InDeadzone()) {
-		physEng.turn(controller->leftStick_X());
+		//physEng.turn(controller->leftStick_X());
 		std::cout << controller->getIndex() << " " << "LS: " << controller->leftStick_X() << std::endl;
 	}
 	if (!controller->RStick_InDeadzone()) {
-		physEng.turn(controller->leftStick_X());
+		//physEng.turn(controller->leftStick_X());
 		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
 	}
 	if (controller->rightTrigger() > 0.0) {
 		physEng.forwards(controller->rightTrigger());
+		
 		std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
 	}
 	if (controller->leftTrigger() > 0.0) {
@@ -572,7 +573,7 @@ int main()
 		xwing.RenderModel();
 
 		// Draw Box
-		model = glm::mat4(1.0f);
+/*		model = glm::mat4(1.0f);
 		physx::PxVec3 boxPos = physEng.GetBoxPos();
 		model = glm::translate(model, glm::vec3(boxPos.x, boxPos.y, boxPos.z));	//translate to physx vehicle pos
 		model = glm::scale(model, glm::vec3(3.f, 3.f, 3.f));
@@ -580,7 +581,7 @@ int main()
 		brickTexture.UseTexture();
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		boxTest.RenderModel();
-
+		*/
 
 		//Rendering HUD
 		hudShader.UseShader();

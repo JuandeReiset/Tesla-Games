@@ -30,7 +30,7 @@ public:
 
 	
 
-	enum class DriveMode
+	enum DriveMode
 	{
 		eDRIVE_MODE_ACCEL_FORWARDS = 0,
 		eDRIVE_MODE_ACCEL_REVERSE,
@@ -42,7 +42,7 @@ public:
 		eDRIVE_MODE_NONE
 	};
 private:
-	physx::PxRigidDynamic* CreateDynamic(const physx::PxTransform& t, const physx::PxGeometry& geometry, const physx::PxVec3& velocity);
+	//physx::PxRigidDynamic* CreateDynamic(const physx::PxTransform& t, const physx::PxGeometry& geometry, const physx::PxVec3& velocity);
 	snippetvehicle::VehicleDesc initVehicleDesc();
 	void initVehicle();
 	void startBrakeMode();
@@ -54,10 +54,8 @@ private:
 	void startHandbrakeTurnLeftMode(float magnitude);
 	void startHandbrakeTurnRightMode(float magnitude);
 	void releaseAllControls();
-	void incrementDrivingMode(const physx::PxF32 timestep);
 	void cleanupPhysics();
 
-private:
 	physx::PxDefaultAllocator gAllocator;
 	physx::PxDefaultErrorCallback gErrorCallback;
 
