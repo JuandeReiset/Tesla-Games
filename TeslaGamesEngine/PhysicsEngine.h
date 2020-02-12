@@ -27,6 +27,7 @@ public:
 	void turnRight(float magnitude);
 	void brake();
 	void turn(float magnitude);
+
 	
 
 	enum class DriveMode
@@ -83,6 +84,7 @@ private:
 	physx::PxBatchQuery* gBatchQuery = NULL;
 	physx::PxVehicleDrivableSurfaceToTireFrictionPairs* gFrictionPairs = NULL;
 	physx::PxVehicleDrive4WRawInputData gVehicleInputData;
+
 
 	physx::PxF32 gSteerVsForwardSpeedData[2 * 8];
 	bool gIsVehicleInAir = true;

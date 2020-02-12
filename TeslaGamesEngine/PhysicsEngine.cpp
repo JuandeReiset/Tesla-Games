@@ -290,9 +290,11 @@ void PhysicsEngine::upwards() {
 //go forwards a little
 void PhysicsEngine::forwards(float magnitude)
 {
-	
-	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, (1500.f * magnitude)), PxForceMode::eIMPULSE);
-	startAccelerateForwardsMode(magnitude);
+	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
+	std::cout << "";
+	gVehicleInputData.setAnalogAccel(true);
+	//gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, (1500.f * magnitude)), PxForceMode::eIMPULSE);
+	//startAccelerateForwardsMode(magnitude);
 }
 
 
