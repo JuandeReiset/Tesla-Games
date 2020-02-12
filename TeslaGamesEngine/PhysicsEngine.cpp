@@ -123,96 +123,47 @@ VehicleDesc PhysicsEngine::initVehicleDesc()
 
 void PhysicsEngine::startAccelerateForwardsMode()
 {
-	if (gMimicKeyInputs)
-	{
-		gVehicleInputData.setDigitalAccel(true);
-	}
-	else
-	{
 		gVehicleInputData.setAnalogAccel(1.0f);
-	}
+
 }
 
 void PhysicsEngine::startAccelerateReverseMode()
 {
 	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
 
-	if (gMimicKeyInputs)
-	{
-		gVehicleInputData.setDigitalAccel(true);
-	}
-	else
-	{
 		gVehicleInputData.setAnalogAccel(1.0f);
-	}
 }
 
 void PhysicsEngine::startBrakeMode()
 {
-	if (gMimicKeyInputs)
-	{
-		gVehicleInputData.setDigitalBrake(true);
-	}
-	else
-	{
 		gVehicleInputData.setAnalogBrake(1.0f);
-	}
 }
 
 void PhysicsEngine::startTurnHardLeftMode()
 {
-	if (gMimicKeyInputs)
-	{
-		gVehicleInputData.setDigitalAccel(true);
-		gVehicleInputData.setDigitalSteerLeft(true);
-	}
-	else
-	{
 		gVehicleInputData.setAnalogAccel(true);
 		gVehicleInputData.setAnalogSteer(-1.0f);
-	}
+
 }
 
 void PhysicsEngine::startTurnHardRightMode()
 {
-	if (gMimicKeyInputs)
-	{
-		gVehicleInputData.setDigitalAccel(true);
-		gVehicleInputData.setDigitalSteerRight(true);
-	}
-	else
-	{
 		gVehicleInputData.setAnalogAccel(1.0f);
 		gVehicleInputData.setAnalogSteer(1.0f);
-	}
+
 }
 
 void PhysicsEngine::startHandbrakeTurnLeftMode()
 {
-	if (gMimicKeyInputs)
-	{
-		gVehicleInputData.setDigitalSteerLeft(true);
-		gVehicleInputData.setDigitalHandbrake(true);
-	}
-	else
-	{
 		gVehicleInputData.setAnalogSteer(-1.0f);
 		gVehicleInputData.setAnalogHandbrake(1.0f);
-	}
+
 }
 
 void PhysicsEngine::startHandbrakeTurnRightMode()
 {
-	if (gMimicKeyInputs)
-	{
-		gVehicleInputData.setDigitalSteerRight(true);
-		gVehicleInputData.setDigitalHandbrake(true);
-	}
-	else
-	{
 		gVehicleInputData.setAnalogSteer(1.0f);
 		gVehicleInputData.setAnalogHandbrake(1.0f);
-	}
 }
 
 
@@ -295,6 +246,22 @@ void PhysicsEngine::initVehicle()
 	gVehicle4W->getRigidDynamicActor()->setGlobalPose(startTransform);
 	gScene->addActor(*gVehicle4W->getRigidDynamicActor());
 
+	//add box to test vehicle collisions
+/*	PxShape* cubeShape = gPhysics->createShape(PxBoxGeometry(PxVec3(10.f, 10.f, 1.f)), *gMaterial);
+	PxTransform t(PxVec3(0.f, 0.f, 15.f)*1.f);
+	box = gPhysics->createRigidStatic(t);
+	box->attachShape(*cubeShape);
+	gScene->addActor(*box);
+	*/
+
+	shape = gPhysics->createShape(PxBoxGeometry(3.f, 3.f, 15.f), *gMaterial);
+	PxTransform boxTransform(PxVec3(9.f, 2.f, 10.f), PxQuat(PxIdentity));
+	shape->setLocalPose(boxTransform);
+	box = gPhysics->createRigidStatic(boxTransform);
+	//box->setGlobalPose(boxTransform);
+	box->attachShape(*shape);
+	gScene->addActor(*box);
+
 	//Set the vehicle to rest in first gear.
 	//Set the vehicle to use auto-gears.
 	gVehicle4W->setToRestState();
@@ -303,15 +270,65 @@ void PhysicsEngine::initVehicle()
 
 	gVehicleModeTimer = 0.0f;
 	gVehicleOrderProgress = 0;
-	startBrakeMode();
+	//startBrakeMode();
 }
 
+//testing, dont use 
 void PhysicsEngine::increaseForwards() {
-	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, 1.f), PxForceMode::eACCELERATION);
+	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, 3.f), PxForceMode::eACCELERATION);
 }
+
+//testing, dont use
+void PhysicsEngine::upwards() {
+	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 50000.f, 0.f), PxForceMode::eIMPULSE);
+}
+
+//go forwards a little
+void PhysicsEngine::forwards(float magnitude)
+{
+	
+	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, (25.f * magnitude)), PxForceMode::eACCELERATION);
+	startAccelerateForwardsMode();
+}
+
+
+void PhysicsEngine::reverse(float magnitude)
+{
+	startAccelerateReverseMode();
+	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, -15.f * magnitude), PxForceMode::eACCELERATION);
+}
+
+void PhysicsEngine::turn(float magnitude) {
+	if (magnitude >= 0) {
+		startHandbrakeTurnRightMode();
+	}
+	else {
+		startHandbrakeTurnLeftMode();
+	}
+	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(20.f * magnitude, 0.f, 0.f), PxForceMode::eACCELERATION);
+}
+
+void PhysicsEngine::turnLeft(float magnitude)
+{
+	startTurnHardLeftMode();
+	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(100.f * magnitude, 0.f, 0.f), PxForceMode::eACCELERATION);
+}
+
+void PhysicsEngine::turnRight(float magnitude)
+{
+	startTurnHardRightMode();
+	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(100.f * magnitude, 0.f, 0.f), PxForceMode::eACCELERATION);
+}
+
+void PhysicsEngine::brake(float magnitude)
+{
+	startBrakeMode();
+	//dont know what to put here yet
+}
+
 
 void PhysicsEngine::incrementDrivingMode(const PxF32 timestep)
-{
+{/*
 	gVehicleModeTimer += timestep;
 	if (gVehicleModeTimer > gVehicleModeLifetime)
 	{
@@ -375,7 +392,7 @@ void PhysicsEngine::incrementDrivingMode(const PxF32 timestep)
 		{
 			gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
 		}
-	}
+	}*/
 }
 
 //expand to modular later
@@ -383,6 +400,11 @@ physx::PxVec3 PhysicsEngine::GetPosition()
 {
 	PxVec3 position = gVehicle4W->getRigidDynamicActor()->getGlobalPose().p;
 	return position;
+}
+
+physx::PxVec3 PhysicsEngine::GetBoxPos()
+{
+	return shape->getLocalPose().p;
 }
 
 void PhysicsEngine::stepPhysics()
@@ -416,7 +438,7 @@ void PhysicsEngine::stepPhysics()
 
 	//Work out if the vehicle is in the air.
 	gIsVehicleInAir = gVehicle4W->getRigidDynamicActor()->isSleeping() ? false : PxVehicleIsInAir(vehicleQueryResults[0]);
-	std::cout << "GOT HERE";
+	//std::cout << "GOT HERE";
 	//Scene update.
 	gScene->simulate(timestep);
 	gScene->fetchResults(true);
@@ -431,6 +453,7 @@ void PhysicsEngine::cleanupPhysics()
 {
 	gVehicle4W->getRigidDynamicActor()->release();
 	gVehicle4W->free();
+	box->release();
 	PX_RELEASE(gGroundPlane);
 	PX_RELEASE(gBatchQuery);
 	gVehicleSceneQueryData->free(gAllocator);

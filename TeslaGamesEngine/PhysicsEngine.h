@@ -15,10 +15,19 @@ public:
 	PhysicsEngine();
 	//~PhysicsEngine();
 	physx::PxVec3 GetPosition();
+	physx::PxVec3 GetBoxPos();
 	void stepPhysics();
 	int modeType = -1;
 	int getModeType();
 	void increaseForwards();
+	void upwards();
+	void forwards(float magnitude);
+	void reverse(float magnitude);
+	void turnLeft(float magnitude);
+	void turnRight(float magnitude);
+	void brake(float magnitude);
+	void turn(float magnitude);
+	
 
 	enum class DriveMode
 	{
@@ -65,6 +74,8 @@ private:
 	bool gMimicKeyInputs = false;
 	physx::PxRigidStatic* gGroundPlane = NULL;
 	physx::PxVehicleDrive4W* gVehicle4W = NULL;
+	physx::PxRigidStatic* box = NULL;
+	physx::PxShape* shape = NULL;
 	physx::PxCooking* gCooking = NULL;
 
 	physx::PxPvd* gPvd = NULL;

@@ -83,6 +83,7 @@ Material dullMaterial;
 PhysicsEngine physEng;
 
 Model xwing;
+Model boxTest;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -259,6 +260,8 @@ void CreateHUDs() {
 }
 
 // A function to obtain input, called each frame
+//add vehicle movement to these FOR NOW
+//TO DO: Someone comment all the controls for each button
 void parseControllerInput(Controller* controller)
 {
 	// Update controller object with current input MUST BE FIRST
@@ -268,7 +271,6 @@ void parseControllerInput(Controller* controller)
 
 	//Is button Pressed demo
 	if (controller->isButtonPressed(XButtons.A)) {
-		
 		std::cout << controller->getIndex() << " " <<"A PRESSED" << std::endl;
 	}
 	if (controller->isButtonPressed(XButtons.X)) {
@@ -317,15 +319,19 @@ void parseControllerInput(Controller* controller)
 	}
 
 	if (!controller->LStick_InDeadzone()) {
+		physEng.turn(controller->leftStick_X());
 		std::cout << controller->getIndex() << " " << "LS: " << controller->leftStick_X() << std::endl;
 	}
 	if (!controller->RStick_InDeadzone()) {
+		physEng.turn(controller->leftStick_X());
 		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
 	}
 	if (controller->rightTrigger() > 0.0) {
+		physEng.forwards(controller->rightTrigger());
 		std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
 	}
 	if (controller->leftTrigger() > 0.0) {
+		physEng.reverse(controller->leftTrigger());
 		std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
 	}
 
@@ -415,6 +421,7 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
 	xwing.LoadModel("Models/x-wing.obj");
+	boxTest.LoadModel("Models/box.obj");
 
 
 	// TODO: Put FPS code into Game.Play()
@@ -477,13 +484,10 @@ int main()
 	std::cout << "Player1 connected: " << P1Connected << std::endl;
 	std::cout << "Player2 connected: " << P2Connected << std::endl;
 
-	float randx = 0.001f;
-
+	//physEng.upwards();
 	//End of audio system setup/demo
 	while (!mainWindow.getShouldClose())
 	{
-
-		randx += 0.01f;
 		physEng.stepPhysics();
 
 		GLfloat now = glfwGetTime();
@@ -558,7 +562,7 @@ int main()
 		meshList[2]->RenderMesh();
 
 		// Draw X-Wing
-		physEng.increaseForwards();
+		//physEng.increaseForwards();
 		physx::PxVec3 xwingPos = physEng.GetPosition();
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
@@ -566,6 +570,16 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
+
+		// Draw Box
+		model = glm::mat4(1.0f);
+		physx::PxVec3 boxPos = physEng.GetBoxPos();
+		model = glm::translate(model, glm::vec3(boxPos.x, boxPos.y, boxPos.z));	//translate to physx vehicle pos
+		model = glm::scale(model, glm::vec3(3.f, 3.f, 3.f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		brickTexture.UseTexture();
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		boxTest.RenderModel();
 
 
 		//Rendering HUD
