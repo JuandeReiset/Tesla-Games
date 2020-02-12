@@ -331,10 +331,14 @@ void parseControllerInput(Controller* controller)
 		
 		std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
 	}
+	else {
+		physEng.forwards(0.1f);
+	}
 	if (controller->leftTrigger() > 0.0) {
 		physEng.reverse(controller->leftTrigger());
 		std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
 	}
+	physEng.turn(controller->leftStick_X());
 
 	// Update the gamepad for next frame MUST BE LAST
 	controller->refreshState();

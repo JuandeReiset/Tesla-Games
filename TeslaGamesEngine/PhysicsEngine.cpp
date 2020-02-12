@@ -22,7 +22,7 @@ using namespace snippetvehicle;
 
 
 PhysicsEngine::PhysicsEngine() {
-	PxF32 gSteerVsForwardSpeedData[] =
+	physx::PxF32 gSteerVsForwardSpeedData[] =
 	{
 		0.0f,		0.75f,
 		5.0f,		0.75f,
@@ -33,6 +33,7 @@ PhysicsEngine::PhysicsEngine() {
 		PX_MAX_F32, PX_MAX_F32,
 		PX_MAX_F32, PX_MAX_F32
 	};
+	
 	gSteerVsForwardSpeedTable = PxFixedSizeLookupTable<8>(gSteerVsForwardSpeedData, 4);
 
 	gKeySmoothingData =
@@ -129,7 +130,7 @@ void PhysicsEngine::startAccelerateReverseMode(float magnitude)
 {
 	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
 
-		gVehicleInputData.setAnalogAccel(magnitude);
+		gVehicleInputData.setAnalogAccel(1.0f);
 }
 
 void PhysicsEngine::startBrakeMode()
@@ -259,58 +260,38 @@ void PhysicsEngine::initVehicle()
 	//startBrakeMode();
 }
 
-//testing, dont use 
-void PhysicsEngine::increaseForwards() {
-	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, 3.f), PxForceMode::eACCELERATION);
-}
-
-//testing, dont use
-void PhysicsEngine::upwards() {
-	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 50000.f, 0.f), PxForceMode::eIMPULSE);
-}
-
 //go forwards a little
 void PhysicsEngine::forwards(float magnitude)
 {
-	gVehicleInputData.setAnalogAccel(1.0f);
+	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
+	gVehicleInputData.setAnalogAccel(magnitude - 0.3f);
 }
 
 
 void PhysicsEngine::reverse(float magnitude)
 {
 	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
-	startAccelerateReverseMode(magnitude);
-	//gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, -1500.f * magnitude), PxForceMode::eIMPULSE);
+	gVehicleInputData.setAnalogAccel(magnitude);
 }
 
 void PhysicsEngine::turn(float magnitude) {
-	if (magnitude >= 0) {
-		startHandbrakeTurnRightMode(magnitude);
-		gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(800.f * -magnitude, 0.f, 0.f), PxForceMode::eIMPULSE);
-	}
-	else {
-		startHandbrakeTurnLeftMode(magnitude);
-		magnitude = abs(magnitude);
-		gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(800.f * magnitude, 0.f, 0.f), PxForceMode::eIMPULSE);
-	}
+	gVehicleInputData.setAnalogSteer(-magnitude);
 	
 }
 
 void PhysicsEngine::turnLeft(float magnitude)
 {
-	startTurnHardLeftMode(magnitude);
-	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(100.f * magnitude, 0.f, 0.f), PxForceMode::eACCELERATION);
+	gVehicleInputData.setAnalogSteer(-1.0f);
 }
 
 void PhysicsEngine::turnRight(float magnitude)
 {
-	startTurnHardRightMode(magnitude);
-	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(100.f * magnitude, 0.f, 0.f), PxForceMode::eACCELERATION);
+	gVehicleInputData.setAnalogSteer(1.0f);
 }
 
 void PhysicsEngine::brake()
 {
-	startBrakeMode();
+	gVehicleInputData.setAnalogBrake(0.5f);
 	//dont know what to put here yet
 }
 
