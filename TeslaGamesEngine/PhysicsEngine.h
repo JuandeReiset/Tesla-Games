@@ -25,7 +25,7 @@ public:
 	void reverse(float magnitude);
 	void turnLeft(float magnitude);
 	void turnRight(float magnitude);
-	void brake(float magnitude);
+	void brake();
 	void turn(float magnitude);
 	
 
@@ -46,12 +46,12 @@ private:
 	void initVehicle();
 	void startBrakeMode();
 	void keyPress(unsigned char key, const physx::PxTransform& camera);
-	void startAccelerateForwardsMode();
-	void startAccelerateReverseMode();
-	void startTurnHardLeftMode();
-	void startTurnHardRightMode();
-	void startHandbrakeTurnLeftMode();
-	void startHandbrakeTurnRightMode();
+	void startAccelerateForwardsMode(float magnitude);
+	void startAccelerateReverseMode(float magnitude);
+	void startTurnHardLeftMode(float magnitude);
+	void startTurnHardRightMode(float magnitude);
+	void startHandbrakeTurnLeftMode(float magnitude);
+	void startHandbrakeTurnRightMode(float magnitude);
 	void releaseAllControls();
 	void incrementDrivingMode(const physx::PxF32 timestep);
 	void cleanupPhysics();

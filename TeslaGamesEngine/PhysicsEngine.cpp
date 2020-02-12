@@ -121,17 +121,17 @@ VehicleDesc PhysicsEngine::initVehicleDesc()
 	return vehicleDesc;
 }
 
-void PhysicsEngine::startAccelerateForwardsMode()
+void PhysicsEngine::startAccelerateForwardsMode(float magnitude)
 {
 		gVehicleInputData.setAnalogAccel(1.0f);
 
 }
 
-void PhysicsEngine::startAccelerateReverseMode()
+void PhysicsEngine::startAccelerateReverseMode(float magnitude)
 {
 	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
 
-		gVehicleInputData.setAnalogAccel(1.0f);
+		gVehicleInputData.setAnalogAccel(magnitude);
 }
 
 void PhysicsEngine::startBrakeMode()
@@ -139,31 +139,35 @@ void PhysicsEngine::startBrakeMode()
 		gVehicleInputData.setAnalogBrake(1.0f);
 }
 
-void PhysicsEngine::startTurnHardLeftMode()
+void PhysicsEngine::startTurnHardLeftMode(float magnitude)
 {
+	magnitude = abs(magnitude);
 		gVehicleInputData.setAnalogAccel(true);
-		gVehicleInputData.setAnalogSteer(-1.0f);
+		gVehicleInputData.setAnalogSteer(-magnitude);
 
 }
 
-void PhysicsEngine::startTurnHardRightMode()
+void PhysicsEngine::startTurnHardRightMode(float magnitude)
 {
-		gVehicleInputData.setAnalogAccel(1.0f);
-		gVehicleInputData.setAnalogSteer(1.0f);
+	magnitude = abs(magnitude);
+		gVehicleInputData.setAnalogAccel(magnitude);
+		gVehicleInputData.setAnalogSteer(magnitude);
 
 }
 
-void PhysicsEngine::startHandbrakeTurnLeftMode()
+void PhysicsEngine::startHandbrakeTurnLeftMode(float magnitude)
 {
-		gVehicleInputData.setAnalogSteer(-1.0f);
-		gVehicleInputData.setAnalogHandbrake(1.0f);
+	magnitude = abs(magnitude);
+		gVehicleInputData.setAnalogSteer(-magnitude);
+		gVehicleInputData.setAnalogHandbrake(magnitude);
 
 }
 
-void PhysicsEngine::startHandbrakeTurnRightMode()
+void PhysicsEngine::startHandbrakeTurnRightMode(float magnitude)
 {
-		gVehicleInputData.setAnalogSteer(1.0f);
-		gVehicleInputData.setAnalogHandbrake(1.0f);
+	magnitude = abs(magnitude);
+		gVehicleInputData.setAnalogSteer(magnitude);
+		gVehicleInputData.setAnalogHandbrake(magnitude);
 }
 
 
@@ -287,40 +291,43 @@ void PhysicsEngine::upwards() {
 void PhysicsEngine::forwards(float magnitude)
 {
 	
-	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, (25.f * magnitude)), PxForceMode::eACCELERATION);
-	startAccelerateForwardsMode();
+	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, (1500.f * magnitude)), PxForceMode::eIMPULSE);
+	startAccelerateForwardsMode(magnitude);
 }
 
 
 void PhysicsEngine::reverse(float magnitude)
 {
-	startAccelerateReverseMode();
-	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, -15.f * magnitude), PxForceMode::eACCELERATION);
+	startAccelerateReverseMode(magnitude);
+	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(0.f, 0.f, -1500.f * magnitude), PxForceMode::eIMPULSE);
 }
 
 void PhysicsEngine::turn(float magnitude) {
 	if (magnitude >= 0) {
-		startHandbrakeTurnRightMode();
+		startHandbrakeTurnRightMode(magnitude);
+		gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(800.f * -magnitude, 0.f, 0.f), PxForceMode::eIMPULSE);
 	}
 	else {
-		startHandbrakeTurnLeftMode();
+		startHandbrakeTurnLeftMode(magnitude);
+		magnitude = abs(magnitude);
+		gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(800.f * magnitude, 0.f, 0.f), PxForceMode::eIMPULSE);
 	}
-	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(20.f * magnitude, 0.f, 0.f), PxForceMode::eACCELERATION);
+	
 }
 
 void PhysicsEngine::turnLeft(float magnitude)
 {
-	startTurnHardLeftMode();
+	startTurnHardLeftMode(magnitude);
 	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(100.f * magnitude, 0.f, 0.f), PxForceMode::eACCELERATION);
 }
 
 void PhysicsEngine::turnRight(float magnitude)
 {
-	startTurnHardRightMode();
+	startTurnHardRightMode(magnitude);
 	gVehicle4W->getRigidDynamicActor()->addForce(PxVec3(100.f * magnitude, 0.f, 0.f), PxForceMode::eACCELERATION);
 }
 
-void PhysicsEngine::brake(float magnitude)
+void PhysicsEngine::brake()
 {
 	startBrakeMode();
 	//dont know what to put here yet
