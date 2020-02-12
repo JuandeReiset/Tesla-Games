@@ -562,7 +562,7 @@ int main()
 
 	xwing.LoadModel("Models/x-wing.obj");
 	TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
-	racetrack.LoadModel("Models/track1.obj");
+	racetrack.LoadModel("Models/track2.obj");
 
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
