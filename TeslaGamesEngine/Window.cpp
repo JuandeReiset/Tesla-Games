@@ -3,8 +3,8 @@
 
 Window::Window()
 {
-	width = 800;
-	height = 600;
+	width = 1600;
+	height = 900;
 
 	for (size_t i = 0; i < 1024; i++)
 	{

@@ -28,7 +28,6 @@
 #include "Material.h"
 #include "Model.h"
 
-
 //Health stuff
 #include "Combat.h"
 #include "HealthComponent.h"
@@ -199,6 +198,7 @@ void CreateShaders()
 
 }
 
+//Now all the image default positions are based on the window size 1600 x 900 (16 : 9) 
 void CreateHUDs() {
 	unsigned int HUDindecis[] = {						// 0 -----3
 		0, 1, 3,										// |	  |
@@ -206,109 +206,110 @@ void CreateHUDs() {
 	};
 
 	GLfloat weaponUIVertices[] = {
-	//	x	 y	  z			u	 v
-		0.0, 474.0, 0.0,	0.0, 0.0,								//bottom left
-		0.0, 600.0, 0.0,	0.0, 1.0,								//top left
-		259.0, 600, 0.0,	1.0, 1.0,								//top right
-		259.0, 474.0, 0.0,	1.0, 0.0								//bottom right
+	//	x									y										z		u	 v
+		0.0 / 1600 * mainWindow.getWidth(), 720.0 / 900.0 * mainWindow.getHeight(), 0.0,	0.0, 0.0,								//bottom left
+		0.0 / 1600 * mainWindow.getWidth(), 900.0 / 900 * mainWindow.getHeight(), 0.0,		0.0, 1.0,								//top left
+		370.0 / 1600 * mainWindow.getWidth(), 900 /900 * mainWindow.getHeight(), 0.0,		1.0, 1.0,								//top right
+		370.0 / 1600 * mainWindow.getWidth(), 720.0 / 900 * mainWindow.getHeight(), 0.0,	1.0, 0.0								//bottom right
 	};
 	
+
 	GLfloat numOfWeaponVertices[] = {
-		120.125, 500.5, 1.0,		0.0, 0.0,
-		120.125, 532.0, 1.0,		0.0, 1.0,
-		138.875, 532.0, 1.0,		1.0, 1.0,
-		138.875, 500.5, 1.0,		1.0, 0.0
+		177.5 / 1600 * mainWindow.getWidth(), 770 / 900.0 * mainWindow.getHeight(), 1.0,		0.0, 0.0,
+		177.5 / 1600 * mainWindow.getWidth(), 800 / 900.0 * mainWindow.getHeight(), 1.0,		0.0, 1.0,
+		192.5 / 1600 * mainWindow.getWidth(), 800 / 900.0 * mainWindow.getHeight(), 1.0,		1.0, 1.0,
+		192.5 / 1600 * mainWindow.getWidth(), 770 / 900.0 * mainWindow.getHeight(), 1.0,		1.0, 0.0
 	};
 
 	GLfloat emptyBar1Vertices[] = {
-		600.0, 580.0, 0.0,		0.0, 0.0,
-		600.0, 600.0, 0.0,		0.0, 1.0,
-		800.0, 600.0, 0.0,		1.0, 1.0,
-		800.0, 580.0, 0.0,		1.0, 0.0
+		1300.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1300.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1600.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1600.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};	
 	
 	GLfloat emptyBar2Vertices[] = {
-		600.0, 555.0, 0.0,		0.0, 0.0,
-		600.0, 575.0, 0.0,		0.0, 1.0,
-		800.0, 575.0, 0.0,		1.0, 1.0,
-		800.0, 555.0, 0.0,		1.0, 0.0
+		1300.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1300.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1600.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1600.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 
 	GLfloat plusVertices[] = {
-		690.0, 580.0, 0.0,		0.0, 0.0,
-		690.0, 600.0, 0.0,		0.0, 1.0,
-		710.0, 600.0, 0.0,		1.0, 1.0,
-		710.0, 580.0, 0.0,		1.0, 0.0
+		1440.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1440.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1460.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1460.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};	
 	
 	GLfloat nitroSymbolVertices[] = {
-		690.0, 555.0, 0.0,		0.0, 0.0,
-		690.0, 575.0, 0.0,		0.0, 1.0,
-		710.0, 575.0, 0.0,		1.0, 1.0,
-		710.0, 555.0, 0.0,		1.0, 0.0
+		1440.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1440.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1460.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1460.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 
 	GLfloat cupVertices[] = {
-		695.0, 10.0, 0.0,		0.0, 0.0,
-		695.0, 40.0, 0.0,		0.0, 1.0,
-		725.0, 40.0, 0.0,		1.0, 1.0,
-		725.0, 10.0, 0.0,		1.0, 0.0
+		1505.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1505.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 	
 	GLfloat rank1numVertices[] = {
-		730.0, 10.0, 0.0,		0.0, 0.0,
-		730.0, 40.0, 0.0,		0.0, 1.0,
-		760.0, 40.0, 0.0,		1.0, 1.0,
-		760.0, 10.0, 0.0,		1.0, 0.0
+		1550.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1550.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 	
 	GLfloat rank2numVertices[] = {
-		765.0, 10.0, 0.0,		0.0, 0.0,
-		765.0, 40.0, 0.0,		0.0, 1.0,
-		795.0, 40.0, 0.0,		1.0, 1.0,
-		795.0, 10.0, 0.0,		1.0, 0.0
+		1575.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1575.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 	
 	GLfloat flagVertices[] = {
-		695.0, 50.0, 0.0,		0.0, 0.0,
-		695.0, 80.0, 0.0,		0.0, 1.0,
-		725.0, 80.0, 0.0,		1.0, 1.0,
-		725.0, 50.0, 0.0,		1.0, 0.0
+		1505.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1505.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 
 	GLfloat lap1numVertices[] = {
-		730.0, 50.0, 0.0,		0.0, 0.0,
-		730.0, 80.0, 0.0,		0.0, 1.0,
-		760.0, 80.0, 0.0,		1.0, 1.0,
-		760.0, 50.0, 0.0,		1.0, 0.0
+		1550.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1550.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 
 	GLfloat lap2numVertices[] = {
-		765.0, 50.0, 0.0,		0.0, 0.0,
-		765.0, 80.0, 0.0,		0.0, 1.0,
-		795.0, 80.0, 0.0,		1.0, 1.0,
-		795.0, 50.0, 0.0,		1.0, 0.0
+		1575.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1575.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 
 	GLfloat personVertices[] = {
-		695.0, 90.0, 0.0,		0.0, 0.0,
-		695.0, 120.0, 0.0,		0.0, 1.0,
-		725.0, 120.0, 0.0,		1.0, 1.0,
-		725.0, 90.0, 0.0,		1.0, 0.0
+		1505.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1505.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 
 	GLfloat alive1numVertices[] = {
-		730.0, 90.0, 0.0,		0.0, 0.0,
-		730.0, 120.0, 0.0,		0.0, 1.0,
-		760.0, 120.0, 0.0,		1.0, 1.0,
-		760.0, 90.0, 0.0,		1.0, 0.0
+		1550.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1550.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 
 	GLfloat alive2numVertices[] = {
-		765.0, 90.0, 0.0,		0.0, 0.0,
-		765.0, 120.0, 0.0,		0.0, 1.0,
-		795.0, 120.0, 0.0,		1.0, 1.0,
-		795.0, 90.0, 0.0,		1.0, 0.0
+		1575.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1575.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 
 	HUD* weaponUI = new HUD();
@@ -460,7 +461,7 @@ void parseControllerInput(Controller* controller)
 int main()
 {
 	const char* glsl_version = "#version 130"; // USED FOR IMGUI SETTING
-	mainWindow = Window(800, 600);
+	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
 	Renderer r = Renderer(mainWindow, camera);
@@ -562,7 +563,6 @@ int main()
 	xwing.LoadModel("Models/x-wing.obj");
 	TeslaCar.LoadModel("Models/Truck.obj");
 	racetrack.LoadModel("Models/track1.obj");
-
 
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
