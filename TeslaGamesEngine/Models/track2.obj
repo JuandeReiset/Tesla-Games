@@ -1,6 +1,6 @@
-# Blender v2.81 (sub 16) OBJ File: 'track1.blend'
+# Blender v2.81 (sub 16) OBJ File: 'track2.blend'
 # www.blender.org
-mtllib track1.mtl
+mtllib track2.mtl
 o RoadSegment_Cube
 v -5.871899 0.234521 -1.854290
 v -4.106367 0.235882 -1.815468
