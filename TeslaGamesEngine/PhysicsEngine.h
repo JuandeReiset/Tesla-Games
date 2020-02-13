@@ -28,6 +28,8 @@ public:
 	void turnRight(float magnitude);
 	void brake();
 	void turn(float magnitude);
+	physx::PxVehicleDrive4W* gVehicle4W = NULL;
+	physx::PxRigidDynamic *getVehicleRigidDynamicPtr();
 
 	
 
@@ -57,6 +59,7 @@ private:
 	void releaseAllControls();
 	void cleanupPhysics();
 
+
 	physx::PxDefaultAllocator gAllocator;
 	physx::PxDefaultErrorCallback gErrorCallback;
 
@@ -73,7 +76,7 @@ private:
 	bool gVehicleOrderComplete = false;
 	bool gMimicKeyInputs = false;
 	physx::PxRigidStatic* gGroundPlane = NULL;
-	physx::PxVehicleDrive4W* gVehicle4W = NULL;
+	
 	physx::PxRigidStatic* box = NULL;
 	physx::PxShape* shape = NULL;
 	physx::PxCooking* gCooking = NULL;

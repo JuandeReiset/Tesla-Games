@@ -27,6 +27,10 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	update();
 }
 
+void Camera::setPosition(float x, float y, float z) {
+	position = glm::vec3(x, y, z);
+}
+
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
 {
 	GLfloat velocity = moveSpeed * deltaTime;

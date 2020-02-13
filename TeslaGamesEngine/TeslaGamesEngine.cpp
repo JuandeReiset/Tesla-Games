@@ -56,6 +56,11 @@
 
 // end of stuff for imgui
 
+struct localAxis {
+	glm::vec3 front;
+	glm::vec3 right;
+	glm::vec3 up;
+};
 
 
 /* Rendering variables */
@@ -103,6 +108,21 @@ static const char* vHshader = "Shaders/HUD_shader.vert";
 
 //Fragment shader of HUD_shader
 static const char* fHshader = "Shaders/HUD_shader.frag";
+
+struct yawPitch {
+	float yaw;
+	float pitch;
+};
+
+void update(localAxis a, float yaw, float pitch) {
+	a.front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	a.front.y = sin(glm::radians(pitch));
+	a.front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	a.front = glm::normalize(a.front);
+
+	a.right = glm::normalize(glm::cross(a.front, glm::vec3(0,1,0)));
+	a.up = glm::normalize(glm::cross(a.right, a.front));
+}
 
 /* End of rendering variables */
 
@@ -368,7 +388,11 @@ int main()
 	CreateShaders();
 	CreateHUDs();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -20.0f, 5.0f, 0.5f);
+	yawPitch yp;
+	yp.yaw = 90.f;
+	yp.pitch = -20.0f;
+
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureAlpha();
@@ -530,6 +554,9 @@ int main()
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
+		physx::PxVec3 xwingPos = physEng.GetPosition();	//position of xwing
+		camera.setPosition(xwingPos.x + 8.5f, xwingPos.y + 3.0f, xwingPos.z - 14.0f);
+
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
@@ -566,22 +593,39 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 
-		// Draw X-Wing
+		// Draw X-Wing and rotate camera
 		
-		physx::PxVec3 xwingPos = physEng.GetPosition();	//position of xwing
-		camera = Camera(glm::vec3(xwingPos.x + 8.5f, xwingPos.y + 3.0f, xwingPos.z - 14.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -20.0f, 5.0f, 0.5f);
-		float xwingRot = physEng.GetRotationAngle();	//angle of rotation
+		
+
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		const physx::PxVehicleDrive4W* vehicle = physEng.gVehicle4W;	//get vehicle
+		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
+		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
+
+
+		//physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
+
+		
+
+		vehicleQuaternion.x = 0;
+		vehicleQuaternion.z = 0;
+		double magnitude = sqrt(vehicleQuaternion.w * vehicleQuaternion.w + vehicleQuaternion.y * vehicleQuaternion.y);
+		vehicleQuaternion.y /= magnitude;
+		vehicleQuaternion.w /= magnitude;
+
+		double angle = 2 * acos(vehicleQuaternion.w);
+
+		physx::PxVec3 localYAxis = vehicleQuaternion.rotate(physx::PxVec3(0, 1, 0));
+
+		glm::vec3 glmVecLocalY(localYAxis.x, localYAxis.y, localYAxis.z);
+
+
+
+		//float xwingRot = physEng.GetRotationAngle();	//angle of rotation
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
-		//model = glm::rotate(model, xwingRot, glm::vec3(0.0f, 0.0f, 1.0f));
-		
-		
- /*
-		model = glm::translate(model, glm::vec3(-xwingPos.x, -xwingPos.y, -xwingPos.z));	//translate to origin
-		model = glm::rotate(model, xwingRot, glm::vec3(0.0f, 1.0f, 0.0f));					//rotate
-		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));		//translate back to place now rotated
-		*/
-		model = glm::rotate(model, xwingRot, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, (float)angle, glmVecLocalY);
 		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
 		
 		
@@ -589,7 +633,7 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
 
-
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Rendering HUD
 		hudShader.UseShader();
 		uniformModel = hudShader.GetModelLocation();

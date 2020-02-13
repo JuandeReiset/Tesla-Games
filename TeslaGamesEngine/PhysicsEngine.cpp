@@ -279,6 +279,8 @@ void PhysicsEngine::turn(float magnitude) {
 	
 }
 
+
+
 void PhysicsEngine::turnLeft(float magnitude)
 {
 	gVehicleInputData.setAnalogSteer(-1.0f);
