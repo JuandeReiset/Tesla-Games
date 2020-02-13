@@ -34,6 +34,7 @@ void AudioEngine::initialize() {
 	soundFiles[1] = "./audioFiles/finalCount.wav";
 	soundFiles[2] = "./audioFiles/TTG_main_menu.wav";
 	soundFiles[3] = "./audioFiles/TTG_race_music.wav";
+	
 }
 void AudioEngine::initializeBuffers() {
 	for (int i = 0; i < NUM_OF_SOUND_EFFECTS_POSSIBLE; i++) {

@@ -28,7 +28,6 @@
 #include "Material.h"
 #include "Model.h"
 
-
 //Health stuff
 #include "Combat.h"
 #include "HealthComponent.h"
@@ -77,10 +76,23 @@ Shader hudShader;
 Texture brickTexture;
 Texture dirtTexture;
 Texture plainTexture;
-Texture TTexture;
-Texture meterTexture;
+
+//digit textures
+Texture dig0Texture;
 Texture dig1Texture;
-Texture healthTexture;
+Texture dig2Texture;
+Texture dig3Texture;
+
+//HUD textures
+Texture weaponUITexture;
+Texture emptyBarTexture;
+Texture healthBarTexture;
+Texture nitroBarTexture;
+Texture plusSymbolTexture;
+Texture nitroSymbolTexture;
+Texture flagTexture;
+Texture personTexture;
+Texture cupTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
@@ -88,14 +100,42 @@ Material dullMaterial;
 PhysicsEngine physEng;
 
 Model xwing;
+Model TeslaCar;
+Model racetrack;
+Model bulletobj;
 Model boxTest;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 
+
+//helper variables
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
+
+bool bullet_shot = false; //after shooting there will be a cooldown for the player before he can shoot again
+bool bullet_sound_played = true;
+
+
+
+float shoot_distance_x = 0; // Bullet vector movement for x
+float shoot_distance_y = 0; // Bullet vector movement for y
+float shoot_distance_z = 0; //Bullet vector movement for z
+float bullet_speed = 2.f;  //velocity of bullet when traversing
+
+float bullet_boundary = 15;
+
+//Mesh positioning and rotation debugging for player/car obj (current position for CAR)
+float pos_x = 0;
+float pos_y = 0;
+float pos_z = 0;
+
+//Angle of rotation for player/car obj  
+float car_rotation = 90;
+
+float current_rotation; //Calculates the angle at the moment of firing lazer
+
 
 // Vertex Shader
 static const char* vShader = "Shaders/shader.vert";
@@ -167,7 +207,7 @@ void CreateObjects()
 
 	GLfloat vertices[] = {
 		//	x      y      z			u	  v			nx	  ny    nz
-			-1.0f, -1.0f, -0.6f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+			-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 			0.0f, -1.0f, 1.0f,		0.5f, 0.0f,		0.0f, 0.0f, 0.0f,
 			1.0f, -1.0f, -0.6f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f,		0.5f, 1.0f,		0.0f, 0.0f, 0.0f
@@ -210,73 +250,187 @@ void CreateShaders()
 
 }
 
+//Now all the image default positions are based on the window size 1600 x 900 (16 : 9) 
 void CreateHUDs() {
 	unsigned int HUDindecis[] = {						// 0 -----3
 		0, 1, 3,										// |	  |
 		2, 1, 3											// 1 -----2
 	};
 
-	GLfloat HUDvertices[] = {
-	//	x	 y	  z			u	 v
-		0.0, 450.0, 0.0,	0.0, 0.0,								//bottom left
-		0.0, 600.0, 0.0,	0.0, 1.0,								//top left
-		150.0, 600, 0.0,	1.0, 1.0,								//top right
-		150.0, 450.0, 0.0,	1.0, 0.0								//bottom right
+	GLfloat weaponUIVertices[] = {
+	//	x									y										z		u	 v
+		0.0 / 1600 * mainWindow.getWidth(), 720.0 / 900.0 * mainWindow.getHeight(), 0.0,	0.0, 0.0,								//bottom left
+		0.0 / 1600 * mainWindow.getWidth(), 900.0 / 900 * mainWindow.getHeight(), 0.0,		0.0, 1.0,								//top left
+		370.0 / 1600 * mainWindow.getWidth(), 900 /900 * mainWindow.getHeight(), 0.0,		1.0, 1.0,								//top right
+		370.0 / 1600 * mainWindow.getWidth(), 720.0 / 900 * mainWindow.getHeight(), 0.0,	1.0, 0.0								//bottom right
 	};
 	
-	unsigned int HUD1indecis[] = {						// 0 -----3
-		0, 1, 3,										// |	  |
-		2, 1, 3											// 1 -----2
+
+	GLfloat numOfWeaponVertices[] = {
+		177.5 / 1600 * mainWindow.getWidth(), 770 / 900.0 * mainWindow.getHeight(), 1.0,		0.0, 0.0,
+		177.5 / 1600 * mainWindow.getWidth(), 800 / 900.0 * mainWindow.getHeight(), 1.0,		0.0, 1.0,
+		192.5 / 1600 * mainWindow.getWidth(), 800 / 900.0 * mainWindow.getHeight(), 1.0,		1.0, 1.0,
+		192.5 / 1600 * mainWindow.getWidth(), 770 / 900.0 * mainWindow.getHeight(), 1.0,		1.0, 0.0
 	};
 
-	
-	GLfloat firstDigtVertices[] = {
-		30.0, 505.0, 1.0,	0.0, 0.0,
-		30.0, 555.0, 1.0,	0.0, 1.0,
-		55.0, 555.0, 1.0,	1.0, 1.0,
-		55.0, 505.0, 1.0,	1.0, 0.0
-	};
-
-	GLfloat secondDigVertices[]{
-		60.0, 505.0, 1.0,	0.0, 0.0,
-		60.0, 555.0, 1.0,	0.0, 1.0,
-		85.0, 555.0, 1.0,	1.0, 1.0,
-		85.0, 505.0, 1.0,	1.0, 0.0
+	GLfloat emptyBar1Vertices[] = {
+		1300.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1300.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1600.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1600.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};	
 	
-	GLfloat thirdDigVertices[]{
-		90.0, 505.0, 1.0,	0.0, 0.0,
-		90.0, 555.0, 1.0,	0.0, 1.0,
-		115.0, 555.0, 1.0,	1.0, 1.0,
-		115.0, 505.0, 1.0,	1.0, 0.0
+	GLfloat emptyBar2Vertices[] = {
+		1300.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1300.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1600.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1600.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 
-	GLfloat healthBarVertices[]{
-		0.0, 430, 0.0,		0.0, 0.0,
-		0.0, 450, 0.0,		0.0, 1.0,
-		150.0, 450.0, 0.0,	1.0, 1.0,
-		150.0, 430.0, 0.0,	1.0, 0.0
+	GLfloat plusVertices[] = {
+		1270.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1270.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1290.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1290.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+	};	
+	
+	GLfloat nitroSymbolVertices[] = {
+		1270.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1270.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1290.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1290.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 
-	HUD* HUD1 = new HUD();
-	HUD1->createHUD(HUDvertices, HUDindecis, 20, 6);
-	HUDList.push_back(HUD1);
-
-	HUD* HUD2 = new HUD();
-	HUD2->createHUD(firstDigtVertices, HUD1indecis, 20, 6);
-	HUDList.push_back(HUD2);
-
-	HUD* HUD3 = new HUD();
-	HUD3->createHUD(secondDigVertices, HUD1indecis, 20, 6);
-	HUDList.push_back(HUD3);	
+	GLfloat cupVertices[] = {
+		1505.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1505.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+	};
 	
-	HUD* HUD4 = new HUD();
-	HUD4->createHUD(thirdDigVertices, HUD1indecis, 20, 6);
-	HUDList.push_back(HUD4);
+	GLfloat rank1numVertices[] = {
+		1550.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1550.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+	};
 	
-	HUD* HUD5 = new HUD();
-	HUD5->createHUD(healthBarVertices, HUD1indecis, 20, 6);
-	HUDList.push_back(HUD5);
+	GLfloat rank2numVertices[] = {
+		1575.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1575.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+	};
+	
+	GLfloat flagVertices[] = {
+		1505.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1505.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+	};
+
+	GLfloat lap1numVertices[] = {
+		1550.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1550.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+	};
+
+	GLfloat lap2numVertices[] = {
+		1575.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1575.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+	};
+
+	GLfloat personVertices[] = {
+		1505.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1505.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1545.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+	};
+
+	GLfloat alive1numVertices[] = {
+		1550.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1550.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1570.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+	};
+
+	GLfloat alive2numVertices[] = {
+		1575.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1575.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1595.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+	};
+
+	HUD* weaponUI = new HUD();
+	weaponUI->createHUD(weaponUIVertices, HUDindecis, 20, 6);
+	HUDList.push_back(weaponUI);
+
+	HUD* numOfWeapon = new HUD();
+	numOfWeapon->createHUD(numOfWeaponVertices, HUDindecis, 20, 6);
+	HUDList.push_back(numOfWeapon);
+
+	HUD* bar1 = new HUD();
+	bar1->createHUD(emptyBar1Vertices, HUDindecis, 20, 6);
+	HUDList.push_back(bar1);
+
+	HUD* bar2 = new HUD();
+	bar2->createHUD(emptyBar2Vertices, HUDindecis, 20, 6);
+	HUDList.push_back(bar2);
+
+	HUD* healthBar = new HUD();
+	healthBar->createHUD(emptyBar1Vertices, HUDindecis, 20, 6);
+	HUDList.push_back(healthBar);
+
+	HUD* nitroBar = new HUD();
+	nitroBar->createHUD(emptyBar2Vertices, HUDindecis, 20, 6);
+	HUDList.push_back(nitroBar);
+
+	HUD* plusSymbol = new HUD();
+	plusSymbol->createHUD(plusVertices, HUDindecis, 20, 6);
+	HUDList.push_back(plusSymbol);
+
+	HUD* nitroSymbol = new HUD();
+	nitroSymbol->createHUD(nitroSymbolVertices, HUDindecis, 20, 6);
+	HUDList.push_back(nitroSymbol);
+
+	HUD* cupUI = new HUD();
+	cupUI->createHUD(cupVertices, HUDindecis, 20, 6);
+	HUDList.push_back(cupUI);
+
+	HUD* rank1num = new HUD();
+	rank1num->createHUD(rank1numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(rank1num);
+	
+	HUD* rank2num = new HUD();
+	rank2num->createHUD(rank2numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(rank2num);
+
+	HUD* flagUI = new HUD();
+	flagUI->createHUD(flagVertices, HUDindecis, 20, 6);
+	HUDList.push_back(flagUI);
+
+	HUD* lap1num = new HUD();
+	lap1num->createHUD(lap1numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(lap1num);
+
+	HUD* lap2num = new HUD();
+	lap2num->createHUD(lap2numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(lap2num);
+
+	HUD* personUI = new HUD();
+	personUI->createHUD(personVertices, HUDindecis, 20, 6);
+	HUDList.push_back(personUI);
+
+	HUD* alive1num = new HUD();
+	alive1num->createHUD(alive1numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(alive1num);
+	
+	HUD* alive2num = new HUD();
+	alive2num->createHUD(alive2numVertices, HUDindecis, 20, 6);
+	HUDList.push_back(alive2num);
 }
 
 // A function to obtain input, called each frame
@@ -306,9 +460,18 @@ void parseControllerInput(Controller* controller)
 	}
 	if (controller->isButtonDown(XButtons.L_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
+		bullet_shot = true; //Allows for bullets to be rendered
+		bullet_sound_played = false;
+		current_rotation = car_rotation;
+
+
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
+		bullet_shot= true; // Alllows for bullets to be rendered
+		bullet_sound_played = false;
+		current_rotation = car_rotation;
+
 	}
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
 		std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
@@ -338,6 +501,7 @@ void parseControllerInput(Controller* controller)
 		std::cout << controller->getIndex() << " " << "R3 PRESSED and HELD" << std::endl;
 	}
 
+	//Sticks and triggers
 	if (!controller->LStick_InDeadzone()) {
 		//physEng.turn(controller->leftStick_X());
 		std::cout << controller->getIndex() << " " << "LS: " << controller->leftStick_X() << std::endl;
@@ -367,7 +531,7 @@ void parseControllerInput(Controller* controller)
 int main()
 {
 	const char* glsl_version = "#version 130"; // USED FOR IMGUI SETTING
-	mainWindow = Window(800, 600);
+	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
 	Renderer r = Renderer(mainWindow, camera);
@@ -400,15 +564,36 @@ int main()
 	dirtTexture.LoadTextureAlpha();
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureAlpha();
-	plainTexture.LoadTexture();
-	TTexture = Texture("Textures/t.png");
-	TTexture.LoadTextureAlpha();
-	meterTexture = Texture("Textures/meter.png");
-	meterTexture.LoadTextureAlpha();
+
+	//load digits textures
+	dig0Texture = Texture("Textures/numbers/0.png");
+	dig0Texture.LoadTextureAlpha();
 	dig1Texture = Texture("Textures/numbers/1.png");
 	dig1Texture.LoadTextureAlpha();
-	healthTexture = Texture("Textures/healthBar.png");
-	healthTexture.LoadTextureAlpha();
+	dig2Texture = Texture("Textures/numbers/2.png");
+	dig2Texture.LoadTextureAlpha();
+	dig3Texture = Texture("Textures/numbers/3.png");
+	dig3Texture.LoadTextureAlpha();
+
+	//load HUD textures
+	weaponUITexture = Texture("Textures/HUD/WeaponsUI.png");
+	weaponUITexture.LoadTextureAlpha();
+	emptyBarTexture = Texture("Textures/HUD/emptybar.png");
+	emptyBarTexture.LoadTextureAlpha();
+	healthBarTexture = Texture("Textures/HUD/healthbar.png");
+	healthBarTexture.LoadTextureAlpha();
+	nitroBarTexture = Texture("Textures/HUD/nitro.png");
+	nitroBarTexture.LoadTextureAlpha();
+	plusSymbolTexture = Texture("Textures/HUD/plus.png");
+	plusSymbolTexture.LoadTextureAlpha();
+	nitroSymbolTexture = Texture("Textures/HUD/nitrosymbol.png");
+	nitroSymbolTexture.LoadTextureAlpha();
+	personTexture = Texture("Textures/HUD/alive.png");
+	personTexture.LoadTextureAlpha();
+	cupTexture = Texture("Textures/HUD/cup.png");
+	cupTexture.LoadTextureAlpha();
+	flagTexture = Texture("Textures/HUD/flags.png");
+	flagTexture.LoadTextureAlpha();
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
@@ -450,9 +635,9 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
 	xwing.LoadModel("Models/x-wing.obj");
-	boxTest.LoadModel("Models/x-wing.obj");
-
-
+	TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
+	racetrack.LoadModel("Models/track2.obj");
+	bulletobj.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
 
@@ -479,8 +664,8 @@ int main()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
@@ -497,11 +682,12 @@ int main()
 	AudioEngine audioSystem = AudioEngine();
 	AudioBoomBox audioObject = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
 	AudioBoomBox audioObject2 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
+	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_BOUNCE);
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	//audioObject2.playSound();
+	audioObject2.playSound();
 
 	//Controller
 	Controller player1 = Controller(1);
@@ -515,6 +701,11 @@ int main()
 
 	//physEng.upwards();
 	//End of audio system setup/demo
+
+	//translation vector helper
+	glm::vec3 cartranslation(4,0,0);
+	//
+
 	while (!mainWindow.getShouldClose())
 	{
 		physEng.stepPhysics();
@@ -592,9 +783,6 @@ int main()
 		dirtTexture.UseTexture();
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
-
-
-
 		//render box
 		//get position of actual wall
 		physx::PxVec3 wallPos = physEng.GetBoxPos();
@@ -609,6 +797,18 @@ int main()
 		//boxTest.RenderModel();
 		//boxTest.RenderModel();
 		xwing.RenderModel();
+
+		
+		//glm::vec3 playerview = camera.getCameraPosition() + glm::vec3(4, -1, 0);
+		// Draw Tesla car
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(pos_x,pos_y,pos_z));
+		model = glm::rotate(model, glm::radians(car_rotation), glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+		model = glm::scale(model, glm::vec3(0.06f, 0.06f, 0.06f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		TeslaCar.RenderModel();
+
 		std::cout<<"GOT TO RENDER";
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -619,7 +819,83 @@ int main()
 
 		//physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 
+		
 
+		// Draw racing track
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, -10.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(7.f,7.f, 7.f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		racetrack.RenderModel();
+
+		//Draw bullets
+		
+		if (bullet_shot) {
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(pos_x +shoot_distance_x+0.5f*sin(current_rotation), pos_y+0.5f+shoot_distance_y, pos_z+shoot_distance_z-0.7f));
+			
+			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			bulletobj.RenderModel();
+
+			//PLAY LASER SOUND
+			if (!bullet_sound_played) {
+				audioObject3.playSound();
+				bullet_sound_played = true; //Stop once its played once
+
+			}
+			// IN CASE PHYSX HATES WORKING WITH ANGLE OF ROTATION (DONT REALLY KNOW HOW THAT WORKS)
+			// WE CAN IMPLEMENT A FORWARD SHOOTING FOR OUR DEMO (ALWAYS AIMING ON X) BY DOING:
+
+			// shoot_distance_x += bullet_speed;
+			// and eliminating all the other shoot_distance_axis manipulations
+
+
+			float horizontal = cos(glm::radians(current_rotation)) * bullet_speed;
+			//float vertical = Math.sin(Math.toRadians(pitch)) * wantedSpeedForward;
+			
+			/*
+			If using pitch and yaw
+
+			float horizontal = Math.cos(Math.toRadians(pitch)) * wantedSpeedForward;   // This is the horizontal movement we use
+			float vertical = Math.sin(Math.toRadians(pitch)) * wantedSpeedForward;  // for up and down movement of the bullet not neccesary
+
+			loc.x += Math.cos(Math.toRadians(yaw)) * horizontal;
+			loc.z -= Math.sin(Math.toRadians(yaw)) * horizontal;
+			loc.y += vertical;
+			*/
+
+			if (current_rotation > 90 && current_rotation < 270) {
+				shoot_distance_x -= (cos(glm::radians(current_rotation)) * horizontal);
+
+				//shoot_distance_y += 0.1;
+				shoot_distance_z += (sin(glm::radians(current_rotation)) * horizontal);
+			}
+			else if (current_rotation == 90) {
+				shoot_distance_z -= bullet_speed;
+			}
+			else if (current_rotation == 270) {
+				shoot_distance_z += bullet_speed;
+			}
+			
+		   else{
+				shoot_distance_x += (cos(glm::radians(current_rotation)) * horizontal);
+
+				//shoot_distance_y += 0.1;
+				shoot_distance_z -= (sin(glm::radians(current_rotation)) * horizontal);
+			}
+			
+			if (shoot_distance_x > bullet_boundary || shoot_distance_x < -bullet_boundary || shoot_distance_z > bullet_boundary ||  shoot_distance_z < -bullet_boundary) {
+				shoot_distance_x = 0;
+				shoot_distance_y= 0;
+				shoot_distance_z = 0;
+				bullet_shot = false;
+				std::cout <<"LAZER COOLDOWN IS OVER!" << std::endl;
+			}
+			
+		}
 
 		vehicleQuaternion.x = 0;
 		vehicleQuaternion.z = 0;
@@ -662,27 +938,66 @@ int main()
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
-		//meter
-		meterTexture.UseTexture();
+		//weapon UI
+		weaponUITexture.UseTexture();
 		HUDList[0]->renderHUD();
-
-		dig1Texture.UseTexture();
+		
+		//number of charges
+		dig3Texture.UseTexture();
 		HUDList[1]->renderHUD();
 
-		dig1Texture.UseTexture();
+		//TODO: if out of charges, change ui
+
+		//bars
+		//empty bar1
+		emptyBarTexture.UseTexture();
 		HUDList[2]->renderHUD();
-		
-		dig1Texture.UseTexture();
+
+		//empty bar2
+		emptyBarTexture.UseTexture();
 		HUDList[3]->renderHUD();
-		
+
 		//health bar
-		healthTexture.UseTexture();
+		healthBarTexture.UseTexture();
 		HUDList[4]->renderHUD();
+
+		//nitro bar
+		nitroBarTexture.UseTexture();
+		HUDList[5]->renderHUD();
+		
+		//plus symbol
+		plusSymbolTexture.UseTexture();
+		HUDList[6]->renderHUD();
+
+		//nitro symbol
+		nitroSymbolTexture.UseTexture();
+		HUDList[7]->renderHUD();
+
+		//race info
+		//current rank
+		cupTexture.UseTexture();
+		HUDList[8]->renderHUD();
+		dig2Texture.UseTexture();
+		HUDList[10]->renderHUD();
+
+		//current laps
+		flagTexture.UseTexture();
+		HUDList[11]->renderHUD();
+		dig3Texture.UseTexture();
+		HUDList[13]->renderHUD();
+
+		//current alive
+		personTexture.UseTexture();
+		HUDList[14]->renderHUD();
+		dig1Texture.UseTexture();
+		HUDList[15]->renderHUD();
+		dig0Texture.UseTexture();
+		HUDList[16]->renderHUD();
 
 		glEnable(GL_DEPTH_TEST);
 
-		//HUD ends here
 
+		//HUD ends here
 		// End of rendering 
 
 		// Start the Dear ImGui frame
@@ -693,8 +1008,19 @@ int main()
 		{
 			static float f = 0.0f;
 			static int counter = 0;
+
 /*
 			ImGui::Begin("FPS COUNTER");                          // Create a window called "Hello, world!" and append into it.
+
+		
+
+
+			ImGui::SliderFloat("OBJ X pos debug", &pos_x, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("OBJ Y pos debug", &pos_y, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("OBJ Z pos debug", &pos_z, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+
+			ImGui::Text("OBJ angle debug");               // Display some text (you can use a format strings too)
+			ImGui::SliderFloat("angle",&car_rotation , 0.0f, 360.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
 
@@ -723,6 +1049,11 @@ int main()
 
 
 		mainWindow.swapBuffers();
+
+
+		//Shooting actions
+		
+		
 	}
 	// Cleanup
 	ImGui_ImplOpenGL3_Shutdown();
