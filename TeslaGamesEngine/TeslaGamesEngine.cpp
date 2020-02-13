@@ -104,7 +104,7 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 
 bool bullet_shot = false; //after shooting there will be a cooldown for the player before he can shoot again
-bool bullet_sound_played = false;
+bool bullet_sound_played = true;
 
 
 
@@ -112,6 +112,8 @@ float shoot_distance_x = 0; // Bullet vector movement for x
 float shoot_distance_y = 0; // Bullet vector movement for y
 float shoot_distance_z = 0; //Bullet vector movement for z
 float bullet_speed = 2.f;  //velocity of bullet when traversing
+
+float bullet_boundary = 15;
 
 //Mesh positioning and rotation debugging for player/car obj (current position for CAR)
 float pos_x = 0;
@@ -771,8 +773,8 @@ int main()
 		
 		if (bullet_shot) {
 			model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(pos_x +shoot_distance_x, pos_y+shoot_distance_y, pos_z+shoot_distance_z));
-			//model = glm::rotate(model, glm::radians(car_rotation), glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+			model = glm::translate(model, glm::vec3(pos_x +shoot_distance_x+0.5f*sin(current_rotation), pos_y+0.5f+shoot_distance_y, pos_z+shoot_distance_z-0.7f));
+			
 			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -794,6 +796,17 @@ int main()
 			float horizontal = cos(glm::radians(current_rotation)) * bullet_speed;
 			//float vertical = Math.sin(Math.toRadians(pitch)) * wantedSpeedForward;
 			
+			/*
+			If using pitch and yaw
+
+			float horizontal = Math.cos(Math.toRadians(pitch)) * wantedSpeedForward;   // This is the horizontal movement we use
+			float vertical = Math.sin(Math.toRadians(pitch)) * wantedSpeedForward;  // for up and down movement of the bullet not neccesary
+
+			loc.x += Math.cos(Math.toRadians(yaw)) * horizontal;
+			loc.z -= Math.sin(Math.toRadians(yaw)) * horizontal;
+			loc.y += vertical;
+			*/
+
 			if (current_rotation > 90 && current_rotation < 270) {
 				shoot_distance_x -= (cos(glm::radians(current_rotation)) * horizontal);
 
@@ -814,12 +827,12 @@ int main()
 				shoot_distance_z -= (sin(glm::radians(current_rotation)) * horizontal);
 			}
 			
-			if (shoot_distance_x > 10 || shoot_distance_z > 10) {
+			if (shoot_distance_x > bullet_boundary || shoot_distance_x < -bullet_boundary || shoot_distance_z > bullet_boundary ||  shoot_distance_z < -bullet_boundary) {
 				shoot_distance_x = 0;
 				shoot_distance_y= 0;
 				shoot_distance_z = 0;
 				bullet_shot = false;
-
+				std::cout <<"LAZER COOLDOWN IS OVER!" << std::endl;
 			}
 			
 		}
