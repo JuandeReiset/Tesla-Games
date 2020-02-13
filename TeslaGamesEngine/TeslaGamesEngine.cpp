@@ -472,8 +472,7 @@ void parseControllerInput(Controller* controller)
 		std::cout << controller->getIndex() << " " << "R3 PRESSED and HELD" << std::endl;
 	}
 
-	//Sticks and triggers may hurt some n********...
-	// It was 'neighbors' geez....
+	//Sticks and triggers
 	if (!controller->LStick_InDeadzone()) {
 		std::cout << controller->getIndex() << " " << "LS: " << controller->leftStick_X() << std::endl;
 	}
@@ -646,7 +645,7 @@ int main()
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	audioObject2.playSound();   // Had to liste to it too many times, it became torture DONT FORGET TO UNCOMMENT
+	audioObject2.playSound();
 
 	//Controller
 	Controller player1 = Controller(1);
