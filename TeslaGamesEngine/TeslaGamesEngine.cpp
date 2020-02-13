@@ -450,7 +450,7 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
 	xwing.LoadModel("Models/x-wing.obj");
-	boxTest.LoadModel("Models/box.obj");
+	boxTest.LoadModel("Models/x-wing.obj");
 
 
 	// TODO: Put FPS code into Game.Play()
@@ -593,10 +593,23 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 
-		// Draw X-Wing and rotate camera
-		
-		
 
+
+		//render box
+		//get position of actual wall
+		physx::PxVec3 wallPos = physEng.GetBoxPos();
+		glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
+		std::cout << "WALL POS X: " << wallPos.x << " WALL POS Y: " << wallPos.y << " WALL POS Z: " << wallPos.z << std::endl;
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, wallp);
+		model = glm::scale(model, glm::vec3(0.005f, 0.005f, 0.005f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		//boxTest.RenderModel();
+		//boxTest.RenderModel();
+		xwing.RenderModel();
+		std::cout<<"GOT TO RENDER";
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		const physx::PxVehicleDrive4W* vehicle = physEng.gVehicle4W;	//get vehicle
@@ -606,7 +619,7 @@ int main()
 
 		//physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 
-		
+
 
 		vehicleQuaternion.x = 0;
 		vehicleQuaternion.z = 0;
@@ -625,10 +638,10 @@ int main()
 		//float xwingRot = physEng.GetRotationAngle();	//angle of rotation
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
-		model = glm::rotate(model, (float)angle, glmVecLocalY);
+		//model = glm::rotate(model, (float)angle, glmVecLocalY);
 		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
-		
-		
+
+
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
