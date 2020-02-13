@@ -255,6 +255,16 @@ void PhysicsEngine::initVehicle()
 	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
 	gVehicle4W->mDriveDynData.setUseAutoGears(true);
 
+	PxFilterData obstFilterData(snippetvehicle::COLLISION_FLAG_OBSTACLE, snippetvehicle::COLLISION_FLAG_OBSTACLE_AGAINST, 0, 0);
+	PxShape* boxwall = gPhysics->createShape(PxBoxGeometry(1.0f, 2.0f, 1.0f), *gMaterial, false);
+	wallActor = gPhysics->createRigidStatic(PxTransform(PxVec3(0, 0, 0)));
+	boxwall->setSimulationFilterData(obstFilterData);
+	wallActor->setGlobalPose(PxTransform(PxVec3(0, 2, 5)));
+	wallActor->attachShape(*boxwall);
+	gScene->addActor(*wallActor);
+
+
+
 	gVehicleModeTimer = 0.0f;
 	gVehicleOrderProgress = 0;
 	//startBrakeMode();
@@ -306,7 +316,7 @@ physx::PxVec3 PhysicsEngine::GetPosition()
 
 physx::PxVec3 PhysicsEngine::GetBoxPos()
 {
-	return shape->getLocalPose().p;
+	return wallActor->getGlobalPose().p;
 }
 
 float PhysicsEngine::GetRotationAngle()

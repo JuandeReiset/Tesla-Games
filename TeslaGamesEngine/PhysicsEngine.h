@@ -30,6 +30,8 @@ public:
 	void turn(float magnitude);
 	physx::PxVehicleDrive4W* gVehicle4W = NULL;
 	physx::PxRigidDynamic *getVehicleRigidDynamicPtr();
+	physx::PxRigidStatic* sphereActor = NULL;
+	physx::PxRigidStatic* wallActor = NULL;
 
 	
 
