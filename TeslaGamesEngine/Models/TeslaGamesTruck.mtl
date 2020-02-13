@@ -1,37 +1,5 @@
 # Blender MTL File: 'TeslaGamesTruck2.blend'
-# Material Count: 8
-
-newmtl Base
-Ns 323.999994
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
-d 1.000000
-illum 2
-
-newmtl Material.001
-Ns 225.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-map_Kd C:\\Users\\juanl\\Downloads\\orangetexrt.jpg
-
-newmtl Material.004
-Ns 225.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-map_Kd C:\\Users\\juanl\\Downloads\\windowtext.jpg
+# Material Count: 6
 
 newmtl TeslaBlack
 Ns 225.000000
@@ -64,7 +32,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\juanl\\Downloads\\red.jpg
+map_Kd C:\\Users\\juanl\\Downloads\\redTailight.jpg
 
 newmtl Teslacbase
 Ns 225.000000
@@ -76,6 +44,17 @@ Ni 1.450000
 d 1.000000
 illum 2
 map_Kd C:\\Users\\juanl\\Downloads\\whitemetal.jpg
+
+newmtl Windowtext
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\OrangeTint.jpg
 
 newmtl default4
 Ns 225.000000
