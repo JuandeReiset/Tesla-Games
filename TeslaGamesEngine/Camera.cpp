@@ -11,6 +11,8 @@ void Camera::Tick(float deltaTime)
 	// Update camera based on mouse/joystick moves
 }
 
+
+//front is a vector for camera direction
 Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
 {
 	position = startPosition;
@@ -23,6 +25,10 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	turnSpeed = startTurnSpeed;
 
 	update();
+}
+
+void Camera::setPosition(float x, float y, float z) {
+	position = glm::vec3(x, y, z);
 }
 
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
@@ -79,6 +85,10 @@ glm::mat4 Camera::calculateViewMatrix()
 glm::vec3 Camera::getCameraPosition()
 {
 	return position;
+}
+
+glm::vec3 Camera::getCameraCenter() {
+	return getCameraDirection() + front;
 }
 glm::vec3 Camera::getCameraDirection()
 {

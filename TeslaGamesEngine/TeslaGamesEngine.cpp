@@ -42,6 +42,9 @@
 //Controller stuff
 #include "Controller.h"
 
+//PhysX and Physics Engine
+#include "PhysicsEngine.h"
+
 //HUD stuff
 #include "HUD.h"
 
@@ -52,6 +55,11 @@
 
 // end of stuff for imgui
 
+struct localAxis {
+	glm::vec3 front;
+	glm::vec3 right;
+	glm::vec3 up;
+};
 
 
 /* Rendering variables */
@@ -89,16 +97,45 @@ Texture cupTexture;
 Material shinyMaterial;
 Material dullMaterial;
 
+PhysicsEngine physEng;
+
 Model xwing;
 Model TeslaCar;
 Model racetrack;
+Model bulletobj;
+Model boxTest;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 
+
+//helper variables
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
+
+bool bullet_shot = false; //after shooting there will be a cooldown for the player before he can shoot again
+bool bullet_sound_played = true;
+
+
+
+float shoot_distance_x = 0; // Bullet vector movement for x
+float shoot_distance_y = 0; // Bullet vector movement for y
+float shoot_distance_z = 0; //Bullet vector movement for z
+float bullet_speed = 2.f;  //velocity of bullet when traversing
+
+float bullet_boundary = 15;
+
+//Mesh positioning and rotation debugging for player/car obj (current position for CAR)
+float pos_x = 0;
+float pos_y = 0;
+float pos_z = 0;
+
+//Angle of rotation for player/car obj  
+float car_rotation = 90;
+
+float current_rotation; //Calculates the angle at the moment of firing lazer
+
 
 // Vertex Shader
 static const char* vShader = "Shaders/shader.vert";
@@ -111,6 +148,21 @@ static const char* vHshader = "Shaders/HUD_shader.vert";
 
 //Fragment shader of HUD_shader
 static const char* fHshader = "Shaders/HUD_shader.frag";
+
+struct yawPitch {
+	float yaw;
+	float pitch;
+};
+
+void update(localAxis a, float yaw, float pitch) {
+	a.front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	a.front.y = sin(glm::radians(pitch));
+	a.front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	a.front = glm::normalize(a.front);
+
+	a.right = glm::normalize(glm::cross(a.front, glm::vec3(0,1,0)));
+	a.up = glm::normalize(glm::cross(a.right, a.front));
+}
 
 /* End of rendering variables */
 
@@ -236,17 +288,17 @@ void CreateHUDs() {
 	};
 
 	GLfloat plusVertices[] = {
-		1440.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1440.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1460.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1460.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+		1270.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1270.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1290.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1290.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};	
 	
 	GLfloat nitroSymbolVertices[] = {
-		1440.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1440.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1460.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1460.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
+		1270.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
+		1270.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
+		1290.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
+		1290.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
 	};
 
 	GLfloat cupVertices[] = {
@@ -382,6 +434,8 @@ void CreateHUDs() {
 }
 
 // A function to obtain input, called each frame
+//add vehicle movement to these FOR NOW
+//TO DO: Someone comment all the controls for each button
 void parseControllerInput(Controller* controller)
 {
 	// Update controller object with current input MUST BE FIRST
@@ -391,7 +445,6 @@ void parseControllerInput(Controller* controller)
 
 	//Is button Pressed demo
 	if (controller->isButtonPressed(XButtons.A)) {
-		
 		std::cout << controller->getIndex() << " " <<"A PRESSED" << std::endl;
 	}
 	if (controller->isButtonPressed(XButtons.X)) {
@@ -407,9 +460,18 @@ void parseControllerInput(Controller* controller)
 	}
 	if (controller->isButtonDown(XButtons.L_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
+		bullet_shot = true; //Allows for bullets to be rendered
+		bullet_sound_played = false;
+		current_rotation = car_rotation;
+
+
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
+		bullet_shot= true; // Alllows for bullets to be rendered
+		bullet_sound_played = false;
+		current_rotation = car_rotation;
+
 	}
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
 		std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
@@ -439,20 +501,28 @@ void parseControllerInput(Controller* controller)
 		std::cout << controller->getIndex() << " " << "R3 PRESSED and HELD" << std::endl;
 	}
 
-	//Sticks and triggers may hurt some n********...
-	// It was 'neighbors' geez....
+	//Sticks and triggers
 	if (!controller->LStick_InDeadzone()) {
+		//physEng.turn(controller->leftStick_X());
 		std::cout << controller->getIndex() << " " << "LS: " << controller->leftStick_X() << std::endl;
 	}
 	if (!controller->RStick_InDeadzone()) {
+		//physEng.turn(controller->leftStick_X());
 		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
 	}
 	if (controller->rightTrigger() > 0.0) {
+		physEng.forwards(controller->rightTrigger());
+		
 		std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
 	}
+	else {
+		physEng.forwards(0.1f);
+	}
 	if (controller->leftTrigger() > 0.0) {
+		physEng.reverse(controller->leftTrigger());
 		std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
 	}
+	physEng.turn(controller->leftStick_X());
 
 	// Update the gamepad for next frame MUST BE LAST
 	controller->refreshState();
@@ -482,7 +552,11 @@ int main()
 	CreateShaders();
 	CreateHUDs();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -20.0f, 5.0f, 0.5f);
+	yawPitch yp;
+	yp.yaw = 90.f;
+	yp.pitch = -20.0f;
+
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureAlpha();
@@ -561,9 +635,9 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
 	xwing.LoadModel("Models/x-wing.obj");
-	TeslaCar.LoadModel("Models/Truck.obj");
-	racetrack.LoadModel("Models/track1.obj");
-
+	TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
+	racetrack.LoadModel("Models/track2.obj");
+	bulletobj.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
 
@@ -608,6 +682,7 @@ int main()
 	AudioEngine audioSystem = AudioEngine();
 	AudioBoomBox audioObject = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
 	AudioBoomBox audioObject2 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
+	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_BOUNCE);
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
@@ -624,6 +699,7 @@ int main()
 	std::cout << "Player1 connected: " << P1Connected << std::endl;
 	std::cout << "Player2 connected: " << P2Connected << std::endl;
 
+	//physEng.upwards();
 	//End of audio system setup/demo
 
 	//translation vector helper
@@ -632,6 +708,7 @@ int main()
 
 	while (!mainWindow.getShouldClose())
 	{
+		physEng.stepPhysics();
 
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
@@ -644,8 +721,8 @@ int main()
 		if (P2Connected)
 			parseControllerInput(&player2);
 
-		camera.keyControl(mainWindow.getsKeys(), deltaTime);
-		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+		//camera.keyControl(mainWindow.getsKeys(), deltaTime);
+		//camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -667,6 +744,9 @@ int main()
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
+
+		physx::PxVec3 xwingPos = physEng.GetPosition();	//position of xwing
+		camera.setPosition(xwingPos.x + 8.5f, xwingPos.y + 3.0f, xwingPos.z - 14.0f);
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
@@ -703,27 +783,43 @@ int main()
 		dirtTexture.UseTexture();
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
-		
-		// Draw X-Wing
+		//render box
+		//get position of actual wall
+		physx::PxVec3 wallPos = physEng.GetBoxPos();
+		glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
+		std::cout << "WALL POS X: " << wallPos.x << " WALL POS Y: " << wallPos.y << " WALL POS Z: " << wallPos.z << std::endl;
+
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
-		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+		model = glm::translate(model, wallp);
+		model = glm::scale(model, glm::vec3(0.005f, 0.005f, 0.005f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		//boxTest.RenderModel();
+		//boxTest.RenderModel();
 		xwing.RenderModel();
+
 		
-		
-		/*
-		glm::vec3 playerview = camera.getCameraPosition() + glm::vec3(4, -1, 0);
+		//glm::vec3 playerview = camera.getCameraPosition() + glm::vec3(4, -1, 0);
 		// Draw Tesla car
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, playerview);
-		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+		model = glm::translate(model, glm::vec3(pos_x,pos_y,pos_z));
+		model = glm::rotate(model, glm::radians(car_rotation), glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+		model = glm::scale(model, glm::vec3(0.06f, 0.06f, 0.06f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TeslaCar.RenderModel();
 
-		*/
+		std::cout<<"GOT TO RENDER";
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		const physx::PxVehicleDrive4W* vehicle = physEng.gVehicle4W;	//get vehicle
+		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
+		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
+
+
+		//physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
+
+		
 
 		// Draw racing track
 		model = glm::mat4(1.0f);
@@ -733,6 +829,100 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		racetrack.RenderModel();
 
+		//Draw bullets
+		
+		if (bullet_shot) {
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(pos_x +shoot_distance_x+0.5f*sin(current_rotation), pos_y+0.5f+shoot_distance_y, pos_z+shoot_distance_z-0.7f));
+			
+			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			bulletobj.RenderModel();
+
+			//PLAY LASER SOUND
+			if (!bullet_sound_played) {
+				audioObject3.playSound();
+				bullet_sound_played = true; //Stop once its played once
+
+			}
+			// IN CASE PHYSX HATES WORKING WITH ANGLE OF ROTATION (DONT REALLY KNOW HOW THAT WORKS)
+			// WE CAN IMPLEMENT A FORWARD SHOOTING FOR OUR DEMO (ALWAYS AIMING ON X) BY DOING:
+
+			// shoot_distance_x += bullet_speed;
+			// and eliminating all the other shoot_distance_axis manipulations
+
+
+			float horizontal = cos(glm::radians(current_rotation)) * bullet_speed;
+			//float vertical = Math.sin(Math.toRadians(pitch)) * wantedSpeedForward;
+			
+			/*
+			If using pitch and yaw
+
+			float horizontal = Math.cos(Math.toRadians(pitch)) * wantedSpeedForward;   // This is the horizontal movement we use
+			float vertical = Math.sin(Math.toRadians(pitch)) * wantedSpeedForward;  // for up and down movement of the bullet not neccesary
+
+			loc.x += Math.cos(Math.toRadians(yaw)) * horizontal;
+			loc.z -= Math.sin(Math.toRadians(yaw)) * horizontal;
+			loc.y += vertical;
+			*/
+
+			if (current_rotation > 90 && current_rotation < 270) {
+				shoot_distance_x -= (cos(glm::radians(current_rotation)) * horizontal);
+
+				//shoot_distance_y += 0.1;
+				shoot_distance_z += (sin(glm::radians(current_rotation)) * horizontal);
+			}
+			else if (current_rotation == 90) {
+				shoot_distance_z -= bullet_speed;
+			}
+			else if (current_rotation == 270) {
+				shoot_distance_z += bullet_speed;
+			}
+			
+		   else{
+				shoot_distance_x += (cos(glm::radians(current_rotation)) * horizontal);
+
+				//shoot_distance_y += 0.1;
+				shoot_distance_z -= (sin(glm::radians(current_rotation)) * horizontal);
+			}
+			
+			if (shoot_distance_x > bullet_boundary || shoot_distance_x < -bullet_boundary || shoot_distance_z > bullet_boundary ||  shoot_distance_z < -bullet_boundary) {
+				shoot_distance_x = 0;
+				shoot_distance_y= 0;
+				shoot_distance_z = 0;
+				bullet_shot = false;
+				std::cout <<"LAZER COOLDOWN IS OVER!" << std::endl;
+			}
+			
+		}
+
+		vehicleQuaternion.x = 0;
+		vehicleQuaternion.z = 0;
+		double magnitude = sqrt(vehicleQuaternion.w * vehicleQuaternion.w + vehicleQuaternion.y * vehicleQuaternion.y);
+		vehicleQuaternion.y /= magnitude;
+		vehicleQuaternion.w /= magnitude;
+
+		double angle = 2 * acos(vehicleQuaternion.w);
+
+		physx::PxVec3 localYAxis = vehicleQuaternion.rotate(physx::PxVec3(0, 1, 0));
+
+		glm::vec3 glmVecLocalY(localYAxis.x, localYAxis.y, localYAxis.z);
+
+
+
+		//float xwingRot = physEng.GetRotationAngle();	//angle of rotation
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
+		//model = glm::rotate(model, (float)angle, glmVecLocalY);
+		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+
+
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		xwing.RenderModel();
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Rendering HUD
 		hudShader.UseShader();
 		uniformModel = hudShader.GetModelLocation();
@@ -819,24 +1009,27 @@ int main()
 			static float f = 0.0f;
 			static int counter = 0;
 
-			
-			
+/*
 			ImGui::Begin("FPS COUNTER");                          // Create a window called "Hello, world!" and append into it.
 
-			/*    EXAMPLE OF DEBUGGING WITH IMGUI
-			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+		
 
 
-			ImGui::SliderFloat("float", &cartranslation.x, 0.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("OBJ X pos debug", &pos_x, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("OBJ Y pos debug", &pos_y, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("OBJ Z pos debug", &pos_z, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
+			ImGui::Text("OBJ angle debug");               // Display some text (you can use a format strings too)
+			ImGui::SliderFloat("angle",&car_rotation , 0.0f, 360.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
-			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-				counter++;
-			ImGui::SameLine();
-			*/
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+*/
+			ImGui::Begin("Debug");
+			ImGui::Text("Driving mode and Position");
+			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng.getModeType(), xwingPos.x, xwingPos.y, xwingPos.z);
+
 			ImGui::End();
 		}
 
@@ -866,6 +1059,7 @@ int main()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
+	
 
 
 	return 0;
