@@ -506,8 +506,8 @@ int main()
 		if (P2Connected)
 			parseControllerInput(&player2);
 
-		camera.keyControl(mainWindow.getsKeys(), deltaTime);
-		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+		//camera.keyControl(mainWindow.getsKeys(), deltaTime);
+		//camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -569,7 +569,7 @@ int main()
 		// Draw X-Wing
 		
 		physx::PxVec3 xwingPos = physEng.GetPosition();
-		//camera = Camera(glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z - 12.0f), glm::vec3(0.0f, 1.0f, 0.0f), 50.0f, 0.0f, 5.0f, 0.5f);
+		camera = Camera(glm::vec3(xwingPos.x + 8.5f, xwingPos.y + 3.0f, xwingPos.z - 14.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -20.0f, 5.0f, 0.5f);
 		float xwingRot = physEng.GetRotationAngle();
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
