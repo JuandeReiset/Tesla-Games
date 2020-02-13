@@ -92,13 +92,30 @@ Material dullMaterial;
 Model xwing;
 Model TeslaCar;
 Model racetrack;
+Model bulletobj;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 
+
+//helper variables
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
+
+bool shoot_available = false;
+float shoot_distance_x=0;
+float shoot_distance_y = 0;
+float shoot_distance_z = 0;
+
+
+//Mesh positioning and rotation debugging
+float pos_x = 0;
+float pos_y = 0;
+float pos_z = 0;
+float car_rotation = 2;
+
+
 
 // Vertex Shader
 static const char* vShader = "Shaders/shader.vert";
@@ -407,9 +424,11 @@ void parseControllerInput(Controller* controller)
 	}
 	if (controller->isButtonDown(XButtons.L_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
+		shoot_available = true; //Allows for bullets to be rendered
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
+		shoot_available = true; // Alllows for bullets to be rendered
 	}
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
 		std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
@@ -563,7 +582,7 @@ int main()
 	xwing.LoadModel("Models/x-wing.obj");
 	TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
 	racetrack.LoadModel("Models/track2.obj");
-
+	bulletobj.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
 
@@ -612,7 +631,7 @@ int main()
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	audioObject2.playSound();
+	//audioObject2.playSound();   // Had to liste to it too many times, it became torture DONT FORGET TO UNCOMMENT
 
 	//Controller
 	Controller player1 = Controller(1);
@@ -717,7 +736,8 @@ int main()
 		//glm::vec3 playerview = camera.getCameraPosition() + glm::vec3(4, -1, 0);
 		// Draw Tesla car
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(10.f,0.f,0.f));
+		model = glm::translate(model, glm::vec3(pos_x,pos_y,pos_z));
+		model = glm::rotate(model, car_rotation, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
 		model = glm::scale(model, glm::vec3(0.06f, 0.06f, 0.06f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -732,6 +752,29 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		racetrack.RenderModel();
+
+		//Draw bullets
+		
+		if (shoot_available) {
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(pos_x +shoot_distance_x, pos_y+shoot_distance_y, pos_z+shoot_distance_z));
+			model = glm::rotate(model, car_rotation, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			bulletobj.RenderModel();
+			shoot_distance_x += cos(car_rotation) + sin (car_rotation);
+			//shoot_distance_y += 0.1;
+			shoot_distance_z +=  (-sin (car_rotation)) + cos(car_rotation);
+			if (shoot_distance_x > 10 || shoot_distance_z > 10) {
+				shoot_distance_x = 0;
+				shoot_distance_y= 0;
+				shoot_distance_z = 0;
+
+
+				shoot_available = false;
+			}
+		}
 
 		//Rendering HUD
 		hudShader.UseShader();
@@ -823,17 +866,16 @@ int main()
 			
 			ImGui::Begin("FPS COUNTER");                          // Create a window called "Hello, world!" and append into it.
 
-			/*    EXAMPLE OF DEBUGGING WITH IMGUI
-			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+		
 
 
-			ImGui::SliderFloat("float", &cartranslation.x, 0.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("OBJ X pos debug", &pos_x, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("OBJ Y pos debug", &pos_y, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("OBJ Z pos debug", &pos_z, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
+			ImGui::Text("OBJ angle debug");               // Display some text (you can use a format strings too)
+			ImGui::SliderFloat("angle",&car_rotation , 0.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
-			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-				counter++;
-			ImGui::SameLine();
-			*/
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
