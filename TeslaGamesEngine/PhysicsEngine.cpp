@@ -307,6 +307,11 @@ physx::PxVec3 PhysicsEngine::GetBoxPos()
 	return shape->getLocalPose().p;
 }
 
+float PhysicsEngine::GetRotationAngle()
+{
+	return gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.getAngle();
+}
+
 void PhysicsEngine::stepPhysics()
 {
 	const PxF32 timestep = 1.0f / 60.0f;

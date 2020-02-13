@@ -16,6 +16,7 @@ public:
 	//~PhysicsEngine();
 	physx::PxVec3 GetPosition();
 	physx::PxVec3 GetBoxPos();
+	float GetRotationAngle();
 	void stepPhysics();
 	int modeType = -1;
 	int getModeType();
