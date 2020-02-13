@@ -568,12 +568,20 @@ int main()
 
 		// Draw X-Wing
 		
-		physx::PxVec3 xwingPos = physEng.GetPosition();
+		physx::PxVec3 xwingPos = physEng.GetPosition();	//position of xwing
 		camera = Camera(glm::vec3(xwingPos.x + 8.5f, xwingPos.y + 3.0f, xwingPos.z - 14.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -20.0f, 5.0f, 0.5f);
-		float xwingRot = physEng.GetRotationAngle();
+		float xwingRot = physEng.GetRotationAngle();	//angle of rotation
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
-		//model = glm::rotate(model, xwingRot, glm::vec3(0, 0, 0));
+		//model = glm::rotate(model, xwingRot, glm::vec3(0.0f, 0.0f, 1.0f));
+		
+		
+ /*
+		model = glm::translate(model, glm::vec3(-xwingPos.x, -xwingPos.y, -xwingPos.z));	//translate to origin
+		model = glm::rotate(model, xwingRot, glm::vec3(0.0f, 1.0f, 0.0f));					//rotate
+		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));		//translate back to place now rotated
+		*/
+		model = glm::rotate(model, xwingRot, glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
 		
 		
@@ -581,16 +589,6 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
 
-		// Draw Box
-/*		model = glm::mat4(1.0f);
-		physx::PxVec3 boxPos = physEng.GetBoxPos();
-		model = glm::translate(model, glm::vec3(boxPos.x, boxPos.y, boxPos.z));	//translate to physx vehicle pos
-		model = glm::scale(model, glm::vec3(3.f, 3.f, 3.f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		brickTexture.UseTexture();
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		boxTest.RenderModel();
-		*/
 
 		//Rendering HUD
 		hudShader.UseShader();

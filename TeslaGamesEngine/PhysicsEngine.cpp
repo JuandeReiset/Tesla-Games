@@ -309,6 +309,8 @@ physx::PxVec3 PhysicsEngine::GetBoxPos()
 
 float PhysicsEngine::GetRotationAngle()
 {
+	//glm::mat4(1.0f);
+
 	return gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.getAngle();
 }
 
