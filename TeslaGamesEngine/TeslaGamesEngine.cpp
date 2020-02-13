@@ -433,11 +433,15 @@ void parseControllerInput(Controller* controller)
 		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
 		bullet_shot = true; //Allows for bullets to be rendered
 		bullet_sound_played = false;
+		current_rotation = car_rotation;
+
+
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
 		bullet_shot= true; // Alllows for bullets to be rendered
 		bullet_sound_played = false;
+		current_rotation = car_rotation;
 
 	}
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
@@ -642,7 +646,7 @@ int main()
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	//audioObject2.playSound();   // Had to liste to it too many times, it became torture DONT FORGET TO UNCOMMENT
+	audioObject2.playSound();   // Had to liste to it too many times, it became torture DONT FORGET TO UNCOMMENT
 
 	//Controller
 	Controller player1 = Controller(1);
@@ -788,27 +792,27 @@ int main()
 			// and eliminating all the other shoot_distance_axis manipulations
 
 
-			float horizontal = cos(glm::radians(car_rotation)) * bullet_speed;
+			float horizontal = cos(glm::radians(current_rotation)) * bullet_speed;
 			//float vertical = Math.sin(Math.toRadians(pitch)) * wantedSpeedForward;
 			
-			if (car_rotation > 90 && car_rotation < 270) {
-				shoot_distance_x -= (cos(glm::radians(car_rotation)) * horizontal);
+			if (current_rotation > 90 && current_rotation < 270) {
+				shoot_distance_x -= (cos(glm::radians(current_rotation)) * horizontal);
 
 				//shoot_distance_y += 0.1;
-				shoot_distance_z += (sin(glm::radians(car_rotation)) * horizontal);
+				shoot_distance_z += (sin(glm::radians(current_rotation)) * horizontal);
 			}
-			else if (car_rotation == 90) {
+			else if (current_rotation == 90) {
 				shoot_distance_z -= bullet_speed;
 			}
-			else if (car_rotation == 270) {
+			else if (current_rotation == 270) {
 				shoot_distance_z += bullet_speed;
 			}
 			
 		   else{
-				shoot_distance_x += (cos(glm::radians(car_rotation)) * horizontal);
+				shoot_distance_x += (cos(glm::radians(current_rotation)) * horizontal);
 
 				//shoot_distance_y += 0.1;
-				shoot_distance_z -= (sin(glm::radians(car_rotation)) * horizontal);
+				shoot_distance_z -= (sin(glm::radians(current_rotation)) * horizontal);
 			}
 			
 			if (shoot_distance_x > 10 || shoot_distance_z > 10) {
