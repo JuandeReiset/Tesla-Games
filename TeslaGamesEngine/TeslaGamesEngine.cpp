@@ -42,6 +42,9 @@
 //Controller stuff
 #include "Controller.h"
 
+//PhysX and Physics Engine
+#include "PhysicsEngine.h"
+
 //HUD stuff
 #include "HUD.h"
 
@@ -52,6 +55,11 @@
 
 // end of stuff for imgui
 
+struct localAxis {
+	glm::vec3 front;
+	glm::vec3 right;
+	glm::vec3 up;
+};
 
 
 /* Rendering variables */
@@ -89,10 +97,13 @@ Texture cupTexture;
 Material shinyMaterial;
 Material dullMaterial;
 
+PhysicsEngine physEng;
+
 Model xwing;
 Model TeslaCar;
 Model racetrack;
 Model bulletobj;
+Model boxTest;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -137,6 +148,21 @@ static const char* vHshader = "Shaders/HUD_shader.vert";
 
 //Fragment shader of HUD_shader
 static const char* fHshader = "Shaders/HUD_shader.frag";
+
+struct yawPitch {
+	float yaw;
+	float pitch;
+};
+
+void update(localAxis a, float yaw, float pitch) {
+	a.front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	a.front.y = sin(glm::radians(pitch));
+	a.front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	a.front = glm::normalize(a.front);
+
+	a.right = glm::normalize(glm::cross(a.front, glm::vec3(0,1,0)));
+	a.up = glm::normalize(glm::cross(a.right, a.front));
+}
 
 /* End of rendering variables */
 
@@ -408,6 +434,8 @@ void CreateHUDs() {
 }
 
 // A function to obtain input, called each frame
+//add vehicle movement to these FOR NOW
+//TO DO: Someone comment all the controls for each button
 void parseControllerInput(Controller* controller)
 {
 	// Update controller object with current input MUST BE FIRST
@@ -417,7 +445,6 @@ void parseControllerInput(Controller* controller)
 
 	//Is button Pressed demo
 	if (controller->isButtonPressed(XButtons.A)) {
-		
 		std::cout << controller->getIndex() << " " <<"A PRESSED" << std::endl;
 	}
 	if (controller->isButtonPressed(XButtons.X)) {
@@ -476,17 +503,26 @@ void parseControllerInput(Controller* controller)
 
 	//Sticks and triggers
 	if (!controller->LStick_InDeadzone()) {
+		//physEng.turn(controller->leftStick_X());
 		std::cout << controller->getIndex() << " " << "LS: " << controller->leftStick_X() << std::endl;
 	}
 	if (!controller->RStick_InDeadzone()) {
+		//physEng.turn(controller->leftStick_X());
 		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
 	}
 	if (controller->rightTrigger() > 0.0) {
+		physEng.forwards(controller->rightTrigger());
+		
 		std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
 	}
+	else {
+		physEng.forwards(0.1f);
+	}
 	if (controller->leftTrigger() > 0.0) {
+		physEng.reverse(controller->leftTrigger());
 		std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
 	}
+	physEng.turn(controller->leftStick_X());
 
 	// Update the gamepad for next frame MUST BE LAST
 	controller->refreshState();
@@ -516,7 +552,11 @@ int main()
 	CreateShaders();
 	CreateHUDs();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -20.0f, 5.0f, 0.5f);
+	yawPitch yp;
+	yp.yaw = 90.f;
+	yp.pitch = -20.0f;
+
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureAlpha();
@@ -659,6 +699,7 @@ int main()
 	std::cout << "Player1 connected: " << P1Connected << std::endl;
 	std::cout << "Player2 connected: " << P2Connected << std::endl;
 
+	//physEng.upwards();
 	//End of audio system setup/demo
 
 	//translation vector helper
@@ -667,6 +708,7 @@ int main()
 
 	while (!mainWindow.getShouldClose())
 	{
+		physEng.stepPhysics();
 
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
@@ -679,8 +721,8 @@ int main()
 		if (P2Connected)
 			parseControllerInput(&player2);
 
-		camera.keyControl(mainWindow.getsKeys(), deltaTime);
-		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+		//camera.keyControl(mainWindow.getsKeys(), deltaTime);
+		//camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -702,6 +744,9 @@ int main()
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
+
+		physx::PxVec3 xwingPos = physEng.GetPosition();	//position of xwing
+		camera.setPosition(xwingPos.x + 8.5f, xwingPos.y + 3.0f, xwingPos.z - 14.0f);
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
@@ -738,16 +783,21 @@ int main()
 		dirtTexture.UseTexture();
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
-		
-		// Draw X-Wing
+		//render box
+		//get position of actual wall
+		physx::PxVec3 wallPos = physEng.GetBoxPos();
+		glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
+		std::cout << "WALL POS X: " << wallPos.x << " WALL POS Y: " << wallPos.y << " WALL POS Z: " << wallPos.z << std::endl;
+
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
-		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+		model = glm::translate(model, wallp);
+		model = glm::scale(model, glm::vec3(0.005f, 0.005f, 0.005f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		//boxTest.RenderModel();
+		//boxTest.RenderModel();
 		xwing.RenderModel();
-		
-		
+
 		
 		//glm::vec3 playerview = camera.getCameraPosition() + glm::vec3(4, -1, 0);
 		// Draw Tesla car
@@ -758,6 +808,16 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TeslaCar.RenderModel();
+
+		std::cout<<"GOT TO RENDER";
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		const physx::PxVehicleDrive4W* vehicle = physEng.gVehicle4W;	//get vehicle
+		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
+		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
+
+
+		//physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 
 		
 
@@ -837,6 +897,32 @@ int main()
 			
 		}
 
+		vehicleQuaternion.x = 0;
+		vehicleQuaternion.z = 0;
+		double magnitude = sqrt(vehicleQuaternion.w * vehicleQuaternion.w + vehicleQuaternion.y * vehicleQuaternion.y);
+		vehicleQuaternion.y /= magnitude;
+		vehicleQuaternion.w /= magnitude;
+
+		double angle = 2 * acos(vehicleQuaternion.w);
+
+		physx::PxVec3 localYAxis = vehicleQuaternion.rotate(physx::PxVec3(0, 1, 0));
+
+		glm::vec3 glmVecLocalY(localYAxis.x, localYAxis.y, localYAxis.z);
+
+
+
+		//float xwingRot = physEng.GetRotationAngle();	//angle of rotation
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
+		//model = glm::rotate(model, (float)angle, glmVecLocalY);
+		model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+
+
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		xwing.RenderModel();
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Rendering HUD
 		hudShader.UseShader();
 		uniformModel = hudShader.GetModelLocation();
@@ -923,8 +1009,7 @@ int main()
 			static float f = 0.0f;
 			static int counter = 0;
 
-			
-			
+/*
 			ImGui::Begin("FPS COUNTER");                          // Create a window called "Hello, world!" and append into it.
 
 		
@@ -940,6 +1025,11 @@ int main()
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+*/
+			ImGui::Begin("Debug");
+			ImGui::Text("Driving mode and Position");
+			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng.getModeType(), xwingPos.x, xwingPos.y, xwingPos.z);
+
 			ImGui::End();
 		}
 
@@ -969,6 +1059,7 @@ int main()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
+	
 
 
 	return 0;
