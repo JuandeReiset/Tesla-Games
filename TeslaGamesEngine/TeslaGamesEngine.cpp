@@ -103,18 +103,25 @@ SpotLight spotLights[MAX_SPOT_LIGHTS];
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 
-bool shoot_available = false;
-float shoot_distance_x=0;
-float shoot_distance_y = 0;
-float shoot_distance_z = 0;
+bool bullet_shot = false; //after shooting there will be a cooldown for the player before he can shoot again
+bool bullet_sound_played = false;
 
 
-//Mesh positioning and rotation debugging
+
+float shoot_distance_x = 0; // Bullet vector movement for x
+float shoot_distance_y = 0; // Bullet vector movement for y
+float shoot_distance_z = 0; //Bullet vector movement for z
+float bullet_speed = 2.f;  //velocity of bullet when traversing
+
+//Mesh positioning and rotation debugging for player/car obj (current position for CAR)
 float pos_x = 0;
 float pos_y = 0;
 float pos_z = 0;
-float car_rotation = 2;
 
+//Angle of rotation for player/car obj  
+float car_rotation = 90;
+
+float current_rotation; //Calculates the angle at the moment of firing lazer
 
 
 // Vertex Shader
@@ -424,11 +431,14 @@ void parseControllerInput(Controller* controller)
 	}
 	if (controller->isButtonDown(XButtons.L_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
-		shoot_available = true; //Allows for bullets to be rendered
+		bullet_shot = true; //Allows for bullets to be rendered
+		bullet_sound_played = false;
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
-		shoot_available = true; // Alllows for bullets to be rendered
+		bullet_shot= true; // Alllows for bullets to be rendered
+		bullet_sound_played = false;
+
 	}
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
 		std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
@@ -627,6 +637,7 @@ int main()
 	AudioEngine audioSystem = AudioEngine();
 	AudioBoomBox audioObject = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
 	AudioBoomBox audioObject2 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
+	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_BOUNCE);
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
@@ -737,7 +748,7 @@ int main()
 		// Draw Tesla car
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(pos_x,pos_y,pos_z));
-		model = glm::rotate(model, car_rotation, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+		model = glm::rotate(model, glm::radians(car_rotation), glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
 		model = glm::scale(model, glm::vec3(0.06f, 0.06f, 0.06f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -755,25 +766,59 @@ int main()
 
 		//Draw bullets
 		
-		if (shoot_available) {
+		if (bullet_shot) {
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(pos_x +shoot_distance_x, pos_y+shoot_distance_y, pos_z+shoot_distance_z));
-			model = glm::rotate(model, car_rotation, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+			//model = glm::rotate(model, glm::radians(car_rotation), glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
 			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 			bulletobj.RenderModel();
-			shoot_distance_x += cos(car_rotation) + sin (car_rotation);
-			//shoot_distance_y += 0.1;
-			shoot_distance_z +=  (-sin (car_rotation)) + cos(car_rotation);
+
+			//PLAY LASER SOUND
+			if (!bullet_sound_played) {
+				audioObject3.playSound();
+				bullet_sound_played = true; //Stop once its played once
+
+			}
+			// IN CASE PHYSX HATES WORKING WITH ANGLE OF ROTATION (DONT REALLY KNOW HOW THAT WORKS)
+			// WE CAN IMPLEMENT A FORWARD SHOOTING FOR OUR DEMO (ALWAYS AIMING ON X) BY DOING:
+
+			// shoot_distance_x += bullet_speed;
+			// and eliminating all the other shoot_distance_axis manipulations
+
+
+			float horizontal = cos(glm::radians(car_rotation)) * bullet_speed;
+			//float vertical = Math.sin(Math.toRadians(pitch)) * wantedSpeedForward;
+			
+			if (car_rotation > 90 && car_rotation < 270) {
+				shoot_distance_x -= (cos(glm::radians(car_rotation)) * horizontal);
+
+				//shoot_distance_y += 0.1;
+				shoot_distance_z += (sin(glm::radians(car_rotation)) * horizontal);
+			}
+			else if (car_rotation == 90) {
+				shoot_distance_z -= bullet_speed;
+			}
+			else if (car_rotation == 270) {
+				shoot_distance_z += bullet_speed;
+			}
+			
+		   else{
+				shoot_distance_x += (cos(glm::radians(car_rotation)) * horizontal);
+
+				//shoot_distance_y += 0.1;
+				shoot_distance_z -= (sin(glm::radians(car_rotation)) * horizontal);
+			}
+			
 			if (shoot_distance_x > 10 || shoot_distance_z > 10) {
 				shoot_distance_x = 0;
 				shoot_distance_y= 0;
 				shoot_distance_z = 0;
+				bullet_shot = false;
 
-
-				shoot_available = false;
 			}
+			
 		}
 
 		//Rendering HUD
@@ -874,7 +919,7 @@ int main()
 			ImGui::SliderFloat("OBJ Z pos debug", &pos_z, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
 			ImGui::Text("OBJ angle debug");               // Display some text (you can use a format strings too)
-			ImGui::SliderFloat("angle",&car_rotation , 0.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("angle",&car_rotation , 0.0f, 360.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
 
