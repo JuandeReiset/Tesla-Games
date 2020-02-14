@@ -26,6 +26,7 @@ public:
 	glm::vec3 getCameraCenter();
 	glm::vec3 front;
 	void setPosition(float x, float y, float z);
+	void setCenter(float x, float y, float z);
 
 	glm::mat4 calculateViewMatrix();
 

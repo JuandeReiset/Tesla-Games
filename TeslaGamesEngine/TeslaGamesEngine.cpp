@@ -746,7 +746,8 @@ int main()
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
 		physx::PxVec3 xwingPos = physEng.GetPosition();	//position of xwing
-		camera.setPosition(xwingPos.x, xwingPos.y + 2.f, xwingPos.z);
+		camera.setPosition(xwingPos.x, xwingPos.y + 5.f, xwingPos.z - 3);
+		camera.setCenter(xwingPos.x, xwingPos.y + 2, xwingPos.z);
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));

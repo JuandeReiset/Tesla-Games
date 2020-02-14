@@ -31,6 +31,13 @@ void Camera::setPosition(float x, float y, float z) {
 	position = glm::vec3(x, y, z);
 }
 
+void Camera::setCenter(float x, float y, float z) {
+	glm::vec3 center = glm::vec3(x, y, z);
+	front = glm::normalize(center - position);
+
+	update();
+}
+
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
 {
 	GLfloat velocity = moveSpeed * deltaTime;
@@ -77,6 +84,8 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	update();
 }
 
+
+
 glm::mat4 Camera::calculateViewMatrix()
 {
 	return glm::lookAt(position, position + front, up);
@@ -94,7 +103,7 @@ glm::vec3 Camera::getCameraDirection()
 {
 	return glm::normalize(front);
 }
-
+/*
 void Camera::update()
 {
 	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
@@ -102,6 +111,11 @@ void Camera::update()
 	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	front = glm::normalize(front);
 
+	right = glm::normalize(glm::cross(front, worldUp));
+	up = glm::normalize(glm::cross(right, front));
+}
+*/
+void Camera::update() {
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
 }
