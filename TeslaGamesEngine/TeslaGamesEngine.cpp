@@ -16,6 +16,7 @@
 #include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
+#include <glm\gtx\rotate_vector.hpp>
 
 #include "Window.h"
 #include "Mesh.h"
@@ -133,9 +134,8 @@ float pos_z = 0;
 
 //Angle of rotation for player/car obj  
 float car_rotation = 90;
-
 float current_rotation; //Calculates the angle at the moment of firing lazer
-
+glm::vec3 car_front;
 
 // Vertex Shader
 static const char* vShader = "Shaders/shader.vert";
@@ -706,6 +706,7 @@ int main()
 	//translation vector helper
 	glm::vec3 cartranslation(4,0,0);
 	//
+	car_front = glm::vec3(0, 0, 1);
 
 	while (!mainWindow.getShouldClose())
 	{
@@ -714,6 +715,7 @@ int main()
 		const physx::PxVehicleDrive4W* vehicle = physEng.gVehicle4W;	//get vehicle
 		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
 		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
+		physx::PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
 		const physx::PxVec3 vehiclePositionPhysx = vDynamic->getGlobalPose().p;
 		glm::vec3 vehiclePosition(vehiclePositionPhysx.x, vehiclePositionPhysx.y, vehiclePositionPhysx.z);
 
@@ -753,8 +755,8 @@ int main()
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
 		physx::PxVec3 xwingPos = physEng.GetPosition();	//position of xwing
-		camera.setPosition(xwingPos.x, xwingPos.y + 5.f, xwingPos.z - 6.f);
-		camera.setCenter(xwingPos.x, xwingPos.y + 2, xwingPos.z);
+		camera.setPosition(xwingPos.x, xwingPos.y + 5.f, xwingPos.z - 10.f);
+		//camera.setCenter(xwingPos.x, xwingPos.y + 2, xwingPos.z);
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
@@ -795,7 +797,7 @@ int main()
 		//get position of actual wall
 		physx::PxVec3 wallPos = physEng.GetBoxPos();
 		glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
-		std::cout << "WALL POS X: " << wallPos.x << " WALL POS Y: " << wallPos.y << " WALL POS Z: " << wallPos.z << std::endl;
+		//std::cout << "WALL POS X: " << wallPos.x << " WALL POS Y: " << wallPos.y << " WALL POS Z: " << wallPos.z << std::endl;
 
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, wallp);
@@ -812,12 +814,14 @@ int main()
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(pos_x,pos_y,pos_z));
 		model = glm::rotate(model, glm::radians(car_rotation), glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+
+		
 		model = glm::scale(model, glm::vec3(0.06f, 0.06f, 0.06f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TeslaCar.RenderModel();
 
-		std::cout<<"GOT TO RENDER";
+		//std::cout<<"GOT TO RENDER";
 
 		
 
@@ -921,10 +925,12 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
 		//////////////////////////////////////////////////////////////////////////
-		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
-
-		camera.front = glm::vec3(forwardvec.x, forwardvec.y, forwardvec.z);
-
+		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, vehicleQuaternion.y, vehicleQuaternion.z);	//holds camera vectors that match the car
+		//physx::PxVec3 forwardvec = physE	//holds camera vectors that match the car
+		//camera.front = glm::normalize(glm::vec3((cos(car_rotation), 0, sin(car_rotation));
+		//camera.front = glm::vec3(forwardvec.x, forwardvec.y, forwardvec.z);
+		camera.setFront(v_dir.x, -0.5, v_dir.z);
+		//camera.setFront(forwardvec.x, forwardvec.y, forwardvec.z);
 
 		
 
@@ -1035,6 +1041,8 @@ int main()
 			ImGui::Begin("Debug");
 			ImGui::Text("Driving mode and Position");
 			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng.getModeType(), xwingPos.x, xwingPos.y, xwingPos.z);
+			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng.getModeType(), vehicleQuaternion.x, vehicleQuaternion, vehicleQuaternion.z);
+			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng.getModeType(), v_dir.x, v_dir.y, v_dir.z);
 
 			ImGui::End();
 		}

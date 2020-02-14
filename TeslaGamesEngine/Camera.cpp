@@ -34,8 +34,14 @@ void Camera::setPosition(float x, float y, float z) {
 void Camera::setCenter(float x, float y, float z) {
 	glm::vec3 center = glm::vec3(x, y, z);
 	front = glm::normalize(center - position);
-
-	update();
+	right = glm::normalize(glm::cross(front, worldUp));
+	up = glm::normalize(glm::cross(right, front));
+	//update();
+}
+void Camera::setFront(float x, float y, float z) {
+	front = glm::vec3(x, y, z);
+	right = glm::normalize(glm::cross(front, worldUp));
+	up = glm::normalize(glm::cross(right, front));
 }
 
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
@@ -103,7 +109,7 @@ glm::vec3 Camera::getCameraDirection()
 {
 	return glm::normalize(front);
 }
-/*
+
 void Camera::update()
 {
 	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
@@ -114,12 +120,12 @@ void Camera::update()
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
 }
-*/
+/*
 void Camera::update() {
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
 }
-
+*/
 Camera::~Camera()
 {
 }
