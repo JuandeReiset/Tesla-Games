@@ -122,7 +122,7 @@ bool bullet_sound_played = true;
 float shoot_distance_x = 0; // Bullet vector movement for x
 float shoot_distance_y = 0; // Bullet vector movement for y
 float shoot_distance_z = 0; //Bullet vector movement for z
-float bullet_speed = 2.f;  //velocity of bullet when traversing
+float bullet_speed = 0.5f;  //velocity of bullet when traversing
 
 float bullet_boundary = 15;
 
@@ -634,7 +634,8 @@ int main()
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
-	xwing.LoadModel("Models/xwing2.obj");
+	xwing.LoadModel("Models/TeslaGamesTruck2.obj");
+	boxTest.LoadModel("Models/wall.obj");
 	TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
 	racetrack.LoadModel("Models/track2.obj");
 	bulletobj.LoadModel("Models/bullet.obj");
@@ -710,6 +711,12 @@ int main()
 	{
 		physEng.stepPhysics();
 
+		const physx::PxVehicleDrive4W* vehicle = physEng.gVehicle4W;	//get vehicle
+		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
+		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
+		const physx::PxVec3 vehiclePositionPhysx = vDynamic->getGlobalPose().p;
+		glm::vec3 vehiclePosition(vehiclePositionPhysx.x, vehiclePositionPhysx.y, vehiclePositionPhysx.z);
+
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		lastTime = now;
@@ -746,7 +753,7 @@ int main()
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
 		physx::PxVec3 xwingPos = physEng.GetPosition();	//position of xwing
-		camera.setPosition(xwingPos.x, xwingPos.y + 5.f, xwingPos.z - 3);
+		camera.setPosition(xwingPos.x, xwingPos.y + 5.f, xwingPos.z - 6.f);
 		camera.setCenter(xwingPos.x, xwingPos.y + 2, xwingPos.z);
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
@@ -792,10 +799,10 @@ int main()
 
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, wallp);
-		model = glm::scale(model, glm::vec3(0.005f, 0.005f, 0.005f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		//boxTest.RenderModel();
+		boxTest.RenderModel();
 		//boxTest.RenderModel();
 		xwing.RenderModel();
 
@@ -812,32 +819,14 @@ int main()
 
 		std::cout<<"GOT TO RENDER";
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		const physx::PxVehicleDrive4W* vehicle = physEng.gVehicle4W;	//get vehicle
-		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
-		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
-
-
-		physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
-		//modelMat.scale(physx::PxVec4(0.006f, 0.006f, 0.006f, 1.f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
-		//float xwingRot = physEng.GetRotationAngle();	//angle of rotation
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
-
-		//model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
-
 		
-		
-		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		xwing.RenderModel();
 
+//////////////////////////////////////////////////////////////////////////
 		
 
 		// Draw racing track
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -10.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(7.f,7.f, 7.f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -847,7 +836,7 @@ int main()
 		
 		if (bullet_shot) {
 			model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(pos_x +shoot_distance_x+0.5f*sin(current_rotation), pos_y+0.5f+shoot_distance_y, pos_z+shoot_distance_z-0.7f));
+			model = glm::translate(model, glm::vec3(vehiclePosition.x +shoot_distance_x+0.5f*sin(current_rotation), vehiclePosition.y+0.5f+shoot_distance_y, vehiclePosition.z+shoot_distance_z-0.7f));
 			
 			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -910,6 +899,31 @@ int main()
 			}
 			
 		}
+
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		
+
+
+		physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
+		modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
+		//float xwingRot = physEng.GetRotationAngle();	//angle of rotation
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
+
+		//model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+
+
+
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		xwing.RenderModel();
+		//////////////////////////////////////////////////////////////////////////
+		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
+
+		camera.front = glm::vec3(forwardvec.x, forwardvec.y, forwardvec.z);
 
 
 		
@@ -988,7 +1002,7 @@ int main()
 
 		glEnable(GL_DEPTH_TEST);
 
-
+		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		//HUD ends here
 		// End of rendering 
 
