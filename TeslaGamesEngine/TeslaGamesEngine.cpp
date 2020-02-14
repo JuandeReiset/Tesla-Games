@@ -755,7 +755,7 @@ int main()
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
 		physx::PxVec3 xwingPos = physEng.GetPosition();	//position of xwing
-		camera.setPosition(xwingPos.x, xwingPos.y + 10, xwingPos.z - 10.f);
+		//camera.setPosition(xwingPos.x, xwingPos.y + 5 , xwingPos.z - 5.f);
 		//camera.setCenter(xwingPos.x, xwingPos.y + 2, xwingPos.z);
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
@@ -893,11 +893,17 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		xwing.RenderModel();
 		//////////////////////////////////////////////////////////////////////////
-		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, vehicleQuaternion.y, vehicleQuaternion.z);	//holds camera vectors that match the car
+		//physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, vehicleQuaternion.y, vehicleQuaternion.z);	//holds camera vectors that match the car
 		//physx::PxVec3 forwardvec = physE	//holds camera vectors that match the car
 		//camera.front = glm::normalize(glm::vec3((cos(car_rotation), 0, sin(car_rotation));
 		//camera.front = glm::vec3(forwardvec.x, forwardvec.y, forwardvec.z);
-		camera.setFront(v_dir.x, -0.1, v_dir.z);
+		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
+		camera.setFront(dir.x, -0.5, dir.z);
+		//camera.setFront(v_dir.x, -0.5, v_dir.z);
+		float xoffset = 5 * dir.x;
+		float zoffset = 5 * dir.z;
+		camera.setPosition(xwingPos.x - xoffset, xwingPos.y + 5 , xwingPos.z - zoffset);
+
 		//camera.setFront(forwardvec.x, forwardvec.y, forwardvec.z);
 
 		car_rotation = vehicleQuaternion.getAngle();
