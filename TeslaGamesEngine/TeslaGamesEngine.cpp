@@ -100,7 +100,6 @@ Material dullMaterial;
 
 PhysicsEngine physEng;
 
-Model xwing;
 Model TeslaCar;
 Model racetrack;
 Model bulletobj;
@@ -633,9 +632,9 @@ int main()
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
-	xwing.LoadModel("Models/TeslaGamesTruck2.obj");
+	TeslaCar.LoadModel("Models/TeslaGamesTruck2.obj");
 	boxTest.LoadModel("Models/wall.obj");
-	TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
+	//TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
 	racetrack.LoadModel("Models/track2.obj");
 	bulletobj.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
@@ -754,9 +753,7 @@ int main()
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
-		physx::PxVec3 xwingPos = physEng.GetPosition();	//position of xwing
-		camera.setPosition(xwingPos.x, xwingPos.y + 10, xwingPos.z - 10.f);
-		//camera.setCenter(xwingPos.x, xwingPos.y + 2, xwingPos.z);
+		physx::PxVec3 carPos = physEng.GetPosition();	//position of TeslaCar
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
@@ -768,7 +765,7 @@ int main()
 
 		// Draw pyramid one
 		glm::mat4 model = glm::mat4(1.0f);
-
+/*
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
 		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -784,7 +781,6 @@ int main()
 		dirtTexture.UseTexture();
 		dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[1]->RenderMesh();
-
 		// Draw base
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
@@ -793,11 +789,12 @@ int main()
 		dirtTexture.UseTexture();
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
+		*/
+
 		//render box
 		//get position of actual wall
 		physx::PxVec3 wallPos = physEng.GetBoxPos();
 		glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
-		//std::cout << "WALL POS X: " << wallPos.x << " WALL POS Y: " << wallPos.y << " WALL POS Z: " << wallPos.z << std::endl;
 
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, wallp);
@@ -805,11 +802,8 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		boxTest.RenderModel();
-		//boxTest.RenderModel();
-		xwing.RenderModel();
 
-		
-		//glm::vec3 playerview = camera.getCameraPosition() + glm::vec3(4, -1, 0);
+	/*
 		// Draw Tesla car
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(pos_x,pos_y,pos_z));
@@ -820,8 +814,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TeslaCar.RenderModel();
-
-		//std::cout<<"GOT TO RENDER";
+*/
 
 		
 
@@ -831,7 +824,7 @@ int main()
 		// Draw racing track
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(7.f,7.f, 7.f));
+		model = glm::scale(model, glm::vec3(10.f,10.f, 10.f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		racetrack.RenderModel();
@@ -881,29 +874,25 @@ int main()
 		physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 		modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
-		//float xwingRot = physEng.GetRotationAngle();	//angle of rotation
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(xwingPos.x, xwingPos.y, xwingPos.z));	//translate to physx vehicle pos
-
-		//model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+		model = glm::translate(model, glm::vec3(carPos.x, carPos.y, carPos.z));	//translate to physx vehicle pos
 
 
 
-		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		xwing.RenderModel();
-		//////////////////////////////////////////////////////////////////////////
-		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, vehicleQuaternion.y, vehicleQuaternion.z);	//holds camera vectors that match the car
-		//physx::PxVec3 forwardvec = physE	//holds camera vectors that match the car
-		//camera.front = glm::normalize(glm::vec3((cos(car_rotation), 0, sin(car_rotation));
-		//camera.front = glm::vec3(forwardvec.x, forwardvec.y, forwardvec.z);
-		camera.setFront(v_dir.x, -0.1, v_dir.z);
-		//camera.setFront(forwardvec.x, forwardvec.y, forwardvec.z);
+		TeslaCar.RenderModel();
+
+		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
+		camera.setFront(dir.x, -0.5, dir.z);
+		float xoffset = 5 * dir.x;
+		float zoffset = 5 * dir.z;
+		camera.setPosition(carPos.x - xoffset, carPos.y + 5 , carPos.z - zoffset);
+
 
 		car_rotation = vehicleQuaternion.getAngle();
 		
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Rendering HUD
 		hudShader.UseShader();
 		uniformModel = hudShader.GetModelLocation();
@@ -1009,7 +998,9 @@ int main()
 */
 			ImGui::Begin("Debug");
 			ImGui::Text("Driving mode and Position");
-			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng.getModeType(), xwingPos.x, xwingPos.y, xwingPos.z);
+			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng.getModeType(), carPos.x, carPos.y, carPos.z);
 			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng.getModeType(), vehicleQuaternion.x, vehicleQuaternion, vehicleQuaternion.z);
 			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng.getModeType(), v_dir.x, v_dir.y, v_dir.z);
 
