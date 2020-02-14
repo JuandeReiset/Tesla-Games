@@ -464,7 +464,6 @@ void parseControllerInput(Controller* controller)
 		bullet_sound_played = false;
 		current_rotation = car_rotation;
 
-
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
@@ -923,9 +922,9 @@ int main()
 		//////////////////////////////////////////////////////////////////////////
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
 
-		camera.front = glm::vec3(forwardvec.x, forwardvec.y, forwardvec.z);
+		//camera.front = glm::vec3(forwardvec.x, forwardvec.y, forwardvec.z);
 
-
+		car_rotation = vehicleQuaternion.getAngle();
 		
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

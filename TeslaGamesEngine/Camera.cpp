@@ -38,6 +38,8 @@ void Camera::setCenter(float x, float y, float z) {
 	update();
 }
 
+
+
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
 {
 	GLfloat velocity = moveSpeed * deltaTime;
@@ -115,6 +117,7 @@ void Camera::update()
 	up = glm::normalize(glm::cross(right, front));
 }
 */
+
 void Camera::update() {
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
