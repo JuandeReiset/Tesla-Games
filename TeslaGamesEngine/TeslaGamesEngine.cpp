@@ -845,7 +845,7 @@ int main()
 		
 		if (bullet_shot) {
 			model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(vehiclePosition.x +shoot_distance_x+0.5f*sin(current_rotation), vehiclePosition.y+0.5f+shoot_distance_y, vehiclePosition.z+shoot_distance_z-0.7f));
+			model = glm::translate(model, glm::vec3(vehiclePosition.x +shoot_distance_x, vehiclePosition.y+0.5f+shoot_distance_y, vehiclePosition.z+shoot_distance_z));
 			
 			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
