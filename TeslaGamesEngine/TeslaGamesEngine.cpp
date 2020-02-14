@@ -464,7 +464,6 @@ void parseControllerInput(Controller* controller)
 		bullet_sound_played = false;
 		current_rotation = car_rotation;
 
-
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
@@ -837,6 +836,11 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		racetrack.RenderModel();
 
+		///////////////////////////////////////////////////////////////////////
+		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
+
+		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
+/////////////////////////////////////////////////////////////////////////////////
 		//Draw bullets
 		
 		if (bullet_shot) {
@@ -854,47 +858,10 @@ int main()
 				bullet_sound_played = true; //Stop once its played once
 
 			}
-			// IN CASE PHYSX HATES WORKING WITH ANGLE OF ROTATION (DONT REALLY KNOW HOW THAT WORKS)
-			// WE CAN IMPLEMENT A FORWARD SHOOTING FOR OUR DEMO (ALWAYS AIMING ON X) BY DOING:
+		
+			shoot_distance_x += Direction.x *bullet_speed;
+			shoot_distance_z += Direction.z * bullet_speed;
 
-			// shoot_distance_x += bullet_speed;
-			// and eliminating all the other shoot_distance_axis manipulations
-
-
-			float horizontal = cos(glm::radians(current_rotation)) * bullet_speed;
-			//float vertical = Math.sin(Math.toRadians(pitch)) * wantedSpeedForward;
-			
-			/*
-			If using pitch and yaw
-
-			float horizontal = Math.cos(Math.toRadians(pitch)) * wantedSpeedForward;   // This is the horizontal movement we use
-			float vertical = Math.sin(Math.toRadians(pitch)) * wantedSpeedForward;  // for up and down movement of the bullet not neccesary
-
-			loc.x += Math.cos(Math.toRadians(yaw)) * horizontal;
-			loc.z -= Math.sin(Math.toRadians(yaw)) * horizontal;
-			loc.y += vertical;
-			*/
-
-			if (current_rotation > 90 && current_rotation < 270) {
-				shoot_distance_x -= (cos(glm::radians(current_rotation)) * horizontal);
-
-				//shoot_distance_y += 0.1;
-				shoot_distance_z += (sin(glm::radians(current_rotation)) * horizontal);
-			}
-			else if (current_rotation == 90) {
-				shoot_distance_z -= bullet_speed;
-			}
-			else if (current_rotation == 270) {
-				shoot_distance_z += bullet_speed;
-			}
-			
-		   else{
-				shoot_distance_x += (cos(glm::radians(current_rotation)) * horizontal);
-
-				//shoot_distance_y += 0.1;
-				shoot_distance_z -= (sin(glm::radians(current_rotation)) * horizontal);
-			}
-			
 			if (shoot_distance_x > bullet_boundary || shoot_distance_x < -bullet_boundary || shoot_distance_z > bullet_boundary ||  shoot_distance_z < -bullet_boundary) {
 				shoot_distance_x = 0;
 				shoot_distance_y= 0;
@@ -933,6 +900,7 @@ int main()
 		camera.setFront(v_dir.x, -0.1, v_dir.z);
 		//camera.setFront(forwardvec.x, forwardvec.y, forwardvec.z);
 
+		car_rotation = vehicleQuaternion.getAngle();
 		
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

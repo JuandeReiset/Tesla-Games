@@ -44,6 +44,8 @@ void Camera::setFront(float x, float y, float z) {
 	up = glm::normalize(glm::cross(right, front));
 }
 
+
+
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
 {
 	GLfloat velocity = moveSpeed * deltaTime;
