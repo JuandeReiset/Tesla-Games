@@ -714,7 +714,6 @@ int main()
 		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
 		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
 		physx::PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
-		physx::PxVec3 v_dir2 = vehicleQuaternion.getBasisVector0();
 		const physx::PxVec3 vehiclePositionPhysx = vDynamic->getGlobalPose().p;
 		glm::vec3 vehiclePosition(vehiclePositionPhysx.x, vehiclePositionPhysx.y, vehiclePositionPhysx.z);
 
@@ -802,20 +801,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		boxTest.RenderModel();
-
-	/*
-		// Draw Tesla car
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(pos_x,pos_y,pos_z));
-		model = glm::rotate(model, glm::radians(car_rotation), glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
-
-		
-		model = glm::scale(model, glm::vec3(0.06f, 0.06f, 0.06f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		TeslaCar.RenderModel();
-*/
-
 		
 
 //////////////////////////////////////////////////////////////////////////
@@ -884,9 +869,10 @@ int main()
 		TeslaCar.RenderModel();
 
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
+		float dist = 7;														//distance between camera and vehicle
 		camera.setFront(dir.x, -0.5, dir.z);
-		float xoffset = 5 * dir.x;
-		float zoffset = 5 * dir.z;
+		float xoffset = dist * dir.x;
+		float zoffset = dist * dir.z;
 		camera.setPosition(carPos.x - xoffset, carPos.y + 5 , carPos.z - zoffset);
 
 
