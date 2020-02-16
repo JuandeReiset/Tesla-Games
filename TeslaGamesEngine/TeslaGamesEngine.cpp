@@ -66,7 +66,7 @@ struct localAxis {
 /* Rendering variables */
 const float toRadians = 3.14159265f / 180.0f;
 
-Window mainWindow;
+//sWindow mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 std::vector<HUD*> HUDList;
@@ -531,7 +531,7 @@ int main()
 	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
-	HUDcreator hud = HUDcreator::HUDcreator(mainWindow);
+	HUDcreator hud;
 	hud.load();
 
 	Renderer r = Renderer(mainWindow, camera);
@@ -877,82 +877,12 @@ int main()
 
 		car_rotation = vehicleQuaternion.getAngle();
 		
+
+		//HUD staars here
 		hud.use();
 
 /*
-		//Rendering HUD
-		hudShader.UseShader();
-		uniformModel = hudShader.GetModelLocation();
-		uniformProjection = hudShader.GetProjectionLocation();
-
-		glm::mat4 ortho = glm::ortho(0.0f, (float)mainWindow.getWidth(), (float)mainWindow.getHeight(), 0.0f);						//orthograohic projection
-
-		glDisable(GL_DEPTH_TEST);																									//disable the depth-testing
-
-		model = glm::mat4(1.0f);
-		//glm::mat4 model = glm::mat4(1.0f);
-
-		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-
-		//weapon UI
-		weaponUITexture.UseTexture();
-		HUDList[0]->renderHUD();
 		
-		//number of charges
-		dig3Texture.UseTexture();
-		HUDList[1]->renderHUD();
-
-		//TODO: if out of charges, change ui
-
-		//bars
-		//empty bar1
-		emptyBarTexture.UseTexture();
-		HUDList[2]->renderHUD();
-
-		//empty bar2
-		emptyBarTexture.UseTexture();
-		HUDList[3]->renderHUD();
-
-		//health bar
-		healthBarTexture.UseTexture();
-		HUDList[4]->renderHUD();
-
-		//nitro bar
-		nitroBarTexture.UseTexture();
-		HUDList[5]->renderHUD();
-		
-		//plus symbol
-		plusSymbolTexture.UseTexture();
-		HUDList[6]->renderHUD();
-
-		//nitro symbol
-		nitroSymbolTexture.UseTexture();
-		HUDList[7]->renderHUD();
-
-		//race info
-		//current rank
-		cupTexture.UseTexture();
-		HUDList[8]->renderHUD();
-		dig2Texture.UseTexture();
-		HUDList[10]->renderHUD();
-
-		//current laps
-		flagTexture.UseTexture();
-		HUDList[11]->renderHUD();
-		dig3Texture.UseTexture();
-		HUDList[13]->renderHUD();
-
-		//current alive
-		personTexture.UseTexture();
-		HUDList[14]->renderHUD();
-		dig1Texture.UseTexture();
-		HUDList[15]->renderHUD();
-		dig0Texture.UseTexture();
-		HUDList[16]->renderHUD();
-
-		glEnable(GL_DEPTH_TEST);
-
 		//HUD ends here
 
 */

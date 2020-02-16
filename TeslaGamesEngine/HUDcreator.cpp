@@ -1,97 +1,76 @@
 #include "HUDcreator.h"
 #include <iostream>
 
-HUDcreator::HUDcreator(const Window& window) { mainWindow = window; }
 
 void HUDcreator::loadHUD() {
 	HUD* weaponUI = new HUD();
 	weaponUI->createHUD(weaponUIVertices, HUDindices, 20, 6);
 	HUDList.push_back(weaponUI);
-	TextureList.push_back(weaponUITexture);
 
 	HUD* numOfWeapon = new HUD();
 	numOfWeapon->createHUD(numOfWeaponVertices, HUDindices, 20, 6);
 	HUDList.push_back(numOfWeapon);
-	TextureList.push_back(dig3Texture);
 
 	HUD* bar1 = new HUD();
 	bar1->createHUD(emptyBar1Vertices, HUDindices, 20, 6);
 	HUDList.push_back(bar1);
-	TextureList.push_back(emptyTexture);
 
 	HUD* bar2 = new HUD();
 	bar2->createHUD(emptyBar2Vertices, HUDindices, 20, 6);
 	HUDList.push_back(bar2);
-	TextureList.push_back(emptyTexture);
 
 	HUD* healthBar = new HUD();
 	healthBar->createHUD(emptyBar1Vertices, HUDindices, 20, 6);
 	HUDList.push_back(healthBar);
-	TextureList.push_back(healthBarTexture);
 
 	HUD* nitroBar = new HUD();
 	nitroBar->createHUD(emptyBar2Vertices, HUDindices, 20, 6);
 	HUDList.push_back(nitroBar);
-	TextureList.push_back(nitroBarTexture);
 
 	HUD* plusSymbol = new HUD();
 	plusSymbol->createHUD(plusVertices, HUDindices, 20, 6);
 	HUDList.push_back(plusSymbol);
-	TextureList.push_back(plusSymbolTexture);
 
 	HUD* nitroSymbol = new HUD();
 	nitroSymbol->createHUD(nitroSymbolVertices, HUDindices, 20, 6);
 	HUDList.push_back(nitroSymbol);
-	TextureList.push_back(nitroSymbolTexture);
 
 	HUD* cupUI = new HUD();
 	cupUI->createHUD(cupVertices, HUDindices, 20, 6);
 	HUDList.push_back(cupUI);
-	TextureList.push_back(cupTexture);
 
 	HUD* rank1num = new HUD();
 	rank1num->createHUD(rank1numVertices, HUDindices, 20, 6);
 	HUDList.push_back(rank1num);
-	TextureList.push_back(emptyTexture);
 
 	HUD* rank2num = new HUD();
 	rank2num->createHUD(rank2numVertices, HUDindices, 20, 6);
 	HUDList.push_back(rank2num);
-	TextureList.push_back(dig2Texture);
 
 	HUD* flagUI = new HUD();
 	flagUI->createHUD(flagVertices, HUDindices, 20, 6);
 	HUDList.push_back(flagUI);
-	TextureList.push_back(flagTexture);
 
 	HUD* lap1num = new HUD();
 	lap1num->createHUD(lap1numVertices, HUDindices, 20, 6);
 	HUDList.push_back(lap1num);
-	TextureList.push_back(emptyTexture);
 
 	HUD* lap2num = new HUD();
 	lap2num->createHUD(lap2numVertices, HUDindices, 20, 6);
 	HUDList.push_back(lap2num);
-	TextureList.push_back(dig3Texture);
 
 	HUD* personUI = new HUD();
 	personUI->createHUD(personVertices, HUDindices, 20, 6);
 	HUDList.push_back(personUI);
-	TextureList.push_back(personTexture);
 
 	HUD* alive1num = new HUD();
 	alive1num->createHUD(alive1numVertices, HUDindices, 20, 6);
 	HUDList.push_back(alive1num);
-	TextureList.push_back(dig1Texture);
 
 	HUD* alive2num = new HUD();
 	alive2num->createHUD(alive2numVertices, HUDindices, 20, 6);
 	HUDList.push_back(alive2num);
-	TextureList.push_back(dig0Texture);
-
-	return;
 }
-
 void HUDcreator::loadTextures() {
 	//load digits textures
 	dig0Texture = Texture("Textures/numbers/0.png");
@@ -152,13 +131,70 @@ void HUDcreator::use() {
 
 	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-
+/*
 	for (int i = 0; i < HUDList.size(); ++i) {
 		TextureList[i].UseTexture();
 		HUDList[i]->renderHUD();
 	}
+*/
+//weapon UI
+	weaponUITexture.UseTexture();
+	HUDList[0]->renderHUD();
+
+	//number of charges
+	dig3Texture.UseTexture();
+	HUDList[1]->renderHUD();
+
+	//TODO: if out of charges, change ui
+
+	//bars
+	//empty bar1
+	emptyBarTexture.UseTexture();
+	HUDList[2]->renderHUD();
+
+	//empty bar2
+	emptyBarTexture.UseTexture();
+	HUDList[3]->renderHUD();
+
+	//health bar
+	healthBarTexture.UseTexture();
+	HUDList[4]->renderHUD();
+
+	//nitro bar
+	nitroBarTexture.UseTexture();
+	HUDList[5]->renderHUD();
+
+	//plus symbol
+	plusSymbolTexture.UseTexture();
+	HUDList[6]->renderHUD();
+
+	//nitro symbol
+	nitroSymbolTexture.UseTexture();
+	HUDList[7]->renderHUD();
+
+	//race info
+	//current rank
+	cupTexture.UseTexture();
+	HUDList[8]->renderHUD();
+	dig2Texture.UseTexture();
+	HUDList[10]->renderHUD();
+
+	//current laps
+	flagTexture.UseTexture();
+	HUDList[11]->renderHUD();
+	dig3Texture.UseTexture();
+	HUDList[13]->renderHUD();
+
+	//current alive
+	personTexture.UseTexture();
+	HUDList[14]->renderHUD();
+	dig1Texture.UseTexture();
+	HUDList[15]->renderHUD();
+	dig0Texture.UseTexture();
+	HUDList[16]->renderHUD();
 
 	glEnable(GL_DEPTH_TEST);
+	std::cout << weaponUIVertices[1] << std::endl;
 
 	return;
 }

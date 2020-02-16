@@ -4,8 +4,9 @@
 #include <glm/glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
-#include <vector>
+#include <vector>s
 
+#include "Global.h"
 #include "HUD.h"
 #include "Window.h"
 #include "Texture.h"
@@ -15,7 +16,6 @@ class HUDcreator
 {
 public:
 	HUDcreator() = default;
-	HUDcreator(const Window& window);
 
 	void loadHUD();
 	void loadTextures();
@@ -26,7 +26,6 @@ public:
 
 private:
 	float size = 1.0f;										//HUD size
-	Window mainWindow;
 
 	std::vector<HUD*> HUDList;
 	std::vector<Texture> TextureList;
