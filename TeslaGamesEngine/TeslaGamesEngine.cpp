@@ -869,7 +869,7 @@ int main()
 		TeslaCar.RenderModel();
 
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
-		float dist = 7;														//distance between camera and vehicle
+		float dist = 6.5;														//distance between camera and vehicle
 		camera.setFront(dir.x, -0.5, dir.z);
 		float xoffset = dist * dir.x;
 		float zoffset = dist * dir.z;
