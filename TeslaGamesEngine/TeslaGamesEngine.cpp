@@ -47,7 +47,7 @@
 #include "PhysicsEngine.h"
 
 //HUD stuff
-#include "HUD.h"
+#include "HUDcreator.h"
 
 // Stuff for imgui
 #include "imGui/imgui.h"
@@ -71,8 +71,6 @@ std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 std::vector<HUD*> HUDList;
 Camera camera;
-
-Shader hudShader;
 
 Texture brickTexture;
 Texture dirtTexture;
@@ -141,13 +139,13 @@ static const char* vShader = "Shaders/shader.vert";
 
 // Fragment Shader
 static const char* fShader = "Shaders/shader.frag";
-
+/*
 // Vertex Shader of HUD_shader
 static const char* vHshader = "Shaders/HUD_shader.vert";
 
 //Fragment shader of HUD_shader
 static const char* fHshader = "Shaders/HUD_shader.frag";
-
+*/
 struct yawPitch {
 	float yaw;
 	float pitch;
@@ -245,10 +243,10 @@ void CreateShaders()
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 	
-	hudShader.createHUDFromFiles(vHshader, fHshader);
 
 }
 
+/*
 //Now all the image default positions are based on the window size 1600 x 900 (16 : 9) 
 void CreateHUDs() {
 	unsigned int HUDindecis[] = {						// 0 -----3
@@ -431,6 +429,7 @@ void CreateHUDs() {
 	alive2num->createHUD(alive2numVertices, HUDindecis, 20, 6);
 	HUDList.push_back(alive2num);
 }
+*/
 
 // A function to obtain input, called each frame
 //add vehicle movement to these FOR NOW
@@ -532,6 +531,9 @@ int main()
 	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
+	HUDcreator hud = HUDcreator::HUDcreator(mainWindow);
+	hud.load();
+
 	Renderer r = Renderer(mainWindow, camera);
 
 	Game mainGame = Game(r);
@@ -548,7 +550,7 @@ int main()
 	// Rendering setup
 	CreateObjects();
 	CreateShaders();
-	CreateHUDs();
+
 
 	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 0.5f);
 	yawPitch yp;
@@ -563,8 +565,9 @@ int main()
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureAlpha();
 
+	/*
 	//load digits textures
-	dig0Texture = Texture("Textures/numbers/0.png");
+	dig0Texture =  Texture("Textures/numbers/0.png");
 	dig0Texture.LoadTextureAlpha();
 	dig1Texture = Texture("Textures/numbers/1.png");
 	dig1Texture.LoadTextureAlpha();
@@ -592,7 +595,7 @@ int main()
 	cupTexture.LoadTextureAlpha();
 	flagTexture = Texture("Textures/HUD/flags.png");
 	flagTexture.LoadTextureAlpha();
-
+*/
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
 
@@ -701,10 +704,6 @@ int main()
 	//physEng.upwards();
 	//End of audio system setup/demo
 
-	//translation vector helper
-	glm::vec3 cartranslation(4,0,0);
-	//
-	car_front = glm::vec3(0, 0, 1);
 
 	while (!mainWindow.getShouldClose())
 	{
@@ -878,7 +877,9 @@ int main()
 
 		car_rotation = vehicleQuaternion.getAngle();
 		
+		hud.use();
 
+/*
 		//Rendering HUD
 		hudShader.UseShader();
 		uniformModel = hudShader.GetModelLocation();
@@ -952,8 +953,11 @@ int main()
 
 		glEnable(GL_DEPTH_TEST);
 
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		//HUD ends here
+
+*/
+		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+
 		// End of rendering 
 
 		// Start the Dear ImGui frame
