@@ -217,6 +217,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Shadow.h" />
     <ClInclude Include="ShootComp.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture.h" />
@@ -270,6 +271,7 @@
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="ShootComp.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="TeslaGamesEngine.cpp" />

@@ -49,6 +49,9 @@
 //HUD stuff
 #include "HUD.h"
 
+//Shadow stuff
+#include "Shadow.h"
+
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -70,9 +73,11 @@ Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 std::vector<HUD*> HUDList;
+std::vector<Shadow*> shadowList;
 Camera camera;
 
 Shader hudShader;
+Shader shadowShader;
 
 Texture brickTexture;
 Texture dirtTexture;
@@ -94,6 +99,9 @@ Texture nitroSymbolTexture;
 Texture flagTexture;
 Texture personTexture;
 Texture cupTexture;
+
+//sahow textures
+Texture shadowTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
@@ -147,6 +155,13 @@ static const char* vHshader = "Shaders/HUD_shader.vert";
 
 //Fragment shader of HUD_shader
 static const char* fHshader = "Shaders/HUD_shader.frag";
+
+//Vertex shader of shadow_shader
+static const char* vShadow_shader = "Shaders/shadow_shader.vert";
+
+//Fragment shader of shadow_shader
+static const char* fShadow_shader = "Shaders/shadow_shader.frag";
+
 
 struct yawPitch {
 	float yaw;
@@ -246,7 +261,7 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 	
 	hudShader.createHUDFromFiles(vHshader, fHshader);
-
+	shadowShader.createShadowFromFiles(vShadow_shader, fShadow_shader);
 }
 
 //Now all the image default positions are based on the window size 1600 x 900 (16 : 9) 
@@ -432,6 +447,24 @@ void CreateHUDs() {
 	HUDList.push_back(alive2num);
 }
 
+void createShadows() {
+	unsigned int shadowIndecis[] = {						
+		0, 1, 3,									
+		2, 1, 3										
+	};
+
+	GLfloat shadowVertices[] = {
+		-2.0f, 1.f, -2.0f,		0.0, 0.0,
+		-1.0f, 1.f, 2.0f,		0.0, 1.0,
+		2.0f, 1.f, 2.0f,		1.0, 1.0,
+		2.0f, 1.f, -2.0f,		1.0, 0.0
+	};
+
+	Shadow* shadow = new Shadow();
+	shadow->createShadow(shadowVertices, shadowIndecis, 20, 6);
+	shadowList.push_back(shadow);
+}
+
 // A function to obtain input, called each frame
 //add vehicle movement to these FOR NOW
 //TO DO: Someone comment all the controls for each button
@@ -549,6 +582,7 @@ int main()
 	CreateObjects();
 	CreateShaders();
 	CreateHUDs();
+	createShadows();
 
 	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 0.5f);
 	yawPitch yp;
@@ -592,6 +626,10 @@ int main()
 	cupTexture.LoadTextureAlpha();
 	flagTexture = Texture("Textures/HUD/flags.png");
 	flagTexture.LoadTextureAlpha();
+
+	//load shadow texture
+	shadowTexture = Texture("Textures/shadow.png");
+	shadowTexture.LoadTextureAlpha();
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
@@ -892,6 +930,28 @@ int main()
 
 		car_rotation = vehicleQuaternion.getAngle();
 		
+		//Rendering shadows
+		shadowShader.UseShader();
+		uniformModel = shadowShader.GetModelLocation();
+		uniformProjection = shadowShader.GetProjectionLocation();
+		uniformView = shadowShader.GetViewLocation();
+
+		//glDisable(GL_DEPTH_TEST);
+
+		model = glm::mat4(1.0f);
+		//model = glm::scale(model, glm::vec3(2.0, 1.0, 2.0));
+		model = glm::translate(model, glm::vec3(carPos.x, 0, carPos.z));	//translate to physx vehicle pos
+
+
+		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+
+		shadowTexture.UseTexture();
+		shadowList[0]->renderShadow();
+		glEnable(GL_DEPTH_TEST);
+
+		//Shadows end here
 
 		//Rendering HUD
 		hudShader.UseShader();
