@@ -47,7 +47,7 @@
 #include "PhysicsEngine.h"
 
 //HUD stuff
-#include "HUD.h"
+#include "HUDcreator.h"
 
 // Stuff for imgui
 #include "imGui/imgui.h"
@@ -66,13 +66,11 @@ struct localAxis {
 /* Rendering variables */
 const float toRadians = 3.14159265f / 180.0f;
 
-Window mainWindow;
+//sWindow mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 std::vector<HUD*> HUDList;
 Camera camera;
-
-Shader hudShader;
 
 Texture brickTexture;
 Texture dirtTexture;
@@ -141,13 +139,13 @@ static const char* vShader = "Shaders/shader.vert";
 
 // Fragment Shader
 static const char* fShader = "Shaders/shader.frag";
-
+/*
 // Vertex Shader of HUD_shader
 static const char* vHshader = "Shaders/HUD_shader.vert";
 
 //Fragment shader of HUD_shader
 static const char* fHshader = "Shaders/HUD_shader.frag";
-
+*/
 struct yawPitch {
 	float yaw;
 	float pitch;
@@ -245,192 +243,9 @@ void CreateShaders()
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 	
-	hudShader.createHUDFromFiles(vHshader, fHshader);
 
 }
 
-//Now all the image default positions are based on the window size 1600 x 900 (16 : 9) 
-void CreateHUDs() {
-	unsigned int HUDindecis[] = {						// 0 -----3
-		0, 1, 3,										// |	  |
-		2, 1, 3											// 1 -----2
-	};
-
-	GLfloat weaponUIVertices[] = {
-	//	x									y										z		u	 v
-		0.0 / 1600 * mainWindow.getWidth(), 720.0 / 900.0 * mainWindow.getHeight(), 0.0,	0.0, 0.0,								//bottom left
-		0.0 / 1600 * mainWindow.getWidth(), 900.0 / 900 * mainWindow.getHeight(), 0.0,		0.0, 1.0,								//top left
-		370.0 / 1600 * mainWindow.getWidth(), 900 /900 * mainWindow.getHeight(), 0.0,		1.0, 1.0,								//top right
-		370.0 / 1600 * mainWindow.getWidth(), 720.0 / 900 * mainWindow.getHeight(), 0.0,	1.0, 0.0								//bottom right
-	};
-	
-
-	GLfloat numOfWeaponVertices[] = {
-		177.5 / 1600 * mainWindow.getWidth(), 770 / 900.0 * mainWindow.getHeight(), 1.0,		0.0, 0.0,
-		177.5 / 1600 * mainWindow.getWidth(), 800 / 900.0 * mainWindow.getHeight(), 1.0,		0.0, 1.0,
-		192.5 / 1600 * mainWindow.getWidth(), 800 / 900.0 * mainWindow.getHeight(), 1.0,		1.0, 1.0,
-		192.5 / 1600 * mainWindow.getWidth(), 770 / 900.0 * mainWindow.getHeight(), 1.0,		1.0, 0.0
-	};
-
-	GLfloat emptyBar1Vertices[] = {
-		1300.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1300.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1600.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1600.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};	
-	
-	GLfloat emptyBar2Vertices[] = {
-		1300.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1300.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1600.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1600.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};
-
-	GLfloat plusVertices[] = {
-		1270.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1270.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1290.0 / 1600 * mainWindow.getWidth(), 900.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1290.0 / 1600 * mainWindow.getWidth(), 880.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};	
-	
-	GLfloat nitroSymbolVertices[] = {
-		1270.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1270.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1290.0 / 1600 * mainWindow.getWidth(), 875.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1290.0 / 1600 * mainWindow.getWidth(), 855.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};
-
-	GLfloat cupVertices[] = {
-		1505.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1505.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1545.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1545.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};
-	
-	GLfloat rank1numVertices[] = {
-		1550.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1550.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1570.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1570.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};
-	
-	GLfloat rank2numVertices[] = {
-		1575.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1575.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1595.0 / 1600 * mainWindow.getWidth(), 50.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1595.0 / 1600 * mainWindow.getWidth(), 10.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};
-	
-	GLfloat flagVertices[] = {
-		1505.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1505.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1545.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1545.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};
-
-	GLfloat lap1numVertices[] = {
-		1550.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1550.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1570.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1570.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};
-
-	GLfloat lap2numVertices[] = {
-		1575.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1575.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1595.0 / 1600 * mainWindow.getWidth(), 100.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1595.0 / 1600 * mainWindow.getWidth(), 60.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};
-
-	GLfloat personVertices[] = {
-		1505.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1505.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1545.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1545.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};
-
-	GLfloat alive1numVertices[] = {
-		1550.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1550.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1570.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1570.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};
-
-	GLfloat alive2numVertices[] = {
-		1575.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 0.0,
-		1575.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		0.0, 1.0,
-		1595.0 / 1600 * mainWindow.getWidth(), 150.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 1.0,
-		1595.0 / 1600 * mainWindow.getWidth(), 110.0 / 900.0 * mainWindow.getHeight(), 0.0,		1.0, 0.0
-	};
-
-	HUD* weaponUI = new HUD();
-	weaponUI->createHUD(weaponUIVertices, HUDindecis, 20, 6);
-	HUDList.push_back(weaponUI);
-
-	HUD* numOfWeapon = new HUD();
-	numOfWeapon->createHUD(numOfWeaponVertices, HUDindecis, 20, 6);
-	HUDList.push_back(numOfWeapon);
-
-	HUD* bar1 = new HUD();
-	bar1->createHUD(emptyBar1Vertices, HUDindecis, 20, 6);
-	HUDList.push_back(bar1);
-
-	HUD* bar2 = new HUD();
-	bar2->createHUD(emptyBar2Vertices, HUDindecis, 20, 6);
-	HUDList.push_back(bar2);
-
-	HUD* healthBar = new HUD();
-	healthBar->createHUD(emptyBar1Vertices, HUDindecis, 20, 6);
-	HUDList.push_back(healthBar);
-
-	HUD* nitroBar = new HUD();
-	nitroBar->createHUD(emptyBar2Vertices, HUDindecis, 20, 6);
-	HUDList.push_back(nitroBar);
-
-	HUD* plusSymbol = new HUD();
-	plusSymbol->createHUD(plusVertices, HUDindecis, 20, 6);
-	HUDList.push_back(plusSymbol);
-
-	HUD* nitroSymbol = new HUD();
-	nitroSymbol->createHUD(nitroSymbolVertices, HUDindecis, 20, 6);
-	HUDList.push_back(nitroSymbol);
-
-	HUD* cupUI = new HUD();
-	cupUI->createHUD(cupVertices, HUDindecis, 20, 6);
-	HUDList.push_back(cupUI);
-
-	HUD* rank1num = new HUD();
-	rank1num->createHUD(rank1numVertices, HUDindecis, 20, 6);
-	HUDList.push_back(rank1num);
-	
-	HUD* rank2num = new HUD();
-	rank2num->createHUD(rank2numVertices, HUDindecis, 20, 6);
-	HUDList.push_back(rank2num);
-
-	HUD* flagUI = new HUD();
-	flagUI->createHUD(flagVertices, HUDindecis, 20, 6);
-	HUDList.push_back(flagUI);
-
-	HUD* lap1num = new HUD();
-	lap1num->createHUD(lap1numVertices, HUDindecis, 20, 6);
-	HUDList.push_back(lap1num);
-
-	HUD* lap2num = new HUD();
-	lap2num->createHUD(lap2numVertices, HUDindecis, 20, 6);
-	HUDList.push_back(lap2num);
-
-	HUD* personUI = new HUD();
-	personUI->createHUD(personVertices, HUDindecis, 20, 6);
-	HUDList.push_back(personUI);
-
-	HUD* alive1num = new HUD();
-	alive1num->createHUD(alive1numVertices, HUDindecis, 20, 6);
-	HUDList.push_back(alive1num);
-	
-	HUD* alive2num = new HUD();
-	alive2num->createHUD(alive2numVertices, HUDindecis, 20, 6);
-	HUDList.push_back(alive2num);
-}
 
 // A function to obtain input, called each frame
 //add vehicle movement to these FOR NOW
@@ -532,6 +347,9 @@ int main()
 	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
+	HUDcreator hud;
+	hud.load();
+
 	Renderer r = Renderer(mainWindow, camera);
 
 	Game mainGame = Game(r);
@@ -548,7 +366,7 @@ int main()
 	// Rendering setup
 	CreateObjects();
 	CreateShaders();
-	CreateHUDs();
+
 
 	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 0.5f);
 	yawPitch yp;
@@ -563,36 +381,7 @@ int main()
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureAlpha();
 
-	//load digits textures
-	dig0Texture = Texture("Textures/numbers/0.png");
-	dig0Texture.LoadTextureAlpha();
-	dig1Texture = Texture("Textures/numbers/1.png");
-	dig1Texture.LoadTextureAlpha();
-	dig2Texture = Texture("Textures/numbers/2.png");
-	dig2Texture.LoadTextureAlpha();
-	dig3Texture = Texture("Textures/numbers/3.png");
-	dig3Texture.LoadTextureAlpha();
-
-	//load HUD textures
-	weaponUITexture = Texture("Textures/HUD/WeaponsUI.png");
-	weaponUITexture.LoadTextureAlpha();
-	emptyBarTexture = Texture("Textures/HUD/emptybar.png");
-	emptyBarTexture.LoadTextureAlpha();
-	healthBarTexture = Texture("Textures/HUD/healthbar.png");
-	healthBarTexture.LoadTextureAlpha();
-	nitroBarTexture = Texture("Textures/HUD/nitro.png");
-	nitroBarTexture.LoadTextureAlpha();
-	plusSymbolTexture = Texture("Textures/HUD/plus.png");
-	plusSymbolTexture.LoadTextureAlpha();
-	nitroSymbolTexture = Texture("Textures/HUD/nitrosymbol.png");
-	nitroSymbolTexture.LoadTextureAlpha();
-	personTexture = Texture("Textures/HUD/alive.png");
-	personTexture.LoadTextureAlpha();
-	cupTexture = Texture("Textures/HUD/cup.png");
-	cupTexture.LoadTextureAlpha();
-	flagTexture = Texture("Textures/HUD/flags.png");
-	flagTexture.LoadTextureAlpha();
-
+	
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
 
@@ -701,10 +490,6 @@ int main()
 	//physEng.upwards();
 	//End of audio system setup/demo
 
-	//translation vector helper
-	glm::vec3 cartranslation(4,0,0);
-	//
-	car_front = glm::vec3(0, 0, 1);
 
 	while (!mainWindow.getShouldClose())
 	{
@@ -714,7 +499,6 @@ int main()
 		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
 		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
 		physx::PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
-		physx::PxVec3 v_dir2 = vehicleQuaternion.getBasisVector0();
 		const physx::PxVec3 vehiclePositionPhysx = vDynamic->getGlobalPose().p;
 		glm::vec3 vehiclePosition(vehiclePositionPhysx.x, vehiclePositionPhysx.y, vehiclePositionPhysx.z);
 
@@ -802,20 +586,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		boxTest.RenderModel();
-
-	/*
-		// Draw Tesla car
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(pos_x,pos_y,pos_z));
-		model = glm::rotate(model, glm::radians(car_rotation), glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
-
-		
-		model = glm::scale(model, glm::vec3(0.06f, 0.06f, 0.06f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		TeslaCar.RenderModel();
-*/
-
 		
 
 //////////////////////////////////////////////////////////////////////////
@@ -884,90 +654,26 @@ int main()
 		TeslaCar.RenderModel();
 
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
+		float dist = 6.5;														//distance between camera and vehicle
 		camera.setFront(dir.x, -0.5, dir.z);
-		float xoffset = 5 * dir.x;
-		float zoffset = 5 * dir.z;
+		float xoffset = dist * dir.x;
+		float zoffset = dist * dir.z;
 		camera.setPosition(carPos.x - xoffset, carPos.y + 5 , carPos.z - zoffset);
 
 
 		car_rotation = vehicleQuaternion.getAngle();
 		
 
-		//Rendering HUD
-		hudShader.UseShader();
-		uniformModel = hudShader.GetModelLocation();
-		uniformProjection = hudShader.GetProjectionLocation();
+		//HUD staars here
+		hud.use();
 
-		glm::mat4 ortho = glm::ortho(0.0f, (float)mainWindow.getWidth(), (float)mainWindow.getHeight(), 0.0f);						//orthograohic projection
-
-		glDisable(GL_DEPTH_TEST);																									//disable the depth-testing
-
-		model = glm::mat4(1.0f);
-		//glm::mat4 model = glm::mat4(1.0f);
-
-		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-
-		//weapon UI
-		weaponUITexture.UseTexture();
-		HUDList[0]->renderHUD();
+/*
 		
-		//number of charges
-		dig3Texture.UseTexture();
-		HUDList[1]->renderHUD();
-
-		//TODO: if out of charges, change ui
-
-		//bars
-		//empty bar1
-		emptyBarTexture.UseTexture();
-		HUDList[2]->renderHUD();
-
-		//empty bar2
-		emptyBarTexture.UseTexture();
-		HUDList[3]->renderHUD();
-
-		//health bar
-		healthBarTexture.UseTexture();
-		HUDList[4]->renderHUD();
-
-		//nitro bar
-		nitroBarTexture.UseTexture();
-		HUDList[5]->renderHUD();
-		
-		//plus symbol
-		plusSymbolTexture.UseTexture();
-		HUDList[6]->renderHUD();
-
-		//nitro symbol
-		nitroSymbolTexture.UseTexture();
-		HUDList[7]->renderHUD();
-
-		//race info
-		//current rank
-		cupTexture.UseTexture();
-		HUDList[8]->renderHUD();
-		dig2Texture.UseTexture();
-		HUDList[10]->renderHUD();
-
-		//current laps
-		flagTexture.UseTexture();
-		HUDList[11]->renderHUD();
-		dig3Texture.UseTexture();
-		HUDList[13]->renderHUD();
-
-		//current alive
-		personTexture.UseTexture();
-		HUDList[14]->renderHUD();
-		dig1Texture.UseTexture();
-		HUDList[15]->renderHUD();
-		dig0Texture.UseTexture();
-		HUDList[16]->renderHUD();
-
-		glEnable(GL_DEPTH_TEST);
-
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		//HUD ends here
+
+*/
+		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+
 		// End of rendering 
 
 		// Start the Dear ImGui frame
