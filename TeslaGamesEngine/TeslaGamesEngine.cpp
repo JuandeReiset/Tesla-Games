@@ -454,10 +454,10 @@ void createShadows() {
 	};
 
 	GLfloat shadowVertices[] = {
-		-2.0f, 1.f, -2.0f,		0.0, 0.0,
-		-1.0f, 1.f, 2.0f,		0.0, 1.0,
-		2.0f, 1.f, 2.0f,		1.0, 1.0,
-		2.0f, 1.f, -2.0f,		1.0, 0.0
+		-2.0f, -0.8f, -2.0f,		0.0, 0.0,
+		-1.0f, -0.8f, 2.0f,		0.0, 1.0,
+		2.0f, -0.8f, 2.0f,		1.0, 1.0,
+		2.0f, -0.8f, -2.0f,		1.0, 0.0
 	};
 
 	Shadow* shadow = new Shadow();
@@ -912,20 +912,15 @@ int main()
 		physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 		modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(carPos.x, carPos.y, carPos.z));	//translate to physx vehicle pos
-
-
-
 
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TeslaCar.RenderModel();
 
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
 		camera.setFront(dir.x, -0.5, dir.z);
-		float xoffset = 5 * dir.x;
-		float zoffset = 5 * dir.z;
-		camera.setPosition(carPos.x - xoffset, carPos.y + 5 , carPos.z - zoffset);
+		float xoffset = 10 * dir.x;
+		float zoffset = 10 * dir.z;
+		camera.setPosition(carPos.x - xoffset, carPos.y + 7 , carPos.z - zoffset);
 
 
 		car_rotation = vehicleQuaternion.getAngle();
@@ -936,15 +931,18 @@ int main()
 		uniformProjection = shadowShader.GetProjectionLocation();
 		uniformView = shadowShader.GetViewLocation();
 
-		//glDisable(GL_DEPTH_TEST);
 
 		model = glm::mat4(1.0f);
 		//model = glm::scale(model, glm::vec3(2.0, 1.0, 2.0));
+		//model = glm::rotate()
 		model = glm::translate(model, glm::vec3(carPos.x, 0, carPos.z));	//translate to physx vehicle pos
-
+		physx::PxMat44 shadowModel(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
+		//modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, shadowModel.front());
+		
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 
 		shadowTexture.UseTexture();
