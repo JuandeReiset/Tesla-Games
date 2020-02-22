@@ -25,7 +25,7 @@
 //
 // Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 
-#include "PhysX/include/foundation/PxSimpleTypes.h"
+#include "PhysX/foundation/PxSimpleTypes.h"
 
 #define PX_RELEASE(x)	if(x)	{ x->release(); x = NULL;	}
 

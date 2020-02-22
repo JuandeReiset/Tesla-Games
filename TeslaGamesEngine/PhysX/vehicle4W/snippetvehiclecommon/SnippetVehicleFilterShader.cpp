@@ -29,7 +29,7 @@
 
 #include <new>
 #include "SnippetVehicleFilterShader.h"
-#include "../../include/PxPhysicsAPI.h"
+#include "PhysX/PxPhysicsAPI.h"
 
 namespace snippetvehicle
 {

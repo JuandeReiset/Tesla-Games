@@ -2,6 +2,10 @@
 #include "Game.h"
 #include "Global.h"
 
+// Ben added this
+#include <FTGL/ftgl.h>
+// end
+
 Game::Game(Renderer& r) : renderer(r)
 {
 }
@@ -13,7 +17,10 @@ void Game::AddObject(Object* obj)
 
 void Game::Play()
 {
-	// 
+	// Ben added this
+	FTGLPixmapFont font("fontpath");
+	// end
+
 	double last = glfwGetTime();
 	while (1) {
 		// Get input

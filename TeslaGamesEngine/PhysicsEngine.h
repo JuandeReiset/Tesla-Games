@@ -1,13 +1,13 @@
 #pragma once
 #include <memory>
-#include "PhysX/include/PxPhysicsAPI.h"
+#include "PhysX/PxPhysicsAPI.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleCreate.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleSceneQuery.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleFilterShader.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleTireFriction.h"
 #include "PhysX/vehicle4W/snippetcommon/SnippetPVD.h"
-#include "PhysX/include/vehicle/PxVehicleUtil.h"
-#include "PhysX/include/snippetutils/SnippetUtils.h"
+#include "PhysX/vehicle/PxVehicleUtil.h"
+#include "PhysX/snippetutils/SnippetUtils.h"
 
 class PhysicsEngine
 {

@@ -32,7 +32,7 @@
 #include "SnippetVehicleSceneQuery.h"
 #include "SnippetVehicleFilterShader.h"
 #include "SnippetVehicleTireFriction.h"
-#include "../../include/PxPhysicsAPI.h"
+#include "PhysX/PxPhysicsAPI.h"
 
 namespace snippetvehicle
 {

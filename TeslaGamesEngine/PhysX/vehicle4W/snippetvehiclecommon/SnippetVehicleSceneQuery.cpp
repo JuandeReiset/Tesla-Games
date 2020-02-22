@@ -29,7 +29,7 @@
 
 #include <new>
 #include "SnippetVehicleSceneQuery.h"
-#include "../../include/PxPhysicsAPI.h"
+#include "PhysX/PxPhysicsAPI.h"
 
 namespace snippetvehicle
 {
