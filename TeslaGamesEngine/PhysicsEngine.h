@@ -20,13 +20,11 @@ public:
 	void stepPhysics();
 	int modeType = -1;
 	int getModeType();
-	void increaseForwards();
-	void upwards();
 	void forwards(float magnitude);
 	void reverse(float magnitude);
 	void turnLeft(float magnitude);
 	void turnRight(float magnitude);
-	void brake();
+	void gearShift(float curSpeed);
 	void turn(float magnitude);
 	physx::PxVehicleDrive4W* gVehicle4W = NULL;
 	physx::PxRigidDynamic *getVehicleRigidDynamicPtr();

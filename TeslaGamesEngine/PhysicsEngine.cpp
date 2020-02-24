@@ -273,15 +273,35 @@ void PhysicsEngine::initVehicle()
 //go forwards a little
 void PhysicsEngine::forwards(float magnitude)
 {
-	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
-	gVehicleInputData.setAnalogAccel(magnitude - 0.3f);
+	gearShift(gVehicle4W->computeForwardSpeed());
+	gVehicleInputData.setAnalogBrake(0.f);
+	gVehicleInputData.setAnalogAccel(magnitude - 0.1f);
 }
 
 
 void PhysicsEngine::reverse(float magnitude)
 {
-	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
-	gVehicleInputData.setAnalogAccel(magnitude);
+	float curSpeed = gVehicle4W->computeForwardSpeed();
+	if (curSpeed > 0) {
+		gVehicleInputData.setAnalogBrake(magnitude);
+	}
+	else {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
+		gVehicleInputData.setAnalogAccel(magnitude);
+	}
+	
+}
+
+void PhysicsEngine::gearShift(float curSpeed) {
+	if (curSpeed <= 14) {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
+	}
+	else if (curSpeed <= 20) {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eSECOND);
+	}
+	else {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eTHIRD);
+	}
 }
 
 void PhysicsEngine::turn(float magnitude) {
@@ -299,12 +319,6 @@ void PhysicsEngine::turnLeft(float magnitude)
 void PhysicsEngine::turnRight(float magnitude)
 {
 	gVehicleInputData.setAnalogSteer(1.0f);
-}
-
-void PhysicsEngine::brake()
-{
-	gVehicleInputData.setAnalogBrake(0.5f);
-	//dont know what to put here yet
 }
 
 //expand to modular later
