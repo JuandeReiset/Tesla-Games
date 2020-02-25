@@ -317,8 +317,14 @@ void parseControllerInput(Controller* controller)
 	//Sticks and triggers
 	if (!controller->LStick_InDeadzone()) {
 		//physEng.turn(controller->leftStick_X());
-		std::cout << controller->getIndex() << " " << "LS: " << controller->leftStick_X() << std::endl;
+		float value = controller->leftStick_X();
+		physEng.turn(value);
+		std::cout << controller->getIndex() << " " << "LS: " << value << std::endl;
 	}
+	else {
+		physEng.turn(0.f);
+	}
+
 	if (!controller->RStick_InDeadzone()) {
 		//physEng.turn(controller->leftStick_X());
 		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
@@ -335,7 +341,7 @@ void parseControllerInput(Controller* controller)
 		physEng.reverse(controller->leftTrigger());
 		std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
 	}
-	physEng.turn(controller->leftStick_X());
+	
 
 	// Update the gamepad for next frame MUST BE LAST
 	controller->refreshState();
