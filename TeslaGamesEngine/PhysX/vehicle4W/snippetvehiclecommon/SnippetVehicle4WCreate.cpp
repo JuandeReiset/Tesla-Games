@@ -237,7 +237,7 @@ PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* p
 		//Rigid body data.
 		PxVehicleChassisData rigidBodyData;
 		rigidBodyData.mMOI = vehicle4WDesc.chassisMOI;
-		rigidBodyData.mMass = vehicle4WDesc.chassisMass;
+		rigidBodyData.mMass = vehicle4WDesc.chassisMass - 200.f;
 		rigidBodyData.mCMOffset = vehicle4WDesc.chassisCMOffset;
 
 		veh4WActor = createVehicleActor
@@ -274,13 +274,14 @@ PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* p
 
 		//Engine
 		PxVehicleEngineData engine;
-		engine.mPeakTorque=500.0f;
-		engine.mMaxOmega=600.0f;//approx 6000 rpm
+		engine.mPeakTorque=600.0f;
+		engine.mMaxOmega=700.0f;//approx 6000 rpm
+		engine.mMOI = 0.9f;
 		driveSimData.setEngineData(engine);
 
 		//Gears
 		PxVehicleGearsData gears;
-		gears.mSwitchTime=0.5f;
+		gears.mSwitchTime=0.2f;
 		driveSimData.setGearsData(gears);
 
 		//Clutch

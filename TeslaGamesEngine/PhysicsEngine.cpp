@@ -26,8 +26,8 @@ PhysicsEngine::PhysicsEngine() {
 	{
 		0.0f,		0.75f,
 		5.0f,		0.75f,
-		30.0f,		0.125f,
-		120.0f,		0.1f,
+		30.0f,		0.35f,
+		120.0f,		0.15f,
 		PX_MAX_F32, PX_MAX_F32,
 		PX_MAX_F32, PX_MAX_F32,
 		PX_MAX_F32, PX_MAX_F32,
@@ -293,14 +293,20 @@ void PhysicsEngine::reverse(float magnitude)
 }
 
 void PhysicsEngine::gearShift(float curSpeed) {
-	if (curSpeed <= 14) {
+	if (curSpeed <= 10) {
 		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
 	}
-	else if (curSpeed <= 20) {
+	else if (curSpeed <= 17) {
 		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eSECOND);
 	}
-	else {
+	else if (curSpeed <= 25) {
 		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eTHIRD);
+	}
+	else if (curSpeed <= 34) {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFOURTH);
+	}
+	else {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIFTH);
 	}
 }
 

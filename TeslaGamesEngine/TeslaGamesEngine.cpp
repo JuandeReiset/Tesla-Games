@@ -664,7 +664,7 @@ int main()
 		camera.setFront(dir.x, -0.5, dir.z);
 		float xoffset = dist * dir.x;
 		float zoffset = dist * dir.z;
-		camera.setPosition(carPos.x - xoffset, carPos.y + 2.4f , carPos.z - zoffset);
+		camera.setPosition(carPos.x - xoffset, carPos.y + 2.f , carPos.z - zoffset);
 
 
 		car_rotation = vehicleQuaternion.getAngle();
