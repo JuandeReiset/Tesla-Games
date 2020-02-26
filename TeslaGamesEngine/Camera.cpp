@@ -92,6 +92,9 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	update();
 }
 
+void Camera::stickControl(GLfloat xChange, GLfloat yChange) {
+
+}
 
 
 glm::mat4 Camera::calculateViewMatrix()

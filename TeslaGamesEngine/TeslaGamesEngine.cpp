@@ -675,6 +675,10 @@ int main()
 
 
 		car_rotation = vehicleQuaternion.getAngle();
+
+		//update camera
+		camera.stickControl(player1.rightStick_X, player1.rightStick_Y);
+		//end camera stuff
 		
 		//Rendering shadows
 		shadowShader.UseShader();
