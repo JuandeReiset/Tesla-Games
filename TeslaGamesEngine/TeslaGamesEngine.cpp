@@ -76,29 +76,11 @@ std::vector<HUD*> HUDList;
 std::vector<Shadow*> shadowList;
 Camera camera;
 
-Shader hudShader;
 Shader shadowShader;
 
 Texture brickTexture;
 Texture dirtTexture;
 Texture plainTexture;
-
-//digit textures
-Texture dig0Texture;
-Texture dig1Texture;
-Texture dig2Texture;
-Texture dig3Texture;
-
-//HUD textures
-Texture weaponUITexture;
-Texture emptyBarTexture;
-Texture healthBarTexture;
-Texture nitroBarTexture;
-Texture plusSymbolTexture;
-Texture nitroSymbolTexture;
-Texture flagTexture;
-Texture personTexture;
-Texture cupTexture;
 
 //sahow textures
 Texture shadowTexture;
@@ -149,12 +131,6 @@ static const char* vShader = "Shaders/shader.vert";
 
 // Fragment Shader
 static const char* fShader = "Shaders/shader.frag";
-
-// Vertex Shader of HUD_shader
-static const char* vHshader = "Shaders/HUD_shader.vert";
-
-//Fragment shader of HUD_shader
-static const char* fHshader = "Shaders/HUD_shader.frag";
 
 //Vertex shader of shadow_shader
 static const char* vShadow_shader = "Shaders/shadow_shader.vert";
@@ -260,10 +236,26 @@ void CreateShaders()
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 	
-	hudShader.createHUDFromFiles(vHshader, fHshader);
 	shadowShader.createShadowFromFiles(vShadow_shader, fShadow_shader);
 }
 
+void createShadows() {
+	unsigned int shadowIndecis[] = {
+		0, 1, 3,
+		2, 1, 3
+	};
+
+	GLfloat shadowVertices[] = {
+		-2.0f, -0.8f, -2.0f,		0.0, 0.0,
+		-1.0f, -0.8f, 2.0f,		0.0, 1.0,
+		2.0f, -0.8f, 2.0f,		1.0, 1.0,
+		2.0f, -0.8f, -2.0f,		1.0, 0.0
+	};
+
+	Shadow* shadow = new Shadow();
+	shadow->createShadow(shadowVertices, shadowIndecis, 20, 6);
+	shadowList.push_back(shadow);
+}
 
 // A function to obtain input, called each frame
 //add vehicle movement to these FOR NOW
@@ -390,7 +382,6 @@ int main()
 	// Rendering setup
 	CreateObjects();
 	CreateShaders();
-	CreateHUDs();
 	createShadows();
 
 	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 0.5f);
@@ -405,6 +396,8 @@ int main()
 	dirtTexture.LoadTextureAlpha();
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureAlpha();
+	shadowTexture = Texture("Textures/shadow.png");
+	shadowTexture.LoadTextureAlpha();
 
 	
 	shinyMaterial = Material(4.0f, 256);
@@ -693,10 +686,10 @@ int main()
 		model = glm::mat4(1.0f);
 		//model = glm::scale(model, glm::vec3(2.0, 1.0, 2.0));
 		//model = glm::rotate()
-		model = glm::translate(model, glm::vec3(carPos.x, 0, carPos.z));	//translate to physx vehicle pos
-		physx::PxMat44 shadowModel(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
+		//model = glm::translate(model, glm::vec3(carPos.x, 0, carPos.z));	//translate to physx vehicle pos
+		physx::PxMat44 carModel(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 		//modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, shadowModel.front());
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, carModel.front());
 		
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
@@ -710,17 +703,11 @@ int main()
 		//Shadows end here
 
 		//Rendering HUD
-		hudShader.UseShader();
-		uniformModel = hudShader.GetModelLocation();
-		uniformProjection = hudShader.GetProjectionLocation();
-		//HUD staars here
+		//HUD stars here
 		hud.use();
-
-/*
 		
 		//HUD ends here
 
-*/
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 
 		// End of rendering 
