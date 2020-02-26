@@ -611,15 +611,15 @@ int main()
 
 		// Draw racing track
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -2.0f, -2.f));
-		model = glm::scale(model, glm::vec3(10.f,10.f, 10.f));
+		model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2f));
+		model = glm::scale(model, glm::vec3(20.f,20.f, 20.f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		racetrack.RenderModel();
 
 		///////////////////////////////////////////////////////////////////////
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
-
+		
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
 /////////////////////////////////////////////////////////////////////////////////
 		//Draw bullets
@@ -667,11 +667,11 @@ int main()
 		TeslaCar.RenderModel();
 
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
-		float dist = 6.5;														//distance between camera and vehicle
+		float dist = 5.4f;														//distance between camera and vehicle
 		camera.setFront(dir.x, -0.5, dir.z);
 		float xoffset = dist * dir.x;
 		float zoffset = dist * dir.z;
-		camera.setPosition(carPos.x - xoffset, carPos.y + 5 , carPos.z - zoffset);
+		camera.setPosition(carPos.x - xoffset, carPos.y + 2.4f , carPos.z - zoffset);
 
 
 		car_rotation = vehicleQuaternion.getAngle();
