@@ -25,6 +25,8 @@ public:
 	//for hud shaders
 	void createHUDFromFiles(const char* vertexLocation, const char* fragmentLocation);
 
+	//for shadow shader
+	void createShadowFromFiles(const char* vertexLocation, const char* fragmentLocation);
 
 	std::string ReadFile(const char* fileLocation);
 
@@ -94,6 +96,7 @@ private:
 
 	void CompileShader(const char* vertexCode, const char* fragmentCode);
 	void compileHUDShader(const char* vertexCode, const char* fragmentCode);
+	void compileShadowShader(const char* vertexCode, const char* fragmentCode);
 	void AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType);
 };
 

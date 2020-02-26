@@ -48,6 +48,7 @@
     <ClCompile Include="ShootComp.cpp" />
     <ClCompile Include="Turret.cpp" />
     <ClCompile Include="HUD.cpp" />
+    <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="HUDcreator.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -98,5 +99,6 @@
     <ClInclude Include="Turret.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="HUDcreator.h" />
+    <ClInclude Include="Shadow.h" />
   </ItemGroup>
 </Project>
