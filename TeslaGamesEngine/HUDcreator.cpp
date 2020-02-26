@@ -194,7 +194,7 @@ void HUDcreator::use() {
 	HUDList[16]->renderHUD();
 
 	glEnable(GL_DEPTH_TEST);
-	std::cout << weaponUIVertices[1] << std::endl;
+	//std::cout << weaponUIVertices[1] << std::endl;
 
 	return;
 }
