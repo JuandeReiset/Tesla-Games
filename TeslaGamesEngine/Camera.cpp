@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Camera.h"
 
+#include <iostream>
 
 Camera::Camera()
 {
@@ -24,7 +25,19 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	moveSpeed = startMoveSpeed;
 	turnSpeed = startTurnSpeed;
 
+	distance = 5.4f;
+	angleAroundTarget = 0;
+
 	update();
+}
+
+void Camera::calculateAngleAroundTarget(float xChange) {
+	angleAroundTarget -= (xChange * turnSpeed) ;
+
+	if (angleAroundTarget < -30.f)
+		angleAroundTarget = -30.f;
+	if (angleAroundTarget > 30.f)
+		angleAroundTarget = 30.f;
 }
 
 void Camera::setPosition(float x, float y, float z) {
@@ -42,6 +55,20 @@ void Camera::setFront(float x, float y, float z) {
 	front = glm::vec3(x, y, z);
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
+	
+	pitch = -30;
+	//yaw = glm::degrees(acos(front.x / cos(glm::radians(pitch))));
+	yaw = glm::degrees(atan2(front.z, front.x));
+	/*
+	if (x >= 0) {
+		yaw = glm::degrees(atan(front.x / -front.y));
+	}
+	if (x < 0) {
+		yaw = glm::degrees(atan(front.x / -front.y));
+		yaw += 180;
+	}
+	*/
+	std::cout << "pitch: " << pitch << " yaw: " << yaw << std::endl;
 }
 
 
@@ -92,7 +119,43 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	update();
 }
 
+void Camera::stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec3 carPos, glm::vec3 dir) {
+	if (reset) {
+		setFront(dir.x, -0.5, dir.z);
+		angleAroundTarget = 0;
+		return;
+	}
 
+	calculateAngleAroundTarget(xChange);
+	calculatePos(carPos, dir);
+	xChange *= turnSpeed;
+	//if(dir.x >= 0)
+	float angleAroundY = glm::degrees(atan2(dir.z, dir.x));
+
+	yaw = angleAroundY - angleAroundTarget;
+
+
+	//std::cout << yaw << std::endl;
+	std::cout << angleAroundY << std::endl;
+/*
+	if (yaw > angleAroundY + 40)
+		yaw = angleAroundY + 40;
+	if (yaw < angleAroundY - 40)
+		yaw = angleAroundY - 40;
+	*/
+	update();
+}
+
+void Camera::calculatePos(glm::vec3 carPos, glm::vec3 dir) {
+	position.y = carPos.y + 2.f;
+
+
+	float xOffset = distance * dir.x;
+	float zOffset = distance * dir.z;
+
+	position.x = carPos.x - xOffset;
+	position.z = carPos.z - zOffset;
+}
 
 glm::mat4 Camera::calculateViewMatrix()
 {
