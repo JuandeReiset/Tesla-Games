@@ -522,6 +522,8 @@ int main()
 		const physx::PxVec3 vehiclePositionPhysx = vDynamic->getGlobalPose().p;
 		glm::vec3 vehiclePosition(vehiclePositionPhysx.x, vehiclePositionPhysx.y, vehiclePositionPhysx.z);
 
+
+
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		lastTime = now;

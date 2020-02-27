@@ -116,22 +116,15 @@ void Camera::stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec
 
 	//setFront(dir.x, -0.5, dir.z);
 	xChange *= turnSpeed;
-	yChange *= turnSpeed;
 
+	float angleAroundY = glm::degrees(atan2(dir.z, dir.x));
 	yaw += xChange;
-	//pitch += yChange;
 
-	if (pitch > 89.0f)
-	{
-		pitch = 89.0f;
-	}
+	if (yaw > angleAroundY + 20)
+		yaw = yaw - turnSpeed;
+	if (yaw < angleAroundY - 20)
+		yaw = yaw +  turnSpeed;
 
-	if (pitch < -89.0f)
-	{
-		pitch = -89.0f;
-	}
-	
-	
 	update();
 }
 
