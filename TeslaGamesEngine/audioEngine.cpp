@@ -34,6 +34,12 @@ void AudioEngine::initialize() {
 	soundFiles[1] = "./audioFiles/finalCount.wav";
 	soundFiles[2] = "./audioFiles/TTG_main_menu.wav";
 	soundFiles[3] = "./audioFiles/TTG_race_music.wav";
+	soundFiles[4] = "./audioFiles/vehicle_acceleration_from_rest_MONO.wav";
+	soundFiles[5] = "./audioFiles/vehicle_acceleration_from_motion_MONO.wav";
+	soundFiles[6] = "./audioFiles/vehicle_boost_start_MONO.wav";
+	soundFiles[7] = "./audioFiles/vehicle_boost_speed_max_MONO.wav";
+	soundFiles[8] = "./audioFiles/vehicle_top_speed_MONO.wav";
+	soundFiles[9] = "./audioFiles/vehicle_turret_triple_burst_MONO.wav";
 	
 }
 void AudioEngine::initializeBuffers() {
