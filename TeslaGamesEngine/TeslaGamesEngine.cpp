@@ -337,7 +337,7 @@ void parseControllerInput(Controller* controller)
 
 	if (!controller->RStick_InDeadzone()) {
 		//physEng.turn(controller->leftStick_X());
-		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
+		//std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
 	}
 	if (controller->rightTrigger() > 0.0) {
 		physEng.forwards(controller->rightTrigger());
@@ -384,7 +384,7 @@ int main()
 	CreateShaders();
 	createShadows();
 
-	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f);
 	yawPitch yp;
 	yp.yaw = 90.f;
 	yp.pitch = -20.0f;
@@ -508,6 +508,8 @@ int main()
 	//physEng.upwards();
 	//End of audio system setup/demo
 
+	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
+	camera.setFront(front.x, front.y, front.z);
 
 	while (!mainWindow.getShouldClose())
 	{
@@ -666,20 +668,26 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TeslaCar.RenderModel();
 
+
+
+		//update camera
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
 		float dist = 5.4f;														//distance between camera and vehicle
-		camera.setFront(dir.x, -0.5, dir.z);
+		//camera.setFront(dir.x, -0.5, dir.z);
 		float xoffset = dist * dir.x;
 		float zoffset = dist * dir.z;
 		camera.setPosition(carPos.x - xoffset, carPos.y + 2.f , carPos.z - zoffset);
 
 
-		car_rotation = vehicleQuaternion.getAngle();
+		//car_rotation = vehicleQuaternion.getAngle();
 
-		//update camera
-		camera.stickControl(player1.rightStick_X, player1.rightStick_Y);
+		//std::cout << player1.rightStick_X() << std::endl;
+	
+		camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), player1.isButtonDown(XButtons.R_Thumbstick), dir);
 		//end camera stuff
 		
+
+
 		//Rendering shadows
 		shadowShader.UseShader();
 		uniformModel = shadowShader.GetModelLocation();

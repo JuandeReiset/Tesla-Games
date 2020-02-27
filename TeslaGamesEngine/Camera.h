@@ -4,6 +4,7 @@
 
 #include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtx\rotate_vector.hpp>
 
 #include <GLFW\glfw3.h>
 
@@ -20,7 +21,7 @@ public:
 
 	void keyControl(bool* keys, GLfloat deltaTime);
 	void mouseControl(GLfloat xChange, GLfloat yChange);
-	void stickControl(GLfloat xChange, GLfloat yChange);
+	void stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec3 dir);
 
 	glm::vec3 getCameraPosition();
 	glm::vec3 getCameraDirection();

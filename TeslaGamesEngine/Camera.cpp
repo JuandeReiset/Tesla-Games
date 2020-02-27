@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Camera.h"
 
+#include <iostream>
 
 Camera::Camera()
 {
@@ -42,6 +43,20 @@ void Camera::setFront(float x, float y, float z) {
 	front = glm::vec3(x, y, z);
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
+	
+	pitch = -30;
+	//yaw = glm::degrees(acos(front.x / cos(glm::radians(pitch))));
+	yaw = glm::degrees(atan2(front.z, front.x));
+	/*
+	if (x >= 0) {
+		yaw = glm::degrees(atan(front.x / -front.y));
+	}
+	if (x < 0) {
+		yaw = glm::degrees(atan(front.x / -front.y));
+		yaw += 180;
+	}
+	*/
+	std::cout << "pitch: " << pitch << " yaw: " << yaw << std::endl;
 }
 
 
@@ -92,8 +107,32 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	update();
 }
 
-void Camera::stickControl(GLfloat xChange, GLfloat yChange) {
+void Camera::stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec3 dir) {
+	if (reset) {
+		setFront(dir.x, -0.5, dir.z);
+		
+		return;
+	}
 
+	//setFront(dir.x, -0.5, dir.z);
+	xChange *= turnSpeed;
+	yChange *= turnSpeed;
+
+	yaw += xChange;
+	//pitch += yChange;
+
+	if (pitch > 89.0f)
+	{
+		pitch = 89.0f;
+	}
+
+	if (pitch < -89.0f)
+	{
+		pitch = -89.0f;
+	}
+	
+	
+	update();
 }
 
 
