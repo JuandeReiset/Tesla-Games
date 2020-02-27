@@ -384,7 +384,7 @@ int main()
 	CreateShaders();
 	createShadows();
 
-	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f);
+	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 0.5f);
 	yawPitch yp;
 	yp.yaw = 90.f;
 	yp.pitch = -20.0f;
@@ -673,19 +673,10 @@ int main()
 
 
 		//update camera
+		//now distance and other stuff are inside camera class
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
-		float dist = 5.4f;														//distance between camera and vehicle
-		//camera.setFront(dir.x, -0.5, dir.z);
-		float xoffset = dist * dir.x;
-		float zoffset = dist * dir.z;
-		camera.setPosition(carPos.x - xoffset, carPos.y + 2.f , carPos.z - zoffset);
 
-
-		//car_rotation = vehicleQuaternion.getAngle();
-
-		//std::cout << player1.rightStick_X() << std::endl;
-	
-		camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), player1.isButtonDown(XButtons.R_Thumbstick), dir);
+		camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), player1.isButtonDown(XButtons.R_Thumbstick), glm::vec3(carPos.x, carPos.y, carPos.z) ,dir);
 		//end camera stuff
 		
 

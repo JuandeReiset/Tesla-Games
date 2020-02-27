@@ -21,7 +21,7 @@ public:
 
 	void keyControl(bool* keys, GLfloat deltaTime);
 	void mouseControl(GLfloat xChange, GLfloat yChange);
-	void stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec3 dir);
+	void stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec3 carPos, glm::vec3 dir);
 
 	glm::vec3 getCameraPosition();
 	glm::vec3 getCameraDirection();
@@ -32,6 +32,8 @@ public:
 	void setFront(float x, float y, float z);
 
 	glm::mat4 calculateViewMatrix();
+	void calculateAngleAroundTarget(float xChange);
+	void calculatePos(glm::vec3 carPos, glm::vec3 dir);
 
 	// Camera's frame update
 	void Tick(float deltaTime);
@@ -50,6 +52,9 @@ private:
 
 	GLfloat moveSpeed;
 	GLfloat turnSpeed;
+
+	GLfloat angleAroundTarget;
+	float distance;
 
 	void update();
 };
