@@ -246,10 +246,10 @@ void createShadows() {
 	};
 
 	GLfloat shadowVertices[] = {
-		-2.0f, -0.8f, -2.0f,		0.0, 0.0,
-		-1.0f, -0.8f, 2.0f,		0.0, 1.0,
-		2.0f, -0.8f, 2.0f,		1.0, 1.0,
-		2.0f, -0.8f, -2.0f,		1.0, 0.0
+		-1.95f, -0.8f, -2.0f,		0.0, 0.0,
+		-1.95f, -0.8f, 2.0f,		0.0, 1.0,
+		2.05f, -0.8f, 2.0f,		1.0, 1.0,
+		2.05f, -0.8f, -2.0f,		1.0, 0.0
 	};
 
 	Shadow* shadow = new Shadow();
@@ -508,6 +508,8 @@ int main()
 	//physEng.upwards();
 	//End of audio system setup/demo
 
+	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
+	camera.setFront(front.x, front.y, front.z);
 
 	while (!mainWindow.getShouldClose())
 	{
@@ -519,6 +521,8 @@ int main()
 		physx::PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
 		const physx::PxVec3 vehiclePositionPhysx = vDynamic->getGlobalPose().p;
 		glm::vec3 vehiclePosition(vehiclePositionPhysx.x, vehiclePositionPhysx.y, vehiclePositionPhysx.z);
+
+
 
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
@@ -665,17 +669,21 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TeslaCar.RenderModel();
 
+		//update camera
+		//now distance and other stuff are inside camera class
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
-		float dist = 5.2f;														//distance between camera and vehicle
-		camera.setFront(dir.x, -0.5, dir.z);
-		float xoffset = dist * dir.x;
-		float zoffset = dist * dir.z;
-		camera.setPosition(carPos.x - xoffset, carPos.y + 2.f , carPos.z - zoffset);
 
-
-		car_rotation = vehicleQuaternion.getAngle();
+		camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), player1.isButtonDown(XButtons.R_Thumbstick), glm::vec3(carPos.x, carPos.y, carPos.z) ,dir);
+		//end camera stuff
 		
+
+
 		//Rendering shadows
+
+		//turn on blend mode
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		shadowShader.UseShader();
 		uniformModel = shadowShader.GetModelLocation();
 		uniformProjection = shadowShader.GetProjectionLocation();

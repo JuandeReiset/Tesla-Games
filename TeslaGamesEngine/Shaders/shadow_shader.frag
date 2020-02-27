@@ -10,8 +10,5 @@ void main()
 {
 	vec4 color = texture(theTexture, TexCoord);
 
-	if(color.a < 0.1)
-		discard;
-
 	OutColor = color;
 }
