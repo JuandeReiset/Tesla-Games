@@ -24,14 +24,14 @@ using namespace snippetvehicle;
 PhysicsEngine::PhysicsEngine() {
 	physx::PxF32 gSteerVsForwardSpeedData[] =
 	{
-		0.0f,		0.75f,
+		0.0f,		0.9f,
 		5.0f,		0.75f,
+		15.0f,		0.55f,
 		30.0f,		0.35f,
 		120.0f,		0.15f,
 		PX_MAX_F32, PX_MAX_F32,
 		PX_MAX_F32, PX_MAX_F32,
 		PX_MAX_F32, PX_MAX_F32,
-		PX_MAX_F32, PX_MAX_F32
 	};
 	
 	gSteerVsForwardSpeedTable = PxFixedSizeLookupTable<8>(gSteerVsForwardSpeedData, 4);

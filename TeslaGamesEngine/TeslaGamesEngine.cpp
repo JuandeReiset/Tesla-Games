@@ -342,14 +342,14 @@ void parseControllerInput(Controller* controller)
 	if (controller->rightTrigger() > 0.0) {
 		physEng.forwards(controller->rightTrigger());
 		
-		std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
+		//std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
 	}
 	else {
 		physEng.forwards(0.1f);
 	}
 	if (controller->leftTrigger() > 0.0) {
 		physEng.reverse(controller->leftTrigger());
-		std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
+		//std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
 	}
 	
 
@@ -488,7 +488,7 @@ int main()
 	AudioEngine audioSystem = AudioEngine();
 	AudioBoomBox audioObject = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
 	AudioBoomBox audioObject2 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
-	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_BOUNCE);
+	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TURRET_FIRE);
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
@@ -637,7 +637,6 @@ int main()
 			if (!bullet_sound_played) {
 				audioObject3.playSound();
 				bullet_sound_played = true; //Stop once its played once
-
 			}
 		
 			shoot_distance_x += Direction.x *bullet_speed;
@@ -667,7 +666,7 @@ int main()
 		TeslaCar.RenderModel();
 
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
-		float dist = 5.4f;														//distance between camera and vehicle
+		float dist = 5.2f;														//distance between camera and vehicle
 		camera.setFront(dir.x, -0.5, dir.z);
 		float xoffset = dist * dir.x;
 		float zoffset = dist * dir.z;
