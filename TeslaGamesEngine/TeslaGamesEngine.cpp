@@ -246,10 +246,10 @@ void createShadows() {
 	};
 
 	GLfloat shadowVertices[] = {
-		-2.0f, -0.8f, -2.0f,		0.0, 0.0,
-		-1.0f, -0.8f, 2.0f,		0.0, 1.0,
-		2.0f, -0.8f, 2.0f,		1.0, 1.0,
-		2.0f, -0.8f, -2.0f,		1.0, 0.0
+		-1.95f, -0.8f, -2.0f,		0.0, 0.0,
+		-1.95f, -0.8f, 2.0f,		0.0, 1.0,
+		2.05f, -0.8f, 2.0f,		1.0, 1.0,
+		2.05f, -0.8f, -2.0f,		1.0, 0.0
 	};
 
 	Shadow* shadow = new Shadow();
@@ -676,7 +676,13 @@ int main()
 
 		car_rotation = vehicleQuaternion.getAngle();
 		
+
 		//Rendering shadows
+
+		//turn on blend mode
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		shadowShader.UseShader();
 		uniformModel = shadowShader.GetModelLocation();
 		uniformProjection = shadowShader.GetProjectionLocation();
