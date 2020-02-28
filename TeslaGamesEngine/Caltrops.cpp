@@ -40,3 +40,7 @@ void Caltrops::renderCaltrops() {
 
 	caltropsObj.RenderModel();
 }
+
+Caltrops::~Caltrops() {
+
+}
