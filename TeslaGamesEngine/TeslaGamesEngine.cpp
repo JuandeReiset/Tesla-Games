@@ -52,6 +52,9 @@
 //Shadow stuff
 #include "Shadow.h"
 
+//Ability stuff
+#include "Caltrops.h"
+
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -74,6 +77,7 @@ std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 std::vector<HUD*> HUDList;
 std::vector<Shadow*> shadowList;
+std::vector<Caltrops*> caltropsList;
 Camera camera;
 
 Shader shadowShader;
@@ -669,6 +673,21 @@ int main()
 
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TeslaCar.RenderModel();
+
+
+		//Rendering caltrops
+		Caltrops* caltrop = new Caltrops();
+		caltrop->createCaltrops(glm::vec3(carPos.x, carPos.y, carPos.z), uniformModel, uniformSpecularIntensity, uniformShininess);
+		caltropsList.push_back(caltrop);
+
+		for (auto c : caltropsList) {
+			if (c->isDead)
+				delete c;
+			else
+				c->renderCaltrops();
+		}
+
+		//caltrops end here
 
 		//update camera
 		//now distance and other stuff are inside camera class
