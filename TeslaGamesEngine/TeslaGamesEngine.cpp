@@ -9,7 +9,7 @@
 #include <cmath>
 #include <vector>
 #include <memory>
-#include <unordered_set>
+#include <list>
 
 // Rendering includes
 #include <GL\glew.h>
@@ -80,7 +80,7 @@ std::vector<Shader> shaderList;
 std::vector<HUD*> HUDList;
 std::vector<Shadow*> shadowList;
 //std::vector<Caltrops*> caltropsList;
-std::unordered_set<std::unique_ptr<Caltrops>> caltropsList;											//using unordered_set instead of vector since we will often insert and delete elements in the list
+std::list<std::unique_ptr<Caltrops>> caltropsList;											//using list instead of vector since we will often insert and delete elements in the list
 Camera camera;
 
 Shader shadowShader;
@@ -681,13 +681,16 @@ int main()
 		//Caltrops  caltrop = new Caltrops();
 		std::unique_ptr<Caltrops> caltrop(new Caltrops());//using unique_ptr instead of pointer since we will release memory
 		caltrop->createCaltrops(glm::vec3(carPos.x, carPos.y, carPos.z), uniformModel, uniformSpecularIntensity, uniformShininess);
-		caltropsList.insert(std::move(caltrop));
+		caltropsList.push_back(std::move(caltrop));
 		
-		for (auto c = caltropsList.begin(); c != caltropsList.end(); ++c) {
+		auto c = caltropsList.begin();
+		while (c != caltropsList.end()) {
 			if ((*c)->isDead())
-				c = caltropsList.erase(c);
-			else
+				caltropsList.erase(c++);
+			else {
 				(*c)->renderCaltrops();
+				++c;
+			}
 		}
 	
 		//caltrops end here
