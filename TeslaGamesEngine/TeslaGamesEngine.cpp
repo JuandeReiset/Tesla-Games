@@ -676,12 +676,16 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TeslaCar.RenderModel();
 
-
+		//caltrops
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Rendering caltrops
-		//Caltrops  caltrop = new Caltrops();
-		std::unique_ptr<Caltrops> caltrop(new Caltrops());//using unique_ptr instead of pointer since we will release memory
-		caltrop->createCaltrops(glm::vec3(carPos.x, carPos.y, carPos.z), uniformModel, uniformSpecularIntensity, uniformShininess);
-		caltropsList.push_back(std::move(caltrop));
+
+		//if press down button, use caltrops
+		if (player1.isButtonDown(XButtons.DPad_Down)) {
+			std::unique_ptr<Caltrops> caltrop(new Caltrops());//using unique_ptr instead of pointer since we will release memory
+			caltrop->createCaltrops(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess);
+			caltropsList.push_back(std::move(caltrop));
+		}
 		
 		auto c = caltropsList.begin();
 		while (c != caltropsList.end()) {
@@ -692,17 +696,22 @@ int main()
 				++c;
 			}
 		}
-	
 		//caltrops end here
 
+
+		//camera
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//update camera
 		//now distance and other stuff are inside camera class
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
 
-		camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), player1.isButtonDown(XButtons.R_Thumbstick), glm::vec3(carPos.x, carPos.y, carPos.z) ,dir);
+		camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), player1.isButtonDown(XButtons.R_Thumbstick), vehiclePosition ,dir);
 		//end camera stuff
-		
 
+
+
+		//shadow
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		//Rendering shadows
 
@@ -717,9 +726,6 @@ int main()
 
 
 		model = glm::mat4(1.0f);
-		//model = glm::scale(model, glm::vec3(2.0, 1.0, 2.0));
-		//model = glm::rotate()
-		//model = glm::translate(model, glm::vec3(carPos.x, 0, carPos.z));	//translate to physx vehicle pos
 		physx::PxMat44 carModel(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 		//modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, carModel.front());
@@ -735,6 +741,9 @@ int main()
 
 		//Shadows end here
 
+
+		//HUD
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Rendering HUD
 		//HUD stars here
 		hud.use();
