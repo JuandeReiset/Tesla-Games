@@ -517,7 +517,6 @@ int main()
 
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
-
 	while (!mainWindow.getShouldClose())
 	{
 		physEng.stepPhysics();
@@ -680,10 +679,10 @@ int main()
 
 		//Rendering caltrops
 		//Caltrops  caltrop = new Caltrops();
-		std::unique_ptr<Caltrops> caltrop;//using unique_ptr instead of pointer since we will release memory
+		std::unique_ptr<Caltrops> caltrop(new Caltrops());//using unique_ptr instead of pointer since we will release memory
 		caltrop->createCaltrops(glm::vec3(carPos.x, carPos.y, carPos.z), uniformModel, uniformSpecularIntensity, uniformShininess);
 		caltropsList.insert(std::move(caltrop));
-	
+		
 		for (auto c = caltropsList.begin(); c != caltropsList.end(); ++c) {
 			if ((*c)->isDead())
 				c = caltropsList.erase(c);

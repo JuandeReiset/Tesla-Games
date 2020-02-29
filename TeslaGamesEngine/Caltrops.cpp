@@ -15,6 +15,7 @@ Caltrops::Caltrops() {
 }
 
 bool Caltrops::isDead() {
+	updateTime();
 	if (currentTime - birthTime >= life)
 		return true;
 	else
@@ -26,7 +27,8 @@ void Caltrops::updateTime() {
 }
 
 void Caltrops::createCaltrops(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess) {
-	position = glm::vec3(carPos.x, carPos.y, carPos.z - 2.f);
+	position = glm::vec3(carPos.x, carPos.y, carPos.z - 5.f);
+	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 	model = glm::translate(model, position);
 
 	uniformModel = uniModel;
