@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "Vehicle.h"
+#include <vector>
 #include "PhysX/include/PxPhysicsAPI.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleCreate.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleSceneQuery.h"
@@ -14,6 +15,7 @@ class PhysicsEngine
 {
 public:
 	PhysicsEngine();
+	void addEnemyVehicle(float x, float y, float z);	//add enemy vehicle at position (x,y,z)
 
 	physx::PxVec3 GetBoxPos();
 	void stepPhysics();
@@ -23,6 +25,8 @@ public:
 	physx::PxRigidStatic* sphereActor = NULL;
 	physx::PxRigidStatic* wallActor = NULL;
 	Vehicle* player;
+	std::vector<Vehicle*> enemyVehicles;
+
 
 private:
 	void cleanupPhysics();

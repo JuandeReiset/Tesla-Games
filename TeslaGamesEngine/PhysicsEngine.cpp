@@ -59,13 +59,21 @@ PhysicsEngine::PhysicsEngine() {
 	boxwall->setSimulationFilterData(obstFilterData);
 	wallActor->setGlobalPose(PxTransform(PxVec3(0, 2, 5)));
 	wallActor->attachShape(*boxwall);
-	gScene->addActor(*wallActor);
+	//gScene->addActor(*wallActor);
 
 	//Create a plane to drive on (once we get track cooking working we can remove this, or have this as a safeguard just in case)
 	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
 	gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
 	gScene->addActor(*gGroundPlane);
 
+}
+
+void PhysicsEngine::addEnemyVehicle(float x, float y, float z)
+{
+	//create vehicle object
+	//add it to the list of vehicle
+	Vehicle* v = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, x, y, z);
+	enemyVehicles.push_back(v);
 }
 
 //this should go with the vehicle class
@@ -88,6 +96,8 @@ void PhysicsEngine::gearShift(float curSpeed) {
 	}
 }
 
+
+
 physx::PxVec3 PhysicsEngine::GetBoxPos()
 {
 	return wallActor->getGlobalPose().p;
@@ -98,6 +108,12 @@ void PhysicsEngine::stepPhysics()
 	const PxF32 timestep = 1.0f / 60.0f;
 
 	player->update(timestep, gScene);
+
+	if (!enemyVehicles.empty()) {
+		for (int i = 0; i < enemyVehicles.size(); i++) {
+			enemyVehicles.at(i)->update(timestep, gScene);
+		}
+	}
 
 	//Scene update.
 	gScene->simulate(timestep);
@@ -112,6 +128,14 @@ int PhysicsEngine::getModeType()
 void PhysicsEngine::cleanupPhysics()
 {
 	player->cleanupPhysics(gAllocator);
+
+	if (!enemyVehicles.empty()) {
+		for (int i = 0; i < enemyVehicles.size(); i++) {
+			enemyVehicles.at(i)->cleanupPhysics(gAllocator);
+		}
+	}
+
+
 	box->release();
 	PX_RELEASE(gGroundPlane);
 	

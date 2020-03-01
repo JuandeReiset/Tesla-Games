@@ -380,6 +380,10 @@ int main()
 	Object* car2 = new Vehicle(2);
 	Object* bullet = new DamagingObject(20, 1);
 
+
+
+	//need a model for each ai vehicle
+
 	mainGame.AddObject(car);
 	mainGame.AddObject(car2);
 	mainGame.AddObject(bullet);
@@ -664,8 +668,7 @@ int main()
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		//draw spikes
+
 
 
 
@@ -675,6 +678,26 @@ int main()
 
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TeslaCar.RenderModel();
+
+		//there is probably a much better way of rendering the other enemy cars, but this works for now
+		if (!physEng.enemyVehicles.empty()) {
+			for (int i = 0; i < physEng.enemyVehicles.size(); i++) {
+				Vehicle* v = physEng.enemyVehicles.at(i);
+				const physx::PxVehicleDrive4W* enemyV = v->gVehicle4W;	//get vehicle
+				const physx::PxRigidDynamic* enemyvDynamic = enemyV->getRigidDynamicActor();
+				physx::PxQuat enemyvehicleQuaternion = enemyvDynamic->getGlobalPose().q;
+				physx::PxVec3 enemyv_dir = enemyvehicleQuaternion.getBasisVector2();
+				const physx::PxVec3 enemyvehiclePositionPhysx = enemyvDynamic->getGlobalPose().p;
+				glm::vec3 enemyvehiclePosition(enemyvehiclePositionPhysx.x, enemyvehiclePositionPhysx.y, enemyvehiclePositionPhysx.z);
+
+				physx::PxMat44 enemymodelMat(enemyvDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
+				enemymodelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, enemymodelMat.front());
+
+				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+				TeslaCar.RenderModel();
+			}
+		}
 
 		//caltrops
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
