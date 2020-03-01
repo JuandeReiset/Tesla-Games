@@ -180,6 +180,7 @@
   <ItemGroup>
     <ClInclude Include="AudioBoomBox.h" />
     <ClInclude Include="audioEngine.h" />
+    <ClInclude Include="Caltrops.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Combat.h" />
     <ClInclude Include="Controller.h" />
@@ -230,6 +231,7 @@
   <ItemGroup>
     <ClCompile Include="AudioBoomBox.cpp" />
     <ClCompile Include="audioEngine.cpp" />
+    <ClCompile Include="Caltrops.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Combat.cpp" />
     <ClCompile Include="Controller.cpp" />

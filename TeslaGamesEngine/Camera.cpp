@@ -49,7 +49,6 @@ void Camera::setCenter(float x, float y, float z) {
 	front = glm::normalize(center - position);
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
-	//update();
 }
 void Camera::setFront(float x, float y, float z) {
 	front = glm::vec3(x, y, z);
@@ -57,17 +56,8 @@ void Camera::setFront(float x, float y, float z) {
 	up = glm::normalize(glm::cross(right, front));
 	
 	pitch = -30;
-	//yaw = glm::degrees(acos(front.x / cos(glm::radians(pitch))));
 	yaw = glm::degrees(atan2(front.z, front.x));
-	/*
-	if (x >= 0) {
-		yaw = glm::degrees(atan(front.x / -front.y));
-	}
-	if (x < 0) {
-		yaw = glm::degrees(atan(front.x / -front.y));
-		yaw += 180;
-	}
-	*/
+
 	std::cout << "pitch: " << pitch << " yaw: " << yaw << std::endl;
 }
 
@@ -129,20 +119,13 @@ void Camera::stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec
 	calculateAngleAroundTarget(xChange);
 	calculatePos(carPos, dir);
 	xChange *= turnSpeed;
-	//if(dir.x >= 0)
 	float angleAroundY = glm::degrees(atan2(dir.z, dir.x));
 
 	yaw = angleAroundY - angleAroundTarget;
 
 
-	//std::cout << yaw << std::endl;
 	std::cout << angleAroundY << std::endl;
-/*
-	if (yaw > angleAroundY + 40)
-		yaw = angleAroundY + 40;
-	if (yaw < angleAroundY - 40)
-		yaw = angleAroundY - 40;
-	*/
+
 	update();
 }
 
@@ -185,12 +168,7 @@ void Camera::update()
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
 }
-/*
-void Camera::update() {
-	right = glm::normalize(glm::cross(front, worldUp));
-	up = glm::normalize(glm::cross(right, front));
-}
-*/
+
 Camera::~Camera()
 {
 }
