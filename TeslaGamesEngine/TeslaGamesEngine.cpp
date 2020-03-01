@@ -335,11 +335,11 @@ void parseControllerInput(Controller* controller)
 	if (!controller->LStick_InDeadzone()) {
 		//physEng.turn(controller->leftStick_X());
 		float value = controller->leftStick_X();
-		physEng.turn(value);
+		physEng.player->turn(value);
 		std::cout << controller->getIndex() << " " << "LS: " << value << std::endl;
 	}
 	else {
-		physEng.turn(0.f);
+		physEng.player->turn(0.f);
 	}
 
 	if (!controller->RStick_InDeadzone()) {
@@ -347,15 +347,15 @@ void parseControllerInput(Controller* controller)
 		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
 	}
 	if (controller->rightTrigger() > 0.0) {
-		physEng.forwards(controller->rightTrigger());
+		physEng.player->forwards(controller->rightTrigger());
 		
 		//std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
 	}
 	else {
-		physEng.forwards(0.1f);
+		physEng.player->forwards(0.1f);
 	}
 	if (controller->leftTrigger() > 0.0) {
-		physEng.reverse(controller->leftTrigger());
+		physEng.player->reverse(controller->leftTrigger());
 		//std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
 	}
 	
@@ -521,7 +521,7 @@ int main()
 	{
 		physEng.stepPhysics();
 
-		const physx::PxVehicleDrive4W* vehicle = physEng.gVehicle4W;	//get vehicle
+		const physx::PxVehicleDrive4W* vehicle = physEng.player->gVehicle4W;	//get vehicle
 		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
 		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
 		physx::PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
@@ -565,7 +565,7 @@ int main()
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
-		physx::PxVec3 carPos = physEng.GetPosition();	//position of TeslaCar
+		physx::PxVec3 carPos = physEng.player->GetPosition();	//position of TeslaCar
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));

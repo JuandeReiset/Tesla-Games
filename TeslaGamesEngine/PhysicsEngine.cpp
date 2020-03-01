@@ -22,7 +22,50 @@ using namespace snippetvehicle;
 
 
 PhysicsEngine::PhysicsEngine() {
-	physx::PxF32 gSteerVsForwardSpeedData[] =
+	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
+	//gPvd = PxCreatePvd(*gFoundation);
+	//set physics
+	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
+
+
+	//set scene
+	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+
+	//cpu worker thread setup and add to sceneDesc
+	PxU32 numWorkers = 1;
+	gDispatcher = PxDefaultCpuDispatcherCreate(numWorkers);
+	sceneDesc.cpuDispatcher = gDispatcher;
+	sceneDesc.filterShader = VehicleFilterShader;
+
+	gScene = gPhysics->createScene(sceneDesc);
+	PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+	if (pvdClient)
+	{
+		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+	}
+	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+
+	gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
+
+	player = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, 0, 5, 0);
+
+	PxFilterData obstFilterData(snippetvehicle::COLLISION_FLAG_OBSTACLE, snippetvehicle::COLLISION_FLAG_OBSTACLE_AGAINST, 0, 0);
+	PxShape* boxwall = gPhysics->createShape(PxBoxGeometry(1.0f, 2.0f, 1.0f), *gMaterial, false);
+	wallActor = gPhysics->createRigidStatic(PxTransform(PxVec3(0, 0, 0)));
+	boxwall->setSimulationFilterData(obstFilterData);
+	wallActor->setGlobalPose(PxTransform(PxVec3(0, 2, 5)));
+	wallActor->attachShape(*boxwall);
+	gScene->addActor(*wallActor);
+
+	//Create a plane to drive on.
+	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
+	gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
+	gScene->addActor(*gGroundPlane);
+
+/*	physx::PxF32 gSteerVsForwardSpeedData[] =
 	{
 		0.0f,		0.9f,
 		5.0f,		0.75f,
@@ -75,8 +118,10 @@ PhysicsEngine::PhysicsEngine() {
 	
 
 	initVehicle();
+	*/
 }
 
+/*
 VehicleDesc PhysicsEngine::initVehicleDesc()
 {
 	//Set up the chassis mass, dimensions, moment of inertia, and center of mass offset.
@@ -119,6 +164,7 @@ VehicleDesc PhysicsEngine::initVehicleDesc()
 
 	return vehicleDesc;
 }
+
 
 void PhysicsEngine::startAccelerateForwardsMode(float magnitude)
 {
@@ -189,8 +235,9 @@ void PhysicsEngine::releaseAllControls()
 		gVehicleInputData.setAnalogHandbrake(0.0f);
 	}
 }
-
+*/
 //constructor
+/*
 void PhysicsEngine::initVehicle()
 {
 	std::cout << "\n\nGOT TO PHYSICS ENGINE CONSTRUCTOR\n\n";
@@ -291,25 +338,27 @@ void PhysicsEngine::reverse(float magnitude)
 	}
 	
 }
-
+*/
 void PhysicsEngine::gearShift(float curSpeed) {
 	if (curSpeed <= 10) {
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
+		
+		player->gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
 	}
 	else if (curSpeed <= 17) {
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eSECOND);
+		player->gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eSECOND);
 	}
 	else if (curSpeed <= 25) {
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eTHIRD);
+		player->gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eTHIRD);
 	}
 	else if (curSpeed <= 34) {
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFOURTH);
+		player->gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFOURTH);
 	}
 	else {
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIFTH);
+		player->gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIFTH);
 	}
 }
 
+/*
 void PhysicsEngine::turn(float magnitude) {
 	gVehicleInputData.setAnalogSteer(-magnitude);
 	
@@ -333,24 +382,24 @@ physx::PxVec3 PhysicsEngine::GetPosition()
 	PxVec3 position = gVehicle4W->getRigidDynamicActor()->getGlobalPose().p;
 	return position;
 }
-
+*/
 physx::PxVec3 PhysicsEngine::GetBoxPos()
 {
 	return wallActor->getGlobalPose().p;
 }
-
+/*
 float PhysicsEngine::GetRotationAngle()
 {
 	//glm::mat4(1.0f);
 
 	return gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.getAngle();
 }
-
+*/
 void PhysicsEngine::stepPhysics()
 {
 	const PxF32 timestep = 1.0f / 60.0f;
 
-	PxVehicleDrive4WSmoothAnalogRawInputsAndSetAnalogInputs(gPadSmoothingData, gSteerVsForwardSpeedTable, gVehicleInputData, timestep, gIsVehicleInAir, *gVehicle4W);
+/*	PxVehicleDrive4WSmoothAnalogRawInputsAndSetAnalogInputs(gPadSmoothingData, gSteerVsForwardSpeedTable, gVehicleInputData, timestep, gIsVehicleInAir, *gVehicle4W);
 
 	//Raycasts.
 	PxVehicleWheels* vehicles[1] = { gVehicle4W };
@@ -367,6 +416,10 @@ void PhysicsEngine::stepPhysics()
 	//Work out if the vehicle is in the air.
 	gIsVehicleInAir = gVehicle4W->getRigidDynamicActor()->isSleeping() ? false : PxVehicleIsInAir(vehicleQueryResults[0]);
 	//std::cout << "GOT HERE";
+
+	*/
+
+	player->update(timestep, gScene);
 	//Scene update.
 	gScene->simulate(timestep);
 	gScene->fetchResults(true);
@@ -379,14 +432,15 @@ int PhysicsEngine::getModeType()
 
 void PhysicsEngine::cleanupPhysics()
 {
-	gVehicle4W->getRigidDynamicActor()->release();
-	gVehicle4W->free();
+	//gVehicle4W->getRigidDynamicActor()->release();
+	//gVehicle4W->free();
+	player->cleanupPhysics(gAllocator);
 	box->release();
 	PX_RELEASE(gGroundPlane);
-	PX_RELEASE(gBatchQuery);
-	gVehicleSceneQueryData->free(gAllocator);
-	PX_RELEASE(gFrictionPairs);
-	PxCloseVehicleSDK();
+	//PX_RELEASE(gBatchQuery);
+	//gVehicleSceneQueryData->free(gAllocator);
+	//PX_RELEASE(gFrictionPairs);
+	//PxCloseVehicleSDK();
 
 	PX_RELEASE(gMaterial);
 	PX_RELEASE(gCooking);
@@ -404,8 +458,10 @@ void PhysicsEngine::cleanupPhysics()
 	printf("SnippetVehicle4W done.\n");
 }
 
+/*
 void PhysicsEngine::keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
 	PX_UNUSED(key);
 }
+*/

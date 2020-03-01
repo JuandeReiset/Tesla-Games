@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include "Vehicle.h"
 #include "PhysX/include/PxPhysicsAPI.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleCreate.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleSceneQuery.h"
@@ -14,26 +15,27 @@ class PhysicsEngine
 public:
 	PhysicsEngine();
 	//~PhysicsEngine();
-	physx::PxVec3 GetPosition();
+	//physx::PxVec3 GetPosition();
 	physx::PxVec3 GetBoxPos();
-	float GetRotationAngle();
+	//float GetRotationAngle();
 	void stepPhysics();
 	int modeType = -1;
 	int getModeType();
-	void forwards(float magnitude);
+	/*void forwards(float magnitude);
 	void reverse(float magnitude);
 	void turnLeft(float magnitude);
-	void turnRight(float magnitude);
+	void turnRight(float magnitude);*/
 	void gearShift(float curSpeed);
-	void turn(float magnitude);
+/*	void turn(float magnitude);
 	physx::PxVehicleDrive4W* gVehicle4W = NULL;
-	physx::PxRigidDynamic *getVehicleRigidDynamicPtr();
+	physx::PxRigidDynamic *getVehicleRigidDynamicPtr();*/
 	physx::PxRigidStatic* sphereActor = NULL;
 	physx::PxRigidStatic* wallActor = NULL;
+	Vehicle* player;
 
 	
 
-	enum DriveMode
+/*	enum DriveMode
 	{
 		eDRIVE_MODE_ACCEL_FORWARDS = 0,
 		eDRIVE_MODE_ACCEL_REVERSE,
@@ -43,10 +45,10 @@ public:
 		eDRIVE_MODE_HANDBRAKE_TURN_RIGHT,
 		eDRIVE_MODE_BRAKE,
 		eDRIVE_MODE_NONE
-	};
+	}; */
 private:
 	//physx::PxRigidDynamic* CreateDynamic(const physx::PxTransform& t, const physx::PxGeometry& geometry, const physx::PxVec3& velocity);
-	snippetvehicle::VehicleDesc initVehicleDesc();
+	/*snippetvehicle::VehicleDesc initVehicleDesc();
 	void initVehicle();
 	void startBrakeMode();
 	void keyPress(unsigned char key, const physx::PxTransform& camera);
@@ -56,7 +58,7 @@ private:
 	void startTurnHardRightMode(float magnitude);
 	void startHandbrakeTurnLeftMode(float magnitude);
 	void startHandbrakeTurnRightMode(float magnitude);
-	void releaseAllControls();
+	void releaseAllControls();*/
 	void cleanupPhysics();
 
 
@@ -82,7 +84,7 @@ private:
 	physx::PxCooking* gCooking = NULL;
 
 	physx::PxPvd* gPvd = NULL;
-	snippetvehicle::VehicleSceneQueryData* gVehicleSceneQueryData = NULL;
+/*	snippetvehicle::VehicleSceneQueryData* gVehicleSceneQueryData = NULL;
 	physx::PxBatchQuery* gBatchQuery = NULL;
 	physx::PxVehicleDrivableSurfaceToTireFrictionPairs* gFrictionPairs = NULL;
 	physx::PxVehicleDrive4WRawInputData gVehicleInputData;
@@ -95,6 +97,6 @@ private:
 	DriveMode gDriveModeOrder[8];
 
 	physx::PxVehicleKeySmoothingData gKeySmoothingData;
-	physx::PxVehiclePadSmoothingData gPadSmoothingData;
+	physx::PxVehiclePadSmoothingData gPadSmoothingData;*/
 };
 
