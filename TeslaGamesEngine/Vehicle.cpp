@@ -97,11 +97,6 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	//Create the friction table for each combination of tire and surface type.
 	gFrictionPairs = createFrictionPairs(gMaterial);
 
-	//Create a plane to drive on.
-	//PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
-	//gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
-	//gScene->addActor(*gGroundPlane);
-
 	//Create a vehicle that will drive on the plane.
 	VehicleDesc vehicleDesc = initVehicleDesc(gMaterial);
 	gVehicle4W = createVehicle4W(vehicleDesc, gPhysics, gCooking);
@@ -117,19 +112,6 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
 	gVehicle4W->mDriveDynData.setUseAutoGears(true);
 
-	/*	//create obstacle with working collision
-		PxFilterData obstFilterData(snippetvehicle::COLLISION_FLAG_OBSTACLE, snippetvehicle::COLLISION_FLAG_OBSTACLE_AGAINST, 0, 0);
-		PxShape* boxwall = gPhysics->createShape(PxBoxGeometry(1.0f, 2.0f, 1.0f), *gMaterial, false);
-		wallActor = gPhysics->createRigidStatic(PxTransform(PxVec3(0, 0, 0)));
-		boxwall->setSimulationFilterData(obstFilterData);
-		wallActor->setGlobalPose(PxTransform(PxVec3(0, 2, 5)));
-		wallActor->attachShape(*boxwall);
-		gScene->addActor(*wallActor);
-	*/
-
-
-	//gVehicleModeTimer = 0.0f;
-	//gVehicleOrderProgress = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
