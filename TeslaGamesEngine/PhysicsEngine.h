@@ -24,6 +24,7 @@ public:
 	void gearShift(float curSpeed);
 	physx::PxRigidStatic* sphereActor = NULL;
 	physx::PxRigidStatic* wallActor = NULL;
+	//std::unique_ptr<Vehicle> player;
 	Vehicle* player;
 	std::vector<Vehicle*> enemyVehicles;
 

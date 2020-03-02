@@ -43,7 +43,6 @@ public:
 
 	//physx vehicle stuff
 	physx::PxVehicleDrive4W* gVehicle4W = NULL;
-	physx::PxRigidDynamic *getVehicleRigidDynamicPtr(); //dont know what this is for, probably added it for debugging and forgot to remove
 
 	enum DriveMode
 	{
