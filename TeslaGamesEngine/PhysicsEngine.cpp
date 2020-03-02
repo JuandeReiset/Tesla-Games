@@ -76,28 +76,6 @@ void PhysicsEngine::addEnemyVehicle(float x, float y, float z)
 	enemyVehicles.push_back(v);
 }
 
-//this should go with the vehicle class
-void PhysicsEngine::gearShift(float curSpeed) {
-	if (curSpeed <= 10) {
-		
-		player->gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
-	}
-	else if (curSpeed <= 17) {
-		player->gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eSECOND);
-	}
-	else if (curSpeed <= 25) {
-		player->gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eTHIRD);
-	}
-	else if (curSpeed <= 34) {
-		player->gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFOURTH);
-	}
-	else {
-		player->gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIFTH);
-	}
-}
-
-
-
 physx::PxVec3 PhysicsEngine::GetBoxPos()
 {
 	return wallActor->getGlobalPose().p;
