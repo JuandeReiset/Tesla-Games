@@ -56,6 +56,7 @@
 
 //Ability stuff
 #include "Caltrops.h"
+#include "Bullet.h"
 
 // Stuff for imgui
 #include "imGui/imgui.h"
@@ -81,6 +82,7 @@ std::vector<HUD*> HUDList;
 std::vector<Shadow*> shadowList;
 //std::vector<Caltrops*> caltropsList;
 std::list<std::unique_ptr<Caltrops>> caltropsList;											//using list instead of vector since we will often insert and delete elements in the list
+std::list<std::unique_ptr<Bullet>> bulletsList;
 Camera camera;
 
 Shader shadowShader;
@@ -634,7 +636,7 @@ int main()
 		
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
 /////////////////////////////////////////////////////////////////////////////////
-		//Draw bullets
+		//Draw bullets RAW
 		
 		if (bullet_shot) {
 			model = glm::mat4(1.0f);
@@ -664,6 +666,23 @@ int main()
 			
 		}
 
+		//Draw bullets after Refactor
+		if (player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) {
+			std::unique_ptr<Bullet> bullet(new Bullet());//using unique_ptr instead of pointer since we will release memory
+			bullet->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess);
+			bulletsList.push_back(std::move(bullet));
+		
+		}
+
+		auto b = bulletsList.begin();
+		while (b != bulletsList.end()) {
+			if ((*b)->isDead())
+				bulletsList.erase(b++);
+			else {
+				(*b)->renderBullet();
+				++b;
+			}
+		}
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
