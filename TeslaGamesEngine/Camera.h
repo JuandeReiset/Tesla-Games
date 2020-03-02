@@ -9,7 +9,7 @@
 #include <GLFW\glfw3.h>
 
 #include "Component.h"
-
+#include "audioEngine.h"
 /*
  * Class representing a camera in the game
  */
@@ -25,6 +25,8 @@ public:
 
 	glm::vec3 getCameraPosition();
 	glm::vec3 getCameraDirection();
+	void initializeAudio(AudioEngine* engine);
+	void updateListenerPosition();
 	glm::vec3 getCameraCenter();
 	glm::vec3 front;
 	void setPosition(float x, float y, float z);
@@ -43,6 +45,7 @@ public:
 private:
 	bool resetFlag;
 
+	AudioEngine* audioEngine;
 	glm::vec3 position;
 
 	glm::vec3 up;

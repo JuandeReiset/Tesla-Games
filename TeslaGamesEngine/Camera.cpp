@@ -184,6 +184,13 @@ glm::vec3 Camera::getCameraDirection()
 	return glm::normalize(front);
 }
 
+void Camera::initializeAudio(AudioEngine* engine) {
+	this->audioEngine = engine;
+}
+void Camera::updateListenerPosition() {
+	this->audioEngine->updateListenerPosition(position.x, position.y, position.z);
+}
+
 void Camera::update()
 {
 	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
@@ -193,6 +200,7 @@ void Camera::update()
 
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
+	updateListenerPosition();
 }
 
 Camera::~Camera()

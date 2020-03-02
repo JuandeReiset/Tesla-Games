@@ -37,6 +37,9 @@ void AudioBoomBox::loopSound(bool loop) {
 void AudioBoomBox::pauseSound() {
 	alSourcePause(source);
 }
+void AudioBoomBox::setVolume(float newVol) {
+	alSourcef(source, AL_GAIN, newVol);
+}
 void AudioBoomBox::updateSourcePosition(float x, float y, float z) {
 	alSource3f(source, AL_POSITION, x, y, z);
 }

@@ -14,6 +14,7 @@ class AudioBoomBox
 		void stopSound();
 		void loopSound(bool loop);
 		void pauseSound();
+		void setVolume(float newVol);
 		void updateSourcePosition(float x, float y, float z);
 		bool isSoundPlaying();
 		void cleanup();

@@ -134,6 +134,14 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 	this->boostMax = audioEngine->createBoomBox(audioConstants::SOUND_FILE_BOOST_MAX);
 	this->maxSpeed = audioEngine->createBoomBox(audioConstants::SOUND_FILE_SPEED_MAX);
 
+	float initialSoundVolume = 5.8f;
+
+	this->accelerateFromRest.setVolume(initialSoundVolume);
+	this->accelerateFromMotion.setVolume(initialSoundVolume);
+	this->boostStart.setVolume(initialSoundVolume);
+	this->boostMax.setVolume(initialSoundVolume);
+	this->maxSpeed.setVolume(initialSoundVolume);
+	
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -247,10 +255,16 @@ void Vehicle::releaseAllControls()
 //go forwards a little
 void Vehicle::forwards(float magnitude)
 {
-	gearShift(gVehicle4W->computeForwardSpeed());
-	if (gVehicle4W->mDriveDynData.getCurrentGear() == PxVehicleGearsData::eFIRST) {
+	float curSpeed = gVehicle4W->computeForwardSpeed();
+	gearShift(curSpeed);
+	if (gVehicle4W->mDriveDynData.getCurrentGear() == PxVehicleGearsData::eFIRST && curSpeed > 0.f) {
 		if (accelerateFromRest.isSoundPlaying() == false) {
 			accelerateFromRest.playSound();
+		}
+	}
+	else {
+		if (maxSpeed.isSoundPlaying() == false) {
+			maxSpeed.playSound();
 		}
 	}
 	gVehicleInputData.setAnalogBrake(0.f);
