@@ -182,6 +182,7 @@
     <ClInclude Include="audioEngine.h" />
     <ClInclude Include="Caltrops.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ColliderVolume.h" />
     <ClInclude Include="Combat.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Component.h" />
@@ -233,6 +234,7 @@
     <ClCompile Include="audioEngine.cpp" />
     <ClCompile Include="Caltrops.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ColliderVolume.cpp" />
     <ClCompile Include="Combat.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Component.cpp" />
