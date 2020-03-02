@@ -19,6 +19,7 @@ AudioEngine::~AudioEngine() {
 }
 
 void AudioEngine::initialize() {
+	sourcesMade = 0;
 	device = alcOpenDevice(NULL);
 	context = alcCreateContext(device, NULL);
 	alcMakeContextCurrent(context);
@@ -42,6 +43,9 @@ void AudioEngine::initialize() {
 	soundFiles[9] = "./audioFiles/vehicle_turret_triple_burst_MONO.wav";
 	
 }
+void AudioEngine::updateListenerPosition(float x, float y, float z) {
+	alListener3f(AL_POSITION, x, y, z);
+}
 void AudioEngine::initializeBuffers() {
 	for (int i = 0; i < NUM_OF_SOUND_EFFECTS_POSSIBLE; i++) {
 		const char* file = soundFiles[i];
@@ -54,8 +58,20 @@ void AudioEngine::initializeBuffers() {
 AudioBoomBox& AudioEngine::createBoomBox(int soundFile)
 {
 	ALuint* buffer = &bufferArray[soundFile];
-	listOfSources.push_back(std::make_unique<AudioBoomBox>(buffer));
+	sourcesMade++;
+	listOfSources.push_back(std::make_unique<AudioBoomBox>(buffer, sourcesMade));
 	return *listOfSources.back();
+}
+
+void AudioEngine::killSource(AudioBoomBox* boombox) {
+	int paramId = boombox->getId();
+	for (int i = 0; i < listOfSources.size(); i++) {
+		int id = listOfSources[i]->getId();
+		if (paramId == id) {
+			listOfSources[i]->cleanup();
+			listOfSources.erase(listOfSources.begin() + i);
+		}
+	}
 }
 
 void AudioEngine::killSources() {

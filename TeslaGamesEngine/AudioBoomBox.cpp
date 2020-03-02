@@ -1,7 +1,9 @@
 #include "AudioBoomBox.h"
 
-AudioBoomBox::AudioBoomBox(ALuint* buffer)
+AudioBoomBox::AudioBoomBox() {};
+AudioBoomBox::AudioBoomBox(ALuint* buffer, int id)
 {
+	this->id = id;
 	alGenSources(1, &source);
 	alSourcei(source, AL_BUFFER, *buffer);
 }
@@ -19,12 +21,24 @@ void AudioBoomBox::initialize() {
 	alSource3f(source, AL_VELOCITY, 0, 0, 0);
 	alSourcei(source, AL_LOOPING, AL_FALSE); //AL_FALSE for no looping
 }
-
+int AudioBoomBox::getId() {
+	return this->id;
+}
 void AudioBoomBox::playSound() {
 	alSourcePlay(source);
 }
 void AudioBoomBox::stopSound() {
 	alSourceStop(source);
+}
+void AudioBoomBox::loopSound(bool loop) {
+	bool use = loop ? AL_TRUE : AL_FALSE;
+	alSourcei(source, AL_LOOPING, use);
+}
+void AudioBoomBox::pauseSound() {
+	alSourcePause(source);
+}
+void AudioBoomBox::updateSourcePosition(float x, float y, float z) {
+	alSource3f(source, AL_POSITION, x, y, z);
 }
 bool AudioBoomBox::isSoundPlaying() {
 	alGetSourcei(source, AL_SOURCE_STATE, &source_state);

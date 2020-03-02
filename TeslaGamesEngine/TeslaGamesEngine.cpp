@@ -486,14 +486,15 @@ int main()
 
 	//Audio system setup
 	AudioEngine audioSystem = AudioEngine();
-	AudioBoomBox audioObject = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
-	AudioBoomBox audioObject2 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
+	AudioBoomBox mainMenuMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
+	AudioBoomBox raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
 	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TURRET_FIRE);
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	audioObject2.playSound();
+	raceMusic.loopSound(true);
+	//raceMusic.playSound();
 
 	//Controller
 	Controller player1 = Controller(1);

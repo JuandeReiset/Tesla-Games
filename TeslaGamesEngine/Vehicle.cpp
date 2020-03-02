@@ -81,6 +81,18 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 
 	//Work out if the vehicle is in the air.
 	gIsVehicleInAir = gVehicle4W->getRigidDynamicActor()->isSleeping() ? false : PxVehicleIsInAir(vehicleQueryResults[0]);
+
+	audioUpdate();
+}
+
+void Vehicle::audioUpdate() {
+	PxVec3 position = GetPosition();
+
+	this->accelerateFromRest.updateSourcePosition(position.x, position.y, position.z);
+	this->accelerateFromMotion.updateSourcePosition(position.x, position.y, position.z);
+	this->boostStart.updateSourcePosition(position.x, position.y, position.z);
+	this->boostMax.updateSourcePosition(position.x, position.y, position.z);
+	this->maxSpeed.updateSourcePosition(position.x, position.y, position.z);
 }
 
 //called by PhysicsEngine. Parameters are disgusting I know, but sometimes it must be ugly to work
@@ -111,6 +123,16 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	gVehicle4W->setToRestState();
 	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eNEUTRAL);
 	gVehicle4W->mDriveDynData.setUseAutoGears(true);
+
+}
+
+void Vehicle::initVehicleAudio(AudioEngine* engine) {
+	this->audioEngine = engine;
+	this->accelerateFromRest = audioEngine->createBoomBox(audioConstants::SOUND_FILE_ACCEL_REST);
+	this->accelerateFromMotion = audioEngine->createBoomBox(audioConstants::SOUND_FILE_ACCEL_MOTION);
+	this->boostStart = audioEngine->createBoomBox(audioConstants::SOUND_FILE_BOOST_START);
+	this->boostMax = audioEngine->createBoomBox(audioConstants::SOUND_FILE_BOOST_MAX);
+	this->maxSpeed = audioEngine->createBoomBox(audioConstants::SOUND_FILE_SPEED_MAX);
 
 }
 
@@ -226,6 +248,11 @@ void Vehicle::releaseAllControls()
 void Vehicle::forwards(float magnitude)
 {
 	gearShift(gVehicle4W->computeForwardSpeed());
+	if (gVehicle4W->mDriveDynData.getCurrentGear() == PxVehicleGearsData::eFIRST) {
+		if (accelerateFromRest.isSoundPlaying() == false) {
+			accelerateFromRest.playSound();
+		}
+	}
 	gVehicleInputData.setAnalogBrake(0.f);
 	gVehicleInputData.setAnalogAccel(magnitude);
 }
@@ -234,6 +261,7 @@ void Vehicle::reverse(float magnitude)
 {
 	float curSpeed = gVehicle4W->computeForwardSpeed();
 	if (curSpeed > 0.f) {
+		gearShift(curSpeed);
 		gVehicleInputData.setAnalogBrake(magnitude);
 	}
 	else {

@@ -13,6 +13,7 @@
 #include "PhysX/include/vehicle/PxVehicleUtil.h"
 #include "PhysX/include/snippetutils/SnippetUtils.h"
 #include "Object.h"
+#include "audioEngine.h"
 
 using namespace physx;
 
@@ -26,7 +27,9 @@ public:
 	Vehicle(int id);
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);
+	void audioUpdate();
 	void initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, PxVec3 position);
+	void initVehicleAudio(AudioEngine * engine);
 	//controls
 	void forwards(float magnitude);
 	void reverse(float magnitude);
@@ -62,7 +65,15 @@ public:
 private:
 	HealthComponent health = HealthComponent(100);
 	ShootComp turret = ShootComp(10);
-	int ID;	
+	int ID;
+
+	AudioEngine* audioEngine;
+	AudioBoomBox accelerateFromRest;
+	AudioBoomBox accelerateFromMotion;
+	AudioBoomBox maxSpeed;
+	AudioBoomBox boostStart;
+	AudioBoomBox boostMax;
+
 	
 	physx::PxF32 gSteerVsForwardSpeedData[2 * 8];
 	bool gIsVehicleInAir = true;

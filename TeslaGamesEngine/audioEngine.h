@@ -31,8 +31,10 @@ class AudioEngine
 		AudioEngine();
 		~AudioEngine();
 		void initialize();
+		void updateListenerPosition(float x, float y, float z);
 		void initializeBuffers();
 		AudioBoomBox& createBoomBox(int soundFile);
+		void killSource(AudioBoomBox * boombox);
 		void killSources();
 
 	private:
@@ -42,6 +44,8 @@ class AudioEngine
 
 		static const int NUM_OF_SOUND_EFFECTS_POSSIBLE = 10;
 		const char* soundFiles[NUM_OF_SOUND_EFFECTS_POSSIBLE];
+
+		int sourcesMade;
 
 		ALuint bufferArray[NUM_OF_SOUND_EFFECTS_POSSIBLE];
 		std::vector<std::unique_ptr<AudioBoomBox>> listOfSources;
