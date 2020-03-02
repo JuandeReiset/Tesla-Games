@@ -57,8 +57,6 @@ void Camera::setFront(float x, float y, float z) {
 	
 	pitch = -15;
 	yaw = glm::degrees(atan2(front.z, front.x));
-
-	std::cout << "pitch: " << pitch << " yaw: " << yaw << std::endl;
 }
 
 
@@ -122,10 +120,6 @@ void Camera::stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec
 	float angleAroundY = glm::degrees(atan2(dir.z, dir.x));
 
 	yaw = angleAroundY - angleAroundTarget;
-
-
-	std::cout << angleAroundY << std::endl;
-
 	update();
 }
 
