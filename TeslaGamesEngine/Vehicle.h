@@ -30,11 +30,10 @@ public:
 	//controls
 	void forwards(float magnitude);
 	void reverse(float magnitude);
-	void turnLeft(float magnitude);
-	void turnRight(float magnitude);
-	void brake();
 	void turn(float magnitude);
 	void cleanupPhysics(PxDefaultAllocator gAllocator);
+
+	void gearShift(float curSpeed);
 
 	float GetRotationAngle();
 	physx::PxVec3 GetPosition();
@@ -86,12 +85,7 @@ private:
 	bool gMimicKeyInputs = false;				//I think this is for keyboard controls to mimic a controller analog scheme, keep it in for now....	
 
 	snippetvehicle::VehicleDesc initVehicleDesc(PxMaterial* gMaterial);
-	void startBrakeMode();
 	void keyPress(unsigned char key, const physx::PxTransform& camera);
-	void startAccelerateForwardsMode(float magnitude);
-	void startAccelerateReverseMode(float magnitude);
-	void startTurnHardLeftMode(float magnitude);
-	void startTurnHardRightMode(float magnitude);
 	void startHandbrakeTurnLeftMode(float magnitude);
 	void startHandbrakeTurnRightMode(float magnitude);
 	void releaseAllControls();//each vihecle has a unique number for recognizition

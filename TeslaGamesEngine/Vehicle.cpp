@@ -9,11 +9,11 @@ using namespace snippetvehicle;
 Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z) {
 	physx::PxF32 gSteerVsForwardSpeedData[] =
 	{
-		0.0f,		0.75f,
+		0.0f,		0.9f,
 		5.0f,		0.75f,
-		30.0f,		0.125f,
-		120.0f,		0.1f,
-		PX_MAX_F32, PX_MAX_F32,
+		15.0f,		0.55f,
+		30.0f,		0.35f,
+		120.0f,		0.15f,
 		PX_MAX_F32, PX_MAX_F32,
 		PX_MAX_F32, PX_MAX_F32,
 		PX_MAX_F32, PX_MAX_F32
@@ -168,39 +168,25 @@ void Vehicle::cleanupPhysics(PxDefaultAllocator gAllocator) {
 	PxCloseVehicleSDK();
 }
 
-void Vehicle::startAccelerateForwardsMode(float magnitude)
-{
-	gVehicleInputData.setAnalogAccel(1.0f);
-
+//this should go with the vehicle class
+void Vehicle::gearShift(float curSpeed) {
+	if (curSpeed <= 10) {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
+	}
+	else if (curSpeed <= 17) {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eSECOND);
+	}
+	else if (curSpeed <= 25) {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eTHIRD);
+	}
+	else if (curSpeed <= 34) {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFOURTH);
+	}
+	else {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIFTH);
+	}
 }
 
-void Vehicle::startAccelerateReverseMode(float magnitude)
-{
-	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
-
-	gVehicleInputData.setAnalogAccel(1.0f);
-}
-
-void Vehicle::startBrakeMode()
-{
-	gVehicleInputData.setAnalogBrake(1.0f);
-}
-
-void Vehicle::startTurnHardLeftMode(float magnitude)
-{
-	magnitude = abs(magnitude);
-	gVehicleInputData.setAnalogAccel(true);
-	gVehicleInputData.setAnalogSteer(-magnitude);
-
-}
-
-void Vehicle::startTurnHardRightMode(float magnitude)
-{
-	magnitude = abs(magnitude);
-	gVehicleInputData.setAnalogAccel(magnitude);
-	gVehicleInputData.setAnalogSteer(magnitude);
-
-}
 
 void Vehicle::startHandbrakeTurnLeftMode(float magnitude)
 {
@@ -239,35 +225,27 @@ void Vehicle::releaseAllControls()
 //go forwards a little
 void Vehicle::forwards(float magnitude)
 {
-	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
-	gVehicleInputData.setAnalogAccel(magnitude - 0.3f);
+	gearShift(gVehicle4W->computeForwardSpeed());
+	gVehicleInputData.setAnalogBrake(0.f);
+	gVehicleInputData.setAnalogAccel(magnitude);
 }
 
 void Vehicle::reverse(float magnitude)
 {
-	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
-	gVehicleInputData.setAnalogAccel(magnitude);
+	float curSpeed = gVehicle4W->computeForwardSpeed();
+	if (curSpeed > 0.f) {
+		gVehicleInputData.setAnalogBrake(magnitude);
+	}
+	else {
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
+		gVehicleInputData.setAnalogAccel(magnitude);
+	}
 }
 
 void Vehicle::turn(float magnitude) {
 	gVehicleInputData.setAnalogSteer(-magnitude);
-
 }
 
-void Vehicle::turnLeft(float magnitude)
-{
-	gVehicleInputData.setAnalogSteer(-1.0f);
-}
-
-void Vehicle::turnRight(float magnitude)
-{
-	gVehicleInputData.setAnalogSteer(1.0f);
-}
-
-void Vehicle::brake()
-{
-	gVehicleInputData.setAnalogBrake(0.5f);
-}
 
 //returns the position of the physx vehicle model as a PxVec3. You can easily convert this to a glm vec3
 PxVec3 Vehicle::GetPosition()
