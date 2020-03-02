@@ -109,7 +109,7 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	//Set the vehicle to rest in first gear.
 	//Set the vehicle to use auto-gears.
 	gVehicle4W->setToRestState();
-	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
+	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eNEUTRAL);
 	gVehicle4W->mDriveDynData.setUseAutoGears(true);
 
 }
@@ -237,6 +237,7 @@ void Vehicle::reverse(float magnitude)
 		gVehicleInputData.setAnalogBrake(magnitude);
 	}
 	else {
+		gVehicleInputData.setAnalogBrake(0.f);
 		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
 		gVehicleInputData.setAnalogAccel(magnitude);
 	}
