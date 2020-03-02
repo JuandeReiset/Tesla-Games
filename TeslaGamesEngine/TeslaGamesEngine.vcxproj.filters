@@ -51,6 +51,7 @@
     <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="HUDcreator.cpp" />
     <ClCompile Include="Caltrops.cpp" />
+    <ClCompile Include="ColliderVolume.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -102,5 +103,6 @@
     <ClInclude Include="HUDcreator.h" />
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="Caltrops.h" />
+    <ClInclude Include="ColliderVolume.h" />
   </ItemGroup>
 </Project>
