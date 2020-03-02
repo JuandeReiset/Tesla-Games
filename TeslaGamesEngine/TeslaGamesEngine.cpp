@@ -637,7 +637,7 @@ int main()
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
 /////////////////////////////////////////////////////////////////////////////////
 		//Draw bullets RAW
-		
+		/*
 		if (bullet_shot) {
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(vehiclePosition.x +shoot_distance_x, vehiclePosition.y+0.5f+shoot_distance_y, vehiclePosition.z+shoot_distance_z));
@@ -665,12 +665,14 @@ int main()
 			}
 			
 		}
-
+		*/
 		//Draw bullets after Refactor
 		if (player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) {
 			std::unique_ptr<Bullet> bullet(new Bullet());//using unique_ptr instead of pointer since we will release memory
 			bullet->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess,Direction.x, Direction.y, Direction.z);
 			bulletsList.push_back(std::move(bullet));
+			audioObject3.playSound();
+			bullet_sound_played = true; //Stop once its played once
 		
 		}
 

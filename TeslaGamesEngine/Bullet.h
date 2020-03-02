@@ -38,6 +38,7 @@ private:
 	float shoot_distance_x;
 	float shoot_distance_z;
 	glm::mat4 model;															//model matrix
+	
 	GLuint uniformModel, uniformSpecularIntensity, uniformShininess;
 	Material shinyMaterial;
 };
