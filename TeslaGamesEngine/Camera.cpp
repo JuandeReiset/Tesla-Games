@@ -25,7 +25,7 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	moveSpeed = startMoveSpeed;
 	turnSpeed = startTurnSpeed;
 
-	distance = 5.4f;
+	distance = 5.0f;
 	angleAroundTarget = 0;
 
 	update();
@@ -55,7 +55,7 @@ void Camera::setFront(float x, float y, float z) {
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
 	
-	pitch = -30;
+	pitch = -15;
 	yaw = glm::degrees(atan2(front.z, front.x));
 
 	std::cout << "pitch: " << pitch << " yaw: " << yaw << std::endl;
