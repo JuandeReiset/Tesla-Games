@@ -28,17 +28,19 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	distance = 5.0f;
 	angleAroundTarget = 0;
 
+	resetFlag = false;
+
 	update();
 }
 
 void Camera::calculateAngleAroundTarget(float xChange) {
 	angleAroundTarget += (xChange * turnSpeed) ;
-/*
-	if (angleAroundTarget < -30.f)
-		angleAroundTarget = -30.f;
-	if (angleAroundTarget > 30.f)
-		angleAroundTarget = 30.f;
-		*/
+
+	if (angleAroundTarget < -90.f)
+		angleAroundTarget = -90.f;
+	if (angleAroundTarget > 90.f)
+		angleAroundTarget = 90.f;
+		
 }
 
 void Camera::setPosition(float x, float y, float z) {
@@ -108,29 +110,57 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	update();
 }
 
-void Camera::stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec3 carPos, glm::vec3 dir) {
-	if (reset) {
-		setFront(dir.x, -0.5, dir.z);
-		angleAroundTarget = 0;
-		return;
+void Camera::stickControl(GLfloat xChange, GLfloat yChange, glm::vec3 carPos, glm::vec3 dir) {
+	bool reset = false;
+	float angleAroundY = glm::degrees(atan2(dir.z, dir.x));
+	if (xChange == 0)
+		reset = true;
+
+	if (resetFlag) {
+		if (abs(angleAroundTarget) < turnSpeed) {
+			angleAroundTarget = 0;
+
+			resetFlag = false;
+		}
+		else {
+			if (angleAroundTarget > 0)
+				angleAroundTarget -= turnSpeed;
+			else if (angleAroundTarget < 0)
+				angleAroundTarget += turnSpeed;
+		}
+	}
+	else {
+		if (reset) {
+			if (abs(angleAroundTarget) < turnSpeed) {
+				angleAroundTarget = 0;
+				resetFlag = false;
+			}
+			else {
+				if (angleAroundTarget > 0)
+					angleAroundTarget -= turnSpeed;
+				else if (angleAroundTarget < 0)
+					angleAroundTarget += turnSpeed;
+			}
+
+			resetFlag = true;
+		}
+		else {
+			calculateAngleAroundTarget(xChange);
+		}
 	}
 
-	float angleAroundY = glm::degrees(atan2(dir.z, dir.x));
-	calculateAngleAroundTarget(xChange);
 	calculatePos(carPos, angleAroundY + angleAroundTarget);
-	std::cout << "y " << angleAroundY << std::endl;
 	yaw = angleAroundY + angleAroundTarget;
-
-
 	update();
 }
 
 void Camera::calculatePos(glm::vec3 carPos, float theta) {
 	position.y = carPos.y + 2.f;
 
+	std::cout << "y " << theta << std::endl;
 
-	float xOffset = distance * sin(glm::radians(theta));
-	float zOffset = distance * cos(glm::radians(theta));
+	float xOffset = distance * cos(glm::radians(theta));
+	float zOffset = distance * sin(glm::radians(theta));
 
 	position.x = carPos.x - xOffset;
 	position.z = carPos.z - zOffset;
