@@ -58,8 +58,6 @@ void Camera::setFront(float x, float y, float z) {
 	
 	pitch = -15;
 	yaw = glm::degrees(atan2(front.z, front.x));
-
-	std::cout << "pitch: " << pitch << " yaw: " << yaw << std::endl;
 }
 
 

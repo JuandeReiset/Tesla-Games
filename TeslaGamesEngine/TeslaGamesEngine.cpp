@@ -336,27 +336,18 @@ void parseControllerInput(Controller* controller)
 		//physEng.turn(controller->leftStick_X());
 		float value = controller->leftStick_X();
 		physEng.player->turn(value);
-		std::cout << controller->getIndex() << " " << "LS: " << value << std::endl;
 	}
 	else {
 		physEng.player->turn(0.f);
 	}
 
 	if (!controller->RStick_InDeadzone()) {
-		//physEng.turn(controller->leftStick_X());
-		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
 	}
 	if (controller->rightTrigger() > 0.0) {
 		physEng.player->forwards(controller->rightTrigger());
-		
-		//std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
-	}
-	else {
-		physEng.player->forwards(0.1f);
 	}
 	if (controller->leftTrigger() > 0.0) {
 		physEng.player->reverse(controller->leftTrigger());
-		//std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
 	}
 	
 
