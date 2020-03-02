@@ -56,6 +56,7 @@
 
 //Ability stuff
 #include "Caltrops.h"
+#include "Bullet.h"
 
 // Stuff for imgui
 #include "imGui/imgui.h"
@@ -81,6 +82,7 @@ std::vector<HUD*> HUDList;
 std::vector<Shadow*> shadowList;
 //std::vector<Caltrops*> caltropsList;
 std::list<std::unique_ptr<Caltrops>> caltropsList;											//using list instead of vector since we will often insert and delete elements in the list
+std::list<std::unique_ptr<Bullet>> bulletsList;
 Camera camera;
 
 Shader shadowShader;
@@ -384,7 +386,7 @@ int main()
 	CreateShaders();
 	createShadows();
 
-	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f);
 	yawPitch yp;
 	yp.yaw = 90.f;
 	yp.pitch = -20.0f;
@@ -626,7 +628,7 @@ int main()
 		
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
 /////////////////////////////////////////////////////////////////////////////////
-		//Draw bullets
+		//Draw bullets RAW
 		
 		if (bullet_shot) {
 			model = glm::mat4(1.0f);
@@ -656,6 +658,23 @@ int main()
 			
 		}
 
+		//Draw bullets after Refactor
+		if (player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) {
+			std::unique_ptr<Bullet> bullet(new Bullet());//using unique_ptr instead of pointer since we will release memory
+			bullet->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess);
+			bulletsList.push_back(std::move(bullet));
+		
+		}
+
+		auto b = bulletsList.begin();
+		while (b != bulletsList.end()) {
+			if ((*b)->isDead())
+				bulletsList.erase(b++);
+			else {
+				(*b)->renderBullet();
+				++b;
+			}
+		}
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -719,10 +738,10 @@ int main()
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
 
 		if (player1.RStick_InDeadzone()) {
-			camera.stickControl(0.f, 0.f, player1.isButtonDown(XButtons.R_Thumbstick), vehiclePosition, dir);
+			camera.stickControl(0.f, 0.f, vehiclePosition, dir);
 		}
 		else {
-			camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), player1.isButtonDown(XButtons.R_Thumbstick), vehiclePosition, dir);
+			camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), vehiclePosition, dir);
 		}
 		
 		//end camera stuff
