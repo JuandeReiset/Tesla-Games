@@ -25,8 +25,8 @@ public:
 	physx::PxRigidStatic* sphereActor = NULL;
 	physx::PxRigidStatic* wallActor = NULL;
 	//std::unique_ptr<Vehicle> player;
-	Vehicle* player;
-	std::vector<Vehicle*> enemyVehicles;
+	Vehicle* player;	//the player vehicle
+	std::vector<Vehicle*> enemyVehicles;	//the AI vehicles
 
 
 private:

@@ -95,5 +95,21 @@ private:
 	void startHandbrakeTurnLeftMode(float magnitude);
 	void startHandbrakeTurnRightMode(float magnitude);
 	void releaseAllControls();//each vihecle has a unique number for recognizition
+
+	
+	/*
+	For sound synch we need a way to track the vehicle speed and acceleration states so they can
+	alert us to the following events
+
+		- Accelerating from rest/0 speed
+		- Accelerating from motion/non-zero speed
+		- When vehicle hits the max speed
+		- When the vehicle activates boost and is not at max speed
+		- When the vehicle activates boost and is at max speed
+
+
+	*/
+
+
 };
 
