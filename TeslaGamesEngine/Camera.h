@@ -33,7 +33,7 @@ public:
 
 	glm::mat4 calculateViewMatrix();
 	void calculateAngleAroundTarget(float xChange);
-	void calculatePos(glm::vec3 carPos, glm::vec3 dir);
+	void calculatePos(glm::vec3 carPos, float theta);
 
 	// Camera's frame update
 	void Tick(float deltaTime);
