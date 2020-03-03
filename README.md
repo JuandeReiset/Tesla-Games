@@ -14,7 +14,7 @@ A project made by CPSC undergrads at the University of Calgary for the course CP
 
 
 ## Install
-Donwload the Repository to your computer either by downloading the zip and unzipping in the desired folder
+Donwload the Repository to your computer either by downloading the zip and unzipping in the desired folder (currently requires the user to have OpenAL installed in their computer)
 
 
 ## Usage
