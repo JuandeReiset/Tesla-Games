@@ -28,16 +28,19 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	distance = 5.0f;
 	angleAroundTarget = 0;
 
+	resetFlag = false;
+
 	update();
 }
 
 void Camera::calculateAngleAroundTarget(float xChange) {
-	angleAroundTarget -= (xChange * turnSpeed) ;
+	angleAroundTarget += (xChange * turnSpeed) ;
 
-	if (angleAroundTarget < -30.f)
-		angleAroundTarget = -30.f;
-	if (angleAroundTarget > 30.f)
-		angleAroundTarget = 30.f;
+	if (angleAroundTarget < -90.f)
+		angleAroundTarget = -90.f;
+	if (angleAroundTarget > 90.f)
+		angleAroundTarget = 90.f;
+		
 }
 
 void Camera::setPosition(float x, float y, float z) {
@@ -57,8 +60,6 @@ void Camera::setFront(float x, float y, float z) {
 	
 	pitch = -15;
 	yaw = glm::degrees(atan2(front.z, front.x));
-
-	std::cout << "pitch: " << pitch << " yaw: " << yaw << std::endl;
 }
 
 
@@ -109,32 +110,57 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	update();
 }
 
-void Camera::stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec3 carPos, glm::vec3 dir) {
-	if (reset) {
-		setFront(dir.x, -0.5, dir.z);
-		angleAroundTarget = 0;
-		return;
+void Camera::stickControl(GLfloat xChange, GLfloat yChange, glm::vec3 carPos, glm::vec3 dir) {
+	bool reset = false;
+	float angleAroundY = glm::degrees(atan2(dir.z, dir.x));
+	if (xChange == 0)
+		reset = true;
+
+	if (resetFlag) {
+		if (abs(angleAroundTarget) < turnSpeed) {
+			angleAroundTarget = 0;
+
+			resetFlag = false;
+		}
+		else {
+			if (angleAroundTarget > 0)
+				angleAroundTarget -= turnSpeed;
+			else if (angleAroundTarget < 0)
+				angleAroundTarget += turnSpeed;
+		}
+	}
+	else {
+		if (reset) {
+			if (abs(angleAroundTarget) < turnSpeed) {
+				angleAroundTarget = 0;
+				resetFlag = false;
+			}
+			else {
+				if (angleAroundTarget > 0)
+					angleAroundTarget -= turnSpeed;
+				else if (angleAroundTarget < 0)
+					angleAroundTarget += turnSpeed;
+			}
+
+			resetFlag = true;
+		}
+		else {
+			calculateAngleAroundTarget(xChange);
+		}
 	}
 
-	calculateAngleAroundTarget(xChange);
-	calculatePos(carPos, dir);
-	xChange *= turnSpeed;
-	float angleAroundY = glm::degrees(atan2(dir.z, dir.x));
-
-	yaw = angleAroundY - angleAroundTarget;
-
-
-	std::cout << angleAroundY << std::endl;
-
+	calculatePos(carPos, angleAroundY + angleAroundTarget);
+	yaw = angleAroundY + angleAroundTarget;
 	update();
 }
 
-void Camera::calculatePos(glm::vec3 carPos, glm::vec3 dir) {
+void Camera::calculatePos(glm::vec3 carPos, float theta) {
 	position.y = carPos.y + 2.f;
 
+	//std::cout << "y " << theta << std::endl;
 
-	float xOffset = distance * dir.x;
-	float zOffset = distance * dir.z;
+	float xOffset = distance * cos(glm::radians(theta));
+	float zOffset = distance * sin(glm::radians(theta));
 
 	position.x = carPos.x - xOffset;
 	position.z = carPos.z - zOffset;
@@ -158,6 +184,13 @@ glm::vec3 Camera::getCameraDirection()
 	return glm::normalize(front);
 }
 
+void Camera::initializeAudio(AudioEngine* engine) {
+	this->audioEngine = engine;
+}
+void Camera::updateListenerPosition() {
+	this->audioEngine->updateListenerPosition(position.x, position.y, position.z);
+}
+
 void Camera::update()
 {
 	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
@@ -167,6 +200,7 @@ void Camera::update()
 
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
+	updateListenerPosition();
 }
 
 Camera::~Camera()

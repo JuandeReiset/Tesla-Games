@@ -338,27 +338,22 @@ void parseControllerInput(Controller* controller)
 		//physEng.turn(controller->leftStick_X());
 		float value = controller->leftStick_X();
 		physEng.player->turn(value);
-		std::cout << controller->getIndex() << " " << "LS: " << value << std::endl;
 	}
 	else {
 		physEng.player->turn(0.f);
 	}
 
-	if (!controller->RStick_InDeadzone()) {
-		//physEng.turn(controller->leftStick_X());
-		std::cout << controller->getIndex() << " " << "RS: " << controller->rightStick_X() << std::endl;
+	if (controller->rightTrigger() > 0.0 || controller->leftTrigger() > 0.0) {
+		if (controller->rightTrigger() > 0.0) {
+			physEng.player->forwards(controller->rightTrigger());
+		}
+		if (controller->leftTrigger() > 0.0) {
+			physEng.player->reverse(controller->leftTrigger());
+		}
 	}
-	if (controller->rightTrigger() > 0.0) {
-		physEng.player->forwards(controller->rightTrigger());
-		
-		//std::cout << controller->getIndex() << " " << "Right Trigger: " << controller->rightTrigger() << std::endl;
-	}
-	else {
-		physEng.player->forwards(0.1f);
-	}
-	if (controller->leftTrigger() > 0.0) {
-		physEng.player->reverse(controller->leftTrigger());
-		//std::cout << controller->getIndex() << " " << "Left Trigger: " << controller->leftTrigger() << std::endl;
+	else if (controller->rightTrigger() == 0.0 && controller->leftTrigger() == 0.0) {
+		physEng.player->reverse(0.0f);
+		physEng.player->forwards(0.0f);
 	}
 	
 
@@ -395,7 +390,7 @@ int main()
 	CreateShaders();
 	createShadows();
 
-	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f);
 	yawPitch yp;
 	yp.yaw = 90.f;
 	yp.pitch = -20.0f;
@@ -497,14 +492,20 @@ int main()
 
 	//Audio system setup
 	AudioEngine audioSystem = AudioEngine();
-	AudioBoomBox audioObject = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
-	AudioBoomBox audioObject2 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
+	AudioBoomBox mainMenuMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
+	AudioBoomBox raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
 	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TURRET_FIRE);
+
+	
+	physEng.initAudioForVehicles(&audioSystem);
+	camera.initializeAudio(&audioSystem);
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	audioObject2.playSound();
+	raceMusic.setVolume(0.5f);
+	raceMusic.loopSound(true);
+	raceMusic.playSound();
 
 	//Controller
 	Controller player1 = Controller(1);
@@ -748,10 +749,10 @@ int main()
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
 
 		if (player1.RStick_InDeadzone()) {
-			camera.stickControl(0.f, 0.f, player1.isButtonDown(XButtons.R_Thumbstick), vehiclePosition, dir);
+			camera.stickControl(0.f, 0.f, vehiclePosition, dir);
 		}
 		else {
-			camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), player1.isButtonDown(XButtons.R_Thumbstick), vehiclePosition, dir);
+			camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), vehiclePosition, dir);
 		}
 		
 		//end camera stuff

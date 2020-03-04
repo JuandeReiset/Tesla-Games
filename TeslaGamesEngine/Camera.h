@@ -9,7 +9,7 @@
 #include <GLFW\glfw3.h>
 
 #include "Component.h"
-
+#include "audioEngine.h"
 /*
  * Class representing a camera in the game
  */
@@ -21,10 +21,12 @@ public:
 
 	void keyControl(bool* keys, GLfloat deltaTime);
 	void mouseControl(GLfloat xChange, GLfloat yChange);
-	void stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec3 carPos, glm::vec3 dir);
+	void stickControl(GLfloat xChange, GLfloat yChange, glm::vec3 carPos, glm::vec3 dir);
 
 	glm::vec3 getCameraPosition();
 	glm::vec3 getCameraDirection();
+	void initializeAudio(AudioEngine* engine);
+	void updateListenerPosition();
 	glm::vec3 getCameraCenter();
 	glm::vec3 front;
 	void setPosition(float x, float y, float z);
@@ -33,7 +35,7 @@ public:
 
 	glm::mat4 calculateViewMatrix();
 	void calculateAngleAroundTarget(float xChange);
-	void calculatePos(glm::vec3 carPos, glm::vec3 dir);
+	void calculatePos(glm::vec3 carPos, float theta);
 
 	// Camera's frame update
 	void Tick(float deltaTime);
@@ -41,6 +43,9 @@ public:
 	~Camera();
 
 private:
+	bool resetFlag;
+
+	AudioEngine* audioEngine;
 	glm::vec3 position;
 
 	glm::vec3 up;
