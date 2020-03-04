@@ -670,8 +670,9 @@ int main()
 		//Draw bullets after Refactor
 		if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) ) {
 			std::unique_ptr<Bullet> bullet(new Bullet());//using unique_ptr instead of pointer since we will release memory
-			bullet->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess,Direction.x, Direction.y, Direction.z);
-			bulletsList.push_back(std::move(bullet));
+			//bullet->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess,Direction.x, Direction.y, Direction.z);
+			//bulletsList.push_back(std::move(bullet));
+			physEng.player->shoot( uniformModel, uniformSpecularIntensity, uniformShininess);
 			audioObject3.playSound();
 			bullet_sound_played = true; //Stop once its played once
 		

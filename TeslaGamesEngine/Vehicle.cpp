@@ -93,8 +93,31 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 		previousSpeed = curSpeed;
 		previousAccel = curAccel;
 	}
+
+	update_turret_position();
 	
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;
+}
+
+void Vehicle::update_turret_position() {
+	PxVec3 pxpos = GetPosition();
+	glm::vec3 pos;
+	pos.x = pxpos.x;
+	pos.x = pxpos.y;
+	pos.z = pxpos.z;
+	turret.updatePosition(pos);
+}
+
+void Vehicle::shoot(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess) {
+	PxQuat vehicleQuaternion = gVehicle4W->getRigidDynamicActor()->getGlobalPose().q;
+	PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
+	PxVec3 pxpos = GetPosition();
+	glm::vec3 pos;
+	pos.x = pxpos.x;
+	pos.x = pxpos.y;
+	pos.z = pxpos.z;
+	turret.createBullet(pos,  uniModel, uniSpecularIntensity,  uniShininess, v_dir.x, v_dir.y, v_dir.z);
+    
 }
 
 void Vehicle::audioUpdate() {
@@ -430,7 +453,7 @@ void Vehicle::Tick(float deltaTime) {
 	if (ID == combat.GetTargetID())
 		getDamage(combat.GetDamage());
 
-	if (turret.get_ammo_counter()<=0)
+	if (turret.is_there_ammo())
 		armed = false;
 		
 }

@@ -15,6 +15,8 @@
 #include "Object.h"
 #include "audioEngine.h"
 
+#include "Bullet.h"
+
 using namespace physx;
 
 /*
@@ -27,6 +29,8 @@ public:
 	Vehicle(int id);
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);
+	void update_turret_position();
+	void shoot(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess);
 	void audioUpdate();
 	void initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, PxVec3 position);
 	void initVehicleAudio(AudioEngine * engine);
@@ -45,6 +49,8 @@ public:
 
 	float GetRotationAngle();
 	physx::PxVec3 GetPosition();
+
+
 
 	PxRigidDynamic* actor;
 
@@ -69,7 +75,7 @@ public:
 	void firelazer();
 private:
 	HealthComponent health = HealthComponent(100);
-	ShootComp turret = ShootComp(10);
+	ShootComp turret = ShootComp();
 	int ID;
 
 	AudioEngine* audioEngine;

@@ -1,46 +1,79 @@
 #include "ShootComp.h"
-ShootComp::ShootComp() {}
-ShootComp::ShootComp(int am): ammo(am)  {}
-ShootComp::~ShootComp() {};
 
-double ShootComp::getBulletSpeed() {
-	return bullet_speed;
+ShootComp::ShootComp() {
+	life = 5.f;											//lifetime is 5 sec
+	birthTime = glfwGetTime();
+	currentTime = glfwGetTime();
+
+	ammo = 10;
+
+	BulletObj.LoadModel("Models/bullet.obj");
+	model = glm::mat4(1.f);
+	uniformModel = 0;
+	uniformSpecularIntensity = 0;
+	uniformShininess = 0;
+
+	shinyMaterial = Material(4.0f, 256);
 }
 
-double ShootComp::getBulletDir() {
-	return bullet_direction;
-
+bool ShootComp::isDead() {
+	updateTime();
+	if (currentTime - birthTime >= life)
+		return true;
+	else
+		return false;
 }
 
-void ShootComp::SetBulletDirection(double h) {
-	bullet_direction = h;
-
-	return;
+void ShootComp::updateTime() {
+	currentTime = glfwGetTime();
 }
 
-void ShootComp::SetBulletSpeed(double h) {
-	bullet_speed = h;
+void ShootComp::createBullet(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z) {
+	position = glm::vec3(carPos.x, carPos.y + 0.5f, carPos.z);
+	model = glm::translate(model, position);
+	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 
-	return;
+	bullet_speed = 0.8f;
+	Direction_x = Dir_x;
+	Direction_y = Dir_y;
+	Direction_z = Dir_z;
+	uniformModel = uniModel;
+	uniformShininess = uniShininess;
+	uniformSpecularIntensity = uniSpecularIntensity;
 }
+
+void ShootComp::renderBullet() {
+	
+	shoot_distance_x += Direction_x * bullet_speed;
+	shoot_distance_z += Direction_y * bullet_speed;
+	shoot_distance_z += Direction_z * bullet_speed;
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(position.x + shoot_distance_x, position.y + 0.6f, position.z + shoot_distance_z));
+
+	model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
+	BulletObj.RenderModel();
+	
+}
+
+void ShootComp::updatePosition(glm::vec3 newpos) {
+	position = newpos;
+}
+
 
 void ShootComp::fire() {
-
-
-	if (ammo <= 0) {
-		ammo = 0;
-	}
-	else {
-		ammo = ammo - 1;
-	}
-	return;
+	ammo -= 1;
 }
 
-void ShootComp:: refill_ammo() {
-	ammo = ammo + 10;
+bool ShootComp::is_there_ammo() {
+	if (ammo > 0) { return true; }
+	else { return false; }
 }
+ShootComp::~ShootComp() {
 
-int ShootComp::get_ammo_counter() {
-	return ammo;
 }
 void ShootComp::Tick(float deltaTime) {}
