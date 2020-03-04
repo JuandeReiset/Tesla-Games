@@ -157,7 +157,7 @@ void Camera::stickControl(GLfloat xChange, GLfloat yChange, glm::vec3 carPos, gl
 void Camera::calculatePos(glm::vec3 carPos, float theta) {
 	position.y = carPos.y + 2.f;
 
-	std::cout << "y " << theta << std::endl;
+	//std::cout << "y " << theta << std::endl;
 
 	float xOffset = distance * cos(glm::radians(theta));
 	float zOffset = distance * sin(glm::radians(theta));

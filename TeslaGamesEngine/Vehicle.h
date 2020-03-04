@@ -38,6 +38,11 @@ public:
 
 	void gearShift(float curSpeed);
 
+	void handleSound();
+	float previousSpeed = 0.f;
+	float previousAccel = 0.f;
+	int speedFrameIndex = 0;
+
 	float GetRotationAngle();
 	physx::PxVec3 GetPosition();
 

@@ -343,13 +343,17 @@ void parseControllerInput(Controller* controller)
 		physEng.player->turn(0.f);
 	}
 
-	if (!controller->RStick_InDeadzone()) {
+	if (controller->rightTrigger() > 0.0 || controller->leftTrigger() > 0.0) {
+		if (controller->rightTrigger() > 0.0) {
+			physEng.player->forwards(controller->rightTrigger());
+		}
+		if (controller->leftTrigger() > 0.0) {
+			physEng.player->reverse(controller->leftTrigger());
+		}
 	}
-	if (controller->rightTrigger() > 0.0) {
-		physEng.player->forwards(controller->rightTrigger());
-	}
-	if (controller->leftTrigger() > 0.0) {
-		physEng.player->reverse(controller->leftTrigger());
+	else if (controller->rightTrigger() == 0.0 && controller->leftTrigger() == 0.0) {
+		physEng.player->reverse(0.0f);
+		physEng.player->forwards(0.0f);
 	}
 	
 
