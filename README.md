@@ -14,11 +14,11 @@ A project made by CPSC undergrads at the University of Calgary for the course CP
 
 
 ## Install
-
+Donwload the Repository to your computer either by downloading the zip and unzipping in the desired folder or git clone to the desired folder (currently requires the user to have OpenAL installed in their computer)
 
 
 ## Usage
-
+Press on the executable file, or open in Visual Studio (working currently on the 2017 version) and run the project
 
 
 ## The 5 Musk-ateers (Authors)

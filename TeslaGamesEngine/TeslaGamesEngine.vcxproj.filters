@@ -54,6 +54,7 @@
     <ClCompile Include="ColliderVolume.cpp" />
     <ClCompile Include="DrawableComponent.cpp" />
     <ClCompile Include="AIDrivingComponent.cpp" />
+    <ClCompile Include="Bullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -108,5 +109,6 @@
     <ClInclude Include="ColliderVolume.h" />
     <ClInclude Include="DrawableComponent.h" />
     <ClInclude Include="AIDrivingComponent.h" />
+    <ClInclude Include="Bullet.h" />
   </ItemGroup>
 </Project>

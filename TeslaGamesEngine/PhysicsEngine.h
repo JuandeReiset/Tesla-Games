@@ -10,11 +10,13 @@
 #include "PhysX/vehicle4W/snippetcommon/SnippetPVD.h"
 #include "PhysX/include/vehicle/PxVehicleUtil.h"
 #include "PhysX/include/snippetutils/SnippetUtils.h"
+#include "audioEngine.h"
 
 class PhysicsEngine
 {
 public:
 	PhysicsEngine();
+	void initAudioForVehicles(AudioEngine * audio);
 	void addEnemyVehicle(float x, float y, float z);	//add enemy vehicle at position (x,y,z)
 
 	physx::PxVec3 GetBoxPos();
@@ -31,6 +33,7 @@ public:
 
 private:
 	void cleanupPhysics();
+	AudioEngine* audioEngine;
 
 	physx::PxDefaultAllocator gAllocator;
 	physx::PxDefaultErrorCallback gErrorCallback;

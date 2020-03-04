@@ -181,6 +181,7 @@
     <ClInclude Include="AIDrivingComponent.h" />
     <ClInclude Include="AudioBoomBox.h" />
     <ClInclude Include="audioEngine.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Caltrops.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ColliderVolume.h" />
@@ -235,6 +236,7 @@
     <ClCompile Include="AIDrivingComponent.cpp" />
     <ClCompile Include="AudioBoomBox.cpp" />
     <ClCompile Include="audioEngine.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Caltrops.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColliderVolume.cpp" />
