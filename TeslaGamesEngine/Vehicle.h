@@ -46,6 +46,7 @@ public:
 
 	float GetRotationAngle();
 	physx::PxVec3 GetPosition();
+	physx::PxTransform GetTransform();
 
 	PxRigidDynamic* actor;
 

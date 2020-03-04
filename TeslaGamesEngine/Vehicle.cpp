@@ -419,6 +419,11 @@ PxVec3 Vehicle::GetPosition()
 	return position;
 }
 
+physx::PxTransform Vehicle::GetTransform()
+{
+	return gVehicle4W->getRigidDynamicActor()->getGlobalPose();
+}
+
 float Vehicle::GetRotationAngle()
 {
 	return gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.getAngle();

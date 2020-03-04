@@ -52,6 +52,8 @@
     <ClCompile Include="HUDcreator.cpp" />
     <ClCompile Include="Caltrops.cpp" />
     <ClCompile Include="ColliderVolume.cpp" />
+    <ClCompile Include="DrawableComponent.cpp" />
+    <ClCompile Include="AIDrivingComponent.cpp" />
     <ClCompile Include="Bullet.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +107,8 @@
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="Caltrops.h" />
     <ClInclude Include="ColliderVolume.h" />
+    <ClInclude Include="DrawableComponent.h" />
+    <ClInclude Include="AIDrivingComponent.h" />
     <ClInclude Include="Bullet.h" />
   </ItemGroup>
 </Project>
