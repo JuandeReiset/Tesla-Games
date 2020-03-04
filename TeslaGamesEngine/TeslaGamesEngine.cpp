@@ -343,13 +343,17 @@ void parseControllerInput(Controller* controller)
 		physEng.player->turn(0.f);
 	}
 
-	if (!controller->RStick_InDeadzone()) {
+	if (controller->rightTrigger() > 0.0 || controller->leftTrigger() > 0.0) {
+		if (controller->rightTrigger() > 0.0) {
+			physEng.player->forwards(controller->rightTrigger());
+		}
+		if (controller->leftTrigger() > 0.0) {
+			physEng.player->reverse(controller->leftTrigger());
+		}
 	}
-	if (controller->rightTrigger() > 0.0) {
-		physEng.player->forwards(controller->rightTrigger());
-	}
-	if (controller->leftTrigger() > 0.0) {
-		physEng.player->reverse(controller->leftTrigger());
+	else if (controller->rightTrigger() == 0.0 && controller->leftTrigger() == 0.0) {
+		physEng.player->reverse(0.0f);
+		physEng.player->forwards(0.0f);
 	}
 	
 
@@ -488,14 +492,20 @@ int main()
 
 	//Audio system setup
 	AudioEngine audioSystem = AudioEngine();
-	AudioBoomBox audioObject = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
-	AudioBoomBox audioObject2 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
+	AudioBoomBox mainMenuMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
+	AudioBoomBox raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
 	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TURRET_FIRE);
+
+	
+	physEng.initAudioForVehicles(&audioSystem);
+	camera.initializeAudio(&audioSystem);
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	audioObject2.playSound();
+	raceMusic.setVolume(0.5f);
+	raceMusic.loopSound(true);
+	raceMusic.playSound();
 
 	//Controller
 	Controller player1 = Controller(1);

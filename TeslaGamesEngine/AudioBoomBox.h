@@ -6,15 +6,22 @@
 class AudioBoomBox
 {  
 	public:
-		AudioBoomBox(ALuint* buffer);
+		AudioBoomBox();
+		AudioBoomBox(ALuint* buffer, int id);
 		~AudioBoomBox();
 		void initialize();
 		void playSound();
 		void stopSound();
+		void loopSound(bool loop);
+		void pauseSound();
+		void setVolume(float newVol);
+		void updateSourcePosition(float x, float y, float z);
 		bool isSoundPlaying();
 		void cleanup();
+		int getId();
 
 		ALuint source;
 		ALint source_state;
+		int id;
 };
 

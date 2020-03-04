@@ -19,6 +19,7 @@ AudioEngine::~AudioEngine() {
 }
 
 void AudioEngine::initialize() {
+	sourcesMade = 0;
 	device = alcOpenDevice(NULL);
 	context = alcCreateContext(device, NULL);
 	alcMakeContextCurrent(context);
@@ -40,7 +41,16 @@ void AudioEngine::initialize() {
 	soundFiles[7] = "./audioFiles/vehicle_boost_speed_max_MONO.wav";
 	soundFiles[8] = "./audioFiles/vehicle_top_speed_MONO.wav";
 	soundFiles[9] = "./audioFiles/vehicle_turret_triple_burst_MONO.wav";
+	soundFiles[10] = "./audioFiles/vehicle_damage_hit_bullet_MONO.wav";
+	soundFiles[11] = "./audioFiles/vehicle_damage_hit_trap_MONO.wav";
+	soundFiles[12] = "./audioFiles/vehicle_damage_impact_MONO.wav";
+	soundFiles[13] = "./audioFiles/vehicle_weapons_caltrops_deploy_MONO.wav";
+	soundFiles[14] = "./audioFiles/vehicle_weapons_oil_deploy_MONO.wav";
+	soundFiles[15] = "./audioFiles/vehicle_weapons_smoke_deploy_MONO.wav";
 	
+}
+void AudioEngine::updateListenerPosition(float x, float y, float z) {
+	alListener3f(AL_POSITION, x, y, z);
 }
 void AudioEngine::initializeBuffers() {
 	for (int i = 0; i < NUM_OF_SOUND_EFFECTS_POSSIBLE; i++) {
@@ -54,8 +64,20 @@ void AudioEngine::initializeBuffers() {
 AudioBoomBox& AudioEngine::createBoomBox(int soundFile)
 {
 	ALuint* buffer = &bufferArray[soundFile];
-	listOfSources.push_back(std::make_unique<AudioBoomBox>(buffer));
+	sourcesMade++;
+	listOfSources.push_back(std::make_unique<AudioBoomBox>(buffer, sourcesMade));
 	return *listOfSources.back();
+}
+
+void AudioEngine::killSource(AudioBoomBox* boombox) {
+	int paramId = boombox->getId();
+	for (int i = 0; i < listOfSources.size(); i++) {
+		int id = listOfSources[i]->getId();
+		if (paramId == id) {
+			listOfSources[i]->cleanup();
+			listOfSources.erase(listOfSources.begin() + i);
+		}
+	}
 }
 
 void AudioEngine::killSources() {
