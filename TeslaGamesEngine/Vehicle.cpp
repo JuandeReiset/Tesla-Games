@@ -94,7 +94,7 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 		previousAccel = curAccel;
 	}
 
-	update_turret_position();
+	//update_turret_position();
 	
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;
 }

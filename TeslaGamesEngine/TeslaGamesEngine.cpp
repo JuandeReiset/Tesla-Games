@@ -83,6 +83,8 @@ std::vector<Shadow*> shadowList;
 //std::vector<Caltrops*> caltropsList;
 std::list<std::unique_ptr<Caltrops>> caltropsList;											//using list instead of vector since we will often insert and delete elements in the list
 std::list<std::unique_ptr<Bullet>> bulletsList;
+std::list<std::unique_ptr<ShootComp>> sclistList;
+
 Camera camera;
 
 Shader shadowShader;
@@ -669,15 +671,21 @@ int main()
 		*/
 		//Draw bullets after Refactor
 		if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) ) {
-			std::unique_ptr<Bullet> bullet(new Bullet());//using unique_ptr instead of pointer since we will release memory
+			//std::unique_ptr<Bullet> bullet(new Bullet());//using unique_ptr instead of pointer since we will release memory
 			//bullet->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess,Direction.x, Direction.y, Direction.z);
 			//bulletsList.push_back(std::move(bullet));
-			physEng.player->shoot( uniformModel, uniformSpecularIntensity, uniformShininess);
+
+			std::cout << "Shoot method reached";
+			//physEng.player->shoot( uniformModel, uniformSpecularIntensity, uniformShininess);
 			audioObject3.playSound();
 			bullet_sound_played = true; //Stop once its played once
-		
+			
+	
+			
+			//std::unique_ptr<ShootComp> bullet(new ShootComp());//using unique_ptr instead of pointer since we will release memory
 		}
 
+		/*
 		auto b = bulletsList.begin();
 		while (b != bulletsList.end()) {
 			if ((*b)->isDead())
@@ -687,7 +695,19 @@ int main()
 				++b;
 			}
 		}
+		*/ 
 
+		/*
+		auto b = sclistList.begin();
+		while (b != sclistList.end()) {
+			if ((*b)->isDead())
+				sclistList.erase(b++);
+			else {
+				(*b)->renderBullet();
+				++b;
+			}
+		}
+		*/
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
