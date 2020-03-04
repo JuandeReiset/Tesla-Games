@@ -27,6 +27,7 @@ public:
 	Vehicle(int id);
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);
+	void cleanup();
 	void audioUpdate();
 	void initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, PxVec3 position);
 	void initVehicleAudio(AudioEngine * engine);
