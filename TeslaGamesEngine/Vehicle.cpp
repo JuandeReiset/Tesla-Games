@@ -60,7 +60,7 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 	initVehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, PxVec3(x, y, z));
 }
 Vehicle::Vehicle(int id) : ID(id) {}
-Vehicle::~Vehicle() {}
+Vehicle::~Vehicle() { cleanup(); }
 
 //takes in timestep, updates all vehicle physics. Called by PhysicsEngine
 void Vehicle::update(PxF32 timestep, PxScene* gScene)
@@ -95,6 +95,14 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	}
 	
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;
+}
+
+void Vehicle::cleanup() {
+	this->audioEngine->killSource(&this->accelerateFromRest);
+	this->audioEngine->killSource(&this->accelerateFromMotion);
+	this->audioEngine->killSource(&this->boostStart);
+	this->audioEngine->killSource(&this->boostMax);
+	this->audioEngine->killSource(&this->maxSpeed);
 }
 
 void Vehicle::audioUpdate() {
