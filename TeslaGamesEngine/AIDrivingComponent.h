@@ -16,15 +16,16 @@ public:
 	AIDrivingComponent(Vehicle* v);
 	void Tick(float deltaTime);
 	void AddDrivingTarget(DrivingTarget toAdd);
+	void AddDrivingTarget(float x, float y);
 	~AIDrivingComponent();
 
 private:
 	void MoveTo(DrivingTarget);
 
 	std::vector<DrivingTarget> drivingTargets;
-	int currentTargetIndex;
+	int currentTargetIndex = 0;
 	Vehicle* owner;
 	
-	float threshold = 0.1f;
+	float threshold = 20.0f;
 };
 

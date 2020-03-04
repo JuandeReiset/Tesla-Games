@@ -124,7 +124,7 @@ void Camera::stickControl(GLfloat xChange, GLfloat yChange, bool reset, glm::vec
 	yaw = angleAroundY - angleAroundTarget;
 
 
-	std::cout << angleAroundY << std::endl;
+	// std::cout << angleAroundY << std::endl;
 
 	update();
 }

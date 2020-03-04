@@ -57,6 +57,9 @@
 //Ability stuff
 #include "Caltrops.h"
 
+// AI stuff
+#include "AIDrivingComponent.h"
+
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -371,7 +374,7 @@ int main()
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
-	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
 	TeslaCar.LoadModel("Models/TeslaGamesTruck2.obj");
 	boxTest.LoadModel("Models/wall.obj");
@@ -442,6 +445,25 @@ int main()
 	//physEng.upwards();
 	//End of audio system setup/demo
 
+	// Creating an enemy vehicle 
+	physEng.addEnemyVehicle(6, 5, 0);
+	AIDrivingComponent aiDriving = AIDrivingComponent(physEng.enemyVehicles[0]);
+	aiDriving.AddDrivingTarget(25, 30);
+	aiDriving.AddDrivingTarget(160, 40);
+	aiDriving.AddDrivingTarget(215, 25);
+	aiDriving.AddDrivingTarget(220, -55);
+	aiDriving.AddDrivingTarget(-65, -80);
+	aiDriving.AddDrivingTarget(-90, -50);
+	aiDriving.AddDrivingTarget(-80, 45);
+	aiDriving.AddDrivingTarget(0, 0);
+
+	physEng.addEnemyVehicle(15, 5, 0);
+	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng.enemyVehicles[1]);
+	aiDriving2.AddDrivingTarget(45, 40);
+	aiDriving2.AddDrivingTarget(215, -70);
+	aiDriving2.AddDrivingTarget(-90, -75);
+	aiDriving2.AddDrivingTarget(-65, 55);
+
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
 	while (!mainWindow.getShouldClose())
@@ -460,6 +482,11 @@ int main()
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		lastTime = now;
+
+		// For AI testing
+		aiDriving.Tick(deltaTime);
+		//aiDriving2.Tick(deltaTime);
+
 
 		// Get + Handle User Input
 		glfwPollEvents();
@@ -483,10 +510,6 @@ int main()
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
-
-		glm::vec3 lowerLight = camera.getCameraPosition();
-		lowerLight.y -= 0.3f;
-		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
