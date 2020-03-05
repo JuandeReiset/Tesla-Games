@@ -60,7 +60,7 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 	initVehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, PxVec3(x, y, z));
 }
 Vehicle::Vehicle(int id) : ID(id) {}
-Vehicle::~Vehicle() {}
+Vehicle::~Vehicle() { cleanup(); }
 
 //takes in timestep, updates all vehicle physics. Called by PhysicsEngine
 void Vehicle::update(PxF32 timestep, PxScene* gScene)
@@ -142,6 +142,13 @@ HealthComponent* Vehicle::getHealthComponent() {
 	return &health;
 }
 
+void Vehicle::cleanup() {
+	this->audioEngine->killSource(&this->accelerateFromRest);
+	this->audioEngine->killSource(&this->accelerateFromMotion);
+	this->audioEngine->killSource(&this->boostStart);
+	this->audioEngine->killSource(&this->boostMax);
+	this->audioEngine->killSource(&this->maxSpeed);
+}
 
 void Vehicle::audioUpdate() {
 	PxVec3 position = GetPosition();
@@ -457,6 +464,11 @@ PxVec3 Vehicle::GetPosition()
 {
 	PxVec3 position = gVehicle4W->getRigidDynamicActor()->getGlobalPose().p;
 	return position;
+}
+
+physx::PxTransform Vehicle::GetTransform()
+{
+	return gVehicle4W->getRigidDynamicActor()->getGlobalPose();
 }
 
 float Vehicle::GetRotationAngle()

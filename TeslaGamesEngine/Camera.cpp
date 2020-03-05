@@ -149,6 +149,7 @@ void Camera::stickControl(GLfloat xChange, GLfloat yChange, glm::vec3 carPos, gl
 		}
 	}
 
+
 	calculatePos(carPos, angleAroundY + angleAroundTarget);
 	yaw = angleAroundY + angleAroundTarget;
 	update();
