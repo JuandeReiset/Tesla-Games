@@ -9,7 +9,7 @@ class ColliderCallback : public PxSimulationEventCallback
 public:
 	void onContact(const PxContactPairHeader &pairHeader, const PxContactPair *pairs, PxU32 nbPairs);
 
-	void onTrigger(PxTriggerPair *pairs, PxU32 count);
+	void PxSimulationEventCallback::onTrigger(PxTriggerPair *pairs, PxU32 count);
 
 	void onSleep(PxActor **actors, PxU32 count);
 

@@ -28,6 +28,7 @@ PhysicsEngine::PhysicsEngine() {
 	//creates the collider event handler needed for trigger volumes and adds to scene
 	colliderCallback = new ColliderCallback();
 	sceneDesc.simulationEventCallback = colliderCallback;
+	
 
 	gScene = gPhysics->createScene(sceneDesc);
 
@@ -53,7 +54,7 @@ PhysicsEngine::PhysicsEngine() {
 	wallActor->attachShape(*boxwall);
 	//gScene->addActor(*wallActor);
 
-	createTriggerVolume(0, 3.f, 0);
+	createTriggerVolume(10, 1.f, 0);
 
 	//Create a plane to drive on (once we get track cooking working we can remove this, or have this as a safeguard just in case)
 	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
@@ -110,7 +111,7 @@ void PhysicsEngine::createTriggerVolume(float x, float y, float z)
 	actor->getShapes(&shape, 1);
 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
 	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
-	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+	//shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
 	gScene->addActor(*actor);
 
