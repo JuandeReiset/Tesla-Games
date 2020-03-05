@@ -15,6 +15,8 @@
 #include "Object.h"
 #include "audioEngine.h"
 
+//#include "Bullet.h"
+
 using namespace physx;
 
 /*
@@ -27,6 +29,17 @@ public:
 	Vehicle(int id);
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);
+  
+	//Shooting component functions
+	void update_turret();
+	void shoot(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z);
+	void renderBullets();
+	ShootComp* getShootingComponent();
+
+	//Health Component functions
+	void update_health();
+	HealthComponent* getHealthComponent();
+
 	void cleanup();
 	void audioUpdate();
 	void initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, PxVec3 position);
@@ -48,6 +61,8 @@ public:
 	physx::PxVec3 GetPosition();
 	physx::PxTransform GetTransform();
 
+
+
 	PxRigidDynamic* actor;
 
 	//physx vehicle stuff
@@ -64,14 +79,14 @@ public:
 		eDRIVE_MODE_BRAKE,
 		eDRIVE_MODE_NONE
 	};
-
+	
 	void Tick(float deltaTime);
 	double currentHealth();											//get the current health
 	void getDamage(double damage);									//get damage for damaging object
 	void firelazer();
 private:
 	HealthComponent health = HealthComponent(100);
-	ShootComp turret = ShootComp(10);
+	ShootComp turret = ShootComp();
 	int ID;
 
 	AudioEngine* audioEngine;

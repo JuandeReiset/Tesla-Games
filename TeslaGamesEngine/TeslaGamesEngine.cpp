@@ -86,6 +86,9 @@ std::vector<Shadow*> shadowList;
 //std::vector<Caltrops*> caltropsList;
 std::list<std::unique_ptr<Caltrops>> caltropsList;											//using list instead of vector since we will often insert and delete elements in the list
 std::list<std::unique_ptr<Bullet>> bulletsList;
+std::list <ShootComp*> shootList;
+//std::list<std::unique_ptr<ShootComp*>> shootList;
+
 Camera camera;
 
 Shader shadowShader;
@@ -134,8 +137,8 @@ float pos_y = 0;
 float pos_z = 0;
 
 //Angle of rotation for player/car obj  
-float car_rotation = 90;
-float current_rotation; //Calculates the angle at the moment of firing lazer
+//float car_rotation = 90;
+//float current_rotation; //Calculates the angle at the moment of firing lazer
 glm::vec3 car_front;
 
 // Vertex Shader
@@ -224,14 +227,14 @@ void parseControllerInput(Controller* controller)
 		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
 		bullet_shot = true; //Allows for bullets to be rendered
 		bullet_sound_played = false;
-		current_rotation = car_rotation;
+		
 
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
 		bullet_shot= true; // Alllows for bullets to be rendered
 		bullet_sound_played = false;
-		current_rotation = car_rotation;
+		
 
 	}
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
@@ -504,7 +507,7 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		// Setup shader
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
@@ -542,86 +545,54 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		boxTest.RenderModel();
-		
 
-//////////////////////////////////////////////////////////////////////////
-		
 
-		// Draw racing track
+		//////////////////////////////////////////////////////////////////////////
+
+
+				// Draw racing track
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2f));
-		model = glm::scale(model, glm::vec3(20.f,20.f, 20.f));
+		model = glm::scale(model, glm::vec3(20.f, 20.f, 20.f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		racetrack.RenderModel();
 
 		///////////////////////////////////////////////////////////////////////
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
-		
-		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
-/////////////////////////////////////////////////////////////////////////////////
-		//Draw bullets RAW
-		/*
-		if (bullet_shot) {
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(vehiclePosition.x +shoot_distance_x, vehiclePosition.y+0.5f+shoot_distance_y, vehiclePosition.z+shoot_distance_z));
-			
-			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-			bulletobj.RenderModel();
 
-			//PLAY LASER SOUND
-			if (!bullet_sound_played) {
+		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
+		/////////////////////////////////////////////////////////////////////////////////
+				//RENDERING BULLLETS AND PLAYING SHOOTING SOUND
+		ShootComp* ba = physEng.player->getShootingComponent();
+		HealthComponent* ha = physEng.player->getHealthComponent();
+
+		//Vehicle* payer1 = physEng.player;
+		
+
+		if ((ha->GetHealth()) > 0) {
+			//Draw bullets after Refactor
+			if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder))) {
+				//payer1->shoot(vehiclePosition,uniformModel,uniformSpecularIntensity,uniformShininess,Direction.x,Direction.y,Direction.z);
+				ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+
 				audioObject3.playSound();
 				bullet_sound_played = true; //Stop once its played once
-			}
-		
-			shoot_distance_x += Direction.x *bullet_speed;
-			shoot_distance_z += Direction.z * bullet_speed;
+				//ha->SetHealth(0);// This hear will prevent bullet and car from rendering
+			 }
+			ba->renderAllBullets();
+			//payer1->renderBullets();
 
-			if (shoot_distance_x > bullet_boundary || shoot_distance_x < -bullet_boundary || shoot_distance_z > bullet_boundary ||  shoot_distance_z < -bullet_boundary) {
-				shoot_distance_x = 0;
-				shoot_distance_y= 0;
-				shoot_distance_z = 0;
-				bullet_shot = false;
-				std::cout <<"LAZER COOLDOWN IS OVER!" << std::endl;
-			}
-			
-		}
-		*/
-		//Draw bullets after Refactor
-		if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) ) {
-			std::unique_ptr<Bullet> bullet(new Bullet());//using unique_ptr instead of pointer since we will release memory
-			bullet->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess,Direction.x, Direction.y, Direction.z);
-			bulletsList.push_back(std::move(bullet));
-			audioObject3.playSound();
-			bullet_sound_played = true; //Stop once its played once
-		
-		}
+			physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
+			modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
 
-		auto b = bulletsList.begin();
-		while (b != bulletsList.end()) {
-			if ((*b)->isDead())
-				bulletsList.erase(b++);
-			else {
-				(*b)->renderBullet();
-				++b;
-			}
+			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			TeslaCar.RenderModel();
 		}
-
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-		physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
-		modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
-
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		TeslaCar.RenderModel();
-
+		
+		//Enemy CARS rendering
 		//there is probably a much better way of rendering the other enemy cars, but this works for now
 		if (!physEng.enemyVehicles.empty()) {
 			for (int i = 0; i < physEng.enemyVehicles.size(); i++) {
