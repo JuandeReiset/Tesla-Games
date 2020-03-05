@@ -555,7 +555,7 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		// Setup shader
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
@@ -585,31 +585,7 @@ int main()
 
 		// Draw pyramid one
 		glm::mat4 model = glm::mat4(1.0f);
-/*
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
-		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		brickTexture.UseTexture();
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[0]->RenderMesh();
 
-		// Draw pyramid two
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 4.0f, -2.5f));
-		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		dirtTexture.UseTexture();
-		dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[1]->RenderMesh();
-		// Draw base
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
-		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		dirtTexture.UseTexture();
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[2]->RenderMesh();
-		*/
 
 		//render box
 		//get position of actual wall
@@ -622,48 +598,54 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		boxTest.RenderModel();
-		
 
-//////////////////////////////////////////////////////////////////////////
-		
 
-		// Draw racing track
+		//////////////////////////////////////////////////////////////////////////
+
+
+				// Draw racing track
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2f));
-		model = glm::scale(model, glm::vec3(20.f,20.f, 20.f));
+		model = glm::scale(model, glm::vec3(20.f, 20.f, 20.f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		racetrack.RenderModel();
 
 		///////////////////////////////////////////////////////////////////////
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
-		
+
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
-/////////////////////////////////////////////////////////////////////////////////
-		//RENDERING BULLLETS AND PLAYING SHOOTING SOUND
+		/////////////////////////////////////////////////////////////////////////////////
+				//RENDERING BULLLETS AND PLAYING SHOOTING SOUND
 		ShootComp* ba = physEng.player->getShootingComponent();
-		//Draw bullets after Refactor
-		if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) ) {
-	
-			ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
-			
-			audioObject3.playSound();
-			bullet_sound_played = true; //Stop once its played once
-		}
-		ba->renderAllBullets();
+		HealthComponent* ha = physEng.player->getHealthComponent();
+
+		//Vehicle* payer1 = physEng.player;
 		
+
+		if ((ha->GetHealth()) > 0) {
+			//Draw bullets after Refactor
+			if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder))) {
+				//payer1->shoot(vehiclePosition,uniformModel,uniformSpecularIntensity,uniformShininess,Direction.x,Direction.y,Direction.z);
+				ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+
+				audioObject3.playSound();
+				bullet_sound_played = true; //Stop once its played once
+				//ha->SetHealth(0);// This hear will prevent bullet and car from rendering
+			 }
+			ba->renderAllBullets();
+			//payer1->renderBullets();
+
+			physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
+			modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
+
+			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			TeslaCar.RenderModel();
+		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-		physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
-		modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
-
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		TeslaCar.RenderModel();
-
+		
+		//Enemy CARS rendering
 		//there is probably a much better way of rendering the other enemy cars, but this works for now
 		if (!physEng.enemyVehicles.empty()) {
 			for (int i = 0; i < physEng.enemyVehicles.size(); i++) {

@@ -106,17 +106,14 @@ void Vehicle::update_turret() {
 	PxQuat vehicleQuaternion = gVehicle4W->getRigidDynamicActor()->getGlobalPose().q;
 	PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
 
-
 	pos.x = pxpos.x;
 	pos.x = pxpos.y;
 	pos.z = pxpos.z;
 	turret.updatePosition(pos);
 	turret.updateDirection(v_dir.x,v_dir.y,v_dir.z);
-
-
 }
 
-void Vehicle::shoot(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess) {
+void Vehicle::shoot(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z) {
 	PxQuat vehicleQuaternion = gVehicle4W->getRigidDynamicActor()->getGlobalPose().q;
 	PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
 	PxVec3 pxpos = GetPosition();
@@ -137,6 +134,15 @@ ShootComp* Vehicle::getShootingComponent() {
 	return &turret;
 }
 
+void Vehicle::update_health() {
+	health.SetHealth(0);
+}
+
+HealthComponent* Vehicle::getHealthComponent() {
+	return &health;
+}
+
+
 void Vehicle::audioUpdate() {
 	PxVec3 position = GetPosition();
 
@@ -146,6 +152,8 @@ void Vehicle::audioUpdate() {
 	this->boostMax.updateSourcePosition(position.x, position.y, position.z);
 	this->maxSpeed.updateSourcePosition(position.x, position.y, position.z);
 }
+
+
 
 void Vehicle::handleSound() {
 	float curSpeed = std::abs(gVehicle4W->computeForwardSpeed());
@@ -488,5 +496,6 @@ void Vehicle::getDamage(double damage) {
 
 void Vehicle::firelazer() {
 	turret.fire();
+	health.SetHealth(0);
 }
 
