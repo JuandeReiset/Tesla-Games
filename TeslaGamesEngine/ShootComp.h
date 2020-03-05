@@ -9,38 +9,63 @@
 #include "DamagingObject.h"
 #include "Model.h"
 #include "Material.h"
+#include "Bullet.h"
+
+#include <list>
 
 class ShootComp :
 	public Component
 {
 	public:
 		ShootComp();
-		~ShootComp();
+	
 
 		//model stuff
-		void createBullet(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z);														//create caltrops model
-		void renderBullet();														//render caltrops model
+
+		//Add an bullet object and required rendering settings to a vector
+		void addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z);
+		
+		//method to pass all bullet objects to rendering
+		void renderAllBullets();														//render caltrops model
+
+		//update position of vehicle and direction which it is facing
 		void updatePosition(glm::vec3 newpos);
+		void updateDirection(float x, float y, float z);
+
+		//not sure how to use this yet
 		void Tick(float deltaTime);
+
+		//decrease ammo by 1
 		void fire();
+
+		//evaluates if there is still ammo in the turret
 		bool is_there_ammo();
 
+		//holds all the bullets to be rendered
+		std::list<Bullet> bulletsList;
+
+
 		//if bullet still exist
-		bool isDead();
+	
 		void updateTime();//this may be inside the tick func
+
+		//parameters for the Direction vector
 		float Direction_x;
 		float Direction_y;
 		float Direction_z;
+
+		// Stores current vehicle position
+		glm::vec3 start_position;
+
 		int ammo;
-		glm::vec3 position;
 	private:
 		float life, birthTime, currentTime;											//each caltrop can exist 5 sec, if currentTime - birthTime > life, then destroy the instance
 																	//the position of the caltrops
-		Model BulletObj;
-		float bullet_speed;
-		float shoot_distance_x;
-		float shoot_distance_z;
-		glm::mat4 model;
+		//Model BulletObj;
+		float bullet_speed=0.8f;
+		//float shoot_distance_x;
+		//float shoot_distance_z;
+		//glm::mat4 model;
 		
 
 		GLuint uniformModel, uniformSpecularIntensity, uniformShininess;

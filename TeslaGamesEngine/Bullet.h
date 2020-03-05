@@ -16,7 +16,7 @@ class Bullet:DamagingObject
 {
 public:
 	Bullet();
-	~Bullet();
+	//~Bullet();
 
 	//model stuff
 	void createBullet(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z);														//create caltrops model

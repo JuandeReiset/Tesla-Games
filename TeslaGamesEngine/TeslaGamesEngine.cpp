@@ -83,7 +83,8 @@ std::vector<Shadow*> shadowList;
 //std::vector<Caltrops*> caltropsList;
 std::list<std::unique_ptr<Caltrops>> caltropsList;											//using list instead of vector since we will often insert and delete elements in the list
 std::list<std::unique_ptr<Bullet>> bulletsList;
-std::list<std::unique_ptr<ShootComp>> sclistList;
+std::list <ShootComp*> shootList;
+//std::list<std::unique_ptr<ShootComp*>> shootList;
 
 Camera camera;
 
@@ -133,8 +134,8 @@ float pos_y = 0;
 float pos_z = 0;
 
 //Angle of rotation for player/car obj  
-float car_rotation = 90;
-float current_rotation; //Calculates the angle at the moment of firing lazer
+//float car_rotation = 90;
+//float current_rotation; //Calculates the angle at the moment of firing lazer
 glm::vec3 car_front;
 
 // Vertex Shader
@@ -297,14 +298,14 @@ void parseControllerInput(Controller* controller)
 		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
 		bullet_shot = true; //Allows for bullets to be rendered
 		bullet_sound_played = false;
-		current_rotation = car_rotation;
+		
 
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
 		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
 		bullet_shot= true; // Alllows for bullets to be rendered
 		bullet_sound_played = false;
-		current_rotation = car_rotation;
+		
 
 	}
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
@@ -669,45 +670,32 @@ int main()
 			
 		}
 		*/
+		ShootComp* ba = physEng.player->getShootingComponent();
 		//Draw bullets after Refactor
 		if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) ) {
-			//std::unique_ptr<Bullet> bullet(new Bullet());//using unique_ptr instead of pointer since we will release memory
-			//bullet->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess,Direction.x, Direction.y, Direction.z);
-			//bulletsList.push_back(std::move(bullet));
-
-			std::cout << "Shoot method reached";
+			//std::unique_ptr<ShootComp> bullet(new ShootComp());//using unique_ptr instead of pointer since we will release memory
+			
+			//ShootComp* ba = physEng.player->getShootingComponent();
+			//ba->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess,Direction.x, Direction.y, Direction.z);
+			
+			/*
+			if (ba->is_there_ammo()) {
+				shootList.push_back(ba);
+			}
+		    */
 			//physEng.player->shoot( uniformModel, uniformSpecularIntensity, uniformShininess);
+			ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+			
+
 			audioObject3.playSound();
 			bullet_sound_played = true; //Stop once its played once
 			
+		    
+		}
+
+		ba->renderAllBullets();
+		
 	
-			
-			//std::unique_ptr<ShootComp> bullet(new ShootComp());//using unique_ptr instead of pointer since we will release memory
-		}
-
-		/*
-		auto b = bulletsList.begin();
-		while (b != bulletsList.end()) {
-			if ((*b)->isDead())
-				bulletsList.erase(b++);
-			else {
-				(*b)->renderBullet();
-				++b;
-			}
-		}
-		*/ 
-
-		/*
-		auto b = sclistList.begin();
-		while (b != sclistList.end()) {
-			if ((*b)->isDead())
-				sclistList.erase(b++);
-			else {
-				(*b)->renderBullet();
-				++b;
-			}
-		}
-		*/
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

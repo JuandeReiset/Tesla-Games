@@ -58,7 +58,8 @@ void Bullet::renderBullet() {
 
 	BulletObj.RenderModel();
 }
-
+/*
 Bullet::~Bullet() {
 
 }
+*/

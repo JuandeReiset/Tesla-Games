@@ -56,7 +56,7 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 			5.0f	//fall rate eANALOG_INPUT_STEER_RIGHT
 		}
 	};
-
+	
 	initVehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, PxVec3(x, y, z));
 }
 Vehicle::Vehicle(int id) : ID(id) {}
@@ -94,18 +94,26 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 		previousAccel = curAccel;
 	}
 
-	//update_turret_position();
+	update_turret();
 	
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;
 }
 
-void Vehicle::update_turret_position() {
+void Vehicle::update_turret() {
 	PxVec3 pxpos = GetPosition();
 	glm::vec3 pos;
+
+	PxQuat vehicleQuaternion = gVehicle4W->getRigidDynamicActor()->getGlobalPose().q;
+	PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
+
+
 	pos.x = pxpos.x;
 	pos.x = pxpos.y;
 	pos.z = pxpos.z;
 	turret.updatePosition(pos);
+	turret.updateDirection(v_dir.x,v_dir.y,v_dir.z);
+
+
 }
 
 void Vehicle::shoot(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess) {
@@ -116,8 +124,12 @@ void Vehicle::shoot(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShin
 	pos.x = pxpos.x;
 	pos.x = pxpos.y;
 	pos.z = pxpos.z;
-	turret.createBullet(pos,  uniModel, uniSpecularIntensity,  uniShininess, v_dir.x, v_dir.y, v_dir.z);
+	//turret.createBullet(pos,  uniModel, uniSpecularIntensity,  uniShininess, v_dir.x, v_dir.y, v_dir.z);
     
+}
+
+ShootComp* Vehicle::getShootingComponent() {
+	return &turret;
 }
 
 void Vehicle::audioUpdate() {
