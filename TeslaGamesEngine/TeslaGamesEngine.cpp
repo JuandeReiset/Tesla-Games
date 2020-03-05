@@ -274,15 +274,15 @@ void parseControllerInput(Controller* controller)
 
 	if (controller->rightTrigger() > 0.0 || controller->leftTrigger() > 0.0) {
 		if (controller->rightTrigger() > 0.0) {
-			physEng.player->forwards(controller->rightTrigger());
+			physEng->player->forwards(controller->rightTrigger());
 		}
 		if (controller->leftTrigger() > 0.0) {
-			physEng.player->reverse(controller->leftTrigger());
+			physEng->player->reverse(controller->leftTrigger());
 		}
 	}
 	else if (controller->rightTrigger() == 0.0 && controller->leftTrigger() == 0.0) {
-		physEng.player->reverse(0.0f);
-		physEng.player->forwards(0.0f);
+		physEng->player->reverse(0.0f);
+		physEng->player->forwards(0.0f);
 	}
 	
 
@@ -428,7 +428,7 @@ int main()
 	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TURRET_FIRE);
 
 	
-	physEng.initAudioForVehicles(&audioSystem);
+	physEng->initAudioForVehicles(&audioSystem);
 	camera.initializeAudio(&audioSystem);
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
@@ -452,8 +452,8 @@ int main()
 	//End of audio system setup/demo
 
 	// Creating an enemy vehicle 
-	physEng.addEnemyVehicle(6, 5, 0);
-	AIDrivingComponent aiDriving = AIDrivingComponent(physEng.enemyVehicles[0]);
+	physEng->addEnemyVehicle(6, 5, 0);
+	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
 	aiDriving.AddDrivingTarget(25, 30);
 	aiDriving.AddDrivingTarget(160, 40);
 	aiDriving.AddDrivingTarget(215, 25);
@@ -463,8 +463,8 @@ int main()
 	aiDriving.AddDrivingTarget(-80, 45);
 	aiDriving.AddDrivingTarget(0, 0);
 
-	physEng.addEnemyVehicle(15, 5, 0);
-	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng.enemyVehicles[1]);
+	physEng->addEnemyVehicle(15, 5, 0);
+	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
 	aiDriving2.AddDrivingTarget(45, 40);
 	aiDriving2.AddDrivingTarget(215, -70);
 	aiDriving2.AddDrivingTarget(-90, -75);
