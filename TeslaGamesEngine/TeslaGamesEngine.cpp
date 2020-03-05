@@ -58,6 +58,9 @@
 #include "Caltrops.h"
 #include "Bullet.h"
 
+// AI stuff
+#include "AIDrivingComponent.h"
+
 // Stuff for imgui
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_glfw.h"
@@ -165,80 +168,6 @@ void update(localAxis a, float yaw, float pitch) {
 
 /* End of rendering variables */
 
-// function for interpolating normals of a mesh
-void calcAverageNormals(unsigned int * indices, unsigned int indiceCount, GLfloat * vertices, unsigned int verticeCount,
-	unsigned int vLength, unsigned int normalOffset)
-{
-	for (size_t i = 0; i < indiceCount; i += 3)
-	{
-		unsigned int in0 = indices[i] * vLength;
-		unsigned int in1 = indices[i + 1] * vLength;
-		unsigned int in2 = indices[i + 2] * vLength;
-		glm::vec3 v1(vertices[in1] - vertices[in0], vertices[in1 + 1] - vertices[in0 + 1], vertices[in1 + 2] - vertices[in0 + 2]);
-		glm::vec3 v2(vertices[in2] - vertices[in0], vertices[in2 + 1] - vertices[in0 + 1], vertices[in2 + 2] - vertices[in0 + 2]);
-		glm::vec3 normal = glm::cross(v1, v2);
-		normal = glm::normalize(normal);
-
-		in0 += normalOffset; in1 += normalOffset; in2 += normalOffset;
-		vertices[in0] += normal.x; vertices[in0 + 1] += normal.y; vertices[in0 + 2] += normal.z;
-		vertices[in1] += normal.x; vertices[in1 + 1] += normal.y; vertices[in1 + 2] += normal.z;
-		vertices[in2] += normal.x; vertices[in2 + 1] += normal.y; vertices[in2 + 2] += normal.z;
-	}
-
-	for (size_t i = 0; i < verticeCount / vLength; i++)
-	{
-		unsigned int nOffset = i * vLength + normalOffset;
-		glm::vec3 vec(vertices[nOffset], vertices[nOffset + 1], vertices[nOffset + 2]);
-		vec = glm::normalize(vec);
-		vertices[nOffset] = vec.x; vertices[nOffset + 1] = vec.y; vertices[nOffset + 2] = vec.z;
-	}
-}
-
-// create basic objects for testing
-void CreateObjects()
-{
-	unsigned int indices[] = {
-		0, 3, 1,
-		1, 3, 2,
-		2, 3, 0,
-		0, 1, 2
-	};
-
-	GLfloat vertices[] = {
-		//	x      y      z			u	  v			nx	  ny    nz
-			-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, -1.0f, 1.0f,		0.5f, 0.0f,		0.0f, 0.0f, 0.0f,
-			1.0f, -1.0f, -0.6f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,		0.5f, 1.0f,		0.0f, 0.0f, 0.0f
-	};
-
-	unsigned int floorIndices[] = {
-		0, 2, 1,
-		1, 2, 3
-	};
-
-	GLfloat floorVertices[] = {
-		-10.0f, 0.0f, -10.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
-		10.0f, 0.0f, -10.0f,	10.0f, 0.0f,	0.0f, -1.0f, 0.0f,
-		-10.0f, 0.0f, 10.0f,	0.0f, 10.0f,	0.0f, -1.0f, 0.0f,
-		10.0f, 0.0f, 10.0f,		10.0f, 10.0f,	0.0f, -1.0f, 0.0f
-	};
-
-	calcAverageNormals(indices, 12, vertices, 32, 8, 5);
-
-	Mesh *obj1 = new Mesh();
-	obj1->CreateMesh(vertices, indices, 32, 12);
-	meshList.push_back(obj1);
-
-	Mesh *obj2 = new Mesh();
-	obj2->CreateMesh(vertices, indices, 32, 12);
-	meshList.push_back(obj2);
-
-	Mesh *obj3 = new Mesh();
-	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
-	meshList.push_back(obj3);
-}
-
 void CreateShaders()
 {
 	Shader *shader1 = new Shader();
@@ -343,13 +272,17 @@ void parseControllerInput(Controller* controller)
 		physEng->player->turn(0.f);
 	}
 
-	if (!controller->RStick_InDeadzone()) {
+	if (controller->rightTrigger() > 0.0 || controller->leftTrigger() > 0.0) {
+		if (controller->rightTrigger() > 0.0) {
+			physEng.player->forwards(controller->rightTrigger());
+		}
+		if (controller->leftTrigger() > 0.0) {
+			physEng.player->reverse(controller->leftTrigger());
+		}
 	}
-	if (controller->rightTrigger() > 0.0) {
-		physEng->player->forwards(controller->rightTrigger());
-	}
-	if (controller->leftTrigger() > 0.0) {
-		physEng->player->reverse(controller->leftTrigger());
+	else if (controller->rightTrigger() == 0.0 && controller->leftTrigger() == 0.0) {
+		physEng.player->reverse(0.0f);
+		physEng.player->forwards(0.0f);
 	}
 	
 
@@ -385,7 +318,6 @@ int main()
 	mainGame.Play();
 
 	// Rendering setup
-	CreateObjects();
 	CreateShaders();
 	createShadows();
 
@@ -442,7 +374,7 @@ int main()
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
-	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
 	TeslaCar.LoadModel("Models/TeslaGamesTruck2.obj");
 	boxTest.LoadModel("Models/wall.obj");
@@ -491,14 +423,20 @@ int main()
 
 	//Audio system setup
 	AudioEngine audioSystem = AudioEngine();
-	AudioBoomBox audioObject = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
-	AudioBoomBox audioObject2 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
+	AudioBoomBox mainMenuMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
+	AudioBoomBox raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
 	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TURRET_FIRE);
+
+	
+	physEng.initAudioForVehicles(&audioSystem);
+	camera.initializeAudio(&audioSystem);
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	audioObject2.playSound();
+	raceMusic.setVolume(0.5f);
+	raceMusic.loopSound(true);
+	raceMusic.playSound();
 
 	//Controller
 	Controller player1 = Controller(1);
@@ -512,6 +450,25 @@ int main()
 
 	//physEng.upwards();
 	//End of audio system setup/demo
+
+	// Creating an enemy vehicle 
+	physEng.addEnemyVehicle(6, 5, 0);
+	AIDrivingComponent aiDriving = AIDrivingComponent(physEng.enemyVehicles[0]);
+	aiDriving.AddDrivingTarget(25, 30);
+	aiDriving.AddDrivingTarget(160, 40);
+	aiDriving.AddDrivingTarget(215, 25);
+	aiDriving.AddDrivingTarget(220, -55);
+	aiDriving.AddDrivingTarget(-65, -80);
+	aiDriving.AddDrivingTarget(-90, -50);
+	aiDriving.AddDrivingTarget(-80, 45);
+	aiDriving.AddDrivingTarget(0, 0);
+
+	physEng.addEnemyVehicle(15, 5, 0);
+	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng.enemyVehicles[1]);
+	aiDriving2.AddDrivingTarget(45, 40);
+	aiDriving2.AddDrivingTarget(215, -70);
+	aiDriving2.AddDrivingTarget(-90, -75);
+	aiDriving2.AddDrivingTarget(-65, 55);
 
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
@@ -531,6 +488,11 @@ int main()
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		lastTime = now;
+
+		// For AI testing
+		aiDriving.Tick(deltaTime);
+		//aiDriving2.Tick(deltaTime);
+
 
 		// Get + Handle User Input
 		glfwPollEvents();
@@ -555,10 +517,6 @@ int main()
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
-		glm::vec3 lowerLight = camera.getCameraPosition();
-		lowerLight.y -= 0.3f;
-		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
-
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
@@ -575,31 +533,6 @@ int main()
 
 		// Draw pyramid one
 		glm::mat4 model = glm::mat4(1.0f);
-/*
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
-		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		brickTexture.UseTexture();
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[0]->RenderMesh();
-
-		// Draw pyramid two
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 4.0f, -2.5f));
-		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		dirtTexture.UseTexture();
-		dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[1]->RenderMesh();
-		// Draw base
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
-		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		dirtTexture.UseTexture();
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[2]->RenderMesh();
-		*/
 
 //////////////////////////////////////////////////////////////////////////
 		//render all pickup boxes
@@ -639,7 +572,7 @@ int main()
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
 /////////////////////////////////////////////////////////////////////////////////
 		//Draw bullets RAW
-		
+		/*
 		if (bullet_shot) {
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(vehiclePosition.x +shoot_distance_x, vehiclePosition.y+0.5f+shoot_distance_y, vehiclePosition.z+shoot_distance_z));
@@ -667,12 +600,14 @@ int main()
 			}
 			
 		}
-
+		*/
 		//Draw bullets after Refactor
-		if (player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) {
+		if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) ) {
 			std::unique_ptr<Bullet> bullet(new Bullet());//using unique_ptr instead of pointer since we will release memory
-			bullet->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess);
+			bullet->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess,Direction.x, Direction.y, Direction.z);
 			bulletsList.push_back(std::move(bullet));
+			audioObject3.playSound();
+			bullet_sound_played = true; //Stop once its played once
 		
 		}
 
@@ -811,23 +746,6 @@ int main()
 			static float f = 0.0f;
 			static int counter = 0;
 
-/*
-			ImGui::Begin("FPS COUNTER");                          // Create a window called "Hello, world!" and append into it.
-
-		
-
-
-			ImGui::SliderFloat("OBJ X pos debug", &pos_x, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			ImGui::SliderFloat("OBJ Y pos debug", &pos_y, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			ImGui::SliderFloat("OBJ Z pos debug", &pos_z, 0.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-
-			ImGui::Text("OBJ angle debug");               // Display some text (you can use a format strings too)
-			ImGui::SliderFloat("angle",&car_rotation , 0.0f, 360.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-
-			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-*/
 			ImGui::Begin("Debug");
 			ImGui::Text("Driving mode and Position");
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)

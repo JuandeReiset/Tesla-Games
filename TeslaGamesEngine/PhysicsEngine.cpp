@@ -44,7 +44,6 @@ PhysicsEngine::PhysicsEngine() {
 	gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 
 	player = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, 0, 5, 0);
-
 	//create obstacle (needed for now)
 	PxFilterData obstFilterData(snippetvehicle::COLLISION_FLAG_OBSTACLE, snippetvehicle::COLLISION_FLAG_OBSTACLE_AGAINST, 0, 0);
 	PxShape* boxwall = gPhysics->createShape(PxBoxGeometry(1.0f, 2.0f, 1.0f), *gMaterial, false);
@@ -64,12 +63,20 @@ PhysicsEngine::PhysicsEngine() {
 
 	
 }
+void PhysicsEngine::initAudioForVehicles(AudioEngine* audio) {
+	this->audioEngine = audio;
+	player->initVehicleAudio(this->audioEngine);
+	for (int i = 0; i < enemyVehicles.size(); i++) {
+		enemyVehicles[i]->initVehicleAudio(this->audioEngine);
+	}
+}
 
 void PhysicsEngine::addEnemyVehicle(float x, float y, float z)
 {
 	//create vehicle object
 	//add it to the list of vehicle
 	Vehicle* v = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, x, y, z);
+	v->initVehicleAudio(this->audioEngine);
 	enemyVehicles.push_back(v);
 }
 

@@ -180,6 +180,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AIDrivingComponent.h" />
     <ClInclude Include="AudioBoomBox.h" />
     <ClInclude Include="audioEngine.h" />
     <ClInclude Include="Bullet.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="DamageComponent.h" />
     <ClInclude Include="DamagingObject.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="DrawableComponent.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="HealthComponent.h" />
@@ -236,6 +238,7 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AIDrivingComponent.cpp" />
     <ClCompile Include="AudioBoomBox.cpp" />
     <ClCompile Include="audioEngine.cpp" />
     <ClCompile Include="Bullet.cpp" />
@@ -248,6 +251,7 @@
     <ClCompile Include="DamageComponent.cpp" />
     <ClCompile Include="DamagingObject.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="DrawableComponent.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="HealthComponent.cpp" />

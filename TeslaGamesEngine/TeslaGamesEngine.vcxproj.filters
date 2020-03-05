@@ -51,6 +51,8 @@
     <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="HUDcreator.cpp" />
     <ClCompile Include="Caltrops.cpp" />
+    <ClCompile Include="DrawableComponent.cpp" />
+    <ClCompile Include="AIDrivingComponent.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="ColliderCallback.cpp" />
     <ClCompile Include="PickupBox.cpp" />
@@ -106,6 +108,8 @@
     <ClInclude Include="HUDcreator.h" />
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="Caltrops.h" />
+    <ClInclude Include="DrawableComponent.h" />
+    <ClInclude Include="AIDrivingComponent.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="ColliderCallback.h" />
     <ClInclude Include="resource1.h" />

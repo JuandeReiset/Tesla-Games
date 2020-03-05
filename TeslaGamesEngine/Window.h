@@ -12,7 +12,7 @@
 class Window
 {
 public:
-	// Create a defaul 800 x 600 window
+	// Create a default 800 x 600 window
 	Window();
 
 	// Create a window of specified size

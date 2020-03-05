@@ -22,6 +22,12 @@ namespace audioConstants
 	const int SOUND_FILE_BOOST_MAX = 7;
 	const int SOUND_FILE_SPEED_MAX = 8;
 	const int SOUND_FILE_TURRET_FIRE = 9;
+	const int SOUND_FILE_HIT_BULLET = 10;
+	const int SOUND_FILE_HIT_TRAP = 11;
+	const int SOUND_FILE_HIT_COLLISION = 12;
+	const int SOUND_FILE_DEPLOY_CALTROPS = 13;
+	const int SOUND_FILE_DEPLOY_OIL = 14;
+	const int SOUND_FILE_DEPLOY_SMOKE = 15;
 	
 }
 
@@ -31,8 +37,10 @@ class AudioEngine
 		AudioEngine();
 		~AudioEngine();
 		void initialize();
+		void updateListenerPosition(float x, float y, float z);
 		void initializeBuffers();
 		AudioBoomBox& createBoomBox(int soundFile);
+		void killSource(AudioBoomBox * boombox);
 		void killSources();
 
 	private:
@@ -40,8 +48,10 @@ class AudioEngine
 		bool _strcmp(const char* base, const char* cp);
 		bool loadWavFile(const char* filename, ALuint* buffer);
 
-		static const int NUM_OF_SOUND_EFFECTS_POSSIBLE = 10;
+		static const int NUM_OF_SOUND_EFFECTS_POSSIBLE = 16;
 		const char* soundFiles[NUM_OF_SOUND_EFFECTS_POSSIBLE];
+
+		int sourcesMade;
 
 		ALuint bufferArray[NUM_OF_SOUND_EFFECTS_POSSIBLE];
 		std::vector<std::unique_ptr<AudioBoomBox>> listOfSources;

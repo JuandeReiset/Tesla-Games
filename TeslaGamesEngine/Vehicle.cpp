@@ -60,7 +60,7 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 	initVehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, PxVec3(x, y, z));
 }
 Vehicle::Vehicle(int id) : ID(id) {}
-Vehicle::~Vehicle() {}
+Vehicle::~Vehicle() { cleanup(); }
 
 //takes in timestep, updates all vehicle physics. Called by PhysicsEngine
 void Vehicle::update(PxF32 timestep, PxScene* gScene)
@@ -81,6 +81,135 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 
 	//Work out if the vehicle is in the air.
 	gIsVehicleInAir = gVehicle4W->getRigidDynamicActor()->isSleeping() ? false : PxVehicleIsInAir(vehicleQueryResults[0]);
+
+	audioUpdate();
+	float curSpeed = gVehicle4W->computeForwardSpeed();
+	float curAccel = gVehicleInputData.getAnalogAccel();
+	
+
+	speedFrameIndex++;
+	if (speedFrameIndex % 15 == 0) {
+		speedFrameIndex = 0;
+		previousSpeed = curSpeed;
+		previousAccel = curAccel;
+	}
+	
+	//std::cout << "Sp: " << slide << " ge: " << std::endl;
+}
+
+void Vehicle::cleanup() {
+	this->audioEngine->killSource(&this->accelerateFromRest);
+	this->audioEngine->killSource(&this->accelerateFromMotion);
+	this->audioEngine->killSource(&this->boostStart);
+	this->audioEngine->killSource(&this->boostMax);
+	this->audioEngine->killSource(&this->maxSpeed);
+}
+
+void Vehicle::audioUpdate() {
+	PxVec3 position = GetPosition();
+
+	this->accelerateFromRest.updateSourcePosition(position.x, position.y, position.z);
+	this->accelerateFromMotion.updateSourcePosition(position.x, position.y, position.z);
+	this->boostStart.updateSourcePosition(position.x, position.y, position.z);
+	this->boostMax.updateSourcePosition(position.x, position.y, position.z);
+	this->maxSpeed.updateSourcePosition(position.x, position.y, position.z);
+}
+
+void Vehicle::handleSound() {
+	float curSpeed = std::abs(gVehicle4W->computeForwardSpeed());
+	float slideSpeed = std::abs(gVehicle4W->computeSidewaysSpeed());
+	PxU32 curGear = gVehicle4W->mDriveDynData.getCurrentGear();
+	float curAccel = gVehicleInputData.getAnalogAccel();
+	float curBrake = gVehicleInputData.getAnalogBrake();
+
+	float speedSoundBoundary = 0.3f;
+	float slideSpeedBoundary = 1.3f;
+	if (curSpeed <= speedSoundBoundary && slideSpeed <= slideSpeedBoundary) {
+		this->accelerateFromRest.stopSound();
+		this->accelerateFromMotion.stopSound();
+		this->boostStart.stopSound();
+		this->boostMax.stopSound();
+		this->maxSpeed.stopSound();
+	}
+	else if (curSpeed <= speedSoundBoundary && slideSpeed > slideSpeedBoundary) {
+		this->accelerateFromRest.stopSound();
+		this->accelerateFromMotion.stopSound();
+		this->boostStart.stopSound();
+		this->boostMax.stopSound();
+		if (!this->maxSpeed.isSoundPlaying()) {
+			this->maxSpeed.playSound();
+		}
+	}
+	else {
+		if (curBrake > 0.f) {
+			this->accelerateFromRest.stopSound();
+			this->accelerateFromMotion.stopSound();
+			if (curSpeed > speedSoundBoundary) {
+				if (!this->maxSpeed.isSoundPlaying()) {
+					this->maxSpeed.playSound();
+				}
+			}
+			else {
+				this->maxSpeed.stopSound();
+			}
+		}
+		else {
+			if (curAccel > 0.1f) {
+				if (curAccel > previousAccel) {
+					if (curGear == PxVehicleGearsData::eFIRST) {
+						this->maxSpeed.stopSound();
+						this->accelerateFromMotion.stopSound();
+						if (!this->accelerateFromRest.isSoundPlaying()) {
+							this->accelerateFromRest.playSound();
+						}
+					}
+					else {
+						this->maxSpeed.stopSound();
+						this->accelerateFromRest.stopSound();
+						if (!this->accelerateFromMotion.isSoundPlaying()) {
+							this->accelerateFromMotion.playSound();
+						}
+					}
+				}
+				else {
+					if (curGear == PxVehicleGearsData::eFIRST) {
+						this->maxSpeed.stopSound();
+						this->accelerateFromMotion.stopSound();
+						if (!this->accelerateFromRest.isSoundPlaying()) {
+							this->accelerateFromRest.playSound();
+						}
+					}
+					else if ((previousSpeed - 1.f) > curSpeed && slideSpeed <= slideSpeedBoundary) {
+						this->maxSpeed.stopSound();
+						this->accelerateFromRest.stopSound();
+						if (!this->accelerateFromMotion.isSoundPlaying()) {
+							this->accelerateFromMotion.playSound();
+						}
+					}
+					else {
+						if (!this->accelerateFromMotion.isSoundPlaying() && (!this->accelerateFromRest.isSoundPlaying())) {
+							if (!this->maxSpeed.isSoundPlaying()) {
+								this->maxSpeed.playSound();
+							}
+						}
+					}
+				}
+				
+			}
+			else {
+				this->accelerateFromRest.stopSound();
+				this->accelerateFromMotion.stopSound();
+				if (curSpeed > speedSoundBoundary) {
+					if (!this->maxSpeed.isSoundPlaying()) {
+						this->maxSpeed.playSound();
+					}
+				}
+				else {
+					this->maxSpeed.stopSound();
+				}
+			}
+		}
+	}
 }
 
 //called by PhysicsEngine. Parameters are disgusting I know, but sometimes it must be ugly to work
@@ -115,7 +244,23 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 
 }
 
+void Vehicle::initVehicleAudio(AudioEngine* engine) {
+	this->audioEngine = engine;
+	this->accelerateFromRest = audioEngine->createBoomBox(audioConstants::SOUND_FILE_ACCEL_REST);
+	this->accelerateFromMotion = audioEngine->createBoomBox(audioConstants::SOUND_FILE_ACCEL_MOTION);
+	this->boostStart = audioEngine->createBoomBox(audioConstants::SOUND_FILE_BOOST_START);
+	this->boostMax = audioEngine->createBoomBox(audioConstants::SOUND_FILE_BOOST_MAX);
+	this->maxSpeed = audioEngine->createBoomBox(audioConstants::SOUND_FILE_SPEED_MAX);
 
+	float initialSoundVolume = 6.3f;
+
+	this->accelerateFromRest.setVolume(initialSoundVolume);
+	this->accelerateFromMotion.setVolume(initialSoundVolume);
+	this->boostStart.setVolume(initialSoundVolume);
+	this->boostMax.setVolume(initialSoundVolume);
+	this->maxSpeed.setVolume(initialSoundVolume);
+	
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 VehicleDesc Vehicle::initVehicleDesc(PxMaterial* gMaterial)	//pass in gMaterial from PhysicsEngine
@@ -173,23 +318,33 @@ void Vehicle::cleanupPhysics(PxDefaultAllocator gAllocator) {
 
 //this should go with the vehicle class
 void Vehicle::gearShift(float curSpeed) {
+	PxU32 curGear = gVehicle4W->mDriveDynData.getCurrentGear();
 	if (curSpeed <= 10) {
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
+		if (curGear != PxVehicleGearsData::eFIRST) {
+			gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
+		}
 	}
 	else if (curSpeed <= 17) {
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eSECOND);
+		if (curGear != PxVehicleGearsData::eSECOND) {
+			gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eSECOND);
+		}
 	}
 	else if (curSpeed <= 25) {
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eTHIRD);
+		if (curGear != PxVehicleGearsData::eTHIRD) {
+			gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eTHIRD);
+		}
 	}
 	else if (curSpeed <= 34) {
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFOURTH);
+		if (curGear != PxVehicleGearsData::eFOURTH) {
+			gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFOURTH);
+		}
 	}
 	else {
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIFTH);
+		if (curGear != PxVehicleGearsData::eFIFTH) {
+			gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIFTH);
+		}
 	}
 }
-
 
 void Vehicle::startHandbrakeTurnLeftMode(float magnitude)
 {
@@ -228,22 +383,29 @@ void Vehicle::releaseAllControls()
 //go forwards a little
 void Vehicle::forwards(float magnitude)
 {
-	gearShift(gVehicle4W->computeForwardSpeed());
+	float curSpeed = gVehicle4W->computeForwardSpeed();
+	gearShift(curSpeed);
 	gVehicleInputData.setAnalogBrake(0.f);
 	gVehicleInputData.setAnalogAccel(magnitude);
+	handleSound();
 }
 
 void Vehicle::reverse(float magnitude)
 {
 	float curSpeed = gVehicle4W->computeForwardSpeed();
 	if (curSpeed > 0.f) {
+		gearShift(curSpeed);
 		gVehicleInputData.setAnalogBrake(magnitude);
 	}
 	else {
 		gVehicleInputData.setAnalogBrake(0.f);
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
+		if (gVehicle4W->mDriveDynData.getCurrentGear() != PxVehicleGearsData::eREVERSE) {
+			gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eREVERSE);
+		}
+		
 		gVehicleInputData.setAnalogAccel(magnitude);
 	}
+	handleSound();
 }
 
 void Vehicle::turn(float magnitude) {
@@ -256,6 +418,11 @@ PxVec3 Vehicle::GetPosition()
 {
 	PxVec3 position = gVehicle4W->getRigidDynamicActor()->getGlobalPose().p;
 	return position;
+}
+
+physx::PxTransform Vehicle::GetTransform()
+{
+	return gVehicle4W->getRigidDynamicActor()->getGlobalPose();
 }
 
 float Vehicle::GetRotationAngle()
