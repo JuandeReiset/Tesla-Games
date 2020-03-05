@@ -103,7 +103,7 @@ Texture shadowTexture;
 Material shinyMaterial;
 Material dullMaterial;
 
-PhysicsEngine physEng;
+PhysicsEngine* physEng;
 
 Model TeslaCar;
 Model racetrack;
@@ -210,82 +210,82 @@ void parseControllerInput(Controller* controller)
 
 	//Is button Pressed demo
 	if (controller->isButtonPressed(XButtons.A)) {
-		std::cout << controller->getIndex() << " " <<"A PRESSED" << std::endl;
+		//std::cout << controller->getIndex() << " " <<"A PRESSED" << std::endl;
 	}
 	if (controller->isButtonPressed(XButtons.X)) {
-		std::cout << controller->getIndex() << " " << "X PRESSED" << std::endl;
+		//std::cout << controller->getIndex() << " " << "X PRESSED" << std::endl;
 	}
 	
 	//Is button down demo (more useful IMO)
 	if (controller->isButtonDown(XButtons.Y)) {
-		std::cout << controller->getIndex() << " " << "Y PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "Y PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.B)) {
-		std::cout << controller->getIndex() << " " << "B PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "B PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.L_Shoulder)) {
-		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
 		bullet_shot = true; //Allows for bullets to be rendered
 		bullet_sound_played = false;
 		
 
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
-		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
 		bullet_shot= true; // Alllows for bullets to be rendered
 		bullet_sound_played = false;
 		
 
 	}
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
-		std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.DPad_Down)) {
-		std::cout << controller->getIndex() << " " << "D-Pad Down PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "D-Pad Down PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.DPad_Right)) {
-		std::cout << controller->getIndex() << " " << "D-Pad Right PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "D-Pad Right PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.DPad_Left)) {
-		std::cout << controller->getIndex() << " " << "D-Pad Left PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "D-Pad Left PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.Start)) {
-		std::cout << controller->getIndex() << " " << "Start PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "Start PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.Back)) {
-		std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.Back)) {
-		std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.L_Thumbstick)) {
-		std::cout << controller->getIndex() << " " << "L3 PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "L3 PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.R_Thumbstick)) {
-		std::cout << controller->getIndex() << " " << "R3 PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "R3 PRESSED and HELD" << std::endl;
 	}
 
 	//Sticks and triggers
 	if (!controller->LStick_InDeadzone()) {
 		//physEng.turn(controller->leftStick_X());
 		float value = controller->leftStick_X();
-		physEng.player->turn(value);
+		physEng->player->turn(value);
 	}
 	else {
-		physEng.player->turn(0.f);
+		physEng->player->turn(0.f);
 	}
 
 	if (controller->rightTrigger() > 0.0 || controller->leftTrigger() > 0.0) {
 		if (controller->rightTrigger() > 0.0) {
-			physEng.player->forwards(controller->rightTrigger());
+			physEng->player->forwards(controller->rightTrigger());
 		}
 		if (controller->leftTrigger() > 0.0) {
-			physEng.player->reverse(controller->leftTrigger());
+			physEng->player->reverse(controller->leftTrigger());
 		}
 	}
 	else if (controller->rightTrigger() == 0.0 && controller->leftTrigger() == 0.0) {
-		physEng.player->reverse(0.0f);
-		physEng.player->forwards(0.0f);
+		physEng->player->reverse(0.0f);
+		physEng->player->forwards(0.0f);
 	}
 	
 
@@ -302,13 +302,16 @@ int main()
 	HUDcreator hud;
 	hud.load();
 
+	physEng = new PhysicsEngine();
+
 	Renderer r = Renderer(mainWindow, camera);
 
 	Game mainGame = Game(r);
 	Object* car = new Vehicle(1);
 	Object* car2 = new Vehicle(2);
 	Object* bullet = new DamagingObject(20, 1);
-	   
+
+
 	//need a model for each ai vehicle
 
 	mainGame.AddObject(car);
@@ -428,7 +431,7 @@ int main()
 	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TURRET_FIRE);
 
 	
-	physEng.initAudioForVehicles(&audioSystem);
+	physEng->initAudioForVehicles(&audioSystem);
 	camera.initializeAudio(&audioSystem);
 
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
@@ -452,8 +455,8 @@ int main()
 	//End of audio system setup/demo
 
 	// Creating an enemy vehicle 
-	physEng.addEnemyVehicle(6, 5, 0);
-	AIDrivingComponent aiDriving = AIDrivingComponent(physEng.enemyVehicles[0]);
+	physEng->addEnemyVehicle(6, 5, 0);
+	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
 	aiDriving.AddDrivingTarget(25, 30);
 	aiDriving.AddDrivingTarget(160, 40);
 	aiDriving.AddDrivingTarget(215, 25);
@@ -463,8 +466,8 @@ int main()
 	aiDriving.AddDrivingTarget(-80, 45);
 	aiDriving.AddDrivingTarget(0, 0);
 
-	physEng.addEnemyVehicle(15, 5, 0);
-	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng.enemyVehicles[1]);
+	physEng->addEnemyVehicle(15, 5, 0);
+	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
 	aiDriving2.AddDrivingTarget(45, 40);
 	aiDriving2.AddDrivingTarget(215, -70);
 	aiDriving2.AddDrivingTarget(-90, -75);
@@ -474,9 +477,9 @@ int main()
 	camera.setFront(front.x, front.y, front.z);
 	while (!mainWindow.getShouldClose())
 	{
-		physEng.stepPhysics();
+		physEng->stepPhysics();
 
-		const physx::PxVehicleDrive4W* vehicle = physEng.player->gVehicle4W;	//get vehicle
+		const physx::PxVehicleDrive4W* vehicle = physEng->player->gVehicle4W;	//get vehicle
 		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
 		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
 		physx::PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
@@ -521,7 +524,7 @@ int main()
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
-		physx::PxVec3 carPos = physEng.player->GetPosition();	//position of TeslaCar
+		physx::PxVec3 carPos = physEng->player->GetPosition();	//position of TeslaCar
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
@@ -534,6 +537,25 @@ int main()
 		// Draw pyramid one
 		glm::mat4 model = glm::mat4(1.0f);
 
+
+		//render all pickup boxes
+		if (!physEng->pickupBoxes.empty()) {
+			float width, height, depth;
+			for (int i = 0; i < physEng->pickupBoxes.size(); i++) {
+				physx::PxVec3 wallPos = physEng->pickupBoxes.at(i)->actor->getGlobalPose().p;
+				glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, wallp);
+				//Consider making the pickup boxes a hardcoded size and hardcoding the 
+				//trigger volumes to be the same size
+				model = glm::scale(model, glm::vec3(1.1f, 0.3f, 0.4f));	
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+				boxTest.RenderModel();
+			}
+		}
+		
 		//render box
 		//get position of actual wall
 		physx::PxVec3 wallPos = physEng.GetBoxPos();
@@ -558,7 +580,7 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		racetrack.RenderModel();
 
-		///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
 
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
@@ -594,9 +616,9 @@ int main()
 		
 		//Enemy CARS rendering
 		//there is probably a much better way of rendering the other enemy cars, but this works for now
-		if (!physEng.enemyVehicles.empty()) {
-			for (int i = 0; i < physEng.enemyVehicles.size(); i++) {
-				Vehicle* v = physEng.enemyVehicles.at(i);
+		if (!physEng->enemyVehicles.empty()) {
+			for (int i = 0; i < physEng->enemyVehicles.size(); i++) {
+				Vehicle* v = physEng->enemyVehicles.at(i);
 				const physx::PxVehicleDrive4W* enemyV = v->gVehicle4W;	//get vehicle
 				const physx::PxRigidDynamic* enemyvDynamic = enemyV->getRigidDynamicActor();
 				physx::PxQuat enemyvehicleQuaternion = enemyvDynamic->getGlobalPose().q;
@@ -710,9 +732,9 @@ int main()
 			ImGui::Text("Driving mode and Position");
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng.getModeType(), carPos.x, carPos.y, carPos.z);
-			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng.getModeType(), vehicleQuaternion.x, vehicleQuaternion, vehicleQuaternion.z);
-			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng.getModeType(), v_dir.x, v_dir.y, v_dir.z);
+			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
+			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), vehicleQuaternion.x, vehicleQuaternion, vehicleQuaternion.z);
+			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
 
 			ImGui::End();
 		}

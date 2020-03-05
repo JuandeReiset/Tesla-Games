@@ -279,6 +279,7 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	PxTransform startTransform(PxVec3(0, (vehicleDesc.chassisDims.y * 0.5f + vehicleDesc.wheelRadius + 1.0f), 0), PxQuat(PxIdentity));
 	startTransform.p = position;	//dear lord I hope this works
 	actor = gVehicle4W->getRigidDynamicActor();	//set vehicle dynamic to the PhysxObject actor
+	actor->setName("vehicle");
 	gVehicle4W->getRigidDynamicActor()->setGlobalPose(startTransform);
 	gScene->addActor(*gVehicle4W->getRigidDynamicActor());
 

@@ -36,6 +36,7 @@ namespace snippetvehicle
 
 using namespace physx;
 
+
 PxFilterFlags VehicleFilterShader
 (PxFilterObjectAttributes attributes0, PxFilterData filterData0, 
  PxFilterObjectAttributes attributes1, PxFilterData filterData1,
@@ -45,6 +46,16 @@ PxFilterFlags VehicleFilterShader
 	PX_UNUSED(attributes1);
 	PX_UNUSED(constantBlock);
 	PX_UNUSED(constantBlockSize);
+
+	//allows the trigger volume to actually work
+	//if either attribute is a trigger, do default trigger behaviour, send message to onTrigger
+	if ((PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1)))
+	{
+		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+		return PxFilterFlags();
+	} 
+
+
 
 	if( (0 == (filterData0.word0 & filterData1.word1)) && (0 == (filterData1.word0 & filterData0.word1)) )
 		return PxFilterFlag::eSUPPRESS;

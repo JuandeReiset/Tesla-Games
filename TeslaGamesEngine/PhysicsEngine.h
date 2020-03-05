@@ -1,6 +1,9 @@
 #pragma once
 #include <memory>
 #include "Vehicle.h"
+#include "LapMarker.h"
+#include "PickupBox.h"
+#include "ColliderCallback.h"
 #include <vector>
 #include "PhysX/include/PxPhysicsAPI.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleCreate.h"
@@ -10,11 +13,19 @@
 #include "PhysX/vehicle4W/snippetcommon/SnippetPVD.h"
 #include "PhysX/include/vehicle/PxVehicleUtil.h"
 #include "PhysX/include/snippetutils/SnippetUtils.h"
+#include "../include/PhysX/PxSimulationEventCallback.h"
+#include <string>
 #include "audioEngine.h"
 
 class PhysicsEngine
 {
 public:
+	//super hacky im sorry
+	const std::string VEHICLE = "vehicle";
+	const std::string PICKUP = "pickup";
+	const std::string LAPMARKER = "lapmarker";
+	const std::string HAZARD = "hazard";
+
 	PhysicsEngine();
 	void initAudioForVehicles(AudioEngine * audio);
 	void addEnemyVehicle(float x, float y, float z);	//add enemy vehicle at position (x,y,z)
@@ -23,12 +34,22 @@ public:
 	void stepPhysics();
 	int modeType = -1;
 	int getModeType();
-	void gearShift(float curSpeed);
+
 	physx::PxRigidStatic* sphereActor = NULL;
 	physx::PxRigidStatic* wallActor = NULL;
-	//std::unique_ptr<Vehicle> player;
+
 	Vehicle* player;	//the player vehicle
 	std::vector<Vehicle*> enemyVehicles;	//the AI vehicles
+	std::vector<LapMarker*> lapmarkers;		//the lap markers
+	std::vector<PickupBox*> pickupBoxes;	//the pickup boxes
+
+	PxRigidActor* testActor;
+
+	ColliderCallback* colliderCallback;
+
+	void createPickupTriggerVolume(float x, float y, float z, float width, float height, float depth);
+	void createLapMarkerTriggerVolume(float x, float y, float z, float width, float height, float depth);
+	void createHazardTriggerVolume(float x, float y, float z, float width, float height, float depth);
 
 	void update_dir_render4Vehicle(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z);
 

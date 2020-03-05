@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PhysX/include/PxSimulationEventCallback.h"
 #include "HealthComponent.h"
 #include "ShootComp.h"
 #include "Global.h"
@@ -64,6 +65,8 @@ public:
 
 
 	PxRigidDynamic* actor;
+
+	bool collidingWithVolume = false;
 
 	//physx vehicle stuff
 	physx::PxVehicleDrive4W* gVehicle4W = NULL;
