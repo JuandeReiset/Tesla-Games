@@ -2,24 +2,11 @@
 #include <ctype.h>
 #include <iostream>
 
-#include "../include/PhysX/PxPhysicsAPI.h"
-
-
-#include "../include/PhysX/vehicle/PxVehicleUtil.h"
-#include "../TeslaGamesEngine/snippetvehiclecommon/SnippetVehicleSceneQuery.h"
-#include "../TeslaGamesEngine/snippetvehiclecommon/SnippetVehicleFilterShader.h"
-#include "../TeslaGamesEngine/snippetvehiclecommon/SnippetVehicleTireFriction.h"
-#include "../TeslaGamesEngine/snippetvehiclecommon/SnippetVehicleCreate.h"
-
 #include "../TeslaGamesEngine/snippetcommon/SnippetPrint.h"
-#include "../TeslaGamesEngine/snippetcommon/SnippetPVD.h"
-#include "../TeslaGamesEngine/snippetutils/SnippetUtils.h"
 
 
 using namespace physx;
 using namespace snippetvehicle;
-
-
 
 PhysicsEngine::PhysicsEngine() {
 	std::cout << "\nGOT TO PHYSENGG CONSTRUCTOR\n";
@@ -30,20 +17,19 @@ PhysicsEngine::PhysicsEngine() {
 
 
 	//set scene
-	sceneDesc = new PxSceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc->gravity = PxVec3(0.0f, -9.81f, 0.0f);
+	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 
-	//cpu worker thread setup and add to sceneDesc
 	PxU32 numWorkers = 1;
 	gDispatcher = PxDefaultCpuDispatcherCreate(numWorkers);
-	sceneDesc->cpuDispatcher = gDispatcher;
-	sceneDesc->filterShader = VehicleFilterShader;
+	sceneDesc.cpuDispatcher = gDispatcher;
+	sceneDesc.filterShader = VehicleFilterShader;
 
 	//creates the collider event handler needed for trigger volumes and adds to scene
 	colliderCallback = new ColliderCallback();
-	sceneDesc->simulationEventCallback = colliderCallback;
+	sceneDesc.simulationEventCallback = colliderCallback;
 
-	gScene = gPhysics->createScene(*sceneDesc);
+	gScene = gPhysics->createScene(sceneDesc);
 
 	PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
 	if (pvdClient)
@@ -67,7 +53,7 @@ PhysicsEngine::PhysicsEngine() {
 	wallActor->attachShape(*boxwall);
 	//gScene->addActor(*wallActor);
 
-	createTriggerVolume(0, 6.f, 0);
+	createTriggerVolume(0, 3.f, 0);
 
 	//Create a plane to drive on (once we get track cooking working we can remove this, or have this as a safeguard just in case)
 	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
@@ -76,16 +62,6 @@ PhysicsEngine::PhysicsEngine() {
 
 	
 }
-
-/*
-Make class that extends xsimeventcalback
-set simevent callback to instance of the above in the gScene
-
-
-
-
-*/
-
 
 void PhysicsEngine::addEnemyVehicle(float x, float y, float z)
 {
@@ -125,6 +101,22 @@ int PhysicsEngine::getModeType()
 //creates a trigger colume at point (x,y,z) and adds it to the scene
 void PhysicsEngine::createTriggerVolume(float x, float y, float z)
 {
+	PxBoxGeometry geometry(PxVec3(5.0f,5.0f,5.0f));
+	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	gScene->addActor(*actor);
+
+	testActor = actor;
+
+	/*
 	PxBoxGeometry geometry(5.f, 5.f, 5.f);
 	PxTransform transform(PxVec3(x,y,z));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
@@ -139,7 +131,15 @@ void PhysicsEngine::createTriggerVolume(float x, float y, float z)
 	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
 	gScene->addActor(*actor);
-	std::cout << "\nADDED ACTOR TO SCENE\n";
+
+	*/
+	std::cout << "\nADDED ACTOR TO SCENE\n\n";
+	std::cout << "\nACTOR X POSITION: " << actor->getGlobalPose().p.x;
+	std::cout << "\nSHAPE X POSITION: " << shape->getLocalPose().p.x;
+	std::cout << "\n\nACTOR Y POSITION: " << actor->getGlobalPose().p.y;
+	std::cout << "\nSHAPE Y POSITION: " << shape->getLocalPose().p.y;
+	std::cout << "\n\nACTOR Z POSITION: " << actor->getGlobalPose().p.z;
+	std::cout << "\nSHAPE Z POSITION: " << shape->getLocalPose().p.z;
 }
 
 
@@ -169,7 +169,5 @@ void PhysicsEngine::cleanupPhysics()
 		PX_RELEASE(transport);
 	}
 	PX_RELEASE(gFoundation);
-
-	printf("SnippetVehicle4W done.\n");
 }
 

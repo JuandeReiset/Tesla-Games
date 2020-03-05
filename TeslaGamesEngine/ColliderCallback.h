@@ -1,5 +1,6 @@
 #pragma once
 #include "../include/PhysX/PxSimulationEventCallback.h"
+#include "../include/PhysX/PxPhysicsAPI.h"
 
 using namespace physx;
 

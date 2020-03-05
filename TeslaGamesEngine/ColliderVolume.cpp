@@ -9,14 +9,7 @@ ColliderVolume::ColliderVolume(PxPhysics* gPhysics, float x, float y, float z)
 	triggerActor = gPhysics->createRigidStatic(PxTransform(PxVec3(x, y, z)));
 
 	PxShape* testShape;
-	/*
-	to define size:
-	physeng
 
-
-
-
-	*/
 
 	//testShape->setGeometry(PxBoxGeometry(PxVec3(2, 2, 2)));
 	triggerActor->getShapes(&testShape, 1);

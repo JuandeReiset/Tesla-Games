@@ -97,7 +97,7 @@ Texture shadowTexture;
 Material shinyMaterial;
 Material dullMaterial;
 
-PhysicsEngine physEng;
+PhysicsEngine* physEng;
 
 Model TeslaCar;
 Model racetrack;
@@ -337,19 +337,19 @@ void parseControllerInput(Controller* controller)
 	if (!controller->LStick_InDeadzone()) {
 		//physEng.turn(controller->leftStick_X());
 		float value = controller->leftStick_X();
-		physEng.player->turn(value);
+		physEng->player->turn(value);
 	}
 	else {
-		physEng.player->turn(0.f);
+		physEng->player->turn(0.f);
 	}
 
 	if (!controller->RStick_InDeadzone()) {
 	}
 	if (controller->rightTrigger() > 0.0) {
-		physEng.player->forwards(controller->rightTrigger());
+		physEng->player->forwards(controller->rightTrigger());
 	}
 	if (controller->leftTrigger() > 0.0) {
-		physEng.player->reverse(controller->leftTrigger());
+		physEng->player->reverse(controller->leftTrigger());
 	}
 	
 
@@ -365,6 +365,8 @@ int main()
 
 	HUDcreator hud;
 	hud.load();
+
+	physEng = new PhysicsEngine();
 
 	Renderer r = Renderer(mainWindow, camera);
 
@@ -515,9 +517,9 @@ int main()
 	camera.setFront(front.x, front.y, front.z);
 	while (!mainWindow.getShouldClose())
 	{
-		physEng.stepPhysics();
+		physEng->stepPhysics();
 
-		const physx::PxVehicleDrive4W* vehicle = physEng.player->gVehicle4W;	//get vehicle
+		const physx::PxVehicleDrive4W* vehicle = physEng->player->gVehicle4W;	//get vehicle
 		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
 		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
 		physx::PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
@@ -561,7 +563,7 @@ int main()
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
-		physx::PxVec3 carPos = physEng.player->GetPosition();	//position of TeslaCar
+		physx::PxVec3 carPos = physEng->player->GetPosition();	//position of TeslaCar
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
@@ -601,7 +603,7 @@ int main()
 
 		//render box
 		//get position of actual wall
-		physx::PxVec3 wallPos = physEng.GetBoxPos();
+		physx::PxVec3 wallPos = physEng->testActor->getGlobalPose().p;
 		glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
 
 		model = glm::mat4(1.0f);
@@ -689,9 +691,9 @@ int main()
 		TeslaCar.RenderModel();
 
 		//there is probably a much better way of rendering the other enemy cars, but this works for now
-		if (!physEng.enemyVehicles.empty()) {
-			for (int i = 0; i < physEng.enemyVehicles.size(); i++) {
-				Vehicle* v = physEng.enemyVehicles.at(i);
+		if (!physEng->enemyVehicles.empty()) {
+			for (int i = 0; i < physEng->enemyVehicles.size(); i++) {
+				Vehicle* v = physEng->enemyVehicles.at(i);
 				const physx::PxVehicleDrive4W* enemyV = v->gVehicle4W;	//get vehicle
 				const physx::PxRigidDynamic* enemyvDynamic = enemyV->getRigidDynamicActor();
 				physx::PxQuat enemyvehicleQuaternion = enemyvDynamic->getGlobalPose().q;
@@ -822,9 +824,9 @@ int main()
 			ImGui::Text("Driving mode and Position");
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng.getModeType(), carPos.x, carPos.y, carPos.z);
-			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng.getModeType(), vehicleQuaternion.x, vehicleQuaternion, vehicleQuaternion.z);
-			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng.getModeType(), v_dir.x, v_dir.y, v_dir.z);
+			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
+			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), vehicleQuaternion.x, vehicleQuaternion, vehicleQuaternion.z);
+			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
 
 			ImGui::End();
 		}

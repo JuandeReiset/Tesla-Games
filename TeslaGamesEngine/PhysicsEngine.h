@@ -28,11 +28,14 @@ public:
 
 	physx::PxRigidStatic* sphereActor = NULL;
 	physx::PxRigidStatic* wallActor = NULL;
-	//std::unique_ptr<Vehicle> player;
+
 	Vehicle* player;	//the player vehicle
 	std::vector<Vehicle*> enemyVehicles;	//the AI vehicles
+
 	//one collider for now
 	ColliderVolume* triggerVol;
+
+	PxRigidActor* testActor;
 
 	ColliderCallback* colliderCallback;
 
@@ -49,7 +52,6 @@ private:
 	physx::PxPhysics* gPhysics = NULL;
 	physx::PxDefaultCpuDispatcher* gDispatcher = NULL;
 	physx::PxScene* gScene = NULL;
-	physx::PxSceneDesc* sceneDesc = NULL;
 	physx::PxMaterial* gMaterial = NULL;
 	physx::PxCudaContextManager* gCudaContextManager = NULL;
 	physx::PxRigidDynamic* ball = NULL;
