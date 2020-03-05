@@ -647,12 +647,19 @@ int main()
 		//update camera
 		//now distance and other stuff are inside camera class
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
-
-		if (player1.RStick_InDeadzone()) {
-			camera.stickControl(0.f, 0.f, vehiclePosition, dir);
+		glm::vec3 dirToUse;
+		if(player1.isButtonPressed(XButtons.Y)) {
+			dirToUse = dir * -1.f;
 		}
 		else {
-			camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), vehiclePosition, dir);
+			dirToUse = dir;
+		}
+
+		if (player1.RStick_InDeadzone()) {
+			camera.stickControl(0.f, 0.f, vehiclePosition, dirToUse);
+		}
+		else {
+			camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), vehiclePosition, dirToUse);
 		}
 		
 		//end camera stuff
