@@ -428,7 +428,6 @@ int main()
 	AudioEngine audioSystem = AudioEngine();
 	AudioBoomBox mainMenuMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
 	AudioBoomBox raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
-	AudioBoomBox audioObject3 = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TURRET_FIRE);
 
 	
 	physEng->initAudioForVehicles(&audioSystem);
@@ -585,9 +584,6 @@ int main()
 			if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder))) {
 				//payer1->shoot(vehiclePosition,uniformModel,uniformSpecularIntensity,uniformShininess,Direction.x,Direction.y,Direction.z);
 				ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
-
-				audioObject3.playSound();
-				bullet_sound_played = true; //Stop once its played once
 				//ha->SetHealth(0);// This hear will prevent bullet and car from rendering
 			 }
 			ba->renderAllBullets();

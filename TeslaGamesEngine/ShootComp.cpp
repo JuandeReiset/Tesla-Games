@@ -15,6 +15,14 @@ ShootComp::ShootComp() {
 
 	shinyMaterial = Material(4.0f, 256);
 }
+void ShootComp::initShootCompAudio(AudioEngine* engine)
+{
+	this->audioEngine = engine;
+	this->shootSound = audioEngine->createBoomBox(audioConstants::SOUND_FILE_TURRET_FIRE);
+
+	float initialSoundVolume = 6.3f;
+	this->shootSound.setVolume(initialSoundVolume);
+}
 /*
 bool ShootComp::isDead() {
 	updateTime();
@@ -75,6 +83,10 @@ void ShootComp::addBullet_toList(GLuint uniModel, GLuint uniSpecularIntensity, G
 void ShootComp::addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z) {
 
 	fire();
+	if (!this->shootSound.isSoundPlaying()) {
+		std::cout << "play sound" << std::endl;
+		this->shootSound.playSound();
+	}
 
 	if (is_there_ammo()) {
 		start_position = glm::vec3(carPos.x, carPos.y - 0.2f, carPos.z);
@@ -117,6 +129,11 @@ void ShootComp::renderAllBullets() {
 }
 void ShootComp::updatePosition(glm::vec3 newpos) {
 	start_position = newpos;
+	
+}
+
+void ShootComp::updateAudioPosition(float x, float y, float z) {
+	this->shootSound.updateSourcePosition(x, y, z);
 }
 
 void ShootComp::updateDirection(float x, float y, float z) {
@@ -129,7 +146,6 @@ void ShootComp::fire() {
 	if (ammo > 0) {
 		ammo -= 1;
 	}
-	
 	std::cout << "Bulled fired!  Bullet counter = " << ammo<<"\n";
 }
 

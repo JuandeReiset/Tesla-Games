@@ -158,6 +158,8 @@ void Vehicle::audioUpdate() {
 	this->boostStart.updateSourcePosition(position.x, position.y, position.z);
 	this->boostMax.updateSourcePosition(position.x, position.y, position.z);
 	this->maxSpeed.updateSourcePosition(position.x, position.y, position.z);
+
+	this->turret.updateAudioPosition(position.x, position.y, position.z);
 }
 
 
@@ -298,6 +300,8 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 	this->boostStart = audioEngine->createBoomBox(audioConstants::SOUND_FILE_BOOST_START);
 	this->boostMax = audioEngine->createBoomBox(audioConstants::SOUND_FILE_BOOST_MAX);
 	this->maxSpeed = audioEngine->createBoomBox(audioConstants::SOUND_FILE_SPEED_MAX);
+
+	this->turret.initShootCompAudio(engine);
 
 	float initialSoundVolume = 6.3f;
 

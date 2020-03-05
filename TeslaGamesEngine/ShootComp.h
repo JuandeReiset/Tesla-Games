@@ -10,6 +10,7 @@
 #include "Model.h"
 #include "Material.h"
 #include "Bullet.h"
+#include "AudioEngine.h"
 
 #include <list>
 
@@ -18,8 +19,8 @@ class ShootComp :
 {
 	public:
 		ShootComp();
-	
-
+		
+		void initShootCompAudio(AudioEngine* audioEngine);
 		//model stuff
 
 		//Add an bullet object and required rendering settings to a vector
@@ -30,6 +31,7 @@ class ShootComp :
 
 		//update position of vehicle and direction which it is facing
 		void updatePosition(glm::vec3 newpos);
+		void updateAudioPosition(float x, float y, float z);
 		void updateDirection(float x, float y, float z);
 
 		//not sure how to use this yet
@@ -65,6 +67,8 @@ class ShootComp :
 																	//the position of the caltrops
 		//Model BulletObj;
 		float bullet_speed=0.8f;
+		AudioEngine* audioEngine;
+		AudioBoomBox shootSound;
 		//float shoot_distance_x;
 		//float shoot_distance_z;
 		//glm::mat4 model;
