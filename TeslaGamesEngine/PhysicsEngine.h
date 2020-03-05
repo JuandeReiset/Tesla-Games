@@ -51,6 +51,8 @@ public:
 	void createLapMarkerTriggerVolume(float x, float y, float z, float width, float height, float depth);
 	void createHazardTriggerVolume(float x, float y, float z, float width, float height, float depth);
 
+	void update_dir_render4Vehicle(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z);
+
 
 private:
 	void cleanupPhysics();

@@ -56,7 +56,7 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 			5.0f	//fall rate eANALOG_INPUT_STEER_RIGHT
 		}
 	};
-
+	
 	initVehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, PxVec3(x, y, z));
 }
 Vehicle::Vehicle(int id) : ID(id) {}
@@ -93,8 +93,53 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 		previousSpeed = curSpeed;
 		previousAccel = curAccel;
 	}
+
+	update_turret();
 	
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;
+}
+
+void Vehicle::update_turret() {
+	PxVec3 pxpos = GetPosition();
+	glm::vec3 pos;
+
+	PxQuat vehicleQuaternion = gVehicle4W->getRigidDynamicActor()->getGlobalPose().q;
+	PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
+
+	pos.x = pxpos.x;
+	pos.x = pxpos.y;
+	pos.z = pxpos.z;
+	turret.updatePosition(pos);
+	turret.updateDirection(v_dir.x,v_dir.y,v_dir.z);
+}
+
+void Vehicle::shoot(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z) {
+	PxQuat vehicleQuaternion = gVehicle4W->getRigidDynamicActor()->getGlobalPose().q;
+	PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
+	PxVec3 pxpos = GetPosition();
+	glm::vec3 pos;
+	pos.x = pxpos.x;
+	pos.x = pxpos.y;
+	pos.z = pxpos.z;
+	turret.addBullet_toList(pos, uniModel, uniSpecularIntensity, uniShininess, v_dir.x, v_dir.y, v_dir.z);
+	//turret.createBullet(pos,  uniModel, uniSpecularIntensity,  uniShininess, v_dir.x, v_dir.y, v_dir.z);
+    
+}
+
+void Vehicle::renderBullets() {
+	turret.renderAllBullets();
+}
+
+ShootComp* Vehicle::getShootingComponent() {
+	return &turret;
+}
+
+void Vehicle::update_health() {
+	health.SetHealth(0);
+}
+
+HealthComponent* Vehicle::getHealthComponent() {
+	return &health;
 }
 
 void Vehicle::cleanup() {
@@ -114,6 +159,8 @@ void Vehicle::audioUpdate() {
 	this->boostMax.updateSourcePosition(position.x, position.y, position.z);
 	this->maxSpeed.updateSourcePosition(position.x, position.y, position.z);
 }
+
+
 
 void Vehicle::handleSound() {
 	float curSpeed = std::abs(gVehicle4W->computeForwardSpeed());
@@ -444,7 +491,7 @@ void Vehicle::Tick(float deltaTime) {
 	if (ID == combat.GetTargetID())
 		getDamage(combat.GetDamage());
 
-	if (turret.get_ammo_counter()<=0)
+	if (turret.is_there_ammo())
 		armed = false;
 		
 }
@@ -462,5 +509,6 @@ void Vehicle::getDamage(double damage) {
 
 void Vehicle::firelazer() {
 	turret.fire();
+	health.SetHealth(0);
 }
 
