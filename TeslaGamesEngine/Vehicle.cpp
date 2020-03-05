@@ -397,19 +397,11 @@ void Vehicle::gearShift(float curSpeed) {
 	}
 }
 
-void Vehicle::startHandbrakeTurnLeftMode(float magnitude)
+void Vehicle::handbrakeTurn(float magnitudeBrake, float magnitudeTurn)
 {
-	magnitude = abs(magnitude);
-	gVehicleInputData.setAnalogSteer(-magnitude);
-	gVehicleInputData.setAnalogHandbrake(magnitude);
+	gVehicleInputData.setAnalogSteer(magnitudeTurn);
+	gVehicleInputData.setAnalogHandbrake(magnitudeBrake);
 
-}
-
-void Vehicle::startHandbrakeTurnRightMode(float magnitude)
-{
-	magnitude = abs(magnitude);
-	gVehicleInputData.setAnalogSteer(magnitude);
-	gVehicleInputData.setAnalogHandbrake(magnitude);
 }
 
 void Vehicle::releaseAllControls()

@@ -220,9 +220,20 @@ void parseControllerInput(Controller* controller)
 	if (controller->isButtonDown(XButtons.Y)) {
 		//std::cout << controller->getIndex() << " " << "Y PRESSED and HELD" << std::endl;
 	}
-	if (controller->isButtonDown(XButtons.B)) {
+
+	if (controller->isButtonPressed(XButtons.B)) {
+		if (!controller->LStick_InDeadzone()) {
+			physEng->player->handbrakeTurn(0.9f, controller->leftStick_X());
+		}
+		else {
+			physEng->player->handbrakeTurn(0.9f, 0.f);
+		}
 		//std::cout << controller->getIndex() << " " << "B PRESSED and HELD" << std::endl;
 	}
+	else {
+		physEng->player->handbrakeTurn(0.0f, 0.f);
+	}
+
 	if (controller->isButtonDown(XButtons.L_Shoulder)) {
 		//std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
 		bullet_shot = true; //Allows for bullets to be rendered

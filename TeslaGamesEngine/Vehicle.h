@@ -53,6 +53,8 @@ public:
 
 	void gearShift(float curSpeed);
 
+	void handbrakeTurn(float magnitudeBrake, float magnitudeTurn);
+
 	void handleSound();
 	float previousSpeed = 0.f;
 	float previousAccel = 0.f;
