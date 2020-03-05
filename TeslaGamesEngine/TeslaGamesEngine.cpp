@@ -555,19 +555,6 @@ int main()
 				boxTest.RenderModel();
 			}
 		}
-		
-		//render box
-		//get position of actual wall
-		physx::PxVec3 wallPos = physEng.GetBoxPos();
-		glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, wallp);
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		boxTest.RenderModel();
-
 
 		//////////////////////////////////////////////////////////////////////////
 
@@ -586,8 +573,9 @@ int main()
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
 		/////////////////////////////////////////////////////////////////////////////////
 				//RENDERING BULLLETS AND PLAYING SHOOTING SOUND
-		ShootComp* ba = physEng.player->getShootingComponent();
-		HealthComponent* ha = physEng.player->getHealthComponent();
+
+		ShootComp* ba = physEng->player->getShootingComponent();
+		HealthComponent* ha = physEng->player->getHealthComponent();
 
 		//Vehicle* payer1 = physEng.player;
 		
