@@ -1,7 +1,8 @@
 #pragma once
 #include <memory>
 #include "Vehicle.h"
-#include "ColliderVolume.h"
+#include "LapMarker.h"
+#include "PickupBox.h"
 #include "ColliderCallback.h"
 #include <vector>
 #include "PhysX/include/PxPhysicsAPI.h"
@@ -13,10 +14,17 @@
 #include "PhysX/include/vehicle/PxVehicleUtil.h"
 #include "PhysX/include/snippetutils/SnippetUtils.h"
 #include "../include/PhysX/PxSimulationEventCallback.h"
+#include <string>
 
 class PhysicsEngine
 {
 public:
+	//super hacky im sorry
+	const std::string VEHICLE = "vehicle";
+	const std::string PICKUP = "pickup";
+	const std::string LAPMARKER = "lapmarker";
+	const std::string HAZARD = "hazard";
+
 	PhysicsEngine();
 	void addEnemyVehicle(float x, float y, float z);	//add enemy vehicle at position (x,y,z)
 
@@ -24,22 +32,22 @@ public:
 	void stepPhysics();
 	int modeType = -1;
 	int getModeType();
-	void gearShift(float curSpeed);
 
 	physx::PxRigidStatic* sphereActor = NULL;
 	physx::PxRigidStatic* wallActor = NULL;
 
 	Vehicle* player;	//the player vehicle
 	std::vector<Vehicle*> enemyVehicles;	//the AI vehicles
-
-	//one collider for now
-	ColliderVolume* triggerVol;
+	std::vector<LapMarker*> lapmarkers;		//the lap markers
+	std::vector<PickupBox*> pickupBoxes;	//the pickup boxes
 
 	PxRigidActor* testActor;
 
 	ColliderCallback* colliderCallback;
 
-	void createTriggerVolume(float x, float y, float z);
+	void createPickupTriggerVolume(float x, float y, float z, float width, float height, float depth);
+	void createLapMarkerTriggerVolume(float x, float y, float z, float width, float height, float depth);
+	void createHazardTriggerVolume(float x, float y, float z, float width, float height, float depth);
 
 
 private:

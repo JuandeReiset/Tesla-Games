@@ -54,7 +54,8 @@ PhysicsEngine::PhysicsEngine() {
 	wallActor->attachShape(*boxwall);
 	//gScene->addActor(*wallActor);
 
-	createTriggerVolume(10, 1.f, 0);
+	//createPickupTriggerVolume(0, 0, 0, 2, 2, 2);
+	createPickupTriggerVolume(0, 2, 10, 2, 2, 2);
 
 	//Create a plane to drive on (once we get track cooking working we can remove this, or have this as a safeguard just in case)
 	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
@@ -99,33 +100,56 @@ int PhysicsEngine::getModeType()
 	return modeType;
 }
 
-//creates a trigger colume at point (x,y,z) and adds it to the scene
-void PhysicsEngine::createTriggerVolume(float x, float y, float z)
+
+/*
+NOTE ABOUT THE TRIGGER VOLUMES:
+
+The sizes are kind of wonky and hard to get right, PhysX doesn't let you see them so you have to experiment >:(
+Just play around with the width, height and depth.
+I find the smaller the box, the less duplicate collisions there are, but if your logic can handle duplicate
+collisions that doesnt matter too much.
+
+
+PLEASE PLEASE PLEASE USE THESE FUNCTIONS FOR ADDING TRIGGER VOLUMES! THIS WILL PREVENT LOTS OF PAIN AND SUFFERING!
+
+*/
+
+
+//creates a trigger volume at point (x,y,z) and adds it to the scene
+//this is for pickups
+void PhysicsEngine::createPickupTriggerVolume(float x, float y, float z, float width, float height, float depth)
 {
-	PxBoxGeometry geometry(PxVec3(5.0f,5.0f,5.0f));
+	PickupBox* pickup = new PickupBox();
+
+	PxBoxGeometry geometry(PxVec3(width/2,height/2,depth/2));
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
 	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	pickup->actor = actor;
+	actor->setName(PICKUP.c_str());
 	PxShape* shape;
 	actor->getShapes(&shape, 1);
 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
 	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
-	//shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
 	gScene->addActor(*actor);
+	pickupBoxes.push_back(pickup);
+}
 
-	testActor = actor;
+void PhysicsEngine::createLapMarkerTriggerVolume(float x, float y, float z, float width, float height, float depth)
+{
+	LapMarker* lapMarker = new LapMarker();
 
-	/*
-	PxBoxGeometry geometry(5.f, 5.f, 5.f);
-	PxTransform transform(PxVec3(x,y,z));
+	PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
 	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
-
+	lapMarker->actor = actor;
+	actor->setName(LAPMARKER.c_str());
 	PxShape* shape;
-
 	actor->getShapes(&shape, 1);
 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
 	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
@@ -133,14 +157,25 @@ void PhysicsEngine::createTriggerVolume(float x, float y, float z)
 
 	gScene->addActor(*actor);
 
-	*/
-	std::cout << "\nADDED ACTOR TO SCENE\n\n";
-	std::cout << "\nACTOR X POSITION: " << actor->getGlobalPose().p.x;
-	std::cout << "\nSHAPE X POSITION: " << shape->getLocalPose().p.x;
-	std::cout << "\n\nACTOR Y POSITION: " << actor->getGlobalPose().p.y;
-	std::cout << "\nSHAPE Y POSITION: " << shape->getLocalPose().p.y;
-	std::cout << "\n\nACTOR Z POSITION: " << actor->getGlobalPose().p.z;
-	std::cout << "\nSHAPE Z POSITION: " << shape->getLocalPose().p.z;
+	lapmarkers.push_back(lapMarker);
+}
+
+//not yet fully implemented, need a common hazard object that has a PxRigidActor*
+void PhysicsEngine::createHazardTriggerVolume(float x, float y, float z, float width, float height, float depth)
+{
+	PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	actor->setName(HAZARD.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	gScene->addActor(*actor);
 }
 
 

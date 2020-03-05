@@ -51,9 +51,10 @@
     <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="HUDcreator.cpp" />
     <ClCompile Include="Caltrops.cpp" />
-    <ClCompile Include="ColliderVolume.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="ColliderCallback.cpp" />
+    <ClCompile Include="PickupBox.cpp" />
+    <ClCompile Include="LapMarker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -105,8 +106,13 @@
     <ClInclude Include="HUDcreator.h" />
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="Caltrops.h" />
-    <ClInclude Include="ColliderVolume.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="ColliderCallback.h" />
+    <ClInclude Include="resource1.h" />
+    <ClInclude Include="PickupBox.h" />
+    <ClInclude Include="LapMarker.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TeslaGamesEngine1.rc" />
   </ItemGroup>
 </Project>

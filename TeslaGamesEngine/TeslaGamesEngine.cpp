@@ -278,59 +278,59 @@ void parseControllerInput(Controller* controller)
 
 	//Is button Pressed demo
 	if (controller->isButtonPressed(XButtons.A)) {
-		std::cout << controller->getIndex() << " " <<"A PRESSED" << std::endl;
+		//std::cout << controller->getIndex() << " " <<"A PRESSED" << std::endl;
 	}
 	if (controller->isButtonPressed(XButtons.X)) {
-		std::cout << controller->getIndex() << " " << "X PRESSED" << std::endl;
+		//std::cout << controller->getIndex() << " " << "X PRESSED" << std::endl;
 	}
 	
 	//Is button down demo (more useful IMO)
 	if (controller->isButtonDown(XButtons.Y)) {
-		std::cout << controller->getIndex() << " " << "Y PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "Y PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.B)) {
-		std::cout << controller->getIndex() << " " << "B PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "B PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.L_Shoulder)) {
-		std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
 		bullet_shot = true; //Allows for bullets to be rendered
 		bullet_sound_played = false;
 		current_rotation = car_rotation;
 
 	}
 	if (controller->isButtonDown(XButtons.R_Shoulder)) {
-		std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
 		bullet_shot= true; // Alllows for bullets to be rendered
 		bullet_sound_played = false;
 		current_rotation = car_rotation;
 
 	}
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
-		std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.DPad_Down)) {
-		std::cout << controller->getIndex() << " " << "D-Pad Down PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "D-Pad Down PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.DPad_Right)) {
-		std::cout << controller->getIndex() << " " << "D-Pad Right PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "D-Pad Right PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.DPad_Left)) {
-		std::cout << controller->getIndex() << " " << "D-Pad Left PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "D-Pad Left PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.Start)) {
-		std::cout << controller->getIndex() << " " << "Start PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "Start PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.Back)) {
-		std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.Back)) {
-		std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.L_Thumbstick)) {
-		std::cout << controller->getIndex() << " " << "L3 PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "L3 PRESSED and HELD" << std::endl;
 	}
 	if (controller->isButtonDown(XButtons.R_Thumbstick)) {
-		std::cout << controller->getIndex() << " " << "R3 PRESSED and HELD" << std::endl;
+		//std::cout << controller->getIndex() << " " << "R3 PRESSED and HELD" << std::endl;
 	}
 
 	//Sticks and triggers
@@ -601,17 +601,25 @@ int main()
 		meshList[2]->RenderMesh();
 		*/
 
-		//render box
-		//get position of actual wall
-		physx::PxVec3 wallPos = physEng->testActor->getGlobalPose().p;
-		glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
+//////////////////////////////////////////////////////////////////////////
+		//render all pickup boxes
+		if (!physEng->pickupBoxes.empty()) {
+			float width, height, depth;
+			for (int i = 0; i < physEng->pickupBoxes.size(); i++) {
+				physx::PxVec3 wallPos = physEng->pickupBoxes.at(i)->actor->getGlobalPose().p;
+				glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
 
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, wallp);
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		boxTest.RenderModel();
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, wallp);
+				//Consider making the pickup boxes a hardcoded size and hardcoding the 
+				//trigger volumes to be the same size
+				model = glm::scale(model, glm::vec3(1.1f, 0.3f, 0.4f));	
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+				boxTest.RenderModel();
+			}
+		}
+		
 		
 
 //////////////////////////////////////////////////////////////////////////
@@ -625,7 +633,7 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		racetrack.RenderModel();
 
-		///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
 		
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
