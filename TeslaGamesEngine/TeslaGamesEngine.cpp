@@ -640,24 +640,18 @@ int main()
 		
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
 /////////////////////////////////////////////////////////////////////////////////
-
+		//RENDERING BULLLETS AND PLAYING SHOOTING SOUND
 		ShootComp* ba = physEng.player->getShootingComponent();
 		//Draw bullets after Refactor
 		if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) ) {
-		    
-			//ba->updateDirection(Direction.x,Direction.y,Direction.z);
-			//ba->updatePosition(vehiclePosition);
-			//ba->addBullet_toList(uniformModel, uniformSpecularIntensity, uniformShininess);
+	
 			ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
 			
 			audioObject3.playSound();
 			bullet_sound_played = true; //Stop once its played once
 		}
-		//physEng.player->renderBullets();
-		
 		ba->renderAllBullets();
 		
-	
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

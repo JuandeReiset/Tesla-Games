@@ -36,6 +36,7 @@ private:
 	Model BulletObj;
 	float bullet_speed;
 	float shoot_distance_x;
+	float shoot_distance_y;
 	float shoot_distance_z;
 	glm::mat4 model;															//model matrix
 	
