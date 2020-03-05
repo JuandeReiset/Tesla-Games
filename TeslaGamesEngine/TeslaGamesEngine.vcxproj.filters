@@ -53,6 +53,7 @@
     <ClCompile Include="Caltrops.cpp" />
     <ClCompile Include="ColliderVolume.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="ColliderCallback.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -106,5 +107,6 @@
     <ClInclude Include="Caltrops.h" />
     <ClInclude Include="ColliderVolume.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="ColliderCallback.h" />
   </ItemGroup>
 </Project>

@@ -22,6 +22,7 @@ using namespace snippetvehicle;
 
 
 PhysicsEngine::PhysicsEngine() {
+	std::cout << "\nGOT TO PHYSENGG CONSTRUCTOR\n";
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
 	//set physics
@@ -29,16 +30,21 @@ PhysicsEngine::PhysicsEngine() {
 
 
 	//set scene
-	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+	sceneDesc = new PxSceneDesc(gPhysics->getTolerancesScale());
+	sceneDesc->gravity = PxVec3(0.0f, -9.81f, 0.0f);
 
 	//cpu worker thread setup and add to sceneDesc
 	PxU32 numWorkers = 1;
 	gDispatcher = PxDefaultCpuDispatcherCreate(numWorkers);
-	sceneDesc.cpuDispatcher = gDispatcher;
-	sceneDesc.filterShader = VehicleFilterShader;
+	sceneDesc->cpuDispatcher = gDispatcher;
+	sceneDesc->filterShader = VehicleFilterShader;
 
-	gScene = gPhysics->createScene(sceneDesc);
+	//creates the collider event handler needed for trigger volumes and adds to scene
+	colliderCallback = new ColliderCallback();
+	sceneDesc->simulationEventCallback = colliderCallback;
+
+	gScene = gPhysics->createScene(*sceneDesc);
+
 	PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
 	if (pvdClient)
 	{
@@ -61,12 +67,25 @@ PhysicsEngine::PhysicsEngine() {
 	wallActor->attachShape(*boxwall);
 	//gScene->addActor(*wallActor);
 
+	createTriggerVolume(0, 6.f, 0);
+
 	//Create a plane to drive on (once we get track cooking working we can remove this, or have this as a safeguard just in case)
 	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
 	gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
 	gScene->addActor(*gGroundPlane);
 
+	
 }
+
+/*
+Make class that extends xsimeventcalback
+set simevent callback to instance of the above in the gScene
+
+
+
+
+*/
+
 
 void PhysicsEngine::addEnemyVehicle(float x, float y, float z)
 {
@@ -102,6 +121,27 @@ int PhysicsEngine::getModeType()
 {
 	return modeType;
 }
+
+//creates a trigger colume at point (x,y,z) and adds it to the scene
+void PhysicsEngine::createTriggerVolume(float x, float y, float z)
+{
+	PxBoxGeometry geometry(5.f, 5.f, 5.f);
+	PxTransform transform(PxVec3(x,y,z));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+
+	PxShape* shape;
+
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	gScene->addActor(*actor);
+	std::cout << "\nADDED ACTOR TO SCENE\n";
+}
+
 
 void PhysicsEngine::cleanupPhysics()
 {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PhysX/include/PxSimulationEventCallback.h"
 #include "HealthComponent.h"
 #include "ShootComp.h"
 #include "Global.h"
@@ -27,6 +28,8 @@ public:
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);
 	void initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, PxVec3 position);
+
+
 	//controls
 	void forwards(float magnitude);
 	void reverse(float magnitude);
@@ -39,6 +42,8 @@ public:
 	physx::PxVec3 GetPosition();
 
 	PxRigidDynamic* actor;
+
+	bool collidingWithVolume = false;
 
 	//physx vehicle stuff
 	physx::PxVehicleDrive4W* gVehicle4W = NULL;

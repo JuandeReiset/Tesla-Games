@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 #include "Vehicle.h"
+#include "ColliderVolume.h"
+#include "ColliderCallback.h"
 #include <vector>
 #include "PhysX/include/PxPhysicsAPI.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleCreate.h"
@@ -10,6 +12,7 @@
 #include "PhysX/vehicle4W/snippetcommon/SnippetPVD.h"
 #include "PhysX/include/vehicle/PxVehicleUtil.h"
 #include "PhysX/include/snippetutils/SnippetUtils.h"
+#include "../include/PhysX/PxSimulationEventCallback.h"
 
 class PhysicsEngine
 {
@@ -22,11 +25,18 @@ public:
 	int modeType = -1;
 	int getModeType();
 	void gearShift(float curSpeed);
+
 	physx::PxRigidStatic* sphereActor = NULL;
 	physx::PxRigidStatic* wallActor = NULL;
 	//std::unique_ptr<Vehicle> player;
 	Vehicle* player;	//the player vehicle
 	std::vector<Vehicle*> enemyVehicles;	//the AI vehicles
+	//one collider for now
+	ColliderVolume* triggerVol;
+
+	ColliderCallback* colliderCallback;
+
+	void createTriggerVolume(float x, float y, float z);
 
 
 private:
@@ -39,6 +49,7 @@ private:
 	physx::PxPhysics* gPhysics = NULL;
 	physx::PxDefaultCpuDispatcher* gDispatcher = NULL;
 	physx::PxScene* gScene = NULL;
+	physx::PxSceneDesc* sceneDesc = NULL;
 	physx::PxMaterial* gMaterial = NULL;
 	physx::PxCudaContextManager* gCudaContextManager = NULL;
 	physx::PxRigidDynamic* ball = NULL;

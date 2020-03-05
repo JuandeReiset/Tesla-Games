@@ -372,7 +372,8 @@ int main()
 	Object* car = new Vehicle(1);
 	Object* car2 = new Vehicle(2);
 	Object* bullet = new DamagingObject(20, 1);
-	   
+
+
 	//need a model for each ai vehicle
 
 	mainGame.AddObject(car);
