@@ -49,7 +49,7 @@ void Bullet::renderBullet() {
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(position.x + shoot_distance_x, position.y + 0.6f, position.z + shoot_distance_z));
 
-	model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+	model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
 	
 	
 

@@ -24,7 +24,7 @@ class ShootComp :
 
 		//Add an bullet object and required rendering settings to a vector
 		void addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z);
-		
+		void addBullet_toList(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess);
 		//method to pass all bullet objects to rendering
 		void renderAllBullets();														//render caltrops model
 
@@ -37,6 +37,8 @@ class ShootComp :
 
 		//decrease ammo by 1
 		void fire();
+		// increase armor by 10
+		void recharge();
 
 		//evaluates if there is still ammo in the turret
 		bool is_there_ammo();

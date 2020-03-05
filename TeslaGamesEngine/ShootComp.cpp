@@ -50,12 +50,13 @@ void ShootComp::addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSp
 	
 }
 */
-void ShootComp::addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z) {
+void ShootComp::addBullet_toList(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess) {
 
 	fire();
 
+	/*
 	if (is_there_ammo()) {
-		start_position = glm::vec3(carPos.x, carPos.y + 0.1f, carPos.z);
+		start_position = glm::vec3(carPos.x, carPos.y-0.2f, carPos.z);
 		Direction_x = x;
 		Direction_y = y;
 		Direction_z = z;
@@ -68,6 +69,38 @@ void ShootComp::addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSp
 
 		bulletsList.push_back(tmp_bullet);
 
+	}
+	*/
+}
+void ShootComp::addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z) {
+
+	fire();
+
+	if (is_there_ammo()) {
+		start_position = glm::vec3(carPos.x, carPos.y - 0.2f, carPos.z);
+		Direction_x = x;
+		Direction_y = y;
+		Direction_z = z;
+		uniformModel = uniModel;
+		uniformShininess = uniShininess;
+		uniformSpecularIntensity = uniSpecularIntensity;
+
+	    glm::vec3 start_pos2 =glm::vec3(start_position.x+5.f*Direction_x, start_position.y + 5.f*Direction_y, start_position.z + 5.f*Direction_z);
+		glm::vec3 start_pos3 = glm::vec3(start_pos2.x + 5.f*Direction_x, start_pos2.y + 5.f*Direction_y, start_pos2.z + 5.f*Direction_z);
+
+		Bullet tmp_bullet = Bullet();
+		Bullet tmp_bullet2 = Bullet();
+		Bullet tmp_bullet3 = Bullet();
+		tmp_bullet.createBullet(start_position, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
+
+		tmp_bullet.createBullet(start_position, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
+		tmp_bullet2.createBullet(start_pos2, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
+		tmp_bullet3.createBullet(start_pos3, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
+		std::cout << "All 2 bullets CREATED \n";
+
+		bulletsList.push_back(tmp_bullet);
+		bulletsList.push_back(tmp_bullet2);
+		bulletsList.push_back(tmp_bullet3);
 	}
 
 }
@@ -82,37 +115,13 @@ void ShootComp::renderAllBullets() {
 		}
 	}
 }
-/*
-void ShootComp::renderBullet() {
-	
-	
-
-	
-		shoot_distance_x += Direction_x * bullet_speed;
-		shoot_distance_z += Direction_y * bullet_speed;
-		shoot_distance_z += Direction_z * bullet_speed;
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(start_position.x + shoot_distance_x, start_position.y + 0.6f, start_position.z + shoot_distance_z));
-
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-
-		BulletObj.RenderModel();
-	
-
-	
-}
-*/
 void ShootComp::updatePosition(glm::vec3 newpos) {
 	start_position = newpos;
 }
 
 void ShootComp::updateDirection(float x, float y, float z) {
 	Direction_x = x;
-	Direction_y = y;
+	Direction_y = y-0.3f;
 	Direction_z = z;
 }
 
@@ -124,6 +133,9 @@ void ShootComp::fire() {
 	std::cout << "Bulled fired!  Bullet counter = " << ammo<<"\n";
 }
 
+void ShootComp::recharge() {
+	ammo +=10;
+}
 bool ShootComp::is_there_ammo() {
 	if (ammo > 0) { return true; }
 	else { return false; }

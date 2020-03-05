@@ -640,59 +640,21 @@ int main()
 		
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
 /////////////////////////////////////////////////////////////////////////////////
-		//Draw bullets RAW
-		/*
-		if (bullet_shot) {
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(vehiclePosition.x +shoot_distance_x, vehiclePosition.y+0.5f+shoot_distance_y, vehiclePosition.z+shoot_distance_z));
-			
-			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-			bulletobj.RenderModel();
 
-			//PLAY LASER SOUND
-			if (!bullet_sound_played) {
-				audioObject3.playSound();
-				bullet_sound_played = true; //Stop once its played once
-			}
-		
-			shoot_distance_x += Direction.x *bullet_speed;
-			shoot_distance_z += Direction.z * bullet_speed;
-
-			if (shoot_distance_x > bullet_boundary || shoot_distance_x < -bullet_boundary || shoot_distance_z > bullet_boundary ||  shoot_distance_z < -bullet_boundary) {
-				shoot_distance_x = 0;
-				shoot_distance_y= 0;
-				shoot_distance_z = 0;
-				bullet_shot = false;
-				std::cout <<"LAZER COOLDOWN IS OVER!" << std::endl;
-			}
-			
-		}
-		*/
 		ShootComp* ba = physEng.player->getShootingComponent();
 		//Draw bullets after Refactor
 		if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) ) {
-			//std::unique_ptr<ShootComp> bullet(new ShootComp());//using unique_ptr instead of pointer since we will release memory
-			
-			//ShootComp* ba = physEng.player->getShootingComponent();
-			//ba->createBullet(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess,Direction.x, Direction.y, Direction.z);
-			
-			/*
-			if (ba->is_there_ammo()) {
-				shootList.push_back(ba);
-			}
-		    */
-			//physEng.player->shoot( uniformModel, uniformSpecularIntensity, uniformShininess);
+		    
+			//ba->updateDirection(Direction.x,Direction.y,Direction.z);
+			//ba->updatePosition(vehiclePosition);
+			//ba->addBullet_toList(uniformModel, uniformSpecularIntensity, uniformShininess);
 			ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
 			
-
 			audioObject3.playSound();
 			bullet_sound_played = true; //Stop once its played once
-			
-		    
 		}
-
+		//physEng.player->renderBullets();
+		
 		ba->renderAllBullets();
 		
 	

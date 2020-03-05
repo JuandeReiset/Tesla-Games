@@ -124,8 +124,13 @@ void Vehicle::shoot(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShin
 	pos.x = pxpos.x;
 	pos.x = pxpos.y;
 	pos.z = pxpos.z;
+	turret.addBullet_toList(pos, uniModel, uniSpecularIntensity, uniShininess, v_dir.x, v_dir.y, v_dir.z);
 	//turret.createBullet(pos,  uniModel, uniSpecularIntensity,  uniShininess, v_dir.x, v_dir.y, v_dir.z);
     
+}
+
+void Vehicle::renderBullets() {
+	turret.renderAllBullets();
 }
 
 ShootComp* Vehicle::getShootingComponent() {

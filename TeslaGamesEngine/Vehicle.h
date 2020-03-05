@@ -31,6 +31,7 @@ public:
 	void update(physx::PxF32 timestep, PxScene* gScene);
 	void update_turret();
 	void shoot(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess);
+	void renderBullets();
 	ShootComp* getShootingComponent();
 	void audioUpdate();
 	void initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, PxVec3 position);
