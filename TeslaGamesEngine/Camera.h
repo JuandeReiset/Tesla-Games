@@ -21,7 +21,8 @@ public:
 
 	void keyControl(bool* keys, GLfloat deltaTime);
 	void mouseControl(GLfloat xChange, GLfloat yChange);
-	void stickControl(GLfloat xChange, GLfloat yChange, glm::vec3 carPos, glm::vec3 dir);
+	void stickControl(GLfloat xChange, glm::vec3 carPos, glm::vec3 dir, bool reset, bool isFlipped);
+	//void stickControl(GLfloat xChange, GLfloat yChange, glm::vec3 carPos, glm::vec3 dir);
 
 	glm::vec3 getCameraPosition();
 	glm::vec3 getCameraDirection();
