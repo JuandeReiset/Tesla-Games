@@ -59,6 +59,10 @@ Vehicle::Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, P
 	isPlayer = isPlayerCheck;	//true if player object, false if enemy ai
 
 	initVehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, PxVec3(x, y, z));
+
+	ID = id;
+
+	ability = 3;	//each vehicle has 3 ability use by default
 }
 Vehicle::Vehicle(int id) : ID(id) {}
 Vehicle::~Vehicle() { cleanup(); }
@@ -553,3 +557,12 @@ void Vehicle::firelazer() {
 	health.SetHealth(0);
 }
 
+void Vehicle::pickup() {
+	//now set the max ability at 9
+	if (ability == 9)
+		;
+	else
+		++ability;
+
+	std::cout << "ability:" << ability << std::endl;
+}

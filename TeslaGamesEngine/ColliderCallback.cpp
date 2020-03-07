@@ -39,8 +39,10 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			PickupBox* p = (PickupBox*)pairs[i].triggerActor->userData;	//this holds a ptr to the actual PickupBox object
 
 			p->setIsPicked();
+			v->pickup();
 			//I don't know how to remove it from triggerActor once it is hit
-			
+			//and now every hit will pick up a bunch of items, I guess it's the same reason you mentioned :(
+
 			//add logic here
 		}
 		//vehicle and lap marker/counter
