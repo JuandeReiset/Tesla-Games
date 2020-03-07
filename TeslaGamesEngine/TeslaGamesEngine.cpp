@@ -651,17 +651,21 @@ int main()
 			caltrop->createCaltrops(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess);
 			caltropsList.push_back(std::move(caltrop));
 		}
-		
+*/
+		if (player1.isButtonDown(XButtons.DPad_Down))
+			physEng->player->useCaltrops(caltropsList);
+
 		auto c = caltropsList.begin();
 		while (c != caltropsList.end()) {
 			if ((*c)->isDead())
 				caltropsList.erase(c++);
 			else {
+				(*c)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
 				(*c)->renderCaltrops();
 				++c;
 			}
 		}
-*/
+
 		//caltrops end here
 
 

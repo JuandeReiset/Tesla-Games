@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <list>
+
 #include "PhysX/include/PxSimulationEventCallback.h"
 #include "HealthComponent.h"
 #include "ShootComp.h"
@@ -98,6 +99,11 @@ public:
 	void firelazer();
 
 	void pickup();													//pick up a(n) item/ability
+
+	//pls add your ability stuff here
+	void useCaltrops(std::list<std::unique_ptr<Caltrops>> &caltropsList);
+	void useOil();
+	void useSmoke();
 
 private:
 	HealthComponent health = HealthComponent(100);
