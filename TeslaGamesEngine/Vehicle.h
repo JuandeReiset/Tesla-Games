@@ -26,10 +26,18 @@ using namespace physx;
 class Vehicle : public Object
 {
 public:
-	Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z);
-	Vehicle(int id);
+	Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z);
+	Vehicle(int id);//pls dont use this
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);
+
+	//lap components
+	bool isPlayer;
+	int currentMarker;
+	int expectedMarker;
+	int numLaps;
+	void hitLapMarker(int val, int trackTotalLaps, int trackTotalLapMarkers);
+	void lapWinCondition();
   
 	//Shooting component functions
 	void update_turret();

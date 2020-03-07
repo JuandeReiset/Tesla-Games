@@ -43,7 +43,7 @@ PhysicsEngine::PhysicsEngine() {
 
 	gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 
-	player = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, 0, 5, 0);
+	player = new Vehicle(true, gPhysics, gCooking, gMaterial, gScene, gAllocator, 0, 5, 0);
 	//create obstacle (needed for now)
 	PxFilterData obstFilterData(snippetvehicle::COLLISION_FLAG_OBSTACLE, snippetvehicle::COLLISION_FLAG_OBSTACLE_AGAINST, 0, 0);
 	PxShape* boxwall = gPhysics->createShape(PxBoxGeometry(1.0f, 2.0f, 1.0f), *gMaterial, false);
@@ -54,7 +54,10 @@ PhysicsEngine::PhysicsEngine() {
 	//gScene->addActor(*wallActor);
 
 	//createPickupTriggerVolume(0, 0, 0, 2, 2, 2);
-	createPickupTriggerVolume(0, 2, 10, 2, 2, 2);
+	//createPickupTriggerVolume(0, 2, 10, 2, 2, 2);
+
+	//make lap markers
+
 
 	//Create a plane to drive on (once we get track cooking working we can remove this, or have this as a safeguard just in case)
 	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
@@ -77,7 +80,7 @@ void PhysicsEngine::addEnemyVehicle(float x, float y, float z)
 {
 	//create vehicle object
 	//add it to the list of vehicle
-	Vehicle* v = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, x, y, z);
+	Vehicle* v = new Vehicle(false, gPhysics, gCooking, gMaterial, gScene, gAllocator, x, y, z);
 	v->initVehicleAudio(this->audioEngine);
 	enemyVehicles.push_back(v);
 }
@@ -147,9 +150,9 @@ void PhysicsEngine::createPickupTriggerVolume(float x, float y, float z, float w
 	pickupBoxes.push_back(pickup);
 }
 
-void PhysicsEngine::createLapMarkerTriggerVolume(float x, float y, float z, float width, float height, float depth)
+void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, float x, float y, float z, float width, float height, float depth)
 {
-	LapMarker* lapMarker = new LapMarker();
+	LapMarker* lapMarker = new LapMarker(lapMarkerValue);
 
 	PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));

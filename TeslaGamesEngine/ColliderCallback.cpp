@@ -1,4 +1,6 @@
 #include "ColliderCallback.h"
+#include "Vehicle.h"
+#include "LapMarker.h"
 #include <iostream>
 
 using namespace std;
@@ -36,7 +38,12 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "lapmarker") == 0) {
 			cout << "\nTrigger Block: Lap Marker\n";
 
-			//add logic here
+			Vehicle* v = (Vehicle*)pairs[i].otherActor;
+			LapMarker* l = (LapMarker*)pairs[i].triggerActor;
+
+			//hardcoded number of laps and markers
+			v->hitLapMarker(l->markerValue, 3, 4);
+			
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "hazard") == 0) {
 			cout << "\nTrigger Block: Hazard\n";
