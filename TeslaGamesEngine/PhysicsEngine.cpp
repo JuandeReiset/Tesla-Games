@@ -56,7 +56,7 @@ PhysicsEngine::PhysicsEngine() {
 	//gScene->addActor(*wallActor);
 
 	//createPickupTriggerVolume(0, 0, 0, 2, 2, 2);
-	//createPickupTriggerVolume(0, 2, 10, 2, 2, 2);
+	createPickupTriggerVolume(0, 2, 10, 2, 2, 2);
 
 	//make lap markers
 	createLapMarkerTriggerVolume(0, 0, 2, 10, 20, 20, 20);	//marker 0 start/finish
@@ -151,6 +151,8 @@ void PhysicsEngine::createPickupTriggerVolume(float x, float y, float z, float w
 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
 	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
 	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	pickup->actor->userData = pickup;
 
 	gScene->addActor(*actor);
 	pickupBoxes.push_back(pickup);
