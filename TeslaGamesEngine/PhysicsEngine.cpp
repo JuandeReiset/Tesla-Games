@@ -57,6 +57,7 @@ PhysicsEngine::PhysicsEngine() {
 
 	//createPickupTriggerVolume(0, 0, 0, 2, 2, 2);
 	createPickupTriggerVolume(0, 2, 10, 2, 2, 2);
+	createPickupTriggerVolume(2, 2, 10, 2, 2, 2);
 
 	//make lap markers
 	createLapMarkerTriggerVolume(0, 0, 2, 10, 20, 20, 20);	//marker 0 start/finish
