@@ -1,10 +1,10 @@
 #pragma once
-
+#include <memory>
+#include <list>
 #include "PhysX/include/PxSimulationEventCallback.h"
 #include "HealthComponent.h"
 #include "ShootComp.h"
 #include "Global.h"
-#include <memory>
 #include "../include/PhysX/PxPhysicsAPI.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleCreate.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleSceneQuery.h"
@@ -15,6 +15,7 @@
 #include "PhysX/include/snippetutils/SnippetUtils.h"
 #include "Object.h"
 #include "audioEngine.h"
+#include "Caltrops.h"
 
 //#include "Bullet.h"
 

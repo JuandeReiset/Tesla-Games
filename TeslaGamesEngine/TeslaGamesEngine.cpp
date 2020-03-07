@@ -644,7 +644,7 @@ int main()
 		//caltrops
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Rendering caltrops
-
+/*
 		//if press down button, use caltrops
 		if (player1.isButtonDown(XButtons.DPad_Down)) {
 			std::unique_ptr<Caltrops> caltrop(new Caltrops());//using unique_ptr instead of pointer since we will release memory
@@ -661,6 +661,7 @@ int main()
 				++c;
 			}
 		}
+*/
 		//caltrops end here
 
 
