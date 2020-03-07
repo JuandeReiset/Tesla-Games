@@ -106,11 +106,15 @@ Material dullMaterial;
 PhysicsEngine* physEng;
 
 Model TeslaCar;
+Model Teslacar_chasis;
+Model T_turret;
+
 Model racetrack;
-Model bulletobj;
-Model boxTest;
 Model racetrack_walls;
 Model racetrack_floor;
+Model bulletobj;
+Model boxTest;
+
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -139,9 +143,7 @@ float pos_x = 0;
 float pos_y = 0;
 float pos_z = 0;
 
-//Angle of rotation for player/car obj  
-//float car_rotation = 90;
-//float current_rotation; //Calculates the angle at the moment of firing lazer
+
 glm::vec3 car_front;
 
 // Vertex Shader
@@ -368,9 +370,10 @@ int main()
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
-	TeslaCar.LoadModel("Models/TeslaGamesTruck2.obj");
+	TeslaCar.LoadModel("Models/TeslaGamesTruck2_test.obj");
+	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_modcar.obj");
+	T_turret.LoadModel("Models/TeslaGamesTruck2_modturret.obj");
 	boxTest.LoadModel("Models/wall.obj");
-	//TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
 	racetrack.LoadModel("Models/track2.obj");
 	racetrack_walls.LoadModel("Models/track2walls.obj");
 	racetrack_floor.LoadModel("Models/track2floor.obj");
@@ -566,6 +569,7 @@ int main()
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
 
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
+		
 		/////////////////////////////////////////////////////////////////////////////////
 				//RENDERING BULLLETS AND PLAYING SHOOTING SOUND
 
@@ -597,7 +601,15 @@ int main()
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
 
 			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-			TeslaCar.RenderModel();
+			//TeslaCar.RenderModel();
+			Teslacar_chasis.RenderModel();
+			
+			/* THIS TRANSFORMATION DIDNT WORK
+			glm::vec3 camDir = camera.getCameraDirection();
+			modelMat.rotate(physx::PxVec4(camDir.x,camDir.y,camDir.z,1));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
+			*/
+			T_turret.RenderModel();
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -618,7 +630,9 @@ int main()
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, enemymodelMat.front());
 
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-				TeslaCar.RenderModel();
+				//TeslaCar.RenderModel();
+				Teslacar_chasis.RenderModel();
+				T_turret.RenderModel();
 			}
 		}
 
