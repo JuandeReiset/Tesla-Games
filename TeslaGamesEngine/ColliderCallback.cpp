@@ -38,6 +38,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;	//this holds a ptr to the actual Vehicle object
 			PickupBox* p = (PickupBox*)pairs[i].triggerActor->userData;	//this holds a ptr to the actual PickupBox object
 
+			p->setIsPicked();
 			//add logic here
 		}
 		//vehicle and lap marker/counter
