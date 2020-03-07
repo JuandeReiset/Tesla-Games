@@ -122,6 +122,7 @@ GLfloat lastTime = 0.0f;
 bool bullet_shot = false; //after shooting there will be a cooldown for the player before he can shoot again
 bool bullet_sound_played = true;
 
+bool isCameraFlipped = false;
 
 
 float shoot_distance_x = 0; // Bullet vector movement for x
@@ -216,27 +217,13 @@ void parseControllerInput(Controller* controller)
 		//std::cout << controller->getIndex() << " " << "X PRESSED" << std::endl;
 	}
 	
-	//Is button down demo (more useful IMO)
-	if (controller->isButtonDown(XButtons.Y)) {
-		//std::cout << controller->getIndex() << " " << "Y PRESSED and HELD" << std::endl;
-	}
+	isCameraFlipped = (controller->isButtonPressed(XButtons.Y));
+
+
 	if (controller->isButtonDown(XButtons.B)) {
 		//std::cout << controller->getIndex() << " " << "B PRESSED and HELD" << std::endl;
 	}
-	if (controller->isButtonDown(XButtons.L_Shoulder)) {
-		//std::cout << controller->getIndex() << " " << "LB PRESSED and HELD" << std::endl;
-		bullet_shot = true; //Allows for bullets to be rendered
-		bullet_sound_played = false;
-		
-
-	}
-	if (controller->isButtonDown(XButtons.R_Shoulder)) {
-		//std::cout << controller->getIndex() << " " << "RB PRESSED and HELD" << std::endl;
-		bullet_shot= true; // Alllows for bullets to be rendered
-		bullet_sound_played = false;
-		
-
-	}
+	
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
 		//std::cout << controller->getIndex() << " " << "D-Pad Up PRESSED and HELD" << std::endl;
 	}
@@ -585,7 +572,14 @@ int main()
 			//Draw bullets after Refactor
 			if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder))) {
 				//payer1->shoot(vehiclePosition,uniformModel,uniformSpecularIntensity,uniformShininess,Direction.x,Direction.y,Direction.z);
-				ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+				glm::vec3 camDir = camera.getCameraDirection();
+				if (isCameraFlipped) {
+					ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+				}
+				else {
+					ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
+				}
+				
 				//ha->SetHealth(0);// This hear will prevent bullet and car from rendering
 			 }
 			ba->renderAllBullets();
@@ -650,7 +644,7 @@ int main()
 		//now distance and other stuff are inside camera class
 		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
 		glm::vec3 dirToUse;
-		if(player1.isButtonPressed(XButtons.Y)) {
+		if(isCameraFlipped) {
 			dirToUse = dir * -1.f;
 		}
 		else {
@@ -658,10 +652,10 @@ int main()
 		}
 
 		if (player1.RStick_InDeadzone()) {
-			camera.stickControl(0.f, 0.f, vehiclePosition, dirToUse);
+			camera.stickControl(0.f, vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
 		}
 		else {
-			camera.stickControl(player1.rightStick_X(), player1.rightStick_Y(), vehiclePosition, dirToUse);
+			camera.stickControl(player1.rightStick_X(), vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
 		}
 		
 		//end camera stuff
