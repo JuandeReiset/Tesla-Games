@@ -30,6 +30,7 @@
 #include "SpotLight.h"
 #include "Material.h"
 #include "Model.h"
+#include "Skybox.h"
 
 //Health stuff
 #include "Combat.h"
@@ -78,6 +79,11 @@ struct localAxis {
 /* Rendering variables */
 const float toRadians = 3.14159265f / 180.0f;
 
+Skybox skybox;
+
+GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
+uniformSpecularIntensity = 0, uniformShininess = 0;
+
 //sWindow mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -106,9 +112,15 @@ Material dullMaterial;
 PhysicsEngine* physEng;
 
 Model TeslaCar;
+Model Teslacar_chasis;
+Model T_turret;
+
 Model racetrack;
+Model racetrack_walls;
+Model racetrack_floor;
 Model bulletobj;
 Model boxTest;
+
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -137,9 +149,7 @@ float pos_x = 0;
 float pos_y = 0;
 float pos_z = 0;
 
-//Angle of rotation for player/car obj  
-//float car_rotation = 90;
-//float current_rotation; //Calculates the angle at the moment of firing lazer
+
 glm::vec3 car_front;
 
 // Vertex Shader
@@ -280,6 +290,88 @@ void parseControllerInput(Controller* controller)
 	controller->refreshState();
 }
 
+void RenderScene()
+{
+	glm::mat4 model = glm::mat4(1.0f);
+
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	brickTexture.UseTexture();
+	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+	meshList[0]->RenderMesh();
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 4.0f, -2.5f));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	dirtTexture.UseTexture();
+	dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+	meshList[1]->RenderMesh();
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	dirtTexture.UseTexture();
+	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+	meshList[2]->RenderMesh();
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
+	model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+}
+
+void RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
+{
+	glViewport(0, 0, 1366, 768);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	skybox.DrawSkybox(viewMatrix, projectionMatrix);
+	shaderList[0].UseShader();
+
+	uniformModel = shaderList[0].GetModelLocation();
+	uniformProjection = shaderList[0].GetProjectionLocation();
+	uniformView = shaderList[0].GetViewLocation();
+	uniformModel = shaderList[0].GetModelLocation();
+	uniformEyePosition = shaderList[0].GetEyePositionLocation();
+	uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
+	uniformShininess = shaderList[0].GetShininessLocation();
+
+	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+	glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+
+	shaderList[0].SetDirectionalLight(&mainLight);
+
+	shaderList[0].Validate();
+
+	shaderList[0].UseShader();
+
+	uniformModel = shaderList[0].GetModelLocation();
+	uniformProjection = shaderList[0].GetProjectionLocation();
+	uniformView = shaderList[0].GetViewLocation();
+	uniformModel = shaderList[0].GetModelLocation();
+	uniformEyePosition = shaderList[0].GetEyePositionLocation();
+	uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
+	uniformShininess = shaderList[0].GetShininessLocation();
+
+	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+	glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+
+	shaderList[0].SetDirectionalLight(&mainLight);
+
+	glm::vec3 lowerLight = camera.getCameraPosition();
+	lowerLight.y -= 0.3f;
+	spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
+
+	shaderList[0].Validate();
+
+	RenderScene();
+}
+
 int main()
 {
 	const char* glsl_version = "#version 130"; // USED FOR IMGUI SETTING
@@ -330,9 +422,9 @@ int main()
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
 
-	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
-								0.5f, 0.5f,
-								0.0f, 0.0f, -1.0f);
+	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
+		0.5f, 0.5f,
+		0.0f, 0.0f, -1.0f);
 
 	unsigned int pointLightCount = 0;
 	pointLights[0] = PointLight(0.0f, 0.0f, 1.0f,
@@ -362,14 +454,36 @@ int main()
 		20.0f);
 	spotLightCount++;
 
-	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
-		uniformSpecularIntensity = 0, uniformShininess = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
-	TeslaCar.LoadModel("Models/TeslaGamesTruck2.obj");
+
+	std::vector<std::string> skyboxFaces;
+	/*skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");*/
+
+	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_right.jpg");
+	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_left.jpg");
+	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_up.jpg");
+	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_down.jpg");
+	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_back.jpg");
+	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_front.jpg");
+
+	skybox = Skybox(skyboxFaces);
+
+
+	TeslaCar.LoadModel("Models/TeslaGamesTruck2_test.obj");
+	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_modcar.obj");
+	T_turret.LoadModel("Models/TeslaGamesTruck2_modturret.obj");
+
 	boxTest.LoadModel("Models/wall.obj");
-	//TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
 	racetrack.LoadModel("Models/track2.obj");
+	racetrack_walls.LoadModel("Models/track2walls.obj");
+	racetrack_floor.LoadModel("Models/track2floor.obj");
+	
 	bulletobj.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
@@ -499,6 +613,8 @@ int main()
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
+
 		// Setup shader
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
@@ -579,12 +695,15 @@ int main()
 		model = glm::scale(model, glm::vec3(20.f, 20.f, 20.f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		racetrack.RenderModel();
+		//racetrack.RenderModel();
+		racetrack_walls.RenderModel();
+		racetrack_floor.RenderModel();
 
 ///////////////////////////////////////////////////////////////////////
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
 
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
+		
 		/////////////////////////////////////////////////////////////////////////////////
 				//RENDERING BULLLETS AND PLAYING SHOOTING SOUND
 
@@ -616,7 +735,15 @@ int main()
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
 
 			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-			TeslaCar.RenderModel();
+			//TeslaCar.RenderModel();
+			Teslacar_chasis.RenderModel();
+			
+			/* THIS TRANSFORMATION DIDNT WORK
+			glm::vec3 camDir = camera.getCameraDirection();
+			modelMat.rotate(physx::PxVec4(camDir.x,camDir.y,camDir.z,1));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
+			*/
+			T_turret.RenderModel();
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -637,7 +764,9 @@ int main()
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, enemymodelMat.front());
 
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-				TeslaCar.RenderModel();
+				//TeslaCar.RenderModel();
+				Teslacar_chasis.RenderModel();
+				T_turret.RenderModel();
 			}
 		}
 

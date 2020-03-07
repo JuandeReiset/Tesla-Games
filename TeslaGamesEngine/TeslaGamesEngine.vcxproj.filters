@@ -57,6 +57,7 @@
     <ClCompile Include="ColliderCallback.cpp" />
     <ClCompile Include="PickupBox.cpp" />
     <ClCompile Include="LapMarker.cpp" />
+    <ClCompile Include="Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -115,6 +116,7 @@
     <ClInclude Include="resource1.h" />
     <ClInclude Include="PickupBox.h" />
     <ClInclude Include="LapMarker.h" />
+    <ClInclude Include="Skybox.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TeslaGamesEngine1.rc" />
