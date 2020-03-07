@@ -26,7 +26,7 @@ using namespace physx;
 class Vehicle : public Object
 {
 public:
-	Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z);
+	Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id);
 	Vehicle(int id);//pls dont use this
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);
@@ -95,6 +95,7 @@ public:
 	double currentHealth();											//get the current health
 	void getDamage(double damage);									//get damage for damaging object
 	void firelazer();
+
 private:
 	HealthComponent health = HealthComponent(100);
 	ShootComp turret = ShootComp();
@@ -107,6 +108,7 @@ private:
 	AudioBoomBox boostStart;
 	AudioBoomBox boostMax;
 
+	int ability;
 	
 	physx::PxF32 gSteerVsForwardSpeedData[2 * 8];
 	bool gIsVehicleInAir = true;
