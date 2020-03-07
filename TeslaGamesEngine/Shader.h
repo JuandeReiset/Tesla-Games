@@ -5,7 +5,12 @@
 #include <iostream>
 #include <fstream>
 
+#include <glm\glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\type_ptr.hpp>
+
 #include <GL\glew.h>
+#include <stb_image.h>
 
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -27,6 +32,8 @@ public:
 
 	//for shadow shader
 	void createShadowFromFiles(const char* vertexLocation, const char* fragmentLocation);
+
+	void Validate();
 
 	std::string ReadFile(const char* fileLocation);
 
