@@ -6,7 +6,7 @@
 using namespace physx;
 using namespace snippetvehicle;
 
-Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z) {
+Vehicle::Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z) {
 	physx::PxF32 gSteerVsForwardSpeedData[] =
 	{
 		0.0f,		0.9f,
@@ -56,7 +56,8 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 			5.0f	//fall rate eANALOG_INPUT_STEER_RIGHT
 		}
 	};
-	
+	isPlayer = isPlayerCheck;	//true if player object, false if enemy ai
+
 	initVehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, PxVec3(x, y, z));
 }
 Vehicle::Vehicle(int id) : ID(id) {}
@@ -97,6 +98,37 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	update_turret();
 	
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;
+}
+
+//called when a vehicle hits a trigger volume lap marker. Val is the lapMarker value, trackTotalLaps is the
+//total number of laps needed to win on that track, trackTotalLapMarkers is the total number of lap markers
+//placed around the track
+void Vehicle::hitLapMarker(int val, int trackTotalLaps, int trackTotalLapMarkers)
+{
+	if (expectedMarker == val) {	//good hit
+		std::cout << "HIT LAP MARKER " << val << "!\n";
+		//update expected and current marker vals
+		expectedMarker = (expectedMarker + 1) % trackTotalLapMarkers;
+		currentMarker = (currentMarker + 1) % trackTotalLapMarkers;
+
+		if (currentMarker == 0 && expectedMarker == 1) {	//completed a lap
+			numLaps++;
+			if (numLaps == trackTotalLaps) {	//you win!
+				lapWinCondition();
+			}
+		}
+	}
+}
+
+void Vehicle::lapWinCondition()
+{
+	if (isPlayer) {
+		std::cout << "CONGRATULATIONS PLAYER!! YOU WIN!\n";
+	}
+	else {
+		std::cout << "ENEMY OPPONENT HAS WON!\n";
+	}
+	
 }
 
 void Vehicle::update_turret() {
@@ -290,6 +322,11 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	gVehicle4W->setToRestState();
 	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eNEUTRAL);
 	gVehicle4W->mDriveDynData.setUseAutoGears(true);
+
+	//set default info for laps
+	currentMarker = 0;
+	expectedMarker = 1;
+	numLaps = 0;
 
 }
 

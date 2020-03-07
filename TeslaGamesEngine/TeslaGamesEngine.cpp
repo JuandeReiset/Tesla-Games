@@ -457,13 +457,15 @@ int main()
 	physEng->addEnemyVehicle(6, 5, 0);
 	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
 	aiDriving.AddDrivingTarget(25, 30);
-	aiDriving.AddDrivingTarget(160, 40);
+	aiDriving.AddDrivingTarget(138, 42);	//lap marker
 	aiDriving.AddDrivingTarget(215, 25);
 	aiDriving.AddDrivingTarget(220, -55);
+	aiDriving.AddDrivingTarget(162, -89);	//lap marker
 	aiDriving.AddDrivingTarget(-65, -80);
 	aiDriving.AddDrivingTarget(-90, -50);
 	aiDriving.AddDrivingTarget(-80, 45);
-	aiDriving.AddDrivingTarget(0, 0);
+	aiDriving.AddDrivingTarget(-76, 43);	//lap marker
+	aiDriving.AddDrivingTarget(0, 10);		//lap marker (start/finish)
 
 	physEng->addEnemyVehicle(15, 5, 0);
 	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
