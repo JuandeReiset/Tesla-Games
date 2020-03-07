@@ -86,8 +86,8 @@ void PhysicsEngine::addEnemyVehicle(float x, float y, float z)
 	//create vehicle object
 	//add it to the list of vehicle
 	Vehicle* v = new Vehicle(false, gPhysics, gCooking, gMaterial, gScene, gAllocator, x, y, z);
-	v->actor->userData = v;
 	v->initVehicleAudio(this->audioEngine);
+	v->actor->userData = v;
 	enemyVehicles.push_back(v);
 }
 
