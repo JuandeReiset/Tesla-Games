@@ -109,6 +109,8 @@ Model TeslaCar;
 Model racetrack;
 Model bulletobj;
 Model boxTest;
+Model racetrack_walls;
+Model racetrack_floor;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -370,6 +372,9 @@ int main()
 	boxTest.LoadModel("Models/wall.obj");
 	//TeslaCar.LoadModel("Models/TeslaGamesTruck.obj");
 	racetrack.LoadModel("Models/track2.obj");
+	racetrack_walls.LoadModel("Models/track2walls.obj");
+	racetrack_floor.LoadModel("Models/track2floor.obj");
+	
 	bulletobj.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
@@ -553,7 +558,9 @@ int main()
 		model = glm::scale(model, glm::vec3(20.f, 20.f, 20.f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		racetrack.RenderModel();
+		//racetrack.RenderModel();
+		racetrack_walls.RenderModel();
+		racetrack_floor.RenderModel();
 
 ///////////////////////////////////////////////////////////////////////
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
