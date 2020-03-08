@@ -881,7 +881,7 @@ int main()
 		uniformProjection = shadowShader.GetProjectionLocation();
 		uniformView = shadowShader.GetViewLocation();
 
-
+		//player's vehicle's shadow
 		model = glm::mat4(1.0f);
 		physx::PxMat44 carModel(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 		//modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
@@ -894,6 +894,20 @@ int main()
 
 		shadowTexture.UseTexture();
 		shadowList[0]->renderShadow();
+
+		//ai vehicles' shadows
+		for (auto v : physEng->enemyVehicles) {
+			physx::PxMat44 AIcarModel(v->GetTransform());
+
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, AIcarModel.front());
+			glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+			//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+
+			shadowTexture.UseTexture();
+			shadowList[0]->renderShadow();
+		}
+
 		glEnable(GL_DEPTH_TEST);
 
 		//Shadows end here
