@@ -113,17 +113,23 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene, PxPhysics* gPhysics, Px
 	//physx cooking here
 	physx::PxTriangleMeshDesc meshDesc;
 
-	meshDesc.points.count = vertices.size();
-	meshDesc.points.stride = 3 * sizeof(GLfloat);//needs a vector of 3 vertices
-	meshDesc.points.data = reinterpret_cast<const void*>(vertices.data());
+	//these vertices are 8 long, it goes x,y,z then texture x,y then normals x,y,z
+	std::vector<PxVec3> actualVertices;
+	for (int i = 0; i < mesh->mNumVertices; i++) {
+		actualVertices.push_back(PxVec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
+	}
 
-	meshDesc.triangles.count = indices.size();
+	meshDesc.points.count = actualVertices.size();
+	meshDesc.points.stride = sizeof(PxVec3);//needs a vector of 3 vertices
+	meshDesc.points.data = reinterpret_cast<const void*>(actualVertices.data());
+
+	meshDesc.triangles.count = indices.size()/3;
 	meshDesc.triangles.stride = 3 * sizeof(GLfloat);//needs a vector of 3 vertices
 	meshDesc.triangles.data = reinterpret_cast<const void*>(indices.data());
 
 
 	
-	PxTransform* trans = new PxTransform(PxVec3(0, -3, 0));
+	PxTransform* trans = new PxTransform(PxVec3(0, -3.f, -1.5f));
 	PxRigidStatic* rigidStat = gPhysics->createRigidStatic(*trans);
 
 	if (isFloor) {	//make the shape a floor type
@@ -165,6 +171,7 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene, PxPhysics* gPhysics, Px
 			shape->setLocalPose(*trans);
 
 			rigidStat = PxCreateStatic(*gPhysics, *trans, *shape);
+
 
 			gScene->addActor(*rigidStat);	//add mesh to scene as actor
 		}

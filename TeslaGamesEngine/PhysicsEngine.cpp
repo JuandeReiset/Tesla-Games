@@ -43,7 +43,7 @@ PhysicsEngine::PhysicsEngine() {
 
 	gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 
-	player = new Vehicle(true, gPhysics, gCooking, gMaterial, gScene, gAllocator, 0, 5, 0);
+	player = new Vehicle(true, gPhysics, gCooking, gMaterial, gScene, gAllocator, 0, 10, 0);
 	player->actor->userData = player;
 
 	//create obstacle (needed for now)
@@ -65,10 +65,18 @@ PhysicsEngine::PhysicsEngine() {
 	createLapMarkerTriggerVolume(3, -76, 2, 43, 20, 20, 20);	//marker 3
 
 	//Create a plane to drive on (once we get track cooking working we can remove this, or have this as a safeguard just in case)
-	//PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
-	//gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
-	//gScene->addActor(*gGroundPlane);
+/*	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
+	gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
+	gScene->addActor(*gGroundPlane);
+	*/
+	physx::PxPvd* mPvd = physx::PxCreatePvd(*gFoundation);
+	physx::PxPvdTransport* mTransport = physx::PxDefaultPvdSocketTransportCreate("localhost", 5425, 10000);
+	physx::PxPvdInstrumentationFlags mPvdFlags = physx::PxPvdInstrumentationFlag::eALL;
+	mPvd->connect(*mTransport, mPvdFlags);
+	if (mTransport == NULL)  return;
 
+	   
+	
 	
 }
 void PhysicsEngine::initAudioForVehicles(AudioEngine* audio) {

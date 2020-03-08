@@ -555,7 +555,7 @@ int main()
 	//End of audio system setup/demo
 
 	// Creating an enemy vehicle 
-	physEng->addEnemyVehicle(6, 5, 0);
+	physEng->addEnemyVehicle(6, 10, 0);
 	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
 	aiDriving.AddDrivingTarget(25, 30);
 	aiDriving.AddDrivingTarget(138, 42);	//lap marker
@@ -568,7 +568,7 @@ int main()
 	aiDriving.AddDrivingTarget(-76, 43);	//lap marker
 	aiDriving.AddDrivingTarget(0, 10);		//lap marker (start/finish)
 
-	physEng->addEnemyVehicle(15, 5, 0);
+	physEng->addEnemyVehicle(15, 10, 0);
 	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
 	aiDriving2.AddDrivingTarget(45, 40);
 	aiDriving2.AddDrivingTarget(215, -70);
@@ -665,7 +665,7 @@ int main()
 
 				// Draw racing track
 		model = glm::mat4(1.0f);
-		//model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2f));
+		model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2));
 		//model = glm::scale(model, glm::vec3(20.f, 20.f, 20.f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
