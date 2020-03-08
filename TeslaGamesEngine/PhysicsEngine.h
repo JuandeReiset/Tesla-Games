@@ -53,6 +53,11 @@ public:
 
 	void update_dir_render4Vehicle(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z);
 
+	physx::PxPhysics* gPhysics = NULL;
+	physx::PxScene* gScene = NULL;
+	physx::PxMaterial* gMaterial = NULL;
+
+	physx::PxCooking* gCooking = NULL;
 
 private:
 	void cleanupPhysics();
@@ -60,12 +65,8 @@ private:
 
 	physx::PxDefaultAllocator gAllocator;
 	physx::PxDefaultErrorCallback gErrorCallback;
-
 	physx::PxFoundation* gFoundation = NULL;
-	physx::PxPhysics* gPhysics = NULL;
 	physx::PxDefaultCpuDispatcher* gDispatcher = NULL;
-	physx::PxScene* gScene = NULL;
-	physx::PxMaterial* gMaterial = NULL;
 	physx::PxCudaContextManager* gCudaContextManager = NULL;
 	physx::PxRigidDynamic* ball = NULL;
 	physx::PxF32 gVehicleModeLifetime = 4.0f;
@@ -74,11 +75,8 @@ private:
 	bool gVehicleOrderComplete = false;
 	bool gMimicKeyInputs = false;
 	physx::PxRigidStatic* gGroundPlane = NULL;
-	
 	physx::PxRigidStatic* box = NULL;
 	physx::PxShape* shape = NULL;
-	physx::PxCooking* gCooking = NULL;
-
 	physx::PxPvd* gPvd = NULL;
 };
 

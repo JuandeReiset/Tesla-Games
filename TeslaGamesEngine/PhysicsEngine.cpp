@@ -65,9 +65,9 @@ PhysicsEngine::PhysicsEngine() {
 	createLapMarkerTriggerVolume(3, -76, 2, 43, 20, 20, 20);	//marker 3
 
 	//Create a plane to drive on (once we get track cooking working we can remove this, or have this as a safeguard just in case)
-	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
-	gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
-	gScene->addActor(*gGroundPlane);
+	//PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
+	//gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
+	//gScene->addActor(*gGroundPlane);
 
 	
 }
