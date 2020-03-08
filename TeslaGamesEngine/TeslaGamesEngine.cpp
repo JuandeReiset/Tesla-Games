@@ -686,12 +686,12 @@ int main()
 
 		//Vehicle* payer1 = physEng.player;
 		
-
+		glm::vec3 camDir = camera.getCameraDirection();
 		if ((ha->GetHealth()) > 0) {
 			//Draw bullets after Refactor
 			if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder))) {
 				//payer1->shoot(vehiclePosition,uniformModel,uniformSpecularIntensity,uniformShininess,Direction.x,Direction.y,Direction.z);
-				glm::vec3 camDir = camera.getCameraDirection();
+				
 				if (isCameraFlipped) {
 					ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
 				}
@@ -717,7 +717,17 @@ int main()
 			modelMat.rotate(physx::PxVec4(camDir.x,camDir.y,camDir.z,1));
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
 			*/
-			T_turret.RenderModel();
+			// Reset model
+			model = glm::mat4(1.0f);
+			glm::vec3 y_rot(0.0,1.0,0.0); //axis of rotation
+			glm::vec3 tem = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z); 
+			model = glm::translate(model, tem); //Update turret pos with position of vehicle
+			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); //resize turret
+			float angleAroundY = glm::degrees(atan2(camDir.x, camDir.z)); //calculate angle of rotation
+			float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
+			model = glm::rotate(model, angletoUse, y_rot);
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			T_turret.RenderModel(); //renders turret
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
