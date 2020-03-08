@@ -555,26 +555,30 @@ int main()
 	//End of audio system setup/demo
 
 	// Creating an enemy vehicle 
-	physEng->addEnemyVehicle(6, 10, 0);
+	physEng->addEnemyVehicle(70, 5, -82);
 	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
-	aiDriving.AddDrivingTarget(25, 30);
-	aiDriving.AddDrivingTarget(138, 42);	//lap marker
-	aiDriving.AddDrivingTarget(215, 25);
-	aiDriving.AddDrivingTarget(220, -55);
-	aiDriving.AddDrivingTarget(162, -89);	//lap marker
-	aiDriving.AddDrivingTarget(-65, -80);
-	aiDriving.AddDrivingTarget(-90, -50);
-	aiDriving.AddDrivingTarget(-80, 45);
-	aiDriving.AddDrivingTarget(-76, 43);	//lap marker
-	aiDriving.AddDrivingTarget(0, 10);		//lap marker (start/finish)
+	//im adding the lap markers as the only targets for now
+	aiDriving.AddDrivingTarget(70, -86);
+	aiDriving.AddDrivingTarget(-76, -85);	
+	aiDriving.AddDrivingTarget(-103, -45);
+	aiDriving.AddDrivingTarget(-85, 39);
+	aiDriving.AddDrivingTarget(-55, 51);	
+	aiDriving.AddDrivingTarget(-5.5f, 6.8f);
+	aiDriving.AddDrivingTarget(23, 36);
+	aiDriving.AddDrivingTarget(105.3f, 53);
+	aiDriving.AddDrivingTarget(212, 33);	
+	aiDriving.AddDrivingTarget(220, -4.5f);
+	aiDriving.AddDrivingTarget(225.5f, -58);
+	aiDriving.AddDrivingTarget(165.5f, -90);
 
+	/*
 	physEng->addEnemyVehicle(15, 10, 0);
 	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
 	aiDriving2.AddDrivingTarget(45, 40);
 	aiDriving2.AddDrivingTarget(215, -70);
 	aiDriving2.AddDrivingTarget(-90, -75);
 	aiDriving2.AddDrivingTarget(-65, 55);
-
+	*/
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
 	while (!mainWindow.getShouldClose())

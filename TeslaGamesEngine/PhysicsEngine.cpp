@@ -31,20 +31,12 @@ PhysicsEngine::PhysicsEngine() {
 	
 
 	gScene = gPhysics->createScene(sceneDesc);
-/*
-	PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
-	if (pvdClient)
-	{
-		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-	}
-	*/
+
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
 	gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 
-	player = new Vehicle(true, gPhysics, gCooking, gMaterial, gScene, gAllocator, 0, 10, 0);
+	player = new Vehicle(true, gPhysics, gCooking, gMaterial, gScene, gAllocator, 70, 5, -86);
 	player->actor->userData = player;
 
 	//create obstacle (needed for now)
@@ -59,26 +51,27 @@ PhysicsEngine::PhysicsEngine() {
 	//createPickupTriggerVolume(0, 0, 0, 2, 2, 2);
 	createPickupTriggerVolume(0, 2, 10, 2, 2, 2);
 
-	//make lap markers
-	createLapMarkerTriggerVolume(0, 0, 2, 10, 20, 20, 20);	//marker 0 start/finish
-	createLapMarkerTriggerVolume(1, 138, 2, 42, 20, 20, 20);	//marker 1
-	createLapMarkerTriggerVolume(2, 162, 2, -89, 20, 20, 20);	//marker 2
-	createLapMarkerTriggerVolume(3, -76, 2, 43, 20, 20, 20);	//marker 3
+	//make lap markers (old)
+/*	createLapMarkerTriggerVolume(0, 0, 2, 9, 10, 20, 28);		//marker 0 start/finish
+	createLapMarkerTriggerVolume(1, 138, 2, 49, 10, 20, 28);	//marker 1
+	createLapMarkerTriggerVolume(2, 162, 2, -85, 10, 20, 35);	//marker 2
+	createLapMarkerTriggerVolume(3, -84, 2, 39, 28, 20, 20);	//marker 3
+	*/
 
-	//Create a plane to drive on (once we get track cooking working we can remove this, or have this as a safeguard just in case)
-/*	PxFilterData groundPlaneSimFilterData(COLLISION_FLAG_GROUND, COLLISION_FLAG_GROUND_AGAINST, 0, 0);
-	gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
-	gScene->addActor(*gGroundPlane);
-	*/
-/*	physx::PxPvd* mPvd = physx::PxCreatePvd(*gFoundation);
-	physx::PxPvdTransport* mTransport = physx::PxDefaultPvdSocketTransportCreate("localhost", 5425, 10000);
-	physx::PxPvdInstrumentationFlags mPvdFlags = physx::PxPvdInstrumentationFlag::eALL;
-	mPvd->connect(*mTransport, mPvdFlags);
-	if (mTransport == NULL)  return;
-	*/
-	   
-	
-	
+
+	//new lap markers
+	createLapMarkerTriggerVolume(0, 70, 2, -86, 4, 10, 30);			//0, start/finish position
+	createLapMarkerTriggerVolume(1, -76, 2, -85, 11, 10, 30);		//1
+	createLapMarkerTriggerVolume(2, -100, 2, -45, 30, 10, 6);		//2
+	createLapMarkerTriggerVolume(3, -85, 2, 39, 26, 10, 15);		//3
+	createLapMarkerTriggerVolume(4, -55, 2, 51, 17, 10, 20);		//4
+	createLapMarkerTriggerVolume(5, -7, 2, 5, 6, 10, 31);			//5
+	createLapMarkerTriggerVolume(6, 23, 2, 36, 19, 10, 19);			//6
+	createLapMarkerTriggerVolume(7, 105.3f, 2, 53, 5, 10, 30);		//7
+	createLapMarkerTriggerVolume(8, 212, 2, 33, 10, 10, 23);		//8
+	createLapMarkerTriggerVolume(9, 215, 2, -2, 28, 10, 7);			//9
+	createLapMarkerTriggerVolume(10, 225.5f, 2, -58, 30, 10, 6);	//10
+	createLapMarkerTriggerVolume(11, 165.5f, 2, -85, 6, 10, 30);	//11
 }
 void PhysicsEngine::initAudioForVehicles(AudioEngine* audio) {
 	this->audioEngine = audio;

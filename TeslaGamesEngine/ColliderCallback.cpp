@@ -50,7 +50,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			std::cout << "LAP MARKER VALUE: " << l->markerValue << std::endl;
 
 			//hardcoded number of laps and markers
-			v->hitLapMarker(l->markerValue, 3, 4);
+			v->hitLapMarker(l->markerValue, 3, 12);	//3 laps, 12 markers (0->11)
 			
 		}
 		//wont do yet, unsure how we want to handle the traps classes
