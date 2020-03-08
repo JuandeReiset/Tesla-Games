@@ -11,6 +11,13 @@
 #include "Texture.h"
 #include "Mesh.h"
 
+#include "../include/PhysX/PxPhysicsAPI.h"
+#include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleSceneQuery.h"
+#include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleFilterShader.h"
+
+using namespace physx;
+using namespace snippetvehicle;
+
 // TODO: Model should be a component
 
 /*
@@ -22,6 +29,8 @@ public:
 	Model();
 	// Loads the model from a given file name
 	void LoadModel(const std::string& fileName);
+	// Loads the model from a given file name and a physics object, used for track cooking
+	void LoadModel(const std::string& fileName, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, bool isFloor);
 	// Renders the model
 	void RenderModel();
 	// Clears model, freeing memory for other models to use
@@ -30,7 +39,9 @@ public:
 
 private:
 	void LoadNode(aiNode *node, const aiScene *scene);
+	void LoadNode(aiNode* node, const aiScene* scene, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, bool isFloor);	//for track cooking
 	void LoadMesh(aiMesh *mesh, const aiScene *scene);
+	void LoadMesh(aiMesh* mesh, const aiScene* scene, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, bool isFloor);	//for track cooking
 	void LoadMaterials(const aiScene *scene);
 
 	std::vector<Mesh*> meshList;

@@ -171,7 +171,8 @@ ShootComp* Vehicle::getShootingComponent() {
 }
 
 void Vehicle::update_health() {
-	health.SetHealth(0);
+	int currentHealth = health.GetHealth();
+	health.SetHealth(currentHealth-10);
 }
 
 HealthComponent* Vehicle::getHealthComponent() {
@@ -314,7 +315,7 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	//Create a vehicle that will drive on the plane.
 	VehicleDesc vehicleDesc = initVehicleDesc(gMaterial);
 	gVehicle4W = createVehicle4W(vehicleDesc, gPhysics, gCooking);
-	PxTransform startTransform(PxVec3(0, (vehicleDesc.chassisDims.y * 0.5f + vehicleDesc.wheelRadius + 1.0f), 0), PxQuat(PxIdentity));
+	PxTransform startTransform(PxVec3(0, (vehicleDesc.chassisDims.y * 0.5f + vehicleDesc.wheelRadius + 1.0f), 0), PxQuat(-1.5708f, PxVec3(0, 1, 0)));
 	startTransform.p = position;	//dear lord I hope this works
 	actor = gVehicle4W->getRigidDynamicActor();	//set vehicle dynamic to the PhysxObject actor
 	actor->setName("vehicle");
@@ -438,19 +439,11 @@ void Vehicle::gearShift(float curSpeed) {
 	}
 }
 
-void Vehicle::startHandbrakeTurnLeftMode(float magnitude)
+void Vehicle::handbrakeTurn(float magnitudeBrake, float magnitudeTurn)
 {
-	magnitude = abs(magnitude);
-	gVehicleInputData.setAnalogSteer(-magnitude);
-	gVehicleInputData.setAnalogHandbrake(magnitude);
+	gVehicleInputData.setAnalogSteer(magnitudeTurn);
+	gVehicleInputData.setAnalogHandbrake(magnitudeBrake);
 
-}
-
-void Vehicle::startHandbrakeTurnRightMode(float magnitude)
-{
-	magnitude = abs(magnitude);
-	gVehicleInputData.setAnalogSteer(magnitude);
-	gVehicleInputData.setAnalogHandbrake(magnitude);
 }
 
 void Vehicle::releaseAllControls()

@@ -83,12 +83,15 @@ void ShootComp::addBullet_toList(GLuint uniModel, GLuint uniSpecularIntensity, G
 void ShootComp::addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z) {
 
 	fire();
-	if (!this->shootSound.isSoundPlaying()) {
-		std::cout << "play sound" << std::endl;
-		this->shootSound.playSound();
-	}
+	
 
 	if (is_there_ammo()) {
+
+		if (!this->shootSound.isSoundPlaying()) {
+			std::cout << "play sound" << std::endl;
+			this->shootSound.playSound();
+		}
+
 		start_position = glm::vec3(carPos.x, carPos.y - 0.2f, carPos.z);
 		Direction_x = x;
 		Direction_y = y;
