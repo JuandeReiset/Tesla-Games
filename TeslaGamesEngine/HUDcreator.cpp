@@ -70,6 +70,10 @@ void HUDcreator::loadHUD() {
 	HUD* alive2num = new HUD();
 	alive2num->createHUD(alive2numVertices, HUDindices, 20, 6);
 	HUDList.push_back(alive2num);
+
+	HUD* gameStateUI = new HUD();
+	gameStateUI->createHUD(gameStateVertices, HUDindices, 20, 6);
+	HUDList.push_back(gameStateUI);
 }
 void HUDcreator::loadTextures() {
 	//load digits textures
@@ -116,6 +120,11 @@ void HUDcreator::loadTextures() {
 	flagTexture.LoadTextureAlpha();
 	outOfWeaponTexture = Texture("Textures/HUD/outOfWeapon.png");
 	outOfWeaponTexture.LoadTextureAlpha();
+	winTexture = Texture("Textures/win.png");
+	winTexture.LoadTextureAlpha();
+	loseTexture = Texture("Textures/lose.png");
+	loseTexture.LoadTextureAlpha();
+	gameState = Texture();
 
 	return;
 }
@@ -208,6 +217,12 @@ void HUDcreator::use() {
 	dig0Texture.UseTexture();
 	HUDList[16]->renderHUD();
 
+	//win or lose
+	if (winOrLose) {
+		gameState.UseTexture();
+		HUDList[17]->renderHUD();
+	}
+
 	glEnable(GL_DEPTH_TEST);
 
 	return;
@@ -255,4 +270,13 @@ void HUDcreator::setAbilityNumber(int ability) {
 			abilityNum = dig9Texture;
 			weaponTexture = weaponUITexture;
 	}
+}
+
+void HUDcreator::setGameState(bool isPlayer) {
+	if (isPlayer)
+		gameState = winTexture;
+	else
+		gameState = loseTexture;
+
+	winOrLose = true;
 }

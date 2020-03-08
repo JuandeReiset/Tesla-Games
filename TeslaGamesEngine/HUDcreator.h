@@ -28,10 +28,12 @@ public:
 	void setAbilityNumber(int ability);
 	void setAliveNumber(int alive);
 	void setPositionNumber(int position);
+	void setGameState(bool isPlayer);
 
 
 private:
 	float size = 1.0f;										//HUD size
+	bool winOrLose = false;									//is someone finshed laps?
 
 	std::vector<HUD*> HUDList;
 	std::vector<Texture> TextureList;
@@ -66,12 +68,15 @@ private:
 	Texture flagTexture;
 	Texture personTexture;
 	Texture cupTexture;
+	Texture winTexture;
+	Texture  loseTexture;
 
 	//Empty texture
 	Texture emptyTexture;
 
 	Texture abilityNum;
 	Texture weaponTexture;
+	Texture gameState;
 
 	// Vertex Shader of HUD_shader
 	const char* vHshader = "Shaders/HUD_shader.vert";
@@ -184,6 +189,13 @@ private:
 		1575.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
 		1595.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
 		1595.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
+	GLfloat gameStateVertices[20] = {
+		350.f / 1600.f * mainWindow.getWidth() * size, 0.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f ,0.f,
+		350.f / 1600.f * mainWindow.getWidth() * size, 900.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f, 1.f,
+		1250.f / 1600.f * mainWindow.getWidth() * size, 900.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 1.f,
+		1250.f / 1600.f * mainWindow.getWidth() * size, 0.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
 	};
 };
 

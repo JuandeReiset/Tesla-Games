@@ -429,6 +429,9 @@ int main()
 	yp.pitch = -20.0f;
 
 
+	bool winFlag = false;
+	bool loseFlag = false;
+
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureAlpha();
 	dirtTexture = Texture("Textures/dirt.png");
@@ -900,7 +903,22 @@ int main()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Rendering HUD
 		//HUD stars here
+
+		//get lose or win
+		if (physEng->player->numLaps == 3)
+			winFlag = true;
+		else
+			for (auto v : physEng->enemyVehicles)
+				if (v->numLaps == 3)
+					loseFlag = true;
+
+		if (winFlag == true)
+			hud.setGameState(true);
+		if (loseFlag == true)
+			hud.setGameState(false);
+
 		hud.setAbilityNumber(physEng->player->ability);
+
 		hud.use();
 		
 		//HUD ends here
