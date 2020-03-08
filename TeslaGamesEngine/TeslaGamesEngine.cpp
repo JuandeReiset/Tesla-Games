@@ -665,8 +665,9 @@ int main()
 
 				// Draw racing track
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2f));
-		model = glm::scale(model, glm::vec3(20.f, 20.f, 20.f));
+		//model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2f)); // This positions the track on the current vehicle pos (CHANGE pos of vehicle)
+		//model = glm::scale(model, glm::vec3(20.f, 20.f, 20.f));
+		//model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		//racetrack.RenderModel();
@@ -711,12 +712,7 @@ int main()
 			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 			//TeslaCar.RenderModel();
 			Teslacar_chasis.RenderModel();
-			
-			/* THIS TRANSFORMATION DIDNT WORK
-			glm::vec3 camDir = camera.getCameraDirection();
-			modelMat.rotate(physx::PxVec4(camDir.x,camDir.y,camDir.z,1));
-			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
-			*/
+		
 			// Reset model
 			model = glm::mat4(1.0f);
 			glm::vec3 y_rot(0.0,1.0,0.0); //axis of rotation
@@ -726,7 +722,14 @@ int main()
 			float angleAroundY = glm::degrees(atan2(camDir.x, camDir.z)); //calculate angle of rotation
 			float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
 			model = glm::rotate(model, angletoUse, y_rot);
-			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+			if (isCameraFlipped) {
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
+			}
+			else {
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			}
+			
 			T_turret.RenderModel(); //renders turret
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
