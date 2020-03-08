@@ -719,7 +719,7 @@ int main()
 				model = glm::translate(model, wallp);
 				//Consider making the pickup boxes a hardcoded size and hardcoding the 
 				//trigger volumes to be the same size
-				model = glm::scale(model, glm::vec3(1.1f, 0.3f, 0.4f));
+				model = glm::scale(model, glm::vec3(1.1f, 0.3f, 0.2f));	//keep these scale values!
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 				boxTest.RenderModel();

@@ -42,6 +42,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 				p->setIsPicked();
 				v->pickup();
 			}
+			
 			//otherwise ignore the box
 			
 			//I don't know how to remove it from triggerActor once it is hit

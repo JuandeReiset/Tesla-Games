@@ -51,6 +51,7 @@ PhysicsEngine::PhysicsEngine() {
 	//createPickupTriggerVolume(0, 0, 0, 2, 2, 2);
 	createPickupTriggerVolume(0, 2, 10, 2, 2, 2);
 	createPickupTriggerVolume(2, 2, 10, 2, 2, 2);
+	createPickupTriggerVolume(33, 1, -87, 4, 2, 1.65f);	//these sizes and the render scale values make a nice box size
 
 	//make lap markers (old)
 /*	createLapMarkerTriggerVolume(0, 0, 2, 9, 10, 20, 28);		//marker 0 start/finish
