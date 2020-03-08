@@ -458,20 +458,22 @@ int main()
 
 
 	std::vector<std::string> skyboxFaces;
-	/*skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
+	///*
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");*/
-
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");
+	//*/
+	/*
 	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_right.jpg");
 	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_left.jpg");
 	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_up.jpg");
 	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_down.jpg");
 	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_back.jpg");
 	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_front.jpg");
-
+	*/
 	skybox = Skybox(skyboxFaces);
 
 
