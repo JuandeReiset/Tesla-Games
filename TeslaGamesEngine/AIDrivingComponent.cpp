@@ -18,14 +18,20 @@ void AIDrivingComponent::Tick(float deltaTime)
 	DrivingTarget currentTarget = drivingTargets[currentTargetIndex];
 	MoveTo(currentTarget);
 
-	// Increment target if current target is close enough
+	
 	physx::PxVec3 currentPos = owner->GetPosition();
+	lastPos = currentPos;
+
+	// Increment target if current target is close enough
 	float distance = sqrt(((currentPos.x - currentTarget.x) * (currentPos.x - currentTarget.x)) + ((currentPos.z - currentTarget.y) * (currentPos.z - currentTarget.y)));
 	if (distance < threshold) {
 		std::cout << "Current Target: " << currentTarget.x << ", " << currentTarget.y << std::endl;
 		currentTargetIndex++;
 		if (currentTargetIndex >= drivingTargets.size() - 1) currentTargetIndex = 1;
 	}
+
+	float distanceMoved = sqrt(((currentPos.x - lastPos.x) * (currentPos.x - lastPos.x)) + ((currentPos.z - lastPos.y) * (currentPos.z - lastPos.y)));
+
 }
 
 void AIDrivingComponent::AddDrivingTarget(DrivingTarget toAdd)
@@ -64,13 +70,16 @@ void AIDrivingComponent::MoveTo(DrivingTarget)
 	owner->turn(turnMagnitude/2);
 
 	// Go faster if not turning
+	// TODO: Change this from set values to a curve for smoothing between turning/accelerating
+	// TODO: Also add in an option for handbrakes
 	float forwardsMagnitude = (1.0f - turnMagnitude)/2;
 	if (forwardsMagnitude > 1.0f) forwardsMagnitude = 1.0f;
-	if (abs(angle) > 75.f) {
-		owner->reverse(forwardsMagnitude);
+	if (abs(angle) > 75.f && owner->GetForwardsSpeed() > 60.f) {
+		// Will be changed to handbrake after
+		owner->reverse(1.0f);
 	}
 	else if (abs(angle) > 60.f) {
-		forwardsMagnitude *= 0.25;
+		forwardsMagnitude *= 0.33;
 		owner->forwards(forwardsMagnitude);
 	}
 	else {
