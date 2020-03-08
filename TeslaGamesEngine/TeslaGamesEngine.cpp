@@ -600,7 +600,7 @@ int main()
 
 		// For AI testing
 		aiDriving.Tick(deltaTime);
-		aiDriving2.Tick(deltaTime);
+		//aiDriving2.Tick(deltaTime);
 
 
 		// Get + Handle User Input
