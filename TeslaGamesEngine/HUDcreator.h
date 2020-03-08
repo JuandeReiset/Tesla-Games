@@ -24,6 +24,12 @@ public:
 	void load();
 	void loadShader();
 
+	void setLapNumber(int lap);
+	void setAbilityNumber(int ability);
+	void setAliveNumber(int alive);
+	void setPositionNumber(int position);
+
+
 private:
 	float size = 1.0f;										//HUD size
 
@@ -42,9 +48,16 @@ private:
 	Texture dig1Texture;
 	Texture dig2Texture;
 	Texture dig3Texture;
+	Texture dig4Texture;
+	Texture dig5Texture;
+	Texture dig6Texture;
+	Texture dig7Texture;
+	Texture dig8Texture;
+	Texture dig9Texture;
 
 	//HUD textures
 	Texture weaponUITexture;
+	Texture outOfWeaponTexture;
 	Texture emptyBarTexture;
 	Texture healthBarTexture;
 	Texture nitroBarTexture;
@@ -56,6 +69,9 @@ private:
 
 	//Empty texture
 	Texture emptyTexture;
+
+	Texture abilityNum;
+	Texture weaponTexture;
 
 	// Vertex Shader of HUD_shader
 	const char* vHshader = "Shaders/HUD_shader.vert";

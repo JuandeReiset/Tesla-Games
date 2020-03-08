@@ -81,6 +81,19 @@ void HUDcreator::loadTextures() {
 	dig2Texture.LoadTextureAlpha();
 	dig3Texture = Texture("Textures/numbers/3.png");
 	dig3Texture.LoadTextureAlpha();
+	dig4Texture = Texture("Textures/numbers/4.png");
+	dig4Texture.LoadTextureAlpha();
+	dig5Texture = Texture("Textures/numbers/5.png");
+	dig5Texture.LoadTextureAlpha();
+	dig6Texture = Texture("Textures/numbers/6.png");
+	dig6Texture.LoadTextureAlpha();
+	dig7Texture = Texture("Textures/numbers/7.png");
+	dig7Texture.LoadTextureAlpha();
+	dig8Texture = Texture("Textures/numbers/8.png");
+	dig8Texture.LoadTextureAlpha();
+	dig9Texture = Texture("Textures/numbers/9.png");
+	dig9Texture.LoadTextureAlpha();
+
 
 	//load HUD textures
 	weaponUITexture = Texture("Textures/HUD/WeaponsUI.png");
@@ -101,6 +114,8 @@ void HUDcreator::loadTextures() {
 	cupTexture.LoadTextureAlpha();
 	flagTexture = Texture("Textures/HUD/flags.png");
 	flagTexture.LoadTextureAlpha();
+	outOfWeaponTexture = Texture("Textures/HUD/outOfWeapon.png");
+	outOfWeaponTexture.LoadTextureAlpha();
 
 	return;
 }
@@ -138,11 +153,11 @@ void HUDcreator::use() {
 	}
 */
 //weapon UI
-	weaponUITexture.UseTexture();
+	weaponTexture.UseTexture();
 	HUDList[0]->renderHUD();
 
 	//number of charges
-	dig3Texture.UseTexture();
+	abilityNum.UseTexture();
 	HUDList[1]->renderHUD();
 
 	//TODO: if out of charges, change ui
@@ -196,4 +211,48 @@ void HUDcreator::use() {
 	glEnable(GL_DEPTH_TEST);
 
 	return;
+}
+
+void HUDcreator::setAbilityNumber(int ability) {
+	switch (ability) {
+		case 0:	
+			abilityNum = dig0Texture;
+			weaponTexture = outOfWeaponTexture;
+			break;
+		case 1:
+			abilityNum = dig1Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 2:
+			abilityNum = dig2Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 3:
+			abilityNum = dig3Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 4:
+			abilityNum = dig4Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 5:
+			abilityNum = dig5Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 6:
+			abilityNum = dig6Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 7:
+			abilityNum = dig7Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 8:
+			abilityNum = dig8Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 9:
+			abilityNum = dig9Texture;
+			weaponTexture = weaponUITexture;
+	}
 }
