@@ -64,7 +64,7 @@ void Camera::setFront(float x, float y, float z) {
 
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
 {
-	GLfloat velocity = moveSpeed * deltaTime;
+	GLfloat velocity = 8 * moveSpeed * deltaTime;
 
 	if (keys[GLFW_KEY_W])
 	{
