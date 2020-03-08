@@ -5,6 +5,7 @@
 #include "PickupBox.h"
 #include "ColliderCallback.h"
 #include <vector>
+#include <list>
 #include "PhysX/include/PxPhysicsAPI.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleCreate.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleSceneQuery.h"
@@ -41,7 +42,8 @@ public:
 	Vehicle* player;	//the player vehicle
 	std::vector<Vehicle*> enemyVehicles;	//the AI vehicles
 	std::vector<LapMarker*> lapmarkers;		//the lap markers
-	std::vector<PickupBox*> pickupBoxes;	//the pickup boxes
+	//std::vector<PickupBox*> pickupBoxes;	//the pickup boxes
+	std::list<PickupBox*> pickupBoxes;	//the pickup boxes
 
 	PxRigidActor* testActor;
 

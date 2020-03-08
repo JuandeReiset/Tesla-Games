@@ -6,7 +6,7 @@
 using namespace physx;
 using namespace snippetvehicle;
 
-Vehicle::Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z) {
+Vehicle::Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id) {
 	physx::PxF32 gSteerVsForwardSpeedData[] =
 	{
 		0.0f,		0.9f,
@@ -59,6 +59,10 @@ Vehicle::Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, P
 	isPlayer = isPlayerCheck;	//true if player object, false if enemy ai
 
 	initVehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, PxVec3(x, y, z));
+
+	ID = id;
+
+	ability = 3;	//each vehicle has 3 ability use by default
 }
 Vehicle::Vehicle(int id) : ID(id) {}
 Vehicle::~Vehicle() { cleanup(); }
@@ -513,6 +517,11 @@ physx::PxTransform Vehicle::GetTransform()
 	return gVehicle4W->getRigidDynamicActor()->getGlobalPose();
 }
 
+float Vehicle::GetForwardsSpeed()
+{
+	return gVehicle4W->computeForwardSpeed();
+}
+
 float Vehicle::GetRotationAngle()
 {
 	return gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.getAngle();
@@ -553,3 +562,33 @@ void Vehicle::firelazer() {
 	health.SetHealth(0);
 }
 
+void Vehicle::pickup() {
+	//now set the max ability at 9
+	if (ability == 9)
+		;
+	else
+		++ability;
+
+	std::cout << "ability:" << ability << std::endl;
+}
+
+void Vehicle::useCaltrops(std::list<std::unique_ptr<Caltrops>> &catropsList) {
+	if (ability == 0)
+		return;
+
+	PxVec3 pos = GetPosition();
+
+	std::unique_ptr<Caltrops> caltrop(new Caltrops());
+	caltrop->createCaltrops(glm::vec3(pos.x, pos.y, pos.z));
+	catropsList.push_back(std::move(caltrop));
+
+	--ability;
+}
+
+void Vehicle::useOil() {
+
+}
+
+void Vehicle::useSmoke() {
+
+}

@@ -600,7 +600,7 @@ int main()
 
 		// For AI testing
 		aiDriving.Tick(deltaTime);
-		//aiDriving2.Tick(deltaTime);
+		aiDriving2.Tick(deltaTime);
 
 
 		// Get + Handle User Input
@@ -647,6 +647,7 @@ int main()
 
 
 		//render all pickup boxes
+/*
 		if (!physEng->pickupBoxes.empty()) {
 			float width, height, depth;
 			for (int i = 0; i < physEng->pickupBoxes.size(); i++) {
@@ -663,7 +664,32 @@ int main()
 				boxTest.RenderModel();
 			}
 		}
+*/
+		//please use linked list instead of vector if you will delete stuff from the list at random position very often, linked list will save much more time
+	
+		//test with 2 pickup boxes
+		auto pickup = physEng->pickupBoxes.begin();
+		while (pickup != physEng->pickupBoxes.end()) {
+			//if it is picked up, delete it from the list
+			//it looks like it won't be triggered once it is deleted, but I think it's still in the triggerActor list
+			if ((*pickup)->getIsPicked()) {
+				physEng->pickupBoxes.erase(pickup++);
+			}
+			else {
+				physx::PxVec3 wallPos = (*pickup)->actor->getGlobalPose().p;
+				glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, wallp);
+				//Consider making the pickup boxes a hardcoded size and hardcoding the 
+				//trigger volumes to be the same size
+				model = glm::scale(model, glm::vec3(1.1f, 0.3f, 0.4f));
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+				boxTest.RenderModel();
 
+				++pickup;
+			}
+		}
 		//////////////////////////////////////////////////////////////////////////
 
 
@@ -690,12 +716,12 @@ int main()
 
 		//Vehicle* payer1 = physEng.player;
 		
-
+		glm::vec3 camDir = camera.getCameraDirection();
 		if ((ha->GetHealth()) > 0) {
 			//Draw bullets after Refactor
 			if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder))) {
 				//payer1->shoot(vehiclePosition,uniformModel,uniformSpecularIntensity,uniformShininess,Direction.x,Direction.y,Direction.z);
-				glm::vec3 camDir = camera.getCameraDirection();
+				
 				if (isCameraFlipped) {
 					ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
 				}
@@ -715,13 +741,25 @@ int main()
 			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 			//TeslaCar.RenderModel();
 			Teslacar_chasis.RenderModel();
+		
+			// Reset model
+			model = glm::mat4(1.0f);
+			glm::vec3 y_rot(0.0,1.0,0.0); //axis of rotation
+			glm::vec3 tem = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z); 
+			model = glm::translate(model, tem); //Update turret pos with position of vehicle
+			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); //resize turret
+			float angleAroundY = glm::degrees(atan2(camDir.x, camDir.z)); //calculate angle of rotation
+			float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
+			model = glm::rotate(model, angletoUse, y_rot);
+
+			if (isCameraFlipped) {
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
+			}
+			else {
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			}
 			
-			/* THIS TRANSFORMATION DIDNT WORK
-			glm::vec3 camDir = camera.getCameraDirection();
-			modelMat.rotate(physx::PxVec4(camDir.x,camDir.y,camDir.z,1));
-			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
-			*/
-			T_turret.RenderModel();
+			T_turret.RenderModel(); //renders turret
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -751,23 +789,28 @@ int main()
 		//caltrops
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Rendering caltrops
-
+/*
 		//if press down button, use caltrops
 		if (player1.isButtonDown(XButtons.DPad_Down)) {
 			std::unique_ptr<Caltrops> caltrop(new Caltrops());//using unique_ptr instead of pointer since we will release memory
 			caltrop->createCaltrops(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess);
 			caltropsList.push_back(std::move(caltrop));
 		}
-		
+*/
+		if (player1.isButtonDown(XButtons.DPad_Down))
+			physEng->player->useCaltrops(caltropsList);
+
 		auto c = caltropsList.begin();
 		while (c != caltropsList.end()) {
 			if ((*c)->isDead())
 				caltropsList.erase(c++);
 			else {
+				(*c)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
 				(*c)->renderCaltrops();
 				++c;
 			}
 		}
+
 		//caltrops end here
 
 
@@ -790,6 +833,7 @@ int main()
 		else {
 			camera.stickControl(player1.rightStick_X(), vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
 		}
+		
 		
 		//end camera stuff
 
