@@ -43,7 +43,7 @@ PhysicsEngine::PhysicsEngine() {
 
 	gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 
-	player = new Vehicle(true, gPhysics, gCooking, gMaterial, gScene, gAllocator, 0, 5, 0);
+	player = new Vehicle(true, gPhysics, gCooking, gMaterial, gScene, gAllocator, 0, 5, 0, 1);
 	player->actor->userData = player;
 
 	//create obstacle (needed for now)
@@ -57,6 +57,7 @@ PhysicsEngine::PhysicsEngine() {
 
 	//createPickupTriggerVolume(0, 0, 0, 2, 2, 2);
 	createPickupTriggerVolume(0, 2, 10, 2, 2, 2);
+	createPickupTriggerVolume(2, 2, 10, 2, 2, 2);
 
 	//make lap markers
 	createLapMarkerTriggerVolume(0, 0, 2, 10, 20, 20, 20);	//marker 0 start/finish
@@ -85,7 +86,7 @@ void PhysicsEngine::addEnemyVehicle(float x, float y, float z)
 {
 	//create vehicle object
 	//add it to the list of vehicle
-	Vehicle* v = new Vehicle(false, gPhysics, gCooking, gMaterial, gScene, gAllocator, x, y, z);
+	Vehicle* v = new Vehicle(false, gPhysics, gCooking, gMaterial, gScene, gAllocator, x, y, z, 2);
 	v->initVehicleAudio(this->audioEngine);
 	v->actor->userData = v;
 	enemyVehicles.push_back(v);

@@ -1,10 +1,11 @@
 #pragma once
+#include <memory>
+#include <list>
 
 #include "PhysX/include/PxSimulationEventCallback.h"
 #include "HealthComponent.h"
 #include "ShootComp.h"
 #include "Global.h"
-#include <memory>
 #include "../include/PhysX/PxPhysicsAPI.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleCreate.h"
 #include "PhysX/vehicle4W/snippetvehiclecommon/SnippetVehicleSceneQuery.h"
@@ -15,6 +16,7 @@
 #include "PhysX/include/snippetutils/SnippetUtils.h"
 #include "Object.h"
 #include "audioEngine.h"
+#include "Caltrops.h"
 
 //#include "Bullet.h"
 
@@ -26,7 +28,7 @@ using namespace physx;
 class Vehicle : public Object
 {
 public:
-	Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z);
+	Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id);	//added id to this
 	Vehicle(int id);//pls dont use this
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);
@@ -95,6 +97,14 @@ public:
 	double currentHealth();											//get the current health
 	void getDamage(double damage);									//get damage for damaging object
 	void firelazer();
+
+	void pickup();													//pick up a(n) item/ability
+
+	//pls add your ability stuff here
+	void useCaltrops(std::list<std::unique_ptr<Caltrops>> &caltropsList);
+	void useOil();
+	void useSmoke();
+
 private:
 	HealthComponent health = HealthComponent(100);
 	ShootComp turret = ShootComp();
@@ -107,6 +117,7 @@ private:
 	AudioBoomBox boostStart;
 	AudioBoomBox boostMax;
 
+	int ability;
 	
 	physx::PxF32 gSteerVsForwardSpeedData[2 * 8];
 	bool gIsVehicleInAir = true;

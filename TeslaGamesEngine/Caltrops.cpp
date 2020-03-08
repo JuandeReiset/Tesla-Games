@@ -26,11 +26,14 @@ void Caltrops::updateTime() {
 	currentTime = glfwGetTime(); 
 }
 
-void Caltrops::createCaltrops(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess) {
+void Caltrops::createCaltrops(glm::vec3 carPos) {
 	position = glm::vec3(carPos.x, carPos.y - 1.5f, carPos.z);
 	model = glm::translate(model, position);
 	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 
+}
+
+void Caltrops::load(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess) {
 	uniformModel = uniModel;
 	uniformShininess = uniShininess;
 	uniformSpecularIntensity = uniSpecularIntensity;
