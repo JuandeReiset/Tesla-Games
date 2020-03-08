@@ -70,7 +70,7 @@ public:
 	physx::PxVec3 GetPosition();
 	physx::PxTransform GetTransform();
 
-
+	float GetForwardsSpeed();
 
 	PxRigidDynamic* actor;
 

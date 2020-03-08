@@ -558,22 +558,28 @@ int main()
 	physEng->addEnemyVehicle(6, 5, 0);
 	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
 	aiDriving.AddDrivingTarget(25, 30);
-	aiDriving.AddDrivingTarget(138, 42);	//lap marker
+	aiDriving.AddDrivingTarget(140, 40);	//lap marker
 	aiDriving.AddDrivingTarget(215, 25);
 	aiDriving.AddDrivingTarget(220, -55);
-	aiDriving.AddDrivingTarget(162, -89);	//lap marker
+	aiDriving.AddDrivingTarget(160, -90);	//lap marker
 	aiDriving.AddDrivingTarget(-65, -80);
 	aiDriving.AddDrivingTarget(-90, -50);
 	aiDriving.AddDrivingTarget(-80, 45);
-	aiDriving.AddDrivingTarget(-76, 43);	//lap marker
+	aiDriving.AddDrivingTarget(-75, 45);	//lap marker
 	aiDriving.AddDrivingTarget(0, 10);		//lap marker (start/finish)
 
 	physEng->addEnemyVehicle(15, 5, 0);
 	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
-	aiDriving2.AddDrivingTarget(45, 40);
-	aiDriving2.AddDrivingTarget(215, -70);
-	aiDriving2.AddDrivingTarget(-90, -75);
-	aiDriving2.AddDrivingTarget(-65, 55);
+	aiDriving2.AddDrivingTarget(25, 30);
+	aiDriving2.AddDrivingTarget(140, 40);	//lap marker
+	aiDriving2.AddDrivingTarget(215, 25);
+	aiDriving2.AddDrivingTarget(220, -55);
+	aiDriving2.AddDrivingTarget(160, -90);	//lap marker
+	aiDriving2.AddDrivingTarget(-65, -80);
+	aiDriving2.AddDrivingTarget(-90, -50);
+	aiDriving2.AddDrivingTarget(-80, 45);
+	aiDriving2.AddDrivingTarget(-75, 45);	//lap marker
+	aiDriving2.AddDrivingTarget(0, 10);		//lap marker (start/finish);
 
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
@@ -596,7 +602,7 @@ int main()
 
 		// For AI testing
 		aiDriving.Tick(deltaTime);
-		//aiDriving2.Tick(deltaTime);
+		aiDriving2.Tick(deltaTime);
 
 
 		// Get + Handle User Input
@@ -786,6 +792,7 @@ int main()
 		else {
 			camera.stickControl(player1.rightStick_X(), vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
 		}
+		
 		
 		//end camera stuff
 

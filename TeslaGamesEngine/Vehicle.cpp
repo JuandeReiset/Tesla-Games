@@ -513,6 +513,11 @@ physx::PxTransform Vehicle::GetTransform()
 	return gVehicle4W->getRigidDynamicActor()->getGlobalPose();
 }
 
+float Vehicle::GetForwardsSpeed()
+{
+	return gVehicle4W->computeForwardSpeed();
+}
+
 float Vehicle::GetRotationAngle()
 {
 	return gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.getAngle();
