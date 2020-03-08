@@ -206,15 +206,17 @@ void HUDcreator::use() {
 	//current laps
 	flagTexture.UseTexture();
 	HUDList[11]->renderHUD();
-	dig3Texture.UseTexture();
+	lapNum1.UseTexture();
+	HUDList[12]->renderHUD();
+	lapNum2.UseTexture();
 	HUDList[13]->renderHUD();
 
 	//current alive
 	personTexture.UseTexture();
 	HUDList[14]->renderHUD();
-	dig1Texture.UseTexture();
+	aliveNum1.UseTexture();
 	HUDList[15]->renderHUD();
-	dig0Texture.UseTexture();
+	aliveNum2.UseTexture();
 	HUDList[16]->renderHUD();
 
 	//win or lose
@@ -279,4 +281,142 @@ void HUDcreator::setGameState(bool isPlayer) {
 		gameState = loseTexture;
 
 	winOrLose = true;
+}
+
+void HUDcreator::setLapNumber(int lap) {
+	int num2 = lap % 10;
+	int num1 = lap / 10;
+
+	switch (num1) {
+	case 0:
+		lapNum1 = dig0Texture;
+		break;
+	case 1:
+		lapNum1 = dig1Texture;
+		break;
+	case 2:
+		lapNum1 = dig2Texture;
+		break;
+	case 3:
+		lapNum1 = dig3Texture;
+		break;
+	case 4:
+		lapNum1 = dig4Texture;
+		break;
+	case 5:
+		lapNum1 = dig5Texture;
+		break;
+	case 6:
+		lapNum1 = dig6Texture;
+		break;
+	case 7:
+		lapNum1 = dig7Texture;
+		break;
+	case 8:
+		lapNum1 = dig8Texture;
+		break;
+	case 9:
+		lapNum1 = dig9Texture;
+	}
+
+	switch (num2) {
+	case 0:
+		lapNum2 = dig0Texture;
+		break;
+	case 1:
+		lapNum2 = dig1Texture;
+		break;
+	case 2:
+		lapNum2 = dig2Texture;
+		break;
+	case 3:
+		lapNum2 = dig3Texture;
+		break;
+	case 4:
+		lapNum2 = dig4Texture;
+		break;
+	case 5:
+		lapNum2 = dig5Texture;
+		break;
+	case 6:
+		lapNum2 = dig6Texture;
+		break;
+	case 7:
+		lapNum2 = dig7Texture;
+		break;
+	case 8:
+		lapNum2 = dig8Texture;
+		break;
+	case 9:
+		lapNum2 = dig9Texture;
+	}
+}
+
+void HUDcreator::setAliveNumber(int alive) {
+	int num2 = alive % 10;
+	int num1 = alive / 10;
+
+	switch (num1) {
+	case 0:
+		aliveNum1 = dig0Texture;
+		break;
+	case 1:
+		aliveNum1 = dig1Texture;
+		break;
+	case 2:
+		aliveNum1 = dig2Texture;
+		break;
+	case 3:
+		aliveNum1 = dig3Texture;
+		break;
+	case 4:
+		aliveNum1 = dig4Texture;
+		break;
+	case 5:
+		aliveNum1 = dig5Texture;
+		break;
+	case 6:
+		aliveNum1 = dig6Texture;
+		break;
+	case 7:
+		aliveNum1 = dig7Texture;
+		break;
+	case 8:
+		aliveNum1 = dig8Texture;
+		break;
+	case 9:
+		aliveNum1 = dig9Texture;
+	}
+
+	switch (num2) {
+	case 0:
+		aliveNum2 = dig0Texture;
+		break;
+	case 1:
+		aliveNum2 = dig1Texture;
+		break;
+	case 2:
+		aliveNum2 = dig2Texture;
+		break;
+	case 3:
+		aliveNum2 = dig3Texture;
+		break;
+	case 4:
+		aliveNum2 = dig4Texture;
+		break;
+	case 5:
+		aliveNum2 = dig5Texture;
+		break;
+	case 6:
+		aliveNum2 = dig6Texture;
+		break;
+	case 7:
+		aliveNum2 = dig7Texture;
+		break;
+	case 8:
+		aliveNum2 = dig8Texture;
+		break;
+	case 9:
+		aliveNum2 = dig9Texture;
+	}
 }

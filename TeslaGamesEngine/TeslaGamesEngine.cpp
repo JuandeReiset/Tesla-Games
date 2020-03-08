@@ -932,7 +932,11 @@ int main()
 			hud.setGameState(false);
 
 		hud.setAbilityNumber(physEng->player->ability);
-
+		hud.setLapNumber(physEng->player->numLaps);
+		hud.setAliveNumber(physEng->enemyVehicles.size());
+		//don't now how to get position right now
+		//hud.setPositionNumber();
+		
 		hud.use();
 		
 		//HUD ends here

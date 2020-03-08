@@ -69,14 +69,19 @@ private:
 	Texture personTexture;
 	Texture cupTexture;
 	Texture winTexture;
-	Texture  loseTexture;
-
-	//Empty texture
-	Texture emptyTexture;
-
+	Texture  loseTexture;	
 	Texture abilityNum;
 	Texture weaponTexture;
 	Texture gameState;
+	Texture lapNum1;
+	Texture lapNum2;
+	Texture aliveNum1;
+	Texture aliveNum2;
+	Texture posNum1;
+	Texture posNum2;
+
+	//Empty texture
+	Texture emptyTexture;
 
 	// Vertex Shader of HUD_shader
 	const char* vHshader = "Shaders/HUD_shader.vert";
@@ -159,8 +164,8 @@ private:
 	GLfloat lap1numVertices[20] = {
 		1550.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
 		1550.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
-		1570.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
-		1570.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+		1570.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1570.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
 	GLfloat lap2numVertices[20] = {
