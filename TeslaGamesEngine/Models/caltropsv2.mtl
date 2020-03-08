@@ -1,0 +1,134 @@
+# Blender MTL File: 'caltropsv2.blend'
+# Material Count: 12
+
+newmtl ctexture
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.002200 0.004982
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\red.jpg
+
+newmtl ctexture.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.002200 0.004982
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\red.jpg
+
+newmtl ctexture.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.002200 0.004982
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\red.jpg
+
+newmtl ctexture.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.002200 0.004982
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\red.jpg
+
+newmtl ctexture.004
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.002200 0.004982
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\red.jpg
+
+newmtl ctexture.005
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.002200 0.004982
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\red.jpg
+
+newmtl metalllish
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\paloma-metal-grey.jpg
+
+newmtl metalllish.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\paloma-metal-grey.jpg
+
+newmtl metalllish.002
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\paloma-metal-grey.jpg
+
+newmtl metalllish.003
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\paloma-metal-grey.jpg
+
+newmtl metalllish.004
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\paloma-metal-grey.jpg
+
+newmtl metalllish.009
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\paloma-metal-grey.jpg
