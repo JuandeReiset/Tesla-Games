@@ -41,6 +41,10 @@ public:
 	void hitLapMarker(int val, int trackTotalLaps, int trackTotalLapMarkers);
 	void lapWinCondition();
   
+	//ability stuff
+	int ability;
+
+
 	//Shooting component functions
 	void update_turret();
 	void shoot(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z);
@@ -119,8 +123,7 @@ private:
 	AudioBoomBox boostStart;
 	AudioBoomBox boostMax;
 
-	int ability;
-	
+
 	physx::PxF32 gSteerVsForwardSpeedData[2 * 8];
 	bool gIsVehicleInAir = true;
 	physx::PxFixedSizeLookupTable<8> gSteerVsForwardSpeedTable;

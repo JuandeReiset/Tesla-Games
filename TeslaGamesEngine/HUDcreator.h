@@ -24,8 +24,16 @@ public:
 	void load();
 	void loadShader();
 
+	void setLapNumber(int lap);
+	void setAbilityNumber(int ability);
+	void setAliveNumber(int alive);
+	void setPositionNumber(int position);
+	void setGameState(bool isPlayer);
+
+
 private:
 	float size = 1.0f;										//HUD size
+	bool winOrLose = false;									//is someone finshed laps?
 
 	std::vector<HUD*> HUDList;
 	std::vector<Texture> TextureList;
@@ -42,9 +50,16 @@ private:
 	Texture dig1Texture;
 	Texture dig2Texture;
 	Texture dig3Texture;
+	Texture dig4Texture;
+	Texture dig5Texture;
+	Texture dig6Texture;
+	Texture dig7Texture;
+	Texture dig8Texture;
+	Texture dig9Texture;
 
 	//HUD textures
 	Texture weaponUITexture;
+	Texture outOfWeaponTexture;
 	Texture emptyBarTexture;
 	Texture healthBarTexture;
 	Texture nitroBarTexture;
@@ -53,6 +68,17 @@ private:
 	Texture flagTexture;
 	Texture personTexture;
 	Texture cupTexture;
+	Texture winTexture;
+	Texture  loseTexture;	
+	Texture abilityNum;
+	Texture weaponTexture;
+	Texture gameState;
+	Texture lapNum1;
+	Texture lapNum2;
+	Texture aliveNum1;
+	Texture aliveNum2;
+	Texture posNum1;
+	Texture posNum2;
 
 	//Empty texture
 	Texture emptyTexture;
@@ -138,8 +164,8 @@ private:
 	GLfloat lap1numVertices[20] = {
 		1550.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
 		1550.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
-		1570.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
-		1570.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+		1570.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1570.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
 	GLfloat lap2numVertices[20] = {
@@ -168,6 +194,13 @@ private:
 		1575.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
 		1595.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
 		1595.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
+	GLfloat gameStateVertices[20] = {
+		350.f / 1600.f * mainWindow.getWidth() * size, 0.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f ,0.f,
+		350.f / 1600.f * mainWindow.getWidth() * size, 900.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f, 1.f,
+		1250.f / 1600.f * mainWindow.getWidth() * size, 900.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 1.f,
+		1250.f / 1600.f * mainWindow.getWidth() * size, 0.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
 	};
 };
 

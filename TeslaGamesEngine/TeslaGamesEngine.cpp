@@ -429,6 +429,9 @@ int main()
 	yp.pitch = -20.0f;
 
 
+	bool winFlag = false;
+	bool loseFlag = false;
+
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureAlpha();
 	dirtTexture = Texture("Textures/dirt.png");
@@ -878,7 +881,7 @@ int main()
 		uniformProjection = shadowShader.GetProjectionLocation();
 		uniformView = shadowShader.GetViewLocation();
 
-
+		//player's vehicle's shadow
 		model = glm::mat4(1.0f);
 		physx::PxMat44 carModel(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 		//modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
@@ -891,6 +894,20 @@ int main()
 
 		shadowTexture.UseTexture();
 		shadowList[0]->renderShadow();
+
+		//ai vehicles' shadows
+		for (auto v : physEng->enemyVehicles) {
+			physx::PxMat44 AIcarModel(v->GetTransform());
+
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, AIcarModel.front());
+			glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+			//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+
+			shadowTexture.UseTexture();
+			shadowList[0]->renderShadow();
+		}
+
 		glEnable(GL_DEPTH_TEST);
 
 		//Shadows end here
@@ -900,6 +917,26 @@ int main()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Rendering HUD
 		//HUD stars here
+
+		//get lose or win
+		if (physEng->player->numLaps == 3)
+			winFlag = true;
+		else
+			for (auto v : physEng->enemyVehicles)
+				if (v->numLaps == 3)
+					loseFlag = true;
+
+		if (winFlag == true)
+			hud.setGameState(true);
+		if (loseFlag == true)
+			hud.setGameState(false);
+
+		hud.setAbilityNumber(physEng->player->ability);
+		hud.setLapNumber(physEng->player->numLaps);
+		hud.setAliveNumber(physEng->enemyVehicles.size());
+		//don't now how to get position right now
+		//hud.setPositionNumber();
+		
 		hud.use();
 		
 		//HUD ends here
