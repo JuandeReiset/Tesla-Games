@@ -649,6 +649,7 @@ int main()
 		// Draw pyramid one
 		glm::mat4 model = glm::mat4(1.0f);
 
+		//RACING TRACK
 		//////////////////////////////////////////////////////////////////////////
 
 
@@ -715,7 +716,7 @@ int main()
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
 		
 		/////////////////////////////////////////////////////////////////////////////////
-				//RENDERING BULLLETS AND PLAYING SHOOTING SOUND
+				//BULLLETS AND PLAYING SHOOTING SOUND
 
 		ShootComp* ba = physEng->player->getShootingComponent();
 		HealthComponent* ha = physEng->player->getHealthComponent();
@@ -769,7 +770,7 @@ int main()
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-		//RENDERING CALTROPS
+		//CALTROPS
 /*
 		//if press down button, use caltrops
 		if (player1.isButtonDown(XButtons.DPad_Down)) {
