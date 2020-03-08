@@ -31,7 +31,7 @@ PhysicsEngine::PhysicsEngine() {
 	
 
 	gScene = gPhysics->createScene(sceneDesc);
-
+/*
 	PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
 	if (pvdClient)
 	{
@@ -39,6 +39,7 @@ PhysicsEngine::PhysicsEngine() {
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
+	*/
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
 	gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
@@ -69,12 +70,12 @@ PhysicsEngine::PhysicsEngine() {
 	gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
 	gScene->addActor(*gGroundPlane);
 	*/
-	physx::PxPvd* mPvd = physx::PxCreatePvd(*gFoundation);
+/*	physx::PxPvd* mPvd = physx::PxCreatePvd(*gFoundation);
 	physx::PxPvdTransport* mTransport = physx::PxDefaultPvdSocketTransportCreate("localhost", 5425, 10000);
 	physx::PxPvdInstrumentationFlags mPvdFlags = physx::PxPvdInstrumentationFlag::eALL;
 	mPvd->connect(*mTransport, mPvdFlags);
 	if (mTransport == NULL)  return;
-
+	*/
 	   
 	
 	

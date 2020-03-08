@@ -150,7 +150,7 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene, PxPhysics* gPhysics, Px
 			shape->setLocalPose(*trans);
 
 			rigidStat = PxCreateStatic(*gPhysics, *trans, *shape);
-
+			rigidStat->attachShape(*shape);
 			gScene->addActor(*rigidStat);	//add mesh to scene as actor
 		}
 		else {
