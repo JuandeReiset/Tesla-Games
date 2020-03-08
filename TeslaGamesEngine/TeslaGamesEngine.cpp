@@ -649,6 +649,21 @@ int main()
 		// Draw pyramid one
 		glm::mat4 model = glm::mat4(1.0f);
 
+		//////////////////////////////////////////////////////////////////////////
+
+
+			// Draw racing track
+		model = glm::mat4(1.0f);
+		//model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2f)); // This positions the track on the current vehicle pos (CHANGE pos of vehicle)
+		//model = glm::scale(model, glm::vec3(20.f, 20.f, 20.f));
+		//model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		//racetrack.RenderModel();
+		racetrack_walls.RenderModel();
+		racetrack_floor.RenderModel();
+
+		///////////////////////////////////////////////////////////////////////
 
 		//render all pickup boxes
 /*
@@ -694,21 +709,7 @@ int main()
 				++pickup;
 			}
 		}
-		//////////////////////////////////////////////////////////////////////////
-
-
-				// Draw racing track
-		model = glm::mat4(1.0f);
-		//model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2f)); // This positions the track on the current vehicle pos (CHANGE pos of vehicle)
-		//model = glm::scale(model, glm::vec3(20.f, 20.f, 20.f));
-		//model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		//racetrack.RenderModel();
-		racetrack_walls.RenderModel();
-		racetrack_floor.RenderModel();
-
-///////////////////////////////////////////////////////////////////////
+	
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
 
 		physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
@@ -768,32 +769,7 @@ int main()
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-		//Enemy CARS rendering
-		//there is probably a much better way of rendering the other enemy cars, but this works for now
-		if (!physEng->enemyVehicles.empty()) {
-			for (int i = 0; i < physEng->enemyVehicles.size(); i++) {
-				Vehicle* v = physEng->enemyVehicles.at(i);
-				const physx::PxVehicleDrive4W* enemyV = v->gVehicle4W;	//get vehicle
-				const physx::PxRigidDynamic* enemyvDynamic = enemyV->getRigidDynamicActor();
-				physx::PxQuat enemyvehicleQuaternion = enemyvDynamic->getGlobalPose().q;
-				physx::PxVec3 enemyv_dir = enemyvehicleQuaternion.getBasisVector2();
-				const physx::PxVec3 enemyvehiclePositionPhysx = enemyvDynamic->getGlobalPose().p;
-				glm::vec3 enemyvehiclePosition(enemyvehiclePositionPhysx.x, enemyvehiclePositionPhysx.y, enemyvehiclePositionPhysx.z);
-
-				physx::PxMat44 enemymodelMat(enemyvDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
-				enemymodelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
-				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, enemymodelMat.front());
-
-				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-				//TeslaCar.RenderModel();
-				Teslacar_chasis.RenderModel();
-				T_turret.RenderModel();
-			}
-		}
-
-		//caltrops
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Rendering caltrops
+		//RENDERING CALTROPS
 /*
 		//if press down button, use caltrops
 		if (player1.isButtonDown(XButtons.DPad_Down)) {
@@ -817,9 +793,35 @@ int main()
 		}
 
 		//caltrops end here
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//Enemy CARS rendering
+		//there is probably a much better way of rendering the other enemy cars, but this works for now
+		if (!physEng->enemyVehicles.empty()) {
+			for (int i = 0; i < physEng->enemyVehicles.size(); i++) {
+				Vehicle* v = physEng->enemyVehicles.at(i);
+				const physx::PxVehicleDrive4W* enemyV = v->gVehicle4W;	//get vehicle
+				const physx::PxRigidDynamic* enemyvDynamic = enemyV->getRigidDynamicActor();
+				physx::PxQuat enemyvehicleQuaternion = enemyvDynamic->getGlobalPose().q;
+				physx::PxVec3 enemyv_dir = enemyvehicleQuaternion.getBasisVector2();
+				const physx::PxVec3 enemyvehiclePositionPhysx = enemyvDynamic->getGlobalPose().p;
+				glm::vec3 enemyvehiclePosition(enemyvehiclePositionPhysx.x, enemyvehiclePositionPhysx.y, enemyvehiclePositionPhysx.z);
+
+				physx::PxMat44 enemymodelMat(enemyvDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
+				enemymodelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, enemymodelMat.front());
+
+				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+				//TeslaCar.RenderModel();
+				Teslacar_chasis.RenderModel();
+				T_turret.RenderModel();
+			}
+		}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 
 
-		//camera
+		//CAMERA RENDERING
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//update camera
 		//now distance and other stuff are inside camera class
@@ -844,10 +846,10 @@ int main()
 
 
 
-		//shadow
+		//SHADOW RENDERING
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		//Rendering shadows
+		
 
 		//turn on blend mode
 		glEnable(GL_BLEND);
