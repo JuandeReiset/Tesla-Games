@@ -502,9 +502,9 @@ int main()
 	T_turret.LoadModel("Models/TeslaGamesTruck2_modturret.obj");
 
 	boxTest.LoadModel("Models/wall.obj");
-	racetrack.LoadModel("Models/track2.obj");
-	racetrack_walls.LoadModel("Models/track2walls.obj");
-	racetrack_floor.LoadModel("Models/track2floor.obj");
+	//racetrack.LoadModel("Models/track2.obj");
+	racetrack_walls.LoadModel("Models/track2walls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
+	racetrack_floor.LoadModel("Models/track2floor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 	
 	bulletobj.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
@@ -577,32 +577,30 @@ int main()
 	//End of audio system setup/demo
 
 	// Creating an enemy vehicle 
-	physEng->addEnemyVehicle(6, 5, 0);
+	physEng->addEnemyVehicle(70, 5, -82);
 	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
-	aiDriving.AddDrivingTarget(25, 30);
-	aiDriving.AddDrivingTarget(140, 40);	//lap marker
-	aiDriving.AddDrivingTarget(215, 25);
-	aiDriving.AddDrivingTarget(220, -55);
-	aiDriving.AddDrivingTarget(160, -90);	//lap marker
-	aiDriving.AddDrivingTarget(-65, -80);
-	aiDriving.AddDrivingTarget(-90, -50);
-	aiDriving.AddDrivingTarget(-80, 45);
-	aiDriving.AddDrivingTarget(-75, 45);	//lap marker
-	aiDriving.AddDrivingTarget(0, 10);		//lap marker (start/finish)
+	//im adding the lap markers as the only targets for now
+	aiDriving.AddDrivingTarget(70, -86);
+	aiDriving.AddDrivingTarget(-76, -85);	
+	aiDriving.AddDrivingTarget(-103, -45);
+	aiDriving.AddDrivingTarget(-85, 39);
+	aiDriving.AddDrivingTarget(-55, 51);	
+	aiDriving.AddDrivingTarget(-5.5f, 6.8f);
+	aiDriving.AddDrivingTarget(23, 36);
+	aiDriving.AddDrivingTarget(105.3f, 53);
+	aiDriving.AddDrivingTarget(212, 33);	
+	aiDriving.AddDrivingTarget(220, -4.5f);
+	aiDriving.AddDrivingTarget(225.5f, -58);
+	aiDriving.AddDrivingTarget(165.5f, -90);
 
-	physEng->addEnemyVehicle(15, 5, 0);
+	/*
+	physEng->addEnemyVehicle(15, 10, 0);
 	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
-	aiDriving2.AddDrivingTarget(25, 30);
-	aiDriving2.AddDrivingTarget(140, 40);	//lap marker
-	aiDriving2.AddDrivingTarget(215, 25);
-	aiDriving2.AddDrivingTarget(220, -55);
-	aiDriving2.AddDrivingTarget(160, -90);	//lap marker
-	aiDriving2.AddDrivingTarget(-65, -80);
-	aiDriving2.AddDrivingTarget(-90, -50);
-	aiDriving2.AddDrivingTarget(-80, 45);
-	aiDriving2.AddDrivingTarget(-75, 45);	//lap marker
-	aiDriving2.AddDrivingTarget(0, 10);		//lap marker (start/finish);
-
+	aiDriving2.AddDrivingTarget(45, 40);
+	aiDriving2.AddDrivingTarget(215, -70);
+	aiDriving2.AddDrivingTarget(-90, -75);
+	aiDriving2.AddDrivingTarget(-65, 55);
+	*/
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
 	while (!mainWindow.getShouldClose())
@@ -624,7 +622,7 @@ int main()
 
 		// For AI testing
 		aiDriving.Tick(deltaTime);
-		aiDriving2.Tick(deltaTime);
+		//aiDriving2.Tick(deltaTime);
 
 
 		// Get + Handle User Input
@@ -673,11 +671,10 @@ int main()
 		//////////////////////////////////////////////////////////////////////////
 
 
-			// Draw racing track
+				// Draw racing track
 		model = glm::mat4(1.0f);
-		//model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2f)); // This positions the track on the current vehicle pos (CHANGE pos of vehicle)
+		model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2));
 		//model = glm::scale(model, glm::vec3(20.f, 20.f, 20.f));
-		//model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		//racetrack.RenderModel();

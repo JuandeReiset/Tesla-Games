@@ -8,6 +8,7 @@ class PickupBox : public PhysicsObject
 public:
 	PickupBox();
 
+	//true if the box has already been picked up, false otherwise
 	bool getIsPicked() { return isPicked; }
 	void setIsPicked();
 

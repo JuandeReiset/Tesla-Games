@@ -33,13 +33,17 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 		//vehicle and pickup box 
 		if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "pickup") == 0)
 		{
-			cout << "\nTrigger Block: Pickup Box\n";
-
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;	//this holds a ptr to the actual Vehicle object
 			PickupBox* p = (PickupBox*)pairs[i].triggerActor->userData;	//this holds a ptr to the actual PickupBox object
 
-			p->setIsPicked();
-			v->pickup();
+			//if the box hasnt been picked up yet
+			if (!p->getIsPicked()) {	//this avoids hitting the same box multiple times
+				cout << "\nTrigger Block: Pickup Box\n";
+				p->setIsPicked();
+				v->pickup();
+			}
+			//otherwise ignore the box
+			
 			//I don't know how to remove it from triggerActor once it is hit
 			//and now every hit will pick up a bunch of items, I guess it's the same reason you mentioned :(
 
@@ -55,7 +59,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			std::cout << "LAP MARKER VALUE: " << l->markerValue << std::endl;
 
 			//hardcoded number of laps and markers
-			v->hitLapMarker(l->markerValue, 3, 4);
+			v->hitLapMarker(l->markerValue, 3, 12);	//3 laps, 12 markers (0->11)
 			
 		}
 		//wont do yet, unsure how we want to handle the traps classes
