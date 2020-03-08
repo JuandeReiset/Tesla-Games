@@ -6,5 +6,8 @@ An invisible trigger volume that holds the logic for counting laps during the ra
 class LapMarker :
 	public PhysicsObject
 {
+public:
+	LapMarker(int value);
+	int markerValue;
 };
 

@@ -34,13 +34,11 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 }
 
 void Camera::calculateAngleAroundTarget(float xChange) {
-	angleAroundTarget += (xChange * turnSpeed) ;
-
-	if (angleAroundTarget < -90.f)
-		angleAroundTarget = -90.f;
-	if (angleAroundTarget > 90.f)
-		angleAroundTarget = 90.f;
-		
+	angleAroundTarget += (xChange * turnSpeed);
+	if (angleAroundTarget < -40.f)
+		angleAroundTarget = -40.f;
+	if (angleAroundTarget > 40.f)
+		angleAroundTarget = 40.f;
 }
 
 void Camera::setPosition(float x, float y, float z) {
@@ -66,7 +64,7 @@ void Camera::setFront(float x, float y, float z) {
 
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
 {
-	GLfloat velocity = moveSpeed * deltaTime;
+	GLfloat velocity = 8 * moveSpeed * deltaTime;
 
 	if (keys[GLFW_KEY_W])
 	{
@@ -110,11 +108,11 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	update();
 }
 
-void Camera::stickControl(GLfloat xChange, GLfloat yChange, glm::vec3 carPos, glm::vec3 dir) {
-	bool reset = false;
+void Camera::stickControl(GLfloat xChange, glm::vec3 carPos, glm::vec3 dir, bool reset, bool isFlipped) {
+	//bool reset = false;
 	float angleAroundY = glm::degrees(atan2(dir.z, dir.x));
-	if (xChange == 0)
-		reset = true;
+	/*if (xChange == 0)
+		reset = true;*/
 
 	if (resetFlag) {
 		if (abs(angleAroundTarget) < turnSpeed) {
@@ -129,8 +127,8 @@ void Camera::stickControl(GLfloat xChange, GLfloat yChange, glm::vec3 carPos, gl
 				angleAroundTarget += turnSpeed;
 		}
 	}
-	else {
-		if (reset) {
+	else{
+		if (reset || isFlipped) {
 			if (abs(angleAroundTarget) < turnSpeed) {
 				angleAroundTarget = 0;
 				resetFlag = false;

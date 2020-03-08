@@ -6,7 +6,7 @@
 using namespace physx;
 using namespace snippetvehicle;
 
-Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z) {
+Vehicle::Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id) {
 	physx::PxF32 gSteerVsForwardSpeedData[] =
 	{
 		0.0f,		0.9f,
@@ -56,8 +56,13 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 			5.0f	//fall rate eANALOG_INPUT_STEER_RIGHT
 		}
 	};
-	
+	isPlayer = isPlayerCheck;	//true if player object, false if enemy ai
+
 	initVehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, PxVec3(x, y, z));
+
+	ID = id;
+
+	ability = 3;	//each vehicle has 3 ability use by default
 }
 Vehicle::Vehicle(int id) : ID(id) {}
 Vehicle::~Vehicle() { cleanup(); }
@@ -97,6 +102,37 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	update_turret();
 	
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;
+}
+
+//called when a vehicle hits a trigger volume lap marker. Val is the lapMarker value, trackTotalLaps is the
+//total number of laps needed to win on that track, trackTotalLapMarkers is the total number of lap markers
+//placed around the track
+void Vehicle::hitLapMarker(int val, int trackTotalLaps, int trackTotalLapMarkers)
+{
+	if (expectedMarker == val) {	//good hit
+		std::cout << "HIT LAP MARKER " << val << "!\n";
+		//update expected and current marker vals
+		expectedMarker = (expectedMarker + 1) % trackTotalLapMarkers;
+		currentMarker = (currentMarker + 1) % trackTotalLapMarkers;
+
+		if (currentMarker == 0 && expectedMarker == 1) {	//completed a lap
+			numLaps++;
+			if (numLaps == trackTotalLaps) {	//you win!
+				lapWinCondition();
+			}
+		}
+	}
+}
+
+void Vehicle::lapWinCondition()
+{
+	if (isPlayer) {
+		std::cout << "CONGRATULATIONS PLAYER!! YOU WIN!\n";
+	}
+	else {
+		std::cout << "ENEMY OPPONENT HAS WON!\n";
+	}
+	
 }
 
 void Vehicle::update_turret() {
@@ -291,6 +327,11 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eNEUTRAL);
 	gVehicle4W->mDriveDynData.setUseAutoGears(true);
 
+	//set default info for laps
+	currentMarker = 0;
+	expectedMarker = 1;
+	numLaps = 0;
+
 }
 
 void Vehicle::initVehicleAudio(AudioEngine* engine) {
@@ -468,6 +509,11 @@ physx::PxTransform Vehicle::GetTransform()
 	return gVehicle4W->getRigidDynamicActor()->getGlobalPose();
 }
 
+float Vehicle::GetForwardsSpeed()
+{
+	return gVehicle4W->computeForwardSpeed();
+}
+
 float Vehicle::GetRotationAngle()
 {
 	return gVehicle4W->getRigidDynamicActor()->getGlobalPose().q.getAngle();
@@ -508,3 +554,33 @@ void Vehicle::firelazer() {
 	health.SetHealth(0);
 }
 
+void Vehicle::pickup() {
+	//now set the max ability at 9
+	if (ability == 9)
+		;
+	else
+		++ability;
+
+	std::cout << "ability:" << ability << std::endl;
+}
+
+void Vehicle::useCaltrops(std::list<std::unique_ptr<Caltrops>> &catropsList) {
+	if (ability == 0)
+		return;
+
+	PxVec3 pos = GetPosition();
+
+	std::unique_ptr<Caltrops> caltrop(new Caltrops());
+	caltrop->createCaltrops(glm::vec3(pos.x, pos.y, pos.z));
+	catropsList.push_back(std::move(caltrop));
+
+	--ability;
+}
+
+void Vehicle::useOil() {
+
+}
+
+void Vehicle::useSmoke() {
+
+}

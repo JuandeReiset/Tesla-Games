@@ -17,8 +17,9 @@ public:
 	~Caltrops();
 
 	//model stuff
-	void createCaltrops(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess);														//create caltrops model
+	void createCaltrops(glm::vec3 carPos);														//create caltrops model
 	void renderCaltrops();														//render caltrops model
+	void load(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess);
 
 	//if caltrops still exist
 	bool isDead();
