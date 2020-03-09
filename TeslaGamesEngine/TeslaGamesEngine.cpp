@@ -597,20 +597,22 @@ int main()
 	aiDriving.AddDrivingTarget(225.5f, -58);
 	aiDriving.AddDrivingTarget(165.5f, -90);
 	*/
-	//aiDriving.AddDrivingTarget(13, -82);
-	//aiDriving.AddDrivingTarget(-30,-86); //TEST
-	//aiDriving.AddDrivingTarget(-76, -85);
-
-	//aiDriving.AddDrivingTarget(20, -92);
-	aiDriving.AddDrivingTarget(50, -92);//add
-	//aiDriving.AddDrivingTarget(30, -92);//add
-	aiDriving.AddDrivingTarget(-83, -98);//add
-	//aiDriving.AddDrivingTarget(-76, -85);
+	
+	aiDriving.AddDrivingTarget(40,-100);
+	aiDriving.AddDrivingTarget(40, -100);
+	//aiDriving.AddDrivingTarget(-20, -98);
+	//aiDriving.AddDrivingTarget(-80, -40);
+	
+    //This part behaves ok
 	aiDriving.AddDrivingTarget(-103, -45);
 	aiDriving.AddDrivingTarget(-85, 39);
 	aiDriving.AddDrivingTarget(-55, 51);
+	//Until this point the Car can move okeish //Here sharp turn
+	aiDriving.AddDrivingTarget(-25, 15);//test
 	aiDriving.AddDrivingTarget(-5.5f, 6.8f);
-	aiDriving.AddDrivingTarget(23, 36);
+	//aiDriving.AddDrivingTarget(23, 36);
+	aiDriving.AddDrivingTarget(0, 10);//test
+	aiDriving.AddDrivingTarget(15, 13);//test
 	aiDriving.AddDrivingTarget(105.3f, 53);
 	aiDriving.AddDrivingTarget(212, 33);
 	aiDriving.AddDrivingTarget(220, -4.5f);
@@ -842,6 +844,7 @@ int main()
 		//caltrops end here
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		glm::vec3 aitemp;
 		//Enemy CARS rendering
 		//there is probably a much better way of rendering the other enemy cars, but this works for now
 		if (!physEng->enemyVehicles.empty()) {
@@ -853,7 +856,7 @@ int main()
 				physx::PxVec3 enemyv_dir = enemyvehicleQuaternion.getBasisVector2();
 				const physx::PxVec3 enemyvehiclePositionPhysx = enemyvDynamic->getGlobalPose().p;
 				glm::vec3 enemyvehiclePosition(enemyvehiclePositionPhysx.x, enemyvehiclePositionPhysx.y, enemyvehiclePositionPhysx.z);
-
+				aitemp = enemyvehiclePosition;
 				physx::PxMat44 enemymodelMat(enemyvDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 				enemymodelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, enemymodelMat.front());
@@ -987,6 +990,9 @@ int main()
 			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
 			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), vehicleQuaternion.x, vehicleQuaternion, vehicleQuaternion.z);
 			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
+			ImGui::Text("AI CAR POS");               // Display some text (you can use a format strings too)
+			
+			ImGui::Text("Xpos: %f Ypos: %f Zpos: %f", aitemp.x, aitemp.y, aitemp.z);
 
 			ImGui::End();
 		}

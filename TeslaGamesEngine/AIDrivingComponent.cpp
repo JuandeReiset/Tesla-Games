@@ -17,16 +17,18 @@ void AIDrivingComponent::Tick(float deltaTime)
 	// Move to current target
 	DrivingTarget currentTarget = drivingTargets[currentTargetIndex];
 	MoveTo(currentTarget);
-
+	std::cout << "Current Target: " << currentTarget.x << ", " << currentTarget.y << std::endl;
 	
 	physx::PxVec3 currentPos = owner->GetPosition();
 	lastPos = currentPos;
 
 	// Increment target if current target is close enough
 	float distance = sqrt(((currentPos.x - currentTarget.x) * (currentPos.x - currentTarget.x)) + ((currentPos.z - currentTarget.y) * (currentPos.z - currentTarget.y)));
+	
 	if (distance < threshold) {
 		std::cout << "Current Target: " << currentTarget.x << ", " << currentTarget.y << std::endl;
 		currentTargetIndex++;
+		
 		if (currentTargetIndex >= drivingTargets.size() - 1) currentTargetIndex = 1;
 	}
 
