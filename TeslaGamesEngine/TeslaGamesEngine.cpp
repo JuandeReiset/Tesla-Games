@@ -564,7 +564,7 @@ int main()
 	//audioObject.playSound();
 	raceMusic.setVolume(0.5f);
 	raceMusic.loopSound(true);
-	raceMusic.playSound();
+	//raceMusic.playSound();
 
 	//Controller
 	Controller player1 = Controller(1);
@@ -580,9 +580,10 @@ int main()
 	//End of audio system setup/demo
 
 	// Creating an enemy vehicle 
-	physEng->addEnemyVehicle(70, 5, -82);
+	physEng->addEnemyVehicle(70, 5, -92);
 	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
 	//im adding the lap markers as the only targets for now
+	/*
 	aiDriving.AddDrivingTarget(70, -86);
 	aiDriving.AddDrivingTarget(-76, -85);	
 	aiDriving.AddDrivingTarget(-103, -45);
@@ -595,9 +596,29 @@ int main()
 	aiDriving.AddDrivingTarget(220, -4.5f);
 	aiDriving.AddDrivingTarget(225.5f, -58);
 	aiDriving.AddDrivingTarget(165.5f, -90);
+	*/
+	//aiDriving.AddDrivingTarget(13, -82);
+	//aiDriving.AddDrivingTarget(-30,-86); //TEST
+	//aiDriving.AddDrivingTarget(-76, -85);
+
+	//aiDriving.AddDrivingTarget(20, -92);
+	aiDriving.AddDrivingTarget(50, -92);//add
+	//aiDriving.AddDrivingTarget(30, -92);//add
+	aiDriving.AddDrivingTarget(-83, -98);//add
+	//aiDriving.AddDrivingTarget(-76, -85);
+	aiDriving.AddDrivingTarget(-103, -45);
+	aiDriving.AddDrivingTarget(-85, 39);
+	aiDriving.AddDrivingTarget(-55, 51);
+	aiDriving.AddDrivingTarget(-5.5f, 6.8f);
+	aiDriving.AddDrivingTarget(23, 36);
+	aiDriving.AddDrivingTarget(105.3f, 53);
+	aiDriving.AddDrivingTarget(212, 33);
+	aiDriving.AddDrivingTarget(220, -4.5f);
+	aiDriving.AddDrivingTarget(225.5f, -58);
+	aiDriving.AddDrivingTarget(165.5f, -90);
 
 	/*
-	physEng->addEnemyVehicle(15, 10, 0);
+	physEng->addEnemyVehile(15, 10, 0);
 	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
 	aiDriving2.AddDrivingTarget(45, 40);
 	aiDriving2.AddDrivingTarget(215, -70);
