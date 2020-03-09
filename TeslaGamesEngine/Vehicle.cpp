@@ -556,6 +556,7 @@ void Vehicle::firelazer() {
 	health.SetHealth(0);
 }
 
+//adds one ability point
 void Vehicle::pickup() {
 	//now set the max ability at 9
 	if (ability == 9)
@@ -566,15 +567,16 @@ void Vehicle::pickup() {
 	std::cout << "ability:" << ability << std::endl;
 }
 
-void Vehicle::useCaltrops(std::list<std::unique_ptr<Caltrops>> &catropsList) {
+//drops caltrops and adds the newly added caltrop to the given list
+void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 	if (ability == 0)
 		return;
 
 	PxVec3 pos = GetPosition();
 
-	std::unique_ptr<Caltrops> caltrop(new Caltrops());
+	Caltrops* caltrop = new Caltrops();
 	caltrop->createCaltrops(glm::vec3(pos.x, pos.y, pos.z));
-	catropsList.push_back(std::move(caltrop));
+	catropsList->push_back(caltrop);
 
 	--ability;
 }

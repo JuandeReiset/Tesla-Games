@@ -16,6 +16,8 @@ public:
 	Caltrops();
 	~Caltrops();
 
+	physx::PxRigidActor* actor;
+
 	//model stuff
 	void createCaltrops(glm::vec3 carPos);														//create caltrops model
 	void renderCaltrops();														//render caltrops model

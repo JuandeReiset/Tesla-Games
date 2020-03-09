@@ -3,6 +3,7 @@
 #include "Vehicle.h"
 #include "LapMarker.h"
 #include "PickupBox.h"
+#include "Caltrops.h"
 #include "ColliderCallback.h"
 #include <vector>
 #include <list>
@@ -25,7 +26,7 @@ public:
 	const std::string VEHICLE = "vehicle";
 	const std::string PICKUP = "pickup";
 	const std::string LAPMARKER = "lapmarker";
-	const std::string HAZARD = "hazard";
+	const std::string CALTROPS = "caltrops";
 
 	PhysicsEngine();
 	void initAudioForVehicles(AudioEngine * audio);
@@ -44,6 +45,7 @@ public:
 	std::vector<LapMarker*> lapmarkers;		//the lap markers
 	//std::vector<PickupBox*> pickupBoxes;	//the pickup boxes
 	std::list<PickupBox*> pickupBoxes;	//the pickup boxes
+	std::list<Caltrops*> caltropsList;
 
 	PxRigidActor* testActor;
 
@@ -51,7 +53,7 @@ public:
 
 	void createPickupTriggerVolume(float x, float y, float z, float width, float height, float depth);
 	void createLapMarkerTriggerVolume(int lapMarkerValue, float x, float y, float z, float width, float height, float depth);
-	void createHazardTriggerVolume(float x, float y, float z, float width, float height, float depth);
+	void createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth);
 
 	void update_dir_render4Vehicle(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z);
 

@@ -89,8 +89,7 @@ std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 std::vector<HUD*> HUDList;
 std::vector<Shadow*> shadowList;
-//std::vector<Caltrops*> caltropsList;
-std::list<std::unique_ptr<Caltrops>> caltropsList;											//using list instead of vector since we will often insert and delete elements in the list
+//std::list<std::unique_ptr<Caltrops>> caltropsList;											//using list instead of vector since we will often insert and delete elements in the list
 std::list<std::unique_ptr<Bullet>> bulletsList;
 std::list <ShootComp*> shootList;
 //std::list<std::unique_ptr<ShootComp*>> shootList;
@@ -502,6 +501,7 @@ int main()
 	T_turret.LoadModel("Models/TeslaGamesTruck2_modturret.obj");
 
 	boxTest.LoadModel("Models/wall.obj");
+	//caltrop.LoadModel("Models/caltrops.obj");
 	//racetrack.LoadModel("Models/track2.obj");
 	racetrack_walls.LoadModel("Models/track2walls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 	racetrack_floor.LoadModel("Models/track2floor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
@@ -796,13 +796,18 @@ int main()
 			caltropsList.push_back(std::move(caltrop));
 		}
 */
-		if (player1.isButtonDown(XButtons.DPad_Down))
-			physEng->player->useCaltrops(caltropsList);
+		//when dpad down is pushed, make a new caltrop and trigger volume
+		if (player1.isButtonDown(XButtons.DPad_Down)) {
+			PxVec3 p(physEng->player->GetPosition());
+			physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 1, 1, 1);
+		}
 
-		auto c = caltropsList.begin();
-		while (c != caltropsList.end()) {
-			if ((*c)->isDead())
-				caltropsList.erase(c++);
+		auto c = physEng->caltropsList.begin();
+		while (c != physEng->caltropsList.end()) {	//remove dead caltrops
+			if ((*c)->isDead()) {
+				physEng->gScene->removeActor(*((*c)->actor));
+				physEng->caltropsList.erase(c++);
+			}
 			else {
 				(*c)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
 				(*c)->renderCaltrops();

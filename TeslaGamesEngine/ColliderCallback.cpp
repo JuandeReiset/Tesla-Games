@@ -64,8 +64,8 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			
 		}
 		//wont do yet, unsure how we want to handle the traps classes
-		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "hazard") == 0) {
-			cout << "\nTrigger Block: Hazard\n";
+		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "caltrops") == 0) {
+			cout << "\nTrigger Block: Caltrops\n";
 
 			//add logic here
 		}

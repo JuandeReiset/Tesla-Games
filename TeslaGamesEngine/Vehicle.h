@@ -103,7 +103,7 @@ public:
 	void pickup();													//pick up a(n) item/ability
 
 	//pls add your ability stuff here
-	void useCaltrops(std::list<std::unique_ptr<Caltrops>> &caltropsList);
+	void useCaltrops(std::list<Caltrops*> *caltropsList);
 	void useOil();
 	void useSmoke();
 
@@ -119,6 +119,7 @@ private:
 	AudioBoomBox boostStart;
 	AudioBoomBox boostMax;
 
+	//the number of times you can drop a trap
 	int ability;
 	
 	physx::PxF32 gSteerVsForwardSpeedData[2 * 8];

@@ -51,15 +51,7 @@ PhysicsEngine::PhysicsEngine() {
 	//createPickupTriggerVolume(0, 0, 0, 2, 2, 2);
 	createPickupTriggerVolume(0, 2, 10, 2, 2, 2);
 	createPickupTriggerVolume(2, 2, 10, 2, 2, 2);
-	createPickupTriggerVolume(33, 1, -87, 4, 2, 1.65f);	//these sizes and the render scale values make a nice box size
-
-	//make lap markers (old)
-/*	createLapMarkerTriggerVolume(0, 0, 2, 9, 10, 20, 28);		//marker 0 start/finish
-	createLapMarkerTriggerVolume(1, 138, 2, 49, 10, 20, 28);	//marker 1
-	createLapMarkerTriggerVolume(2, 162, 2, -85, 10, 20, 35);	//marker 2
-	createLapMarkerTriggerVolume(3, -84, 2, 39, 28, 20, 20);	//marker 3
-	*/
-
+	//createPickupTriggerVolume(33, 1, -87, 4, 2, 1.65f);	//these sizes and the render scale values make a nice box size
 
 	//new lap markers
 	createLapMarkerTriggerVolume(0, 70, 2, -86, 4, 10, 30);			//0, start/finish position
@@ -187,24 +179,30 @@ void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, float x, fl
 	lapmarkers.push_back(lapMarker);
 }
 
-//not yet fully implemented, need a common hazard object that has a PxRigidActor*
-void PhysicsEngine::createHazardTriggerVolume(float x, float y, float z, float width, float height, float depth)
+void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth)
 {
+	//this creates a caltrop according to vehicle ability point logic at vehicle position and
+	//adds it to the end of the list that gets passed in
+	player->useCaltrops(&caltropsList);
+
+
 	PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
 	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
-	actor->setName(HAZARD.c_str());
+	caltropsList.back()->actor = actor;
+	actor->setName(CALTROPS.c_str());
 	PxShape* shape;
 	actor->getShapes(&shape, 1);
 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
 	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
 	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
+	caltropsList.back()->actor->userData = caltropsList.back();
+
 	gScene->addActor(*actor);
 }
-
 
 void PhysicsEngine::cleanupPhysics()
 {
