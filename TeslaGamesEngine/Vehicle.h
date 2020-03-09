@@ -43,6 +43,10 @@ public:
 	void hitLapMarker(int val, int trackTotalLaps, int trackTotalLapMarkers);
 	void lapWinCondition();
   
+	//ability stuff
+	int ability;
+
+
 	//Shooting component functions
 	void update_turret();
 	void shoot(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z);

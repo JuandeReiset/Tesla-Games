@@ -70,6 +70,10 @@ void HUDcreator::loadHUD() {
 	HUD* alive2num = new HUD();
 	alive2num->createHUD(alive2numVertices, HUDindices, 20, 6);
 	HUDList.push_back(alive2num);
+
+	HUD* gameStateUI = new HUD();
+	gameStateUI->createHUD(gameStateVertices, HUDindices, 20, 6);
+	HUDList.push_back(gameStateUI);
 }
 void HUDcreator::loadTextures() {
 	//load digits textures
@@ -81,6 +85,19 @@ void HUDcreator::loadTextures() {
 	dig2Texture.LoadTextureAlpha();
 	dig3Texture = Texture("Textures/numbers/3.png");
 	dig3Texture.LoadTextureAlpha();
+	dig4Texture = Texture("Textures/numbers/4.png");
+	dig4Texture.LoadTextureAlpha();
+	dig5Texture = Texture("Textures/numbers/5.png");
+	dig5Texture.LoadTextureAlpha();
+	dig6Texture = Texture("Textures/numbers/6.png");
+	dig6Texture.LoadTextureAlpha();
+	dig7Texture = Texture("Textures/numbers/7.png");
+	dig7Texture.LoadTextureAlpha();
+	dig8Texture = Texture("Textures/numbers/8.png");
+	dig8Texture.LoadTextureAlpha();
+	dig9Texture = Texture("Textures/numbers/9.png");
+	dig9Texture.LoadTextureAlpha();
+
 
 	//load HUD textures
 	weaponUITexture = Texture("Textures/HUD/WeaponsUI.png");
@@ -101,6 +118,13 @@ void HUDcreator::loadTextures() {
 	cupTexture.LoadTextureAlpha();
 	flagTexture = Texture("Textures/HUD/flags.png");
 	flagTexture.LoadTextureAlpha();
+	outOfWeaponTexture = Texture("Textures/HUD/outOfWeapon.png");
+	outOfWeaponTexture.LoadTextureAlpha();
+	winTexture = Texture("Textures/win.png");
+	winTexture.LoadTextureAlpha();
+	loseTexture = Texture("Textures/lose.png");
+	loseTexture.LoadTextureAlpha();
+	gameState = Texture();
 
 	return;
 }
@@ -138,11 +162,11 @@ void HUDcreator::use() {
 	}
 */
 //weapon UI
-	weaponUITexture.UseTexture();
+	weaponTexture.UseTexture();
 	HUDList[0]->renderHUD();
 
 	//number of charges
-	dig3Texture.UseTexture();
+	abilityNum.UseTexture();
 	HUDList[1]->renderHUD();
 
 	//TODO: if out of charges, change ui
@@ -182,18 +206,217 @@ void HUDcreator::use() {
 	//current laps
 	flagTexture.UseTexture();
 	HUDList[11]->renderHUD();
-	dig3Texture.UseTexture();
+	lapNum1.UseTexture();
+	HUDList[12]->renderHUD();
+	lapNum2.UseTexture();
 	HUDList[13]->renderHUD();
 
 	//current alive
 	personTexture.UseTexture();
 	HUDList[14]->renderHUD();
-	dig1Texture.UseTexture();
+	aliveNum1.UseTexture();
 	HUDList[15]->renderHUD();
-	dig0Texture.UseTexture();
+	aliveNum2.UseTexture();
 	HUDList[16]->renderHUD();
+
+	//win or lose
+	if (winOrLose) {
+		gameState.UseTexture();
+		HUDList[17]->renderHUD();
+	}
 
 	glEnable(GL_DEPTH_TEST);
 
 	return;
+}
+
+void HUDcreator::setAbilityNumber(int ability) {
+	switch (ability) {
+		case 0:	
+			abilityNum = dig0Texture;
+			weaponTexture = outOfWeaponTexture;
+			break;
+		case 1:
+			abilityNum = dig1Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 2:
+			abilityNum = dig2Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 3:
+			abilityNum = dig3Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 4:
+			abilityNum = dig4Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 5:
+			abilityNum = dig5Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 6:
+			abilityNum = dig6Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 7:
+			abilityNum = dig7Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 8:
+			abilityNum = dig8Texture;
+			weaponTexture = weaponUITexture;
+			break;
+		case 9:
+			abilityNum = dig9Texture;
+			weaponTexture = weaponUITexture;
+	}
+}
+
+void HUDcreator::setGameState(bool isPlayer) {
+	if (isPlayer)
+		gameState = winTexture;
+	else
+		gameState = loseTexture;
+
+	winOrLose = true;
+}
+
+void HUDcreator::setLapNumber(int lap) {
+	int num2 = lap % 10;
+	int num1 = lap / 10;
+
+	switch (num1) {
+	case 0:
+		lapNum1 = dig0Texture;
+		break;
+	case 1:
+		lapNum1 = dig1Texture;
+		break;
+	case 2:
+		lapNum1 = dig2Texture;
+		break;
+	case 3:
+		lapNum1 = dig3Texture;
+		break;
+	case 4:
+		lapNum1 = dig4Texture;
+		break;
+	case 5:
+		lapNum1 = dig5Texture;
+		break;
+	case 6:
+		lapNum1 = dig6Texture;
+		break;
+	case 7:
+		lapNum1 = dig7Texture;
+		break;
+	case 8:
+		lapNum1 = dig8Texture;
+		break;
+	case 9:
+		lapNum1 = dig9Texture;
+	}
+
+	switch (num2) {
+	case 0:
+		lapNum2 = dig0Texture;
+		break;
+	case 1:
+		lapNum2 = dig1Texture;
+		break;
+	case 2:
+		lapNum2 = dig2Texture;
+		break;
+	case 3:
+		lapNum2 = dig3Texture;
+		break;
+	case 4:
+		lapNum2 = dig4Texture;
+		break;
+	case 5:
+		lapNum2 = dig5Texture;
+		break;
+	case 6:
+		lapNum2 = dig6Texture;
+		break;
+	case 7:
+		lapNum2 = dig7Texture;
+		break;
+	case 8:
+		lapNum2 = dig8Texture;
+		break;
+	case 9:
+		lapNum2 = dig9Texture;
+	}
+}
+
+void HUDcreator::setAliveNumber(int alive) {
+	int num2 = alive % 10;
+	int num1 = alive / 10;
+
+	switch (num1) {
+	case 0:
+		aliveNum1 = dig0Texture;
+		break;
+	case 1:
+		aliveNum1 = dig1Texture;
+		break;
+	case 2:
+		aliveNum1 = dig2Texture;
+		break;
+	case 3:
+		aliveNum1 = dig3Texture;
+		break;
+	case 4:
+		aliveNum1 = dig4Texture;
+		break;
+	case 5:
+		aliveNum1 = dig5Texture;
+		break;
+	case 6:
+		aliveNum1 = dig6Texture;
+		break;
+	case 7:
+		aliveNum1 = dig7Texture;
+		break;
+	case 8:
+		aliveNum1 = dig8Texture;
+		break;
+	case 9:
+		aliveNum1 = dig9Texture;
+	}
+
+	switch (num2) {
+	case 0:
+		aliveNum2 = dig0Texture;
+		break;
+	case 1:
+		aliveNum2 = dig1Texture;
+		break;
+	case 2:
+		aliveNum2 = dig2Texture;
+		break;
+	case 3:
+		aliveNum2 = dig3Texture;
+		break;
+	case 4:
+		aliveNum2 = dig4Texture;
+		break;
+	case 5:
+		aliveNum2 = dig5Texture;
+		break;
+	case 6:
+		aliveNum2 = dig6Texture;
+		break;
+	case 7:
+		aliveNum2 = dig7Texture;
+		break;
+	case 8:
+		aliveNum2 = dig8Texture;
+		break;
+	case 9:
+		aliveNum2 = dig9Texture;
+	}
 }
