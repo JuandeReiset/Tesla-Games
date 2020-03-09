@@ -13,10 +13,11 @@
 class Caltrops:DamagingObject
 {
 public:
-	Caltrops();
+	Caltrops(int idInput);
 	~Caltrops();
 
 	physx::PxRigidActor* actor;
+	int id;
 
 	//model stuff
 	void createCaltrops(glm::vec3 carPos);														//create caltrops model

@@ -33,6 +33,8 @@ public:
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);
 
+	int ID;
+
 	//lap components
 	bool isPlayer;
 	int currentMarker;
@@ -110,7 +112,7 @@ public:
 private:
 	HealthComponent health = HealthComponent(100);
 	ShootComp turret = ShootComp();
-	int ID;
+	
 
 	AudioEngine* audioEngine;
 	AudioBoomBox accelerateFromRest;

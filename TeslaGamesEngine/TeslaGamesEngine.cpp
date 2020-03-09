@@ -799,7 +799,7 @@ int main()
 		//when dpad down is pushed, make a new caltrop and trigger volume
 		if (player1.isButtonDown(XButtons.DPad_Down)) {
 			PxVec3 p(physEng->player->GetPosition());
-			physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 1, 1, 1);
+			physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
 		}
 
 		auto c = physEng->caltropsList.begin();

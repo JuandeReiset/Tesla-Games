@@ -547,7 +547,7 @@ double Vehicle::currentHealth() {
 void Vehicle::getDamage(double damage) {
 	double h = health.GetHealth();
 	health.SetHealth(h - damage);
-
+	std::cout << "\nOUCH I JUST TOOK "<<damage<<" DAMAGE\n";
 	return;
 }
 
@@ -572,9 +572,11 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 	if (ability == 0)
 		return;
 
+	std::cout << "\nAbility Points: " << ability;
+
 	PxVec3 pos = GetPosition();
 
-	Caltrops* caltrop = new Caltrops();
+	Caltrops* caltrop = new Caltrops(ID);
 	caltrop->createCaltrops(glm::vec3(pos.x, pos.y, pos.z));
 	catropsList->push_back(caltrop);
 

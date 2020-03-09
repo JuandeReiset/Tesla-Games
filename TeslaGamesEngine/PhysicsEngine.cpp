@@ -135,7 +135,7 @@ void PhysicsEngine::createPickupTriggerVolume(float x, float y, float z, float w
 {
 	PickupBox* pickup = new PickupBox();
 
-	PxBoxGeometry geometry(PxVec3(width/2,height/2,depth/2));
+	PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -185,23 +185,27 @@ void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float
 	//adds it to the end of the list that gets passed in
 	player->useCaltrops(&caltropsList);
 
+	if(caltropsList.back() == NULL) {
+		std::cout << "\nError: Could not create caltrops! No more charges!\n";
+	}
+	else {
+		PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
-	PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
-	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
-	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+		PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+		caltropsList.back()->actor = actor;
+		actor->setName(CALTROPS.c_str());
+		PxShape* shape;
+		actor->getShapes(&shape, 1);
+		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
-	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
-	caltropsList.back()->actor = actor;
-	actor->setName(CALTROPS.c_str());
-	PxShape* shape;
-	actor->getShapes(&shape, 1);
-	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
-	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+		caltropsList.back()->actor->userData = caltropsList.back();
 
-	caltropsList.back()->actor->userData = caltropsList.back();
-
-	gScene->addActor(*actor);
+		gScene->addActor(*actor);
+	}
 }
 
 void PhysicsEngine::cleanupPhysics()

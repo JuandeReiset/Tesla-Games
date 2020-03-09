@@ -1,6 +1,7 @@
 #include "Caltrops.h"
 
-Caltrops::Caltrops() {
+Caltrops::Caltrops(int idInput) {
+	id = idInput;
 	life = 5.f;											//lifetime is 5 sec
 	birthTime = glfwGetTime();
 	currentTime = glfwGetTime();
