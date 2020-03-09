@@ -546,7 +546,7 @@ double Vehicle::currentHealth() {
 void Vehicle::getDamage(double damage) {
 	double h = health.GetHealth();
 	health.SetHealth(h - damage);
-
+	std::cout << "\nOUCH I JUST TOOK "<<damage<<" DAMAGE\n";
 	return;
 }
 
@@ -555,6 +555,7 @@ void Vehicle::firelazer() {
 	health.SetHealth(0);
 }
 
+//adds one ability point
 void Vehicle::pickup() {
 	//now set the max ability at 9
 	if (ability == 9)
@@ -565,15 +566,18 @@ void Vehicle::pickup() {
 	std::cout << "ability:" << ability << std::endl;
 }
 
-void Vehicle::useCaltrops(std::list<std::unique_ptr<Caltrops>> &catropsList) {
+//drops caltrops and adds the newly added caltrop to the given list
+void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 	if (ability == 0)
 		return;
 
+	std::cout << "\nAbility Points: " << ability;
+
 	PxVec3 pos = GetPosition();
 
-	std::unique_ptr<Caltrops> caltrop(new Caltrops());
+	Caltrops* caltrop = new Caltrops(ID);
 	caltrop->createCaltrops(glm::vec3(pos.x, pos.y, pos.z));
-	catropsList.push_back(std::move(caltrop));
+	catropsList->push_back(caltrop);
 
 	--ability;
 }

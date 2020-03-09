@@ -42,6 +42,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 				p->setIsPicked();
 				v->pickup();
 			}
+			
 			//otherwise ignore the box
 			
 			//I don't know how to remove it from triggerActor once it is hit
@@ -63,10 +64,17 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			
 		}
 		//wont do yet, unsure how we want to handle the traps classes
-		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "hazard") == 0) {
-			cout << "\nTrigger Block: Hazard\n";
+		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "caltrops") == 0) {
+			cout << "\nTrigger Block: Caltrops\n";
 
-			//add logic here
+			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
+			Caltrops* c = (Caltrops*)pairs[i].triggerActor->userData;
+
+			//should do damage (1pt) and should not hit the player it was placed by
+			if (v->ID != c->id) {
+				//do damage
+				v->getDamage(1);
+			}
 		}
 	}
 }

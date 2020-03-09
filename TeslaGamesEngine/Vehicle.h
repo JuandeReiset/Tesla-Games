@@ -33,6 +33,8 @@ public:
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);
 
+	int ID;
+
 	//lap components
 	bool isPlayer;
 	int currentMarker;
@@ -107,14 +109,14 @@ public:
 	void pickup();													//pick up a(n) item/ability
 
 	//pls add your ability stuff here
-	void useCaltrops(std::list<std::unique_ptr<Caltrops>> &caltropsList);
+	void useCaltrops(std::list<Caltrops*> *caltropsList);
 	void useOil();
 	void useSmoke();
 
 private:
 	HealthComponent health = HealthComponent(100);
 	ShootComp turret = ShootComp();
-	int ID;
+	
 
 	AudioEngine* audioEngine;
 	AudioBoomBox accelerateFromRest;
