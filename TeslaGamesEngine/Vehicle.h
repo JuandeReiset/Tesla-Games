@@ -125,9 +125,7 @@ private:
 	AudioBoomBox boostStart;
 	AudioBoomBox boostMax;
 
-	//the number of times you can drop a trap
-	int ability;
-	
+
 	physx::PxF32 gSteerVsForwardSpeedData[2 * 8];
 	bool gIsVehicleInAir = true;
 	physx::PxFixedSizeLookupTable<8> gSteerVsForwardSpeedTable;
