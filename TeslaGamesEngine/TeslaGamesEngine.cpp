@@ -583,18 +583,31 @@ int main()
 	physEng->addEnemyVehicle(70, 5, -82);
 	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
 	//im adding the lap markers as the only targets for now
-	aiDriving.AddDrivingTarget(70, -86);
-	aiDriving.AddDrivingTarget(-76, -85);	
-	aiDriving.AddDrivingTarget(-103, -45);
-	aiDriving.AddDrivingTarget(-85, 39);
-	aiDriving.AddDrivingTarget(-55, 51);	
-	aiDriving.AddDrivingTarget(-5.5f, 6.8f);
-	aiDriving.AddDrivingTarget(23, 36);
-	aiDriving.AddDrivingTarget(105.3f, 53);
-	aiDriving.AddDrivingTarget(212, 33);	
-	aiDriving.AddDrivingTarget(220, -4.5f);
-	aiDriving.AddDrivingTarget(225.5f, -58);
-	aiDriving.AddDrivingTarget(165.5f, -90);
+	//aiDriving.AddDrivingTarget(70, -86);
+	//aiDriving.AddDrivingTarget(-76, -85);	
+	//aiDriving.AddDrivingTarget(-103, -45);
+	//aiDriving.AddDrivingTarget(-85, 39);
+	//aiDriving.AddDrivingTarget(-55, 51);	
+	//aiDriving.AddDrivingTarget(-5.5f, 6.8f);
+	//aiDriving.AddDrivingTarget(23, 36);
+	//aiDriving.AddDrivingTarget(105.3f, 53);
+	//aiDriving.AddDrivingTarget(212, 33);	
+	//aiDriving.AddDrivingTarget(220, -4.5f);
+	//aiDriving.AddDrivingTarget(225.5f, -58);
+	//aiDriving.AddDrivingTarget(165.5f, -90);
+	aiDriving.AddDrivingTarget(-40, -85);
+	aiDriving.AddDrivingTarget(-85, -80);
+	aiDriving.AddDrivingTarget(-95, -20);
+	aiDriving.AddDrivingTarget(-75, 45);
+	aiDriving.AddDrivingTarget(-55, 45);
+	aiDriving.AddDrivingTarget(-15, 15);
+	aiDriving.AddDrivingTarget(-5, 10);
+	aiDriving.AddDrivingTarget(20, 35);
+	aiDriving.AddDrivingTarget(130, 65);
+	aiDriving.AddDrivingTarget(210, 40);
+	aiDriving.AddDrivingTarget(225, -60);
+
+
 
 	/*
 	physEng->addEnemyVehicle(15, 10, 0);
@@ -963,7 +976,8 @@ int main()
 			ImGui::Text("Driving mode and Position");
 			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
+			ImGui::Text(": %i Xpos: %.2f Ypos: %.2f Zpos: %.2f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
+			//ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
 			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), vehicleQuaternion.x, vehicleQuaternion, vehicleQuaternion.z);
 			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
 

@@ -26,9 +26,13 @@ private:
 	int currentTargetIndex = 0;
 	Vehicle* owner;
 	
-	float threshold = 30.0f;
+	float threshold = 25.0f;
 
 	bool isStuck = false;
 	physx::PxVec3 lastPos;
+	float lastMovedTime;
+	float lastStuckTime;
+
+	bool moved;
 };
 
