@@ -580,6 +580,7 @@ int main()
 	//End of audio system setup/demo
 
 	// Creating an enemy vehicle 
+	
 	physEng->addEnemyVehicle(70, 5, -92);
 	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
 	//im adding the lap markers as the only targets for now
@@ -598,7 +599,9 @@ int main()
 	aiDriving.AddDrivingTarget(165.5f, -90);
 	*/
 	
-	aiDriving.AddDrivingTarget(40,-100);
+	//TEST 1
+	
+	//aiDriving.AddDrivingTarget(40,-100);
 	aiDriving.AddDrivingTarget(40, -100);
 	//aiDriving.AddDrivingTarget(-20, -98);
 	//aiDriving.AddDrivingTarget(-80, -40);
@@ -607,10 +610,10 @@ int main()
 	aiDriving.AddDrivingTarget(-103, -45);
 	aiDriving.AddDrivingTarget(-85, 39);
 	aiDriving.AddDrivingTarget(-55, 51);
-	//Until this point the Car can move okeish //Here sharp turn
+	//Until this point the Car can move okeish //Here sharp turn almoust U
 	aiDriving.AddDrivingTarget(-25, 15);//test
-	aiDriving.AddDrivingTarget(-5.5f, 6.8f);
-	//aiDriving.AddDrivingTarget(23, 36);
+	aiDriving.AddDrivingTarget(-5.5f, 6.8f);//AI trying to loop back here???
+	aiDriving.AddDrivingTarget(23, 36);
 	aiDriving.AddDrivingTarget(0, 10);//test
 	aiDriving.AddDrivingTarget(15, 13);//test
 	aiDriving.AddDrivingTarget(105.3f, 53);
@@ -618,10 +621,28 @@ int main()
 	aiDriving.AddDrivingTarget(220, -4.5f);
 	aiDriving.AddDrivingTarget(225.5f, -58);
 	aiDriving.AddDrivingTarget(165.5f, -90);
+	
 
+	/*  TEST 2 : NO PROGRESS HERE
+	aiDriving.AddDrivingTarget(-30,-94);
+	aiDriving.AddDrivingTarget(-66, -8);
+	aiDriving.AddDrivingTarget(-98, -8);
+	aiDriving.AddDrivingTarget(-92, -27);
+	aiDriving.AddDrivingTarget(-27, 34);
+	aiDriving.AddDrivingTarget(-46, 34);
+	aiDriving.AddDrivingTarget(-12, 14);
+	aiDriving.AddDrivingTarget(7, 17);
+	aiDriving.AddDrivingTarget(28,35 );
+	aiDriving.AddDrivingTarget(74, 49);
+	aiDriving.AddDrivingTarget(200, 36);
+	aiDriving.AddDrivingTarget(218, 20);
+	aiDriving.AddDrivingTarget(216, -63);
+	aiDriving.AddDrivingTarget(185, -85);
+	aiDriving.AddDrivingTarget(57, -94);
+	*/
 	/*
-	physEng->addEnemyVehile(15, 10, 0);
-	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
+	physEng->addEnemyVehicle(15, 10, 0);
+	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[0]);
 	aiDriving2.AddDrivingTarget(45, 40);
 	aiDriving2.AddDrivingTarget(215, -70);
 	aiDriving2.AddDrivingTarget(-90, -75);
