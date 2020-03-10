@@ -15,7 +15,10 @@
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-x64/
+x64/Debug
+x64/Release
+!x64/Release/*.dll
+!x64/Debug/*.dll
 x86/
 bld/
 [Bb]in/
