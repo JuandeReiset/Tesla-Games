@@ -32,6 +32,7 @@
 #include "Model.h"
 #include "Skybox.h"
 
+
 //Health stuff
 #include "Combat.h"
 #include "HealthComponent.h"
@@ -61,6 +62,7 @@
 
 // AI stuff
 #include "AIDrivingComponent.h"
+#include "AIShootingComponent.h"
 
 // Stuff for imgui
 #include "imGui/imgui.h"
@@ -582,19 +584,6 @@ int main()
 	// Creating an enemy vehicle 
 	physEng->addEnemyVehicle(70, 5, -82);
 	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
-	//im adding the lap markers as the only targets for now
-	//aiDriving.AddDrivingTarget(70, -86);
-	//aiDriving.AddDrivingTarget(-76, -85);	
-	//aiDriving.AddDrivingTarget(-103, -45);
-	//aiDriving.AddDrivingTarget(-85, 39);
-	//aiDriving.AddDrivingTarget(-55, 51);	
-	//aiDriving.AddDrivingTarget(-5.5f, 6.8f);
-	//aiDriving.AddDrivingTarget(23, 36);
-	//aiDriving.AddDrivingTarget(105.3f, 53);
-	//aiDriving.AddDrivingTarget(212, 33);	
-	//aiDriving.AddDrivingTarget(220, -4.5f);
-	//aiDriving.AddDrivingTarget(225.5f, -58);
-	//aiDriving.AddDrivingTarget(165.5f, -90);
 	aiDriving.AddDrivingTarget(-40, -85);
 	aiDriving.AddDrivingTarget(-85, -80);
 	aiDriving.AddDrivingTarget(-95, -20);
@@ -607,16 +596,9 @@ int main()
 	aiDriving.AddDrivingTarget(210, 40);
 	aiDriving.AddDrivingTarget(225, -60);
 
+	AIShootingComponent aiShooting = AIShootingComponent(physEng->enemyVehicles[0]);
+	aiShooting.SetTarget(physEng->player);
 
-
-	/*
-	physEng->addEnemyVehicle(15, 10, 0);
-	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
-	aiDriving2.AddDrivingTarget(45, 40);
-	aiDriving2.AddDrivingTarget(215, -70);
-	aiDriving2.AddDrivingTarget(-90, -75);
-	aiDriving2.AddDrivingTarget(-65, 55);
-	*/
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
 	while (!mainWindow.getShouldClose())
@@ -637,8 +619,8 @@ int main()
 		lastTime = now;
 
 		// For AI testing
-		aiDriving.Tick(deltaTime);
-		//aiDriving2.Tick(deltaTime);
+		//aiDriving.Tick(deltaTime);
+		aiShooting.Tick(deltaTime);
 
 
 		// Get + Handle User Input
@@ -853,6 +835,7 @@ int main()
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 				//TeslaCar.RenderModel();
 				Teslacar_chasis.RenderModel();
+				// TODO: Should keep track of turret rotation in ShootComp or something
 				T_turret.RenderModel();
 			}
 		}

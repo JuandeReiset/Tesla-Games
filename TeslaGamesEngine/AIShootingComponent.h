@@ -17,18 +17,25 @@ class AIShootingComponent :
 {
 public:
 	AIShootingComponent();
+	void Tick(float deltaTime);
+	AIShootingComponent(Vehicle* v);
 
 	void Aim();
+	void SetVehicles(std::vector<Vehicle*> vehiclesToSet);
+
+	// TODO: Remove. This is for testing
+	void SetTarget(Vehicle* v) { target = v; }
 
 	~AIShootingComponent();
 
 private:
 	Vehicle* FindTarget();
 	bool IsTargetInView(Vehicle* aTarget);
-	AimingState FindAimingState();
+	void FindAimingState();
 	void AimAtTarget();
 
 	std::vector<Vehicle*> vehicles;
+	Vehicle* owner;
 	Vehicle* target;
 	AimingState aimingState;
 	float threshold;

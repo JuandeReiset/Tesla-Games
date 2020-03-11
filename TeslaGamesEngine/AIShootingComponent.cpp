@@ -6,6 +6,16 @@ AIShootingComponent::AIShootingComponent()
 {
 }
 
+void AIShootingComponent::Tick(float deltaTime)
+{
+	AimAtTarget();
+}
+
+AIShootingComponent::AIShootingComponent(Vehicle * v)
+{
+	owner = v;
+}
+
 void AIShootingComponent::Aim()
 {
 	// Find a target
@@ -29,16 +39,17 @@ void AIShootingComponent::Aim()
 	}
 }
 
+void AIShootingComponent::SetVehicles(std::vector<Vehicle*> vehiclesToSet)
+{
+	vehicles = vehiclesToSet;
+}
+
 Vehicle * AIShootingComponent::FindTarget()
 {
-	//	Go through all vehicles
-	//	if(IsTargetInView(aVehicle))
-	//		return aVehicle
-	
 	// See if any other vehicle is in range
 	for (auto aVehicle : vehicles) {
-		// TODO: Check that it is not aiming at self
-		if (IsTargetInView(aVehicle)) {
+		// TODO: Check that it is not aiming at self (Might not need cause we raycast)
+		if (IsTargetInView(aVehicle) && aVehicle != owner) {
 			return aVehicle;
 		}
 	}
@@ -48,37 +59,46 @@ Vehicle * AIShootingComponent::FindTarget()
 
 bool AIShootingComponent::IsTargetInView(Vehicle* aTarget)
 {
+	// TODO: Raycast in PhysX
+	// Raycast in direction of target
+	// If ray hits anything, see if that is the target
+	// If yes, return true
+	// Else return false
 	return false;
 }
 
-AimingState AIShootingComponent::FindAimingState()
+void AIShootingComponent::FindAimingState()
 {
 	// TODO: Create functions to determine these
 	bool isTurretMoving;
 	bool isReloading;
 
 	if (ammo <= 0) {
-		return AimingState::NoAmmo;
+		aimingState = AimingState::NoAmmo;
 	}
 	else if (target = nullptr) {
-		return AimingState::NoTarget;
+		aimingState = AimingState::NoTarget;
 	}
 	else if (isReloading) {
-		return AimingState::Reloading;
+		aimingState = AimingState::Reloading;
 	}
 	else if (isTurretMoving) {
-		return AimingState::Aiming;
+		aimingState = AimingState::Aiming;
 	}
 	else {
-		return AimingState::Locked;
+		aimingState = AimingState::Locked;
 	}
 }
 
 void AIShootingComponent::AimAtTarget()
 {
-	// Get current aim direction
-	// Get direction to target
-	// Rotate aim direction towards target
+	// Get current aim direction (Forward vector of turret)
+	// Get direction to target (Target pos - owner pos)
+	physx::PxVec3 toTarget = target->GetPosition() - owner->GetPosition();
+	// TODO: Rotate aim direction towards target
+	updateDirection(toTarget.x, toTarget.y, toTarget.z);
+
+	std::cout << "Aiming at: " << toTarget.x << ", " << toTarget.y << ", " << toTarget.z << std::endl;
 }
 
 AIShootingComponent::~AIShootingComponent()
