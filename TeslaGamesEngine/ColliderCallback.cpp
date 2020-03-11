@@ -63,7 +63,6 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			v->hitLapMarker(l->markerValue, 3, 12);	//3 laps, 12 markers (0->11)
 			
 		}
-		//wont do yet, unsure how we want to handle the traps classes
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "caltrops") == 0) {
 			cout << "\nTrigger Block: Caltrops\n";
 
@@ -74,6 +73,28 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			if (v->ID != c->id) {
 				//do damage
 				v->getDamage(1);
+			}
+		}
+		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "smoke") == 0) {
+			cout << "\nTrigger Block: Smoke\n";
+
+			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
+			Smoke* s = (Smoke*)pairs[i].triggerActor->userData;
+
+			//should do damage (1pt) and should not hit the player it was placed by
+			if (v->ID != s->id) {
+				//smoke gameplay effect
+			}
+		}
+		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "oil") == 0) {
+			cout << "\nTrigger Block: Oil\n";
+
+			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
+			Oil* o = (Oil*)pairs[i].triggerActor->userData;
+
+			//should do damage (1pt) and should not hit the player it was placed by
+			if (v->ID != o->id) {
+				//oil gameplay effect
 			}
 		}
 	}

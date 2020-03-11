@@ -837,7 +837,56 @@ int main()
 		}
 
 		//caltrops end here
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//OIL
+		//when dpad down is pushed, make a new caltrop and trigger volume
+		if (player1.isButtonDown(XButtons.DPad_Right)) {
+			PxVec3 p(physEng->player->GetPosition());
+			physEng->createOilTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
+		}
+
+		auto o = physEng->oilList.begin();
+		while (o!= physEng->oilList.end()) {	//remove dead caltrops
+			if ((*o)->isDead()) {
+				physEng->gScene->removeActor(*((*o)->actor));
+				physEng->oilList.erase(o++);
+			}
+			else {
+				(*o)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
+				(*o)->renderOil();
+				++o;
+			}
+		}
+
+		//oil ends here
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//SMOKE
+		//when dpad left is pushed, make a new smoke and trigger volume
+		if (player1.isButtonDown(XButtons.DPad_Left)) {
+			PxVec3 p(physEng->player->GetPosition());
+			physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
+		}
+
+		auto s = physEng->smokeList.begin();
+		while (s != physEng->smokeList.end()) {	//remove dead smoke
+			if ((*s)->isDead()) {
+				physEng->gScene->removeActor(*((*s)->actor));
+				physEng->smokeList.erase(s++);
+			}
+			else {
+				(*s)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
+				(*s)->renderSmoke();
+				++s;
+			}
+		}
+
+		//smoke ends here
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		//Enemy CARS rendering
 		//there is probably a much better way of rendering the other enemy cars, but this works for now
