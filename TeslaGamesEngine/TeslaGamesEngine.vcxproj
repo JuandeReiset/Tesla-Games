@@ -214,6 +214,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Oil.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PhysicsObject.h" />
@@ -232,6 +233,7 @@
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="ShootComp.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="Smoke.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
@@ -272,6 +274,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Oil.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -296,6 +299,7 @@
     <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="ShootComp.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="Smoke.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="TeslaGamesEngine.cpp" />
     <ClCompile Include="Texture.cpp" />
