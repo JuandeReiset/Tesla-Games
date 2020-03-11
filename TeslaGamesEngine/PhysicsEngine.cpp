@@ -208,6 +208,65 @@ void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float
 	}
 }
 
+void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth)
+{
+	//this creates a caltrop according to vehicle ability point logic at vehicle position and
+	//adds it to the end of the list that gets passed in
+	player->useSmoke(&smokeList);
+
+	if (smokeList.back() == NULL) {
+		std::cout << "\nError: Could not create smoke! No more charges!\n";
+	}
+	else {
+		PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+		PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+		smokeList.back()->actor = actor;
+		actor->setName(SMOKE.c_str());
+		PxShape* shape;
+		actor->getShapes(&shape, 1);
+		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+		
+		smokeList.back()->actor->userData = smokeList.back();
+
+		gScene->addActor(*actor);
+	}
+}
+
+void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float width, float height, float depth)
+{
+	//this creates a caltrop according to vehicle ability point logic at vehicle position and
+	//adds it to the end of the list that gets passed in
+	player->useOil(&oilList);
+
+	if (oilList.back() == NULL) {
+		std::cout << "\nError: Could not create oil! No more charges!\n";
+	}
+	else {
+		PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+		PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+		oilList.back()->actor = actor;
+		actor->setName(OIL.c_str());
+		PxShape* shape;
+		actor->getShapes(&shape, 1);
+		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+		oilList.back()->actor->userData = oilList.back();
+
+		gScene->addActor(*actor);
+	}
+}
+
 void PhysicsEngine::cleanupPhysics()
 {
 	player->cleanupPhysics(gAllocator);

@@ -582,10 +582,32 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 	--ability;
 }
 
-void Vehicle::useOil() {
+void Vehicle::useOil(std::list<Oil*> *oilList) {
+	if (ability == 0)
+		return;
 
+	std::cout << "\nAbility Points: " << ability;
+
+	PxVec3 pos = GetPosition();
+
+	Oil* oil = new Oil(ID);
+	oil->createOil(glm::vec3(pos.x, pos.y, pos.z));
+	oilList->push_back(oil);
+
+	--ability;
 }
 
-void Vehicle::useSmoke() {
+void Vehicle::useSmoke(std::list<Smoke*> *smokeList) {
+	if (ability == 0)
+		return;
 
+	std::cout << "\nAbility Points: " << ability;
+
+	PxVec3 pos = GetPosition();
+
+	Smoke* smoke = new Smoke(ID);
+	smoke->createSmoke(glm::vec3(pos.x, pos.y, pos.z));
+	smokeList->push_back(smoke);
+
+	--ability;
 }

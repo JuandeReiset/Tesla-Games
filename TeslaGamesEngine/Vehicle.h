@@ -17,6 +17,8 @@
 #include "Object.h"
 #include "audioEngine.h"
 #include "Caltrops.h"
+#include "Smoke.h"
+#include "Oil.h"
 
 //#include "Bullet.h"
 
@@ -110,8 +112,8 @@ public:
 
 	//pls add your ability stuff here
 	void useCaltrops(std::list<Caltrops*> *caltropsList);
-	void useOil();
-	void useSmoke();
+	void useSmoke(std::list<Smoke*> *smokeList);
+	void useOil(std::list<Oil*> *oilList);
 
 private:
 	HealthComponent health = HealthComponent(100);

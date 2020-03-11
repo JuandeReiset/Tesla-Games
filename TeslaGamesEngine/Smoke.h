@@ -11,6 +11,7 @@
 class Smoke :
 	public DamagingObject
 {
+public:
 	Smoke(int idInput);
 	~Smoke();
 

@@ -11,6 +11,7 @@
 class Oil :
 	public DamagingObject
 {
+public:
 	Oil(int idInput);
 	~Oil();
 
