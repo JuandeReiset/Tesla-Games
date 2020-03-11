@@ -155,6 +155,7 @@ void ShootComp::fire() {
 void ShootComp::recharge() {
 	ammo +=10;
 }
+
 bool ShootComp::is_there_ammo() {
 	if (ammo > 0) { return true; }
 	else { return false; }

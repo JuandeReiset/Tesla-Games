@@ -39,7 +39,8 @@ class ShootComp :
 
 		//decrease ammo by 1
 		void fire();
-		// increase armor by 10
+
+		// increase ammo by 10
 		void recharge();
 
 		//evaluates if there is still ammo in the turret
