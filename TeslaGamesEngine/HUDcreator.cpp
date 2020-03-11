@@ -74,7 +74,44 @@ void HUDcreator::loadHUD() {
 	HUD* gameStateUI = new HUD();
 	gameStateUI->createHUD(gameStateVertices, HUDindices, 20, 6);
 	HUDList.push_back(gameStateUI);
+
+	HUD* rankSlash = new HUD();
+	rankSlash->createHUD(rankSlashVertices, HUDindices, 20, 6);
+	HUDList.push_back(rankSlash);
+
+	HUD* totalRank1 = new HUD();
+	totalRank1->createHUD(totalRank1Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalRank1);
+
+	HUD* totalRank2 = new HUD();
+	totalRank2->createHUD(totalRank2Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalRank2);
+
+	HUD* lapSlash = new HUD();
+	lapSlash->createHUD(lapSlashVertices, HUDindices, 20, 6);
+	HUDList.push_back(lapSlash);
+
+	HUD* totalLap1 = new HUD();
+	totalLap1->createHUD(totalLap1Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalLap1);
+
+	HUD* totalLap2 = new HUD();
+	totalLap2->createHUD(totalLap2Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalLap2);
+
+	HUD* aliveSlash = new HUD();
+	aliveSlash->createHUD(aliveSlashVertices, HUDindices, 20, 6);
+	HUDList.push_back(aliveSlash);
+
+	HUD* totalAlive1 = new HUD();
+	totalAlive1->createHUD(totalAlive1Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalAlive1);
+
+	HUD* totalAlive2 = new HUD();
+	totalAlive2->createHUD(totalAlive2Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalAlive2);
 }
+
 void HUDcreator::loadTextures() {
 	//load digits textures
 	dig0Texture = Texture("Textures/numbers/0.png");
@@ -97,6 +134,8 @@ void HUDcreator::loadTextures() {
 	dig8Texture.LoadTextureAlpha();
 	dig9Texture = Texture("Textures/numbers/9.png");
 	dig9Texture.LoadTextureAlpha();
+	slashTexture = Texture("Textures/numbers/slash.png");
+	slashTexture.LoadTextureAlpha();
 
 
 	//load HUD textures
@@ -224,6 +263,28 @@ void HUDcreator::use() {
 		gameState.UseTexture();
 		HUDList[17]->renderHUD();
 	}
+
+	//total number stuff
+	slashTexture.UseTexture();
+	HUDList[18]->renderHUD();
+	dig2Texture.UseTexture();
+	HUDList[19]->renderHUD();
+	dig0Texture.UseTexture();
+	HUDList[20]->renderHUD();
+
+	slashTexture.UseTexture();
+	HUDList[21]->renderHUD();
+	dig0Texture.UseTexture();
+	HUDList[22]->renderHUD();
+	dig5Texture.UseTexture();
+	HUDList[23]->renderHUD();
+
+	slashTexture.UseTexture();
+	HUDList[24]->renderHUD();
+	dig2Texture.UseTexture();
+	HUDList[25]->renderHUD();
+	dig0Texture.UseTexture();
+	HUDList[26]->renderHUD();
 
 	glEnable(GL_DEPTH_TEST);
 
