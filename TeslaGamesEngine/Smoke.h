@@ -29,7 +29,7 @@ class Smoke :
 private:
 	float life, birthTime, currentTime;											//each smoke can exist 5 sec, if currentTime - birthTime > life, then destroy the instance
 	glm::vec3 position;															//the position of the smoke
-	Model caltropsObj;
+	Model smokeObj;
 
 	glm::mat4 model;															//model matrix
 	GLuint uniformModel, uniformSpecularIntensity, uniformShininess;
