@@ -506,8 +506,8 @@ int main()
 	boxTest.LoadModel("Models/wall.obj");
 	//caltrop.LoadModel("Models/caltrops.obj");
 	//racetrack.LoadModel("Models/track2.obj");
-	racetrack_walls.LoadModel("Models/track2walls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
-	racetrack_floor.LoadModel("Models/track2floor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
+	racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
+	racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 	
 	bulletobj.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
@@ -599,9 +599,14 @@ int main()
 	aiDriving.AddDrivingTarget(-85, -80);
 	aiDriving.AddDrivingTarget(-95, -20);
 	aiDriving.AddDrivingTarget(-75, 45);
-	aiDriving.AddDrivingTarget(-55, 45);
-	aiDriving.AddDrivingTarget(-15, 15);
-	aiDriving.AddDrivingTarget(-5, 10);
+
+	aiDriving.AddDrivingTarget(-34,58);
+	aiDriving.AddDrivingTarget(172, 40);
+	//aiDriving.AddDrivingTarget(188, -60);
+	
+	//aiDriving.AddDrivingTarget(-55, 45);
+	//aiDriving.AddDrivingTarget(-15, 15);
+	//aiDriving.AddDrivingTarget(-5, 10);
 	aiDriving.AddDrivingTarget(20, 35);
 	aiDriving.AddDrivingTarget(130, 65);
 	aiDriving.AddDrivingTarget(210, 40);
