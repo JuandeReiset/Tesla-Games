@@ -234,6 +234,8 @@
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Track.h" />
+    <ClInclude Include="TrackDrivingPoint.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Turret.h" />
     <ClInclude Include="Vehicle.h" />
@@ -299,6 +301,8 @@
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="TeslaGamesEngine.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Track.cpp" />
+    <ClCompile Include="TrackDrivingPoint.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Turret.cpp" />
     <ClCompile Include="Vehicle.cpp" />
