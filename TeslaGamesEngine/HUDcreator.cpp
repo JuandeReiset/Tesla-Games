@@ -1,5 +1,4 @@
 #include "HUDcreator.h"
-#include <iostream>
 
 
 void HUDcreator::loadHUD() {

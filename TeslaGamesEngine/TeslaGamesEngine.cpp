@@ -51,6 +51,7 @@
 
 //HUD stuff
 #include "HUDcreator.h"
+#include "StartScreen.h"
 
 //Shadow stuff
 #include "Shadow.h"
@@ -402,8 +403,13 @@ int main()
 	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
+	bool startScreenFlag = true;
+
 	HUDcreator hud;
 	hud.load();
+
+	StartScreen startScreen;
+	startScreen.load();
 
 	physEng = new PhysicsEngine();
 
@@ -650,11 +656,6 @@ int main()
 		deltaTime = now - lastTime;
 		lastTime = now;
 
-		// For AI testing
-		aiDriving.Tick(deltaTime);
-		//aiDriving2.Tick(deltaTime);
-
-
 		// Get + Handle User Input
 		glfwPollEvents();
 		if (P1Connected)
@@ -668,6 +669,41 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//CAMERA RENDERING
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//update camera
+		//now distance and other stuff are inside camera class
+		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
+		glm::vec3 dirToUse;
+		if (isCameraFlipped) {
+			dirToUse = dir * -1.f;
+		}
+		else {
+			dirToUse = dir;
+		}
+
+		if (player1.RStick_InDeadzone()) {
+			camera.stickControl(0.f, vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
+		}
+		else {
+			camera.stickControl(player1.rightStick_X(), vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
+		}
+
+
+		//end camera stuff
+
+		
+		if (startScreenFlag) {
+			if (player1.isButtonDown(XButtons.A))
+				startScreenFlag = false;
+
+			startScreen.use();;
+			mainWindow.swapBuffers();
+
+			continue;
+		}
+		
 
 		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
 
@@ -876,28 +912,7 @@ int main()
 		
 
 
-		//CAMERA RENDERING
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//update camera
-		//now distance and other stuff are inside camera class
-		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
-		glm::vec3 dirToUse;
-		if(isCameraFlipped) {
-			dirToUse = dir * -1.f;
-		}
-		else {
-			dirToUse = dir;
-		}
-
-		if (player1.RStick_InDeadzone()) {
-			camera.stickControl(0.f, vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
-		}
-		else {
-			camera.stickControl(player1.rightStick_X(), vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
-		}
-		
-		
-		//end camera stuff
+	
 
 
 

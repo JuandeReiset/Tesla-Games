@@ -233,6 +233,7 @@
     <ClInclude Include="ShootComp.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="StartScreen.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Turret.h" />
@@ -297,6 +298,7 @@
     <ClCompile Include="ShootComp.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="StartScreen.cpp" />
     <ClCompile Include="TeslaGamesEngine.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transform.cpp" />
