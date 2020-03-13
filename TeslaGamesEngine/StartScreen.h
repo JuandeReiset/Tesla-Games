@@ -37,6 +37,9 @@ private:
 
 	Texture backgroundTexture;
 	Texture logoTexture;
+	Texture startText;
+	Texture settingText;
+	Texture exitText;
 
 	// Vertex Shader of HUD_shader
 	const char* vHshader = "Shaders/HUD_shader.vert";
@@ -56,6 +59,27 @@ private:
 		468.5f / 1600 * mainWindow.getWidth(), 858.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
 		1131.5f / 1600 * mainWindow.getWidth(), 858.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
 		1131.5f / 1600 * mainWindow.getWidth(), 0.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+
+	GLfloat startVertices[20] = {
+		675.f / 1600 * mainWindow.getWidth(), 600.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		675.f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		925.f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		925.f / 1600 * mainWindow.getWidth(), 600.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+	
+	GLfloat settingVertices[20] = {
+		675.f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		675.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		925.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		925.f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+	
+	GLfloat exitVertices[20] = {
+		675.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		675.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		925.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		925.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 };
 

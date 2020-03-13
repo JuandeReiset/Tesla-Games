@@ -411,6 +411,8 @@ int main()
 	StartScreen startScreen;
 	startScreen.load();
 
+	int op = 0;
+
 	physEng = new PhysicsEngine();
 
 	Renderer r = Renderer(mainWindow, camera);
@@ -692,7 +694,7 @@ int main()
 
 
 		//end camera stuff
-
+/*
 		
 		if (startScreenFlag) {
 			if (player1.isButtonDown(XButtons.A))
@@ -703,7 +705,16 @@ int main()
 
 			continue;
 		}
-		
+*/
+		/*
+		can press up or down to choose from stat menu
+		0 - start(default)
+		1 - setting
+		2 - exit
+		*/
+		if (startScreenFlag) {
+
+		}
 
 		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
 

@@ -10,6 +10,18 @@ void StartScreen::loadVertices() {
 	logo->createHUD(logoVertices, indices, 20, 6);
 	HUDList.push_back(logo);
 
+	HUD* start = new HUD();
+	start->createHUD(startVertices, indices, 20, 6);
+	HUDList.push_back(start);
+
+	HUD* setting = new HUD();
+	setting->createHUD(settingVertices, indices, 20, 6);
+	HUDList.push_back(setting);
+
+	HUD* exit = new HUD();
+	exit->createHUD(exitVertices, indices, 20, 6);
+	HUDList.push_back(exit);
+
 	return;
 }
 
@@ -19,6 +31,15 @@ void StartScreen::loadTextures() {
 
 	logoTexture = Texture("Textures/Untitled_Artwork (2).jpg");
 	logoTexture.LoadTexture();
+
+	startText = Texture("Textures/start.png");
+	startText.LoadTextureAlpha();
+
+	settingText = Texture("Textures/setting.png");
+	settingText.LoadTextureAlpha();
+
+	exitText = Texture("Textures/exit.png");
+	exitText.LoadTextureAlpha();
 
 	return;
 }
@@ -57,6 +78,14 @@ void StartScreen::use() {
 	logoTexture.UseTexture();
 	HUDList[1]->renderHUD();
 	
+	startText.UseTexture();
+	HUDList[2]->renderHUD();
+
+	settingText.UseTexture();
+	HUDList[3]->renderHUD();
+
+	exitText.UseTexture();
+	HUDList[4]->renderHUD();
 
 	glEnable(GL_DEPTH_TEST);
 
