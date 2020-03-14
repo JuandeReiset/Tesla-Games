@@ -711,9 +711,37 @@ int main()
 		0 - start(default)
 		1 - setting
 		2 - exit
+
+		red means being selected
 		*/
 		if (startScreenFlag) {
+			if (player1.isButtonDown(XButtons.DPad_Up)) {
+				if (op == 0)
+					;
+				else
+					--op;
+				startScreen.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.DPad_Down)) {
+				if (op == 2)
+					;
+				else
+					++op;
+				startScreen.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.A)) {
+				if (op == 0)
+					startScreenFlag = false;
+				else if (op == 1)			//if select setting, go to setting screen
+					;
+				else if (op == 2)
+					mainWindow.setWindowClose();
+			}
 
+			startScreen.use();
+			mainWindow.swapBuffers();
+
+			continue;
 		}
 
 		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);

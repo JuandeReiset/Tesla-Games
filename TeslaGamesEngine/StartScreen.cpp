@@ -32,14 +32,23 @@ void StartScreen::loadTextures() {
 	logoTexture = Texture("Textures/Untitled_Artwork (2).jpg");
 	logoTexture.LoadTexture();
 
-	startText = Texture("Textures/start.png");
-	startText.LoadTextureAlpha();
+	startText1 = Texture("Textures/start.png");
+	startText1.LoadTextureAlpha();
+	startText2 = Texture("Textures/start2.png");
+	startText2.LoadTextureAlpha();
+	startText = startText2;
 
-	settingText = Texture("Textures/setting.png");
-	settingText.LoadTextureAlpha();
+	settingText1 = Texture("Textures/setting.png");
+	settingText1.LoadTextureAlpha();
+	settingText2 = Texture("Textures/setting2.png");
+	settingText2.LoadTextureAlpha();
+	settingText = settingText1;
 
-	exitText = Texture("Textures/exit.png");
-	exitText.LoadTextureAlpha();
+	exitText1 = Texture("Textures/exit.png");
+	exitText1.LoadTextureAlpha();
+	exitText2 = Texture("Textures/exit2.png");
+	exitText2.LoadTextureAlpha();
+	exitText = exitText1;
 
 	return;
 }
@@ -90,4 +99,22 @@ void StartScreen::use() {
 	glEnable(GL_DEPTH_TEST);
 
 	return;
+}
+
+void StartScreen::setOption(int op) {
+	if (op == 0) {
+		startText = startText2;
+		settingText = settingText1;
+		exitText = exitText1;
+	}
+	else if (op == 1) {
+		startText = startText1;
+		settingText = settingText2;
+		exitText = exitText1;
+	}
+	else if (op == 2) {
+		startText = startText1;
+		settingText = settingText1;
+		exitText = exitText2;
+	}
 }

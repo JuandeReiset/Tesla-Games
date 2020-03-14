@@ -24,6 +24,7 @@ public:
 	void load();
 	void loadShader();
 
+	void setOption(int op);
 
 private:
 	//I think it's more like a 2D graphic shader than a HUD shader, wrong name now :(
@@ -40,6 +41,12 @@ private:
 	Texture startText;
 	Texture settingText;
 	Texture exitText;
+	Texture startText1;
+	Texture startText2;
+	Texture settingText1;
+	Texture settingText2;
+	Texture exitText1;
+	Texture exitText2;
 
 	// Vertex Shader of HUD_shader
 	const char* vHshader = "Shaders/HUD_shader.vert";
