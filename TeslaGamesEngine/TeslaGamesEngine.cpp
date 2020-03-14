@@ -1018,9 +1018,13 @@ int main()
 			hud.setGameState(true);
 		if (loseFlag == true)
 			hud.setGameState(false);
+		if(winFlag)
+			hud.setLapNumber(physEng->player->numLaps);
+		else
+			hud.setLapNumber(physEng->player->numLaps + 1);
+
 
 		hud.setAbilityNumber(physEng->player->ability);
-		hud.setLapNumber(physEng->player->numLaps);
 		hud.setAliveNumber(physEng->enemyVehicles.size());
 		//don't now how to get position right now
 		//hud.setPositionNumber();
