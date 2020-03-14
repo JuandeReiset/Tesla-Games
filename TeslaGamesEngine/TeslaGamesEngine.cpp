@@ -694,18 +694,8 @@ int main()
 
 
 		//end camera stuff
-/*
-		
-		if (startScreenFlag) {
-			if (player1.isButtonDown(XButtons.A))
-				startScreenFlag = false;
 
-			startScreen.use();;
-			mainWindow.swapBuffers();
-
-			continue;
-		}
-*/
+		//start menu
 		/*
 		can press up or down to choose from stat menu
 		0 - start(default)
@@ -1028,6 +1018,7 @@ int main()
 		hud.setAliveNumber(physEng->enemyVehicles.size());
 		//don't now how to get position right now
 		//hud.setPositionNumber();
+		hud.setBulletNum(physEng->player->getShootingComponent()->ammo);
 		
 		hud.use();
 		
