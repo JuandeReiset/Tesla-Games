@@ -38,6 +38,7 @@ private:
 	Texture menuTxt;
 	Texture audioTxt;
 	Texture HUDSizeTxt;
+	Texture goBackTxt;
 
 	Texture audioTxt1;
 	Texture audioTxt2;
@@ -58,6 +59,32 @@ private:
 		1600.0f / 1600 * mainWindow.getWidth(), 0.f / 900.0f * mainWindow.getHeight(), 0.0f,	1.0f, 0.0f								//bottom right
 	};
 
+	GLfloat menuVertices[20] = {
+		300.f / 1600 * mainWindow.getWidth(), 50.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		300.f / 1600 * mainWindow.getWidth(), 450.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		1300.f / 1600 * mainWindow.getWidth(), 450.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		1300.f / 1600 * mainWindow.getWidth(), 50.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
 
+	GLfloat audioVertices[20] = {
+		675.f / 1600 * mainWindow.getWidth(), 550.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		675.f / 1600 * mainWindow.getWidth(), 650.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		925.f / 1600 * mainWindow.getWidth(), 650.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		925.f / 1600 * mainWindow.getWidth(), 550.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+
+	GLfloat HUDVertices[20] = {
+		675.f / 1600 * mainWindow.getWidth(), 670.f / 900.0f * mainWindow.getHeight(), 1.0f, 0.0f, 0.0f,
+		675.f / 1600 * mainWindow.getWidth(), 770.f / 900.0f * mainWindow.getHeight(), 1.0f, 0.0f, 1.0f,
+		925.f / 1600 * mainWindow.getWidth(), 770.f / 900.0f * mainWindow.getHeight(), 1.0f, 1.0f, 1.0f,
+		925.f / 1600 * mainWindow.getWidth(), 670.f / 900.0f * mainWindow.getHeight(), 1.0f, 1.0f, 0.0f
+	};
+
+	GLfloat goBackVertices[20] = {
+		1350.f / 1600 * mainWindow.getWidth(), 770.f / 900.0f * mainWindow.getHeight(), 1.0f, 0.0f, 0.0f,
+		1350.f / 1600 * mainWindow.getWidth(), 850.f / 900.0f * mainWindow.getHeight(), 1.0f, 0.0f, 1.0f,
+		1550.f / 1600 * mainWindow.getWidth(), 850.f / 900.0f * mainWindow.getHeight(), 1.0f, 1.0f, 1.0f,
+		1550.f / 1600 * mainWindow.getWidth(), 770.f / 900.0f * mainWindow.getHeight(), 1.0f, 1.0f, 0.0f
+	};
 };
 

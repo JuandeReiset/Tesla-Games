@@ -1,5 +1,4 @@
 #include "StartScreen.h"
-#include <iostream>
 
 void StartScreen::loadVertices() {
 	HUD* background = new HUD();

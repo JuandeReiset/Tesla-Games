@@ -49,9 +49,10 @@
 //PhysX and Physics Engine
 #include "PhysicsEngine.h"
 
-//HUD stuff
+//UI stuff
 #include "HUDcreator.h"
 #include "StartScreen.h"
+#include "Menu.h"
 
 //Shadow stuff
 #include "Shadow.h"
@@ -404,12 +405,15 @@ int main()
 	mainWindow.Initialise();
 
 	bool startScreenFlag = true;
+	int menuFlag = 0;
 
 	HUDcreator hud;
 	hud.load();
 
 	StartScreen startScreen;
 	startScreen.load();
+	Menu menu;
+	menu.load();
 
 	int op = 0;
 
@@ -723,8 +727,10 @@ int main()
 			else if (player1.isButtonDown(XButtons.A)) {
 				if (op == 0)
 					startScreenFlag = false;
-				else if (op == 1)			//if select setting, go to setting screen
-					;
+				else if (op == 1) {
+					menuFlag = 1;
+					startScreenFlag = false;
+				}
 				else if (op == 2)
 					mainWindow.setWindowClose();
 			}
@@ -733,6 +739,53 @@ int main()
 			mainWindow.swapBuffers();
 
 			continue;
+		}
+
+		op = 0;
+
+		if (menuFlag) {
+			if (player1.isButtonDown(XButtons.DPad_Up)) {
+				if (op == 0)
+					;
+				else
+					--op;
+				menu.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.DPad_Down)) {
+				if (op == 1)
+					;
+				else
+					++op;
+				menu.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.A)) {
+				//something will happen
+			}
+			else if (player1.isButtonDown(XButtons.B)) {
+				//back to start screen
+				if (menuFlag == 1) {
+					startScreenFlag = true;
+					menuFlag = 0;
+				}
+				//continue game
+				else if (menuFlag = 2) {
+					menuFlag = 0;
+				}
+
+				op = 0;
+				startScreen.setOption(op);
+			}
+
+			menu.use();
+			mainWindow.swapBuffers();
+
+			continue;
+		}
+
+		if (player1.isButtonDown(XButtons.Back)) {
+			menuFlag = 2;
+			op = 0;
+			menu.setOption(op);
 		}
 
 		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
