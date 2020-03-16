@@ -600,9 +600,28 @@ int main()
 	//physEng.upwards();
 	//End of audio system setup/demo
 
+	//This does all the Ai stuff as far TeslaGameEngine is concerned
+	Track raceTrack = Track(trackTypeConstants::OVAL);
+	physEng->initAITrack(&raceTrack);
+
 	// Creating an enemy vehicle 
 	physEng->addEnemyVehicle(70, 5, -82);
-	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
+
+
+	//physEng->enemyVehicles[0]->setAITrack(&raceTrack);
+	//69.10,-2.65,-71.48,start
+	//-26.55,-4.44,-69.89,  -7.70, -2.26, -72.82slow
+	//-38.75,-3.67,-68.75,  -42.75, -3.45, -70.97Turn
+	//-73.33,-2.59,-27.62,ApexMin
+	//-54.40,-2.58,26.53,ApexMaj
+	//-5.57,-2.60,48.48,exit
+	//95.78,-2.57,33.85,slow
+	//117.08,-2.60,31.51,turn
+	//141.67,-2.51,-1.95,ApexMin
+	//141.28,-2.53,-36.02,ApexMaj
+	//120.79,-2.42,-51.46,exit
+
+	/*AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
 	//im adding the lap markers as the only targets for now
 	//aiDriving.AddDrivingTarget(70, -86);
 	//aiDriving.AddDrivingTarget(-76, -85);	
@@ -661,6 +680,7 @@ int main()
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		lastTime = now;
+
 
 		// Get + Handle User Input
 		glfwPollEvents();

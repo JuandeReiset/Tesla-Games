@@ -101,6 +101,20 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 
 	update_turret();
 	
+	if (this->isAICar) {
+		PxVec3 pos = this->GetPosition();
+		PxVec3 target = PxVec3(this->curTarget.x, this->curTarget.y, this->curTarget.z);
+		PxVec3 toTargetVec = (target - pos);
+		float distanceToTarget = toTargetVec.magnitude();
+
+		if (distanceToTarget <= this->curTarget.pointDistanceLimit) {
+			int length = this->listOfPoints->size();
+			this->pastTarget = curTarget;
+			this->trackPointListIndex++;
+			this->trackPointListIndex = this->trackPointListIndex % length;
+			this->curTarget = *this->listOfPoints->at(trackPointListIndex);
+		}
+	}
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;
 }
 
@@ -134,6 +148,15 @@ void Vehicle::lapWinCondition()
 	}
 	
 }
+
+void Vehicle::initAITrackPoints(std::vector<std::unique_ptr<TrackDrivingPoint>>* listOfPoints) {
+	this->listOfPoints = listOfPoints;
+	this->pastTarget = *this->listOfPoints->at(0);
+	this->curTarget = *this->listOfPoints->at(1);
+	this->isAICar = true;
+	this->trackPointListIndex = 1;
+}
+
 
 void Vehicle::update_turret() {
 	PxVec3 pxpos = GetPosition();
