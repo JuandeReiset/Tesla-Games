@@ -14,6 +14,8 @@ class Track
 		void addPointToList(float x, float y, float z, int action);
 		void performMove(Vehicle * v);
 		void pastStartCurrentSlowdown(PxU32 curGear, float angleToTurn, Vehicle * v);
+		void pastTurnExitCurrentSlowDown(PxU32 curGear, float angleToTurn, Vehicle * v);
+		void pastTurnExitCurrentStart(PxU32 curGear, float angleToTurn, Vehicle * v);
 		void pastSlowDownCurrentTurnIn(PxU32 curGear, float angleToTurn, Vehicle * v);
 		void pastTurnInCurrentMajor(PxU32 curGear, float angleToTurn, Vehicle * v);
 		void pastMajorCurrentExit(PxU32 curGear, float angleToTurn, Vehicle * v);
