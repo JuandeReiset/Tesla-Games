@@ -597,7 +597,7 @@ void Vehicle::useOil(std::list<Oil*> *oilList) {
 	--ability;
 }
 
-void Vehicle::useSmoke(std::list<Smoke*> *smokeList) {
+void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
 	if (ability == 0)
 		return;
 
@@ -611,3 +611,32 @@ void Vehicle::useSmoke(std::list<Smoke*> *smokeList) {
 
 	--ability;
 }
+
+
+void Vehicle::enableSmokeEffect()
+{
+	affectedBySmoke = true;
+	smokeStartTime = glfwGetTime();
+}
+
+void Vehicle::disableSmokeEffect()
+{
+	affectedBySmoke = false;
+}
+
+void Vehicle::enableOilEffect()
+{
+	affectedByOil = true;
+	oilStartTime = glfwGetTime();
+}
+
+void Vehicle::disableOilEffect()
+{
+	affectedByOil = false;
+}
+
+void Vehicle::updateCurrentTime()
+{
+	currentTime = glfwGetTime();
+}
+
