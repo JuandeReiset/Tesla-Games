@@ -108,12 +108,12 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 		float distanceToTarget = toTargetVec.magnitude();
 
 		if (distanceToTarget <= this->curTarget.pointDistanceLimit) {
-			std::cout << "NEXT POINT" << std::endl;
 			int length = this->listOfPoints->size();
 			this->pastTarget = curTarget;
 			this->trackPointListIndex++;
 			this->trackPointListIndex = this->trackPointListIndex % length;
 			this->curTarget = *this->listOfPoints->at(trackPointListIndex);
+			std::cout << "NEXT POINT" << this->curTarget.actionToTake << std::endl;
 		}
 	}
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;

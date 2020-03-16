@@ -590,7 +590,9 @@ int main()
 
 	Track raceTrack = Track();
 	raceTrack.addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
-	raceTrack.addPointToList(-26.55, -4.44, -69.89, trackDrivingPointActions::SLOW_DOWN);
+	raceTrack.addPointToList(-3.70, -2.26, -72.82, trackDrivingPointActions::SLOW_DOWN);
+	raceTrack.addPointToList(-42.75, -3.45, -70.97, trackDrivingPointActions::TURN_IN);
+	raceTrack.addPointToList(-69.11, -2.60, -43.99, trackDrivingPointActions::APEX_MINOR);
 
 	physEng->initAITrack(&raceTrack);
 
@@ -598,8 +600,8 @@ int main()
 	physEng->addEnemyVehicle(70, 5, -82);
 	//physEng->enemyVehicles[0]->setAITrack(&raceTrack);
 	//69.10,-2.65,-71.48,start
-	//-26.55,-4.44,-69.89,slow
-	//-38.75,-3.67,-68.75,Turn
+	//-26.55,-4.44,-69.89,  -7.70, -2.26, -72.82slow
+	//-38.75,-3.67,-68.75,  -42.75, -3.45, -70.97Turn
 	//-73.33,-2.59,-27.62,ApexMin
 	//-54.40,-2.58,26.53,ApexMaj
 	//-5.57,-2.60,48.48,exit

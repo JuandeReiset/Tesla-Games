@@ -16,118 +16,44 @@ void Track::performMove(Vehicle* v) {
 	PxU32 curGear = v->gVehicle4W->mDriveDynData.getCurrentGear();
 	float angleToTurn = getAngleToTurnBy(currentTarget, v);
 
+	//The method names themselves tell you for what combinations the method is for
 	if (pastAction == trackDrivingPointActions::START && currentAction == trackDrivingPointActions::SLOW_DOWN) {
-		if (std::abs(angleToTurn) < 5.f) {
-			v->turn(0.f);
-			v->forwards(1.f);
-			v->reverse(0.f);
-		}
-		else {
-			if (std::abs(angleToTurn) < 15.f) {
-				v->forwards(0.5f);
-				if (curGear <= PxVehicleGearsData::eTHIRD) {
-					if (angleToTurn < 0) {
-						//turn left
-						v->turn(-0.2f);
-					}
-					else {
-						v->turn(0.2f);
-					}
-				}
-				else {
-					if (angleToTurn < 0) {
-						//turn left
-						v->turn(-0.4f);
-					}
-					else {
-						v->turn(0.4f);
-					}
-				}
-			}
-			else if (std::abs(angleToTurn) < 30.f) {
-				v->forwards(0.5f);
-				if (curGear <= PxVehicleGearsData::eTHIRD) {
-					if (angleToTurn < 0) {
-						//turn left
-						v->turn(-0.4f);
-					}
-					else {
-						v->turn(0.4f);
-					}
-				}
-				else {
-					if (angleToTurn < 0) {
-						//turn left
-						v->turn(-0.6f);
-					}
-					else {
-						v->turn(0.6f);
-					}
-				}
-			}
-			else if (std::abs(angleToTurn) < 45.f) {
-				v->forwards(0.5f);
-				if (curGear <= PxVehicleGearsData::eTHIRD) {
-					if (angleToTurn < 0) {
-						//turn left
-						v->turn(-0.6f);
-					}
-					else {
-						v->turn(0.6f);
-					}
-				}
-				else {
-					if (angleToTurn < 0) {
-						//turn left
-						v->turn(-0.8f);
-					}
-					else {
-						v->turn(0.8f);
-					}
-				}
-			}
-			else if (std::abs(angleToTurn) <= 90.f) {
-				v->forwards(0.5f);
-				if (curGear <= PxVehicleGearsData::eTHIRD) {
-					if (angleToTurn < 0) {
-						//turn left
-						v->turn(-0.8f);
-					}
-					else {
-						v->turn(0.8f);
-					}
-				}
-				else {
-					if (angleToTurn < 0) {
-						//turn left
-						v->turn(-1.f);
-					}
-					else {
-						v->turn(1.f);
-					}
-				}
-			}
-			else {
-				float sideways = std::abs(v->gVehicle4W->computeSidewaysSpeed());
-
-				//For the cases where vehcile is spiining out, cuz why else would you be more than 90 degrees from a point
-				if (sideways > 1.4f) {
-					v->turn(0.f);
-					v->reverse(0.f);
-					v->forwards(0.f);
-				}
-				else {
-					v->forwards(1.f);
-					if (angleToTurn < 0) {
-						v->turn(-1.f);
-					}
-					else {
-						v->turn(1.f);
-					}
-				}
-			}
-		}
+		//The code for the initial 
+		this->pastStartCurrentSlowdown(curGear, angleToTurn, v);
 	}
+	else if (pastAction == trackDrivingPointActions::SLOW_DOWN && currentAction == trackDrivingPointActions::TURN_IN) {
+		//Slow down before entering the turn
+		this->pastSlowDownCurrentTurnIn(curGear, angleToTurn, v);
+	}
+
+	//This is for normal turns
+	else if (pastAction == trackDrivingPointActions::TURN_IN && pastAction == trackDrivingPointActions::APEX_MAJOR) {
+		//Hit the apex (midpoint, kinda) of the turn
+		this->pastTurnInCurrentMajor(curGear, angleToTurn, v);
+	}
+	else if (pastAction == trackDrivingPointActions::APEX_MAJOR && pastAction == trackDrivingPointActions::TURN_EXIT) {
+		//Reach the exit point of the turn
+		this->pastMajorCurrentExit(curGear, angleToTurn, v);
+	}
+
+	//This is for U turn style turns (two minors one major)
+	else if (pastAction == trackDrivingPointActions::TURN_IN && pastAction == trackDrivingPointActions::APEX_MINOR) {
+		//First apex of the turn
+		this->pastTurnInCurrentMinor(curGear, angleToTurn, v);
+	}
+	else if (pastAction == trackDrivingPointActions::APEX_MINOR && pastAction == trackDrivingPointActions::APEX_MAJOR) {
+		//Imaginary Apex of turn (help co-ordinate Ai position in case of spinouts)
+		this->pastMinorCurrentMajor(curGear, angleToTurn, v);
+	}
+	else if (pastAction == trackDrivingPointActions::APEX_MAJOR && pastAction == trackDrivingPointActions::APEX_MINOR) {
+		//second (third) apex of the turn
+		this->pastMajorCurrentMinor(curGear, angleToTurn, v);
+	}
+	else if (pastAction == trackDrivingPointActions::APEX_MINOR && pastAction == trackDrivingPointActions::TURN_EXIT) {
+		//Reach exit point of turn
+		this->pastMinorCurrentExit(curGear, angleToTurn, v);
+	}
+
 	else {
 		v->forwards(0.f);
 		v->reverse(1.f);
@@ -135,6 +61,243 @@ void Track::performMove(Vehicle* v) {
 	}
 
 	
+}
+
+void Track::pastStartCurrentSlowdown(PxU32 curGear, float angleToTurn, Vehicle* v) {
+	if (std::abs(angleToTurn) < 5.f) {
+		v->turn(0.f);
+		v->forwards(1.f);
+		v->reverse(0.f);
+	}
+	else {
+		if (std::abs(angleToTurn) < 15.f) {
+			v->forwards(0.5f);
+			if (curGear <= PxVehicleGearsData::eTHIRD) {
+				if (angleToTurn < 0) {
+					//turn left
+					v->turn(-0.2f);
+				}
+				else {
+					v->turn(0.2f);
+				}
+			}
+			else {
+				if (angleToTurn < 0) {
+					//turn left
+					v->turn(-0.4f);
+				}
+				else {
+					v->turn(0.4f);
+				}
+			}
+		}
+		else if (std::abs(angleToTurn) < 30.f) {
+			v->forwards(0.5f);
+			if (curGear <= PxVehicleGearsData::eTHIRD) {
+				if (angleToTurn < 0) {
+					//turn left
+					v->turn(-0.4f);
+				}
+				else {
+					v->turn(0.4f);
+				}
+			}
+			else {
+				if (angleToTurn < 0) {
+					//turn left
+					v->turn(-0.6f);
+				}
+				else {
+					v->turn(0.6f);
+				}
+			}
+		}
+		else if (std::abs(angleToTurn) < 45.f) {
+			v->forwards(0.5f);
+			if (curGear <= PxVehicleGearsData::eTHIRD) {
+				if (angleToTurn < 0) {
+					//turn left
+					v->turn(-0.6f);
+				}
+				else {
+					v->turn(0.6f);
+				}
+			}
+			else {
+				if (angleToTurn < 0) {
+					//turn left
+					v->turn(-0.8f);
+				}
+				else {
+					v->turn(0.8f);
+				}
+			}
+		}
+		else if (std::abs(angleToTurn) <= 90.f) {
+			v->forwards(0.5f);
+			if (curGear <= PxVehicleGearsData::eTHIRD) {
+				if (angleToTurn < 0) {
+					//turn left
+					v->turn(-0.8f);
+				}
+				else {
+					v->turn(0.8f);
+				}
+			}
+			else {
+				if (angleToTurn < 0) {
+					//turn left
+					v->turn(-1.f);
+				}
+				else {
+					v->turn(1.f);
+				}
+			}
+		}
+		else {
+			float sideways = std::abs(v->gVehicle4W->computeSidewaysSpeed());
+
+			//For the cases where vehicle is spiining out, cuz why else would you be more than 90 degrees from a point
+			if (sideways > 1.4f) {
+				v->turn(0.f);
+				v->reverse(0.f);
+				v->forwards(0.f);
+			}
+			else {
+				v->forwards(1.f);
+				if (angleToTurn < 0) {
+					v->turn(-1.f);
+				}
+				else {
+					v->turn(1.f);
+				}
+			}
+		}
+	}
+}
+
+void Track::pastSlowDownCurrentTurnIn(PxU32 curGear, float angleToTurn, Vehicle* v) {
+	if (curGear > PxVehicleGearsData::eSECOND) {
+		if (std::abs(angleToTurn) < 5.f) {
+			v->turn(0.f);
+			v->forwards(0.f);
+			v->reverse(1.f);
+		}
+		else {
+			if (angleToTurn < 0) {
+				v->turn(-0.4f);
+			}
+			else {
+				v->turn(0.4f);
+			}
+			v->reverse(1.f);
+			v->forwards(0.f);
+		}
+	}
+	else {
+		if (std::abs(angleToTurn) < 5.f) {
+			v->turn(0.f);
+			v->forwards(0.4f);
+			v->reverse(0.f);
+		}
+		else {
+			if (angleToTurn < 0) {
+				v->turn(-0.7f);
+			}
+			else {
+				v->turn(0.7f);
+			}
+			v->reverse(0.f);
+			v->forwards(0.3f);
+		}
+	}
+}
+
+void Track::pastTurnInCurrentMajor(PxU32 curGear, float angleToTurn, Vehicle* v) {
+
+}
+void Track::pastMajorCurrentExit(PxU32 curGear, float angleToTurn, Vehicle* v) {
+
+}
+
+
+void Track::pastTurnInCurrentMinor(PxU32 curGear, float angleToTurn, Vehicle* v) {
+	if (curGear > PxVehicleGearsData::eTHIRD) {
+		v->reverse(0.4f);
+		v->forwards(0.f);
+	}
+	if (std::abs(angleToTurn) < 15.f) {
+		v->forwards(0.3f);
+		v->reverse(0.f);
+		if (angleToTurn < 0) {
+			//turn left
+			v->turn(-0.4f);
+		}
+		else {
+			v->turn(0.4f);
+		}
+	}
+	else if (std::abs(angleToTurn) < 30.f) {
+		v->forwards(0.3f);
+		v->reverse(0.f);
+		if (angleToTurn < 0) {
+			//turn left
+			v->turn(-0.6f);
+		}
+		else {
+			v->turn(0.6f);
+		}
+	}
+	else if (std::abs(angleToTurn) < 45.f) {
+		v->forwards(0.3f);
+		v->reverse(0.f);
+		if (angleToTurn < 0) {
+			//turn left
+			v->turn(-0.8f);
+		}
+		else {
+			v->turn(0.8f);
+		}
+			
+	}
+	else if (std::abs(angleToTurn) <= 90.f) {
+		v->forwards(0.3f);
+		v->reverse(0.f);
+		if (angleToTurn < 0) {
+			//turn left
+			v->turn(-1.f);
+		}
+		else {
+			v->turn(1.f);
+		}	
+	}
+	else {
+		float sideways = std::abs(v->gVehicle4W->computeSidewaysSpeed());
+		//For the cases where vehicle is spiining out, cuz why else would you be more than 90 degrees from a point
+		if (sideways > 1.4f) {
+			v->turn(0.f);
+			v->reverse(0.f);
+			v->forwards(0.f);
+		}
+		else {
+			v->forwards(1.f);
+			if (angleToTurn < 0) {
+				v->turn(-1.f);
+			}
+			else {
+				v->turn(1.f);
+			}
+		}
+	}
+}
+void Track::pastMinorCurrentMajor(PxU32 curGear, float angleToTurn, Vehicle* v) {
+
+}
+void Track::pastMajorCurrentMinor(PxU32 curGear, float angleToTurn, Vehicle* v) {
+
+}
+void Track::pastMinorCurrentExit(PxU32 curGear, float angleToTurn, Vehicle* v) {
+
 }
 
 // Return value of negative means left turn, postive means right turn
