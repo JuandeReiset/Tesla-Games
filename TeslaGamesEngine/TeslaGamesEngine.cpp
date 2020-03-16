@@ -593,11 +593,20 @@ int main()
 	raceTrack.addPointToList(-3.70, -2.26, -72.82, trackDrivingPointActions::SLOW_DOWN);
 	raceTrack.addPointToList(-42.75, -3.45, -70.97, trackDrivingPointActions::TURN_IN);
 	raceTrack.addPointToList(-69.11, -2.60, -43.99, trackDrivingPointActions::APEX_MINOR);
+	raceTrack.addPointToList(-87.52, -2.61, -25.72, trackDrivingPointActions::APEX_MAJOR);
+	raceTrack.addPointToList(-59.48, -2.58, 16.92, trackDrivingPointActions::APEX_MINOR);
+	raceTrack.addPointToList(-19.16, -2.58, 43.87, trackDrivingPointActions::TURN_EXIT);
+	raceTrack.addPointToList(78.33, -2.60, 42.76, trackDrivingPointActions::SLOW_DOWN);
+	raceTrack.addPointToList(122.95, -2.62, 32.60, trackDrivingPointActions::TURN_IN);
+	raceTrack.addPointToList(150.05, -2.63, 5.78, trackDrivingPointActions::APEX_MAJOR);
+	raceTrack.addPointToList(129.00, -2.58, -57.16, trackDrivingPointActions::TURN_EXIT);
 
 	physEng->initAITrack(&raceTrack);
 
 	// Creating an enemy vehicle 
 	physEng->addEnemyVehicle(70, 5, -82);
+
+
 	//physEng->enemyVehicles[0]->setAITrack(&raceTrack);
 	//69.10,-2.65,-71.48,start
 	//-26.55,-4.44,-69.89,  -7.70, -2.26, -72.82slow
