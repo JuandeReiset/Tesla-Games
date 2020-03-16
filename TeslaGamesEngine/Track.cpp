@@ -1,9 +1,33 @@
 #include "Track.h"
 
 Track::Track() {}
+Track::Track(int trackType) {
+	this->initializeTrackPoints(trackType);
+}
 Track::~Track() {}
 void Track::addPointToList(float x, float y, float z, int action) {
 	this->listOfPoints.push_back(std::make_unique<TrackDrivingPoint>(x, y, z, action));
+}
+void Track::initializeTrackPoints(int trackType) {
+	if (trackType == trackTypeConstants::OVAL_TEST) {
+		this->addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
+		this->addPointToList(-3.70, -2.26, -72.82, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(-42.75, -3.45, -70.97, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(-69.11, -2.60, -43.99, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(-87.52, -2.61, -25.72, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(-59.48, -2.58, 16.92, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(-19.16, -2.58, 43.87, trackDrivingPointActions::TURN_EXIT);
+		this->addPointToList(58.33, -2.60, 42.76, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(122.95, -2.62, 32.60, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(150.05, -2.63, 5.78, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(129.00, -2.58, -57.16, trackDrivingPointActions::TURN_EXIT);
+	}
+	else if (trackType == trackTypeConstants::OVAL) {
+
+	}
+	else if (trackType == trackTypeConstants::TESLA_T) {
+
+	}
 }
 
 void Track::performMove(Vehicle* v) {
