@@ -19,6 +19,6 @@ class TrackDrivingPoint
 		float y;
 		float z;
 		int actionToTake;
-		float pointDistanceLimit = 10.f;
+		float pointDistanceLimit = 15.f;
 };
 

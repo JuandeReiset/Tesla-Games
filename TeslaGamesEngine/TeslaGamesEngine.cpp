@@ -589,7 +589,7 @@ int main()
 	//End of audio system setup/demo
 
 	//This does all the Ai stuff as far TeslaGameEngine is concerned
-	Track raceTrack = Track(trackTypeConstants::OVAL_TEST);
+	Track raceTrack = Track(trackTypeConstants::OVAL);
 	physEng->initAITrack(&raceTrack);
 
 	// Creating an enemy vehicle 

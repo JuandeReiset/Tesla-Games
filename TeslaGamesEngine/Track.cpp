@@ -23,7 +23,18 @@ void Track::initializeTrackPoints(int trackType) {
 		this->addPointToList(129.00, -2.58, -57.16, trackDrivingPointActions::TURN_EXIT);
 	}
 	else if (trackType == trackTypeConstants::OVAL) {
-
+		this->addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
+		this->addPointToList(12.70, -2.48, -70.30, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(-56.95, -2.70, -68.95, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(-77.63, -2.60, -36.85, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(-69.18, -2.59, 7.72, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(-53.39, -2.59, 31.98, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(10.72, -2.64, 57.39, trackDrivingPointActions::TURN_EXIT);
+		this->addPointToList(58.33, -2.60, 54.76, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(115.87, -2.68, 41.60, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(150.66, -2.68, 18.69, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(152.05, -2.68, -34.12, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(102.00, -2.66, -70.70, trackDrivingPointActions::TURN_EXIT);
 	}
 	else if (trackType == trackTypeConstants::TESLA_T) {
 
@@ -479,7 +490,7 @@ void Track::pastTurnExitCurrentStart(PxU32 curGear, float angleToTurn, Vehicle* 
 
 
 void Track::pastSlowDownCurrentTurnIn(PxU32 curGear, float angleToTurn, Vehicle* v) {
-	if (curGear > PxVehicleGearsData::eSECOND) {
+	if (curGear > PxVehicleGearsData::eFOURTH) {
 		if (std::abs(angleToTurn) < 5.f) {
 			v->turn(0.f);
 			v->forwards(0.f);
@@ -492,14 +503,31 @@ void Track::pastSlowDownCurrentTurnIn(PxU32 curGear, float angleToTurn, Vehicle*
 			else {
 				v->turn(0.4f);
 			}
-			v->reverse(1.f);
+			v->reverse(0.8f);
 			v->forwards(0.f);
+		}
+	}
+	else if (curGear <= PxVehicleGearsData::eSECOND) {
+		if (std::abs(angleToTurn) < 5.f) {
+			v->turn(0.f);
+			v->forwards(0.8f);
+			v->reverse(0.f);
+		}
+		else {
+			v->forwards(0.7f);
+			v->reverse(0.f);
+			if (angleToTurn < 0) {
+				v->turn(-0.4f);
+			}
+			else {
+				v->turn(0.4f);
+			}
 		}
 	}
 	else {
 		if (std::abs(angleToTurn) < 5.f) {
 			v->turn(0.f);
-			v->forwards(0.4f);
+			v->forwards(0.5f);
 			v->reverse(0.f);
 		}
 		else {
@@ -510,13 +538,19 @@ void Track::pastSlowDownCurrentTurnIn(PxU32 curGear, float angleToTurn, Vehicle*
 				v->turn(0.7f);
 			}
 			v->reverse(0.f);
-			v->forwards(0.3f);
+			if (std::abs(angleToTurn) > 90.f) {
+				v->forwards(0.7f);
+			}
+			else {
+				v->forwards(0.4f);
+			}
+			
 		}
 	}
 }
 
 void Track::pastTurnInCurrentMajor(PxU32 curGear, float angleToTurn, Vehicle* v) {
-	PxU32 maxGearAllowed = PxVehicleGearsData::eSECOND;
+	PxU32 maxGearAllowed = PxVehicleGearsData::eTHIRD;
 	if (curGear > maxGearAllowed) {
 		v->reverse(0.4f);
 		v->forwards(0.f);
