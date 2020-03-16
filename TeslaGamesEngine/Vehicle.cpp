@@ -113,7 +113,6 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 			this->trackPointListIndex++;
 			this->trackPointListIndex = this->trackPointListIndex % length;
 			this->curTarget = *this->listOfPoints->at(trackPointListIndex);
-			std::cout << "NEXT POINT" << this->curTarget.actionToTake << std::endl;
 		}
 	}
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;
