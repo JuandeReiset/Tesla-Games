@@ -49,8 +49,10 @@
 //PhysX and Physics Engine
 #include "PhysicsEngine.h"
 
-//HUD stuff
+//UI stuff
 #include "HUDcreator.h"
+#include "StartScreen.h"
+#include "Menu.h"
 
 //Shadow stuff
 #include "Shadow.h"
@@ -402,8 +404,18 @@ int main()
 	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
+	bool startScreenFlag = true;
+	int menuFlag = 0;
+
 	HUDcreator hud;
 	hud.load();
+
+	StartScreen startScreen;
+	startScreen.load();
+	Menu menu;
+	menu.load();
+
+	int op = 0;
 
 	physEng = new PhysicsEngine();
 
@@ -669,10 +681,6 @@ int main()
 		deltaTime = now - lastTime;
 		lastTime = now;
 
-		// For AI testing
-		//aiDriving.Tick(deltaTime);
-		//aiDriving2.Tick(deltaTime);
-
 
 		// Get + Handle User Input
 		glfwPollEvents();
@@ -687,6 +695,118 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+		//CAMERA RENDERING
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//update camera
+		//now distance and other stuff are inside camera class
+		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
+		glm::vec3 dirToUse;
+		if (isCameraFlipped) {
+			dirToUse = dir * -1.f;
+		}
+		else {
+			dirToUse = dir;
+		}
+
+		if (player1.RStick_InDeadzone()) {
+			camera.stickControl(0.f, vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
+		}
+		else {
+			camera.stickControl(player1.rightStick_X(), vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
+		}
+
+
+		//end camera stuff
+
+		//start menu
+		/*
+		can press up or down to choose from stat menu
+		0 - start(default)
+		1 - setting
+		2 - exit
+
+		red means being selected
+		*/
+		if (startScreenFlag) {
+			if (player1.isButtonDown(XButtons.DPad_Up)) {
+				if (op == 0)
+					;
+				else
+					--op;
+				startScreen.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.DPad_Down)) {
+				if (op == 2)
+					;
+				else
+					++op;
+				startScreen.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.A)) {
+				if (op == 0)
+					startScreenFlag = false;
+				else if (op == 1) {
+					menuFlag = 1;
+					startScreenFlag = false;
+				}
+				else if (op == 2)
+					mainWindow.setWindowClose();
+			}
+
+			startScreen.use();
+			mainWindow.swapBuffers();
+
+			continue;
+		}
+
+		op = 0;
+
+		if (menuFlag) {
+			if (player1.isButtonDown(XButtons.DPad_Up)) {
+				if (op == 0)
+					;
+				else
+					--op;
+				menu.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.DPad_Down)) {
+				if (op == 1)
+					;
+				else
+					++op;
+				menu.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.A)) {
+				//something will happen
+			}
+			else if (player1.isButtonDown(XButtons.B)) {
+				//back to start screen
+				if (menuFlag == 1) {
+					startScreenFlag = true;
+					menuFlag = 0;
+				}
+				//continue game
+				else if (menuFlag = 2) {
+					menuFlag = 0;
+				}
+
+				op = 0;
+				startScreen.setOption(op);
+			}
+
+			menu.use();
+			mainWindow.swapBuffers();
+
+			continue;
+		}
+
+		if (player1.isButtonDown(XButtons.Back)) {
+			menuFlag = 2;
+			op = 0;
+			menu.setOption(op);
+		}
 
 		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
 
@@ -895,28 +1015,7 @@ int main()
 		
 
 
-		//CAMERA RENDERING
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//update camera
-		//now distance and other stuff are inside camera class
-		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
-		glm::vec3 dirToUse;
-		if(isCameraFlipped) {
-			dirToUse = dir * -1.f;
-		}
-		else {
-			dirToUse = dir;
-		}
-
-		if (player1.RStick_InDeadzone()) {
-			camera.stickControl(0.f, vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
-		}
-		else {
-			camera.stickControl(player1.rightStick_X(), vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
-		}
-		
-		
-		//end camera stuff
+	
 
 
 
@@ -983,12 +1082,17 @@ int main()
 			hud.setGameState(true);
 		if (loseFlag == true)
 			hud.setGameState(false);
+		if(winFlag)
+			hud.setLapNumber(physEng->player->numLaps);
+		else
+			hud.setLapNumber(physEng->player->numLaps + 1);
+
 
 		hud.setAbilityNumber(physEng->player->ability);
-		hud.setLapNumber(physEng->player->numLaps);
 		hud.setAliveNumber(physEng->enemyVehicles.size());
 		//don't now how to get position right now
 		//hud.setPositionNumber();
+		hud.setBulletNum(physEng->player->getShootingComponent()->ammo);
 		
 		hud.use();
 		

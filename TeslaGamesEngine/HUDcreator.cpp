@@ -1,5 +1,4 @@
 #include "HUDcreator.h"
-#include <iostream>
 
 
 void HUDcreator::loadHUD() {
@@ -74,7 +73,56 @@ void HUDcreator::loadHUD() {
 	HUD* gameStateUI = new HUD();
 	gameStateUI->createHUD(gameStateVertices, HUDindices, 20, 6);
 	HUDList.push_back(gameStateUI);
+
+	HUD* rankSlash = new HUD();
+	rankSlash->createHUD(rankSlashVertices, HUDindices, 20, 6);
+	HUDList.push_back(rankSlash);
+
+	HUD* totalRank1 = new HUD();
+	totalRank1->createHUD(totalRank1Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalRank1);
+
+	HUD* totalRank2 = new HUD();
+	totalRank2->createHUD(totalRank2Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalRank2);
+
+	HUD* lapSlash = new HUD();
+	lapSlash->createHUD(lapSlashVertices, HUDindices, 20, 6);
+	HUDList.push_back(lapSlash);
+
+	HUD* totalLap1 = new HUD();
+	totalLap1->createHUD(totalLap1Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalLap1);
+
+	HUD* totalLap2 = new HUD();
+	totalLap2->createHUD(totalLap2Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalLap2);
+
+	HUD* aliveSlash = new HUD();
+	aliveSlash->createHUD(aliveSlashVertices, HUDindices, 20, 6);
+	HUDList.push_back(aliveSlash);
+
+	HUD* totalAlive1 = new HUD();
+	totalAlive1->createHUD(totalAlive1Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalAlive1);
+
+	HUD* totalAlive2 = new HUD();
+	totalAlive2->createHUD(totalAlive2Vertices, HUDindices, 20, 6);
+	HUDList.push_back(totalAlive2);
+
+	HUD* bullet = new HUD();
+	bullet->createHUD(bulletVertices, HUDindices, 20, 6);
+	HUDList.push_back(bullet);
+
+	HUD* bulletNum1 = new HUD();
+	bulletNum1->createHUD(bulletNum1Vertices, HUDindices, 20, 6);
+	HUDList.push_back(bulletNum1);
+
+	HUD* bulletNum2 = new HUD();
+	bulletNum2->createHUD(bulletNum2Vertices, HUDindices, 20, 6);
+	HUDList.push_back(bulletNum2);
 }
+
 void HUDcreator::loadTextures() {
 	//load digits textures
 	dig0Texture = Texture("Textures/numbers/0.png");
@@ -97,6 +145,8 @@ void HUDcreator::loadTextures() {
 	dig8Texture.LoadTextureAlpha();
 	dig9Texture = Texture("Textures/numbers/9.png");
 	dig9Texture.LoadTextureAlpha();
+	slashTexture = Texture("Textures/numbers/slash.png");
+	slashTexture.LoadTextureAlpha();
 
 
 	//load HUD textures
@@ -125,6 +175,10 @@ void HUDcreator::loadTextures() {
 	loseTexture = Texture("Textures/lose.png");
 	loseTexture.LoadTextureAlpha();
 	gameState = Texture();
+	bulletSymbolTexture = Texture("Textures/bulletIcon.png");
+	bulletSymbolTexture.LoadTextureAlpha();
+	outOfBulletTexture = Texture("Textures/ShootingDisabled.png");
+	outOfBulletTexture.LoadTextureAlpha();
 
 	return;
 }
@@ -224,6 +278,35 @@ void HUDcreator::use() {
 		gameState.UseTexture();
 		HUDList[17]->renderHUD();
 	}
+
+	//total number stuff
+	slashTexture.UseTexture();
+	HUDList[18]->renderHUD();
+	dig2Texture.UseTexture();
+	HUDList[19]->renderHUD();
+	dig0Texture.UseTexture();
+	HUDList[20]->renderHUD();
+
+	slashTexture.UseTexture();
+	HUDList[21]->renderHUD();
+	dig0Texture.UseTexture();
+	HUDList[22]->renderHUD();
+	dig5Texture.UseTexture();
+	HUDList[23]->renderHUD();
+
+	slashTexture.UseTexture();
+	HUDList[24]->renderHUD();
+	dig2Texture.UseTexture();
+	HUDList[25]->renderHUD();
+	dig0Texture.UseTexture();
+	HUDList[26]->renderHUD();
+
+	bulletTexture.UseTexture();
+	HUDList[27]->renderHUD();
+	bulletNum1.UseTexture();
+	HUDList[28]->renderHUD();
+	bulletNum2.UseTexture();
+	HUDList[29]->renderHUD();
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -418,5 +501,84 @@ void HUDcreator::setAliveNumber(int alive) {
 		break;
 	case 9:
 		aliveNum2 = dig9Texture;
+	}
+}
+
+void HUDcreator::setBulletNum(int bullet) {
+	if (bullet == 0) {
+		bulletTexture = outOfBulletTexture;
+		bulletNum1 = dig0Texture;
+		bulletNum2 = dig0Texture;
+
+		return;
+	}
+
+	int num2 = bullet % 10;
+	int num1 = bullet / 10;
+
+	bulletTexture = bulletSymbolTexture;
+
+	switch (num1) {
+	case 0:
+		bulletNum1 = dig0Texture;
+		break;
+	case 1:
+		bulletNum1 = dig1Texture;
+		break;
+	case 2:
+		bulletNum1 = dig2Texture;
+		break;
+	case 3:
+		bulletNum1 = dig3Texture;
+		break;
+	case 4:
+		bulletNum1 = dig4Texture;
+		break;
+	case 5:
+		bulletNum1 = dig5Texture;
+		break;
+	case 6:
+		bulletNum1 = dig6Texture;
+		break;
+	case 7:
+		bulletNum1 = dig7Texture;
+		break;
+	case 8:
+		bulletNum1 = dig8Texture;
+		break;
+	case 9:
+		bulletNum1 = dig9Texture;
+	}
+
+	switch (num2) {
+	case 0:
+		bulletNum2 = dig0Texture;
+		break;
+	case 1:
+		bulletNum2 = dig1Texture;
+		break;
+	case 2:
+		bulletNum2 = dig2Texture;
+		break;
+	case 3:
+		bulletNum2 = dig3Texture;
+		break;
+	case 4:
+		bulletNum2 = dig4Texture;
+		break;
+	case 5:
+		bulletNum2 = dig5Texture;
+		break;
+	case 6:
+		bulletNum2 = dig6Texture;
+		break;
+	case 7:
+		bulletNum2 = dig7Texture;
+		break;
+	case 8:
+		bulletNum2 = dig8Texture;
+		break;
+	case 9:
+		bulletNum2 = dig9Texture;
 	}
 }

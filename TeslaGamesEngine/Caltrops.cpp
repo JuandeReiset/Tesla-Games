@@ -28,7 +28,7 @@ void Caltrops::updateTime() {
 }
 
 void Caltrops::createCaltrops(glm::vec3 carPos) {
-	position = glm::vec3(carPos.x, carPos.y - 1.2f, carPos.z);
+	position = glm::vec3(carPos.x, carPos.y - 0.8f, carPos.z);
 	model = glm::translate(model, position);
 	model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 
