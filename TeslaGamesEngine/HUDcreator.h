@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
-#include <vector>s
+#include <vector>
 
 #include "Global.h"
 #include "HUD.h"
@@ -29,6 +29,7 @@ public:
 	void setAliveNumber(int alive);
 	void setPositionNumber(int position);
 	void setGameState(bool isPlayer);
+	void setBulletNum(int bullet);
 
 
 private:
@@ -69,10 +70,15 @@ private:
 	Texture personTexture;
 	Texture cupTexture;
 	Texture winTexture;
-	Texture  loseTexture;	
+	Texture  loseTexture;
+	Texture outOfBulletTexture;
+	Texture bulletSymbolTexture;
+
 	Texture abilityNum;
 	Texture weaponTexture;
 	Texture gameState;
+	Texture bulletTexture;
+
 	Texture lapNum1;
 	Texture lapNum2;
 	Texture aliveNum1;
@@ -80,6 +86,8 @@ private:
 	Texture posNum1;
 	Texture posNum2;
 	Texture slashTexture;
+	Texture bulletNum1;
+	Texture bulletNum2;
 
 	//Empty texture
 	Texture emptyTexture;
@@ -265,6 +273,27 @@ private:
 		350.f / 1600.f * mainWindow.getWidth() * size, 900.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f, 1.f,
 		1250.f / 1600.f * mainWindow.getWidth() * size, 900.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 1.f,
 		1250.f / 1600.f * mainWindow.getWidth() * size, 0.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
+	};
+
+	GLfloat bulletVertices[20] = {
+		10.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f ,0.f,
+		10.f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f, 1.f,
+		47.6f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 1.f,
+		47.6f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
+	};
+	
+	GLfloat bulletNum1Vertices[20] = {
+		140.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f ,0.f,
+		140.f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f, 1.f,
+		170.f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 1.f,
+		170.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
+	};
+
+	GLfloat bulletNum2Vertices[20] = {
+		180.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f ,0.f,
+		180.f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f, 1.f,
+		210.f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 1.f,
+		210.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
 	};
 };
 
