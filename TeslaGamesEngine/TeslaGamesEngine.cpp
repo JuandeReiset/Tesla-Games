@@ -120,6 +120,11 @@ Model racetrack_floor;
 Model bulletobj;
 Model boxTest;
 
+//Pickup models
+Model defense_pickup;
+Model ammo_pickup;
+
+
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -402,6 +407,8 @@ int main()
 
 	physEng = new PhysicsEngine();
 
+	physEng->createPickupTriggerVolume(18, -2, -67, 4, 4, 4);
+
 	Renderer r = Renderer(mainWindow, camera);
 
 	Game mainGame = Game(r);
@@ -510,6 +517,10 @@ int main()
 	racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 	
 	bulletobj.LoadModel("Models/bullet.obj");
+	defense_pickup.LoadModel("Models/defense_box.obj");
+	ammo_pickup.LoadModel("Models/ammo_box.obj");
+
+
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
 
@@ -728,14 +739,11 @@ int main()
 		//test with 2 pickup boxes
 		auto pickup = physEng->pickupBoxes.begin();
 		while (pickup != physEng->pickupBoxes.end()) {
-			//if it is picked up, delete it from the list
-			//it looks like it won't be triggered once it is deleted, but I think it's still in the triggerActor list
-			if ((*pickup)->getIsPicked()) {
-				physEng->pickupBoxes.erase(pickup++);
-			}
-			else {
+			(*pickup)->timeRespawnCheck();
+
+			if (!(*pickup)->getIsPicked()) {	//if getIsPicked == false, render it. Otherwise, ignore box
 				physx::PxVec3 wallPos = (*pickup)->actor->getGlobalPose().p;
-				glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
+				glm::vec3 wallp(wallPos.x, wallPos.y + 1.f, wallPos.z);
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, wallp);
 				//Consider making the pickup boxes a hardcoded size and hardcoding the 
@@ -743,10 +751,11 @@ int main()
 				model = glm::scale(model, glm::vec3(1.1f, 0.3f, 0.2f));	//keep these scale values!
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-				boxTest.RenderModel();
-
-				++pickup;
+				//boxTest.RenderModel();
+				defense_pickup.RenderModel();
 			}
+
+			++pickup;
 		}
 	
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
@@ -805,6 +814,7 @@ int main()
 			}
 			
 			T_turret.RenderModel(); //renders turret
+			
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -906,8 +916,9 @@ int main()
 
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 				//TeslaCar.RenderModel();
-				Teslacar_chasis.RenderModel();
+			    Teslacar_chasis.RenderModel();
 				T_turret.RenderModel();
+				//defense_pickup.RenderModel();
 			}
 		}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1002,9 +1013,13 @@ int main()
 			hud.setGameState(true);
 		if (loseFlag == true)
 			hud.setGameState(false);
+		if(winFlag)
+			hud.setLapNumber(physEng->player->numLaps);
+		else
+			hud.setLapNumber(physEng->player->numLaps + 1);
+
 
 		hud.setAbilityNumber(physEng->player->ability);
-		hud.setLapNumber(physEng->player->numLaps);
 		hud.setAliveNumber(physEng->enemyVehicles.size());
 		//don't now how to get position right now
 		//hud.setPositionNumber();
