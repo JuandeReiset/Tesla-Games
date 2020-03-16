@@ -407,6 +407,8 @@ int main()
 
 	physEng = new PhysicsEngine();
 
+	physEng->createPickupTriggerVolume(18, -2, -67, 4, 4, 4);
+
 	Renderer r = Renderer(mainWindow, camera);
 
 	Game mainGame = Game(r);
@@ -737,14 +739,11 @@ int main()
 		//test with 2 pickup boxes
 		auto pickup = physEng->pickupBoxes.begin();
 		while (pickup != physEng->pickupBoxes.end()) {
-			//if it is picked up, delete it from the list
-			//it looks like it won't be triggered once it is deleted, but I think it's still in the triggerActor list
-			if ((*pickup)->getIsPicked()) {
-				physEng->pickupBoxes.erase(pickup++);
-			}
-			else {
+			(*pickup)->timeRespawnCheck();
+
+			if (!(*pickup)->getIsPicked()) {	//if getIsPicked == false, render it. Otherwise, ignore box
 				physx::PxVec3 wallPos = (*pickup)->actor->getGlobalPose().p;
-				glm::vec3 wallp(wallPos.x, wallPos.y+1.f, wallPos.z);
+				glm::vec3 wallp(wallPos.x, wallPos.y + 1.f, wallPos.z);
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, wallp);
 				//Consider making the pickup boxes a hardcoded size and hardcoding the 
@@ -754,8 +753,9 @@ int main()
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 				//boxTest.RenderModel();
 				defense_pickup.RenderModel();
-				++pickup;
 			}
+
+			++pickup;
 		}
 	
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
