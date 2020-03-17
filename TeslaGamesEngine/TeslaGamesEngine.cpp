@@ -32,7 +32,6 @@
 #include "Model.h"
 #include "Skybox.h"
 
-
 //Health stuff
 #include "Combat.h"
 #include "HealthComponent.h"
@@ -50,8 +49,10 @@
 //PhysX and Physics Engine
 #include "PhysicsEngine.h"
 
-//HUD stuff
+//UI stuff
 #include "HUDcreator.h"
+#include "StartScreen.h"
+#include "Menu.h"
 
 //Shadow stuff
 #include "Shadow.h"
@@ -62,7 +63,6 @@
 
 // AI stuff
 #include "AIDrivingComponent.h"
-#include "AIShootingComponent.h"
 
 // Stuff for imgui
 #include "imGui/imgui.h"
@@ -121,6 +121,12 @@ Model racetrack_walls;
 Model racetrack_floor;
 Model bulletobj;
 Model boxTest;
+Model oil;
+
+//Pickup models
+Model defense_pickup;
+Model ammo_pickup;
+
 
 
 DirectionalLight mainLight;
@@ -399,8 +405,18 @@ int main()
 	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
+	bool startScreenFlag = true;
+	int menuFlag = 0;
+
 	HUDcreator hud;
 	hud.load();
+
+	StartScreen startScreen;
+	startScreen.load();
+	Menu menu;
+	menu.load();
+
+	int op = 0;
 
 	physEng = new PhysicsEngine();
 
@@ -508,10 +524,16 @@ int main()
 	boxTest.LoadModel("Models/wall.obj");
 	//caltrop.LoadModel("Models/caltrops.obj");
 	//racetrack.LoadModel("Models/track2.obj");
-	racetrack_walls.LoadModel("Models/track2walls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
-	racetrack_floor.LoadModel("Models/track2floor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
+	racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
+	racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 	
 	bulletobj.LoadModel("Models/bullet.obj");
+	defense_pickup.LoadModel("Models/defense_box.obj");
+	ammo_pickup.LoadModel("Models/ammo_box.obj");
+
+	oil.LoadModel("Models/oil.obj");
+
+
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
 
@@ -581,24 +603,68 @@ int main()
 	//physEng.upwards();
 	//End of audio system setup/demo
 
+	//This does all the Ai stuff as far TeslaGameEngine is concerned
+	Track raceTrack = Track(trackTypeConstants::OVAL);
+	physEng->initAITrack(&raceTrack);
+
 	// Creating an enemy vehicle 
 	physEng->addEnemyVehicle(70, 5, -82);
-	AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
+
+
+	//physEng->enemyVehicles[0]->setAITrack(&raceTrack);
+	//69.10,-2.65,-71.48,start
+	//-26.55,-4.44,-69.89,  -7.70, -2.26, -72.82slow
+	//-38.75,-3.67,-68.75,  -42.75, -3.45, -70.97Turn
+	//-73.33,-2.59,-27.62,ApexMin
+	//-54.40,-2.58,26.53,ApexMaj
+	//-5.57,-2.60,48.48,exit
+	//95.78,-2.57,33.85,slow
+	//117.08,-2.60,31.51,turn
+	//141.67,-2.51,-1.95,ApexMin
+	//141.28,-2.53,-36.02,ApexMaj
+	//120.79,-2.42,-51.46,exit
+
+	/*AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
+	//im adding the lap markers as the only targets for now
+	//aiDriving.AddDrivingTarget(70, -86);
+	//aiDriving.AddDrivingTarget(-76, -85);	
+	//aiDriving.AddDrivingTarget(-103, -45);
+	//aiDriving.AddDrivingTarget(-85, 39);
+	//aiDriving.AddDrivingTarget(-55, 51);	
+	//aiDriving.AddDrivingTarget(-5.5f, 6.8f);
+	//aiDriving.AddDrivingTarget(23, 36);
+	//aiDriving.AddDrivingTarget(105.3f, 53);
+	//aiDriving.AddDrivingTarget(212, 33);	
+	//aiDriving.AddDrivingTarget(220, -4.5f);
+	//aiDriving.AddDrivingTarget(225.5f, -58);
+	//aiDriving.AddDrivingTarget(165.5f, -90);
 	aiDriving.AddDrivingTarget(-40, -85);
 	aiDriving.AddDrivingTarget(-85, -80);
 	aiDriving.AddDrivingTarget(-95, -20);
 	aiDriving.AddDrivingTarget(-75, 45);
-	aiDriving.AddDrivingTarget(-55, 45);
-	aiDriving.AddDrivingTarget(-15, 15);
-	aiDriving.AddDrivingTarget(-5, 10);
+
+	aiDriving.AddDrivingTarget(-34,58);
+	aiDriving.AddDrivingTarget(172, 40);
+	//aiDriving.AddDrivingTarget(188, -60);
+	
+	//aiDriving.AddDrivingTarget(-55, 45);
+	//aiDriving.AddDrivingTarget(-15, 15);
+	//aiDriving.AddDrivingTarget(-5, 10);
 	aiDriving.AddDrivingTarget(20, 35);
 	aiDriving.AddDrivingTarget(130, 65);
 	aiDriving.AddDrivingTarget(210, 40);
 	aiDriving.AddDrivingTarget(225, -60);
 
-	AIShootingComponent aiShooting = AIShootingComponent(physEng->enemyVehicles[0]);
-	aiShooting.SetTarget(physEng->player);
 
+
+	/*
+	physEng->addEnemyVehicle(15, 10, 0);
+	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
+	aiDriving2.AddDrivingTarget(45, 40);
+	aiDriving2.AddDrivingTarget(215, -70);
+	aiDriving2.AddDrivingTarget(-90, -75);
+	aiDriving2.AddDrivingTarget(-65, 55);
+	*/
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
 	while (!mainWindow.getShouldClose())
@@ -618,10 +684,6 @@ int main()
 		deltaTime = now - lastTime;
 		lastTime = now;
 
-		// For AI testing
-		//aiDriving.Tick(deltaTime);
-		aiShooting.Tick(deltaTime);
-
 
 		// Get + Handle User Input
 		glfwPollEvents();
@@ -636,6 +698,118 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+		//CAMERA RENDERING
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//update camera
+		//now distance and other stuff are inside camera class
+		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
+		glm::vec3 dirToUse;
+		if (isCameraFlipped) {
+			dirToUse = dir * -1.f;
+		}
+		else {
+			dirToUse = dir;
+		}
+
+		if (player1.RStick_InDeadzone()) {
+			camera.stickControl(0.f, vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
+		}
+		else {
+			camera.stickControl(player1.rightStick_X(), vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
+		}
+
+
+		//end camera stuff
+
+		//start menu
+		/*
+		can press up or down to choose from stat menu
+		0 - start(default)
+		1 - setting
+		2 - exit
+
+		red means being selected
+		*/
+		if (startScreenFlag) {
+			if (player1.isButtonDown(XButtons.DPad_Up)) {
+				if (op == 0)
+					;
+				else
+					--op;
+				startScreen.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.DPad_Down)) {
+				if (op == 2)
+					;
+				else
+					++op;
+				startScreen.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.A)) {
+				if (op == 0)
+					startScreenFlag = false;
+				else if (op == 1) {
+					menuFlag = 1;
+					startScreenFlag = false;
+				}
+				else if (op == 2)
+					mainWindow.setWindowClose();
+			}
+
+			startScreen.use();
+			mainWindow.swapBuffers();
+
+			continue;
+		}
+
+		op = 0;
+
+		if (menuFlag) {
+			if (player1.isButtonDown(XButtons.DPad_Up)) {
+				if (op == 0)
+					;
+				else
+					--op;
+				menu.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.DPad_Down)) {
+				if (op == 1)
+					;
+				else
+					++op;
+				menu.setOption(op);
+			}
+			else if (player1.isButtonDown(XButtons.A)) {
+				//something will happen
+			}
+			else if (player1.isButtonDown(XButtons.B)) {
+				//back to start screen
+				if (menuFlag == 1) {
+					startScreenFlag = true;
+					menuFlag = 0;
+				}
+				//continue game
+				else if (menuFlag = 2) {
+					menuFlag = 0;
+				}
+
+				op = 0;
+				startScreen.setOption(op);
+			}
+
+			menu.use();
+			mainWindow.swapBuffers();
+
+			continue;
+		}
+
+		if (player1.isButtonDown(XButtons.Back)) {
+			menuFlag = 2;
+			op = 0;
+			menu.setOption(op);
+		}
 
 		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
 
@@ -712,7 +886,7 @@ int main()
 			}
 			else {
 				physx::PxVec3 wallPos = (*pickup)->actor->getGlobalPose().p;
-				glm::vec3 wallp(wallPos.x, wallPos.y, wallPos.z);
+				glm::vec3 wallp(wallPos.x, wallPos.y+1.f, wallPos.z);
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, wallp);
 				//Consider making the pickup boxes a hardcoded size and hardcoding the 
@@ -720,8 +894,8 @@ int main()
 				model = glm::scale(model, glm::vec3(1.1f, 0.3f, 0.2f));	//keep these scale values!
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-				boxTest.RenderModel();
-
+				//boxTest.RenderModel();
+				defense_pickup.RenderModel();
 				++pickup;
 			}
 		}
@@ -781,7 +955,7 @@ int main()
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			}
 			
-			T_turret.RenderModel(); //renders turret
+			T_turret.RenderModel(); //renders turret	
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -834,44 +1008,21 @@ int main()
 
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 				//TeslaCar.RenderModel();
-				Teslacar_chasis.RenderModel();
-				// TODO: Should keep track of turret rotation in ShootComp or something
+			    Teslacar_chasis.RenderModel();
 				T_turret.RenderModel();
+				//defense_pickup.RenderModel();
 			}
 		}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-
-
-		//CAMERA RENDERING
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//update camera
-		//now distance and other stuff are inside camera class
-		glm::vec3 dir = glm::normalize(glm::vec3(v_dir.x, 0, v_dir.z));
-		glm::vec3 dirToUse;
-		if(isCameraFlipped) {
-			dirToUse = dir * -1.f;
-		}
-		else {
-			dirToUse = dir;
-		}
-
-		if (player1.RStick_InDeadzone()) {
-			camera.stickControl(0.f, vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
-		}
-		else {
-			camera.stickControl(player1.rightStick_X(), vehiclePosition, dirToUse, player1.isButtonDown(XButtons.R_Thumbstick), isCameraFlipped);
-		}
-		
-		
-		//end camera stuff
-
 
 
 		//SHADOW RENDERING
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		
+		model = glm::mat4(1.0f);
+		glm::vec3 tem = glm::vec3(53,-2 ,-83);
+		model = glm::translate(model, tem); //Update turret pos with position of vehicle
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		oil.RenderModel();
 
 		//turn on blend mode
 		glEnable(GL_BLEND);
@@ -931,12 +1082,17 @@ int main()
 			hud.setGameState(true);
 		if (loseFlag == true)
 			hud.setGameState(false);
+		if(winFlag)
+			hud.setLapNumber(physEng->player->numLaps);
+		else
+			hud.setLapNumber(physEng->player->numLaps + 1);
+
 
 		hud.setAbilityNumber(physEng->player->ability);
-		hud.setLapNumber(physEng->player->numLaps);
 		hud.setAliveNumber(physEng->enemyVehicles.size());
 		//don't now how to get position right now
 		//hud.setPositionNumber();
+		hud.setBulletNum(physEng->player->getShootingComponent()->ammo);
 		
 		hud.use();
 		

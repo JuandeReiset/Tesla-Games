@@ -59,6 +59,10 @@
     <ClCompile Include="LapMarker.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="AIShootingComponent.cpp" />
+    <ClCompile Include="TrackDrivingPoint.cpp" />
+    <ClCompile Include="Track.cpp" />
+    <ClCompile Include="StartScreen.cpp" />
+    <ClCompile Include="Menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -119,6 +123,10 @@
     <ClInclude Include="LapMarker.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="AIShootingComponent.h" />
+    <ClInclude Include="TrackDrivingPoint.h" />
+    <ClInclude Include="Track.h" />
+    <ClInclude Include="StartScreen.h" />
+    <ClInclude Include="Menu.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TeslaGamesEngine1.rc" />

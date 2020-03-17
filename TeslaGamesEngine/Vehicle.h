@@ -17,8 +17,7 @@
 #include "Object.h"
 #include "audioEngine.h"
 #include "Caltrops.h"
-
-//#include "Bullet.h"
+#include "TrackDrivingPoint.h"
 
 using namespace physx;
 
@@ -42,7 +41,13 @@ public:
 	int numLaps;
 	void hitLapMarker(int val, int trackTotalLaps, int trackTotalLapMarkers);
 	void lapWinCondition();
-  
+
+	void initAITrackPoints(std::vector<std::unique_ptr<TrackDrivingPoint>>* listOfPoints);
+	TrackDrivingPoint pastTarget;
+	TrackDrivingPoint curTarget;
+	int trackPointListIndex;
+	bool isAICar;
+
 	//ability stuff
 	int ability;
 
@@ -125,6 +130,7 @@ private:
 	AudioBoomBox boostStart;
 	AudioBoomBox boostMax;
 
+	std::vector<std::unique_ptr<TrackDrivingPoint>>* listOfPoints;
 
 	physx::PxF32 gSteerVsForwardSpeedData[2 * 8];
 	bool gIsVehicleInAir = true;
@@ -148,8 +154,6 @@ private:
 
 	snippetvehicle::VehicleDesc initVehicleDesc(PxMaterial* gMaterial);
 	void keyPress(unsigned char key, const physx::PxTransform& camera);
-	void startHandbrakeTurnLeftMode(float magnitude);
-	void startHandbrakeTurnRightMode(float magnitude);
 	void releaseAllControls();//each vihecle has a unique number for recognizition
 
 	

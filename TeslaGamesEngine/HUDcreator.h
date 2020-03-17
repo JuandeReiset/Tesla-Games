@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
-#include <vector>s
+#include <vector>
 
 #include "Global.h"
 #include "HUD.h"
@@ -29,6 +29,7 @@ public:
 	void setAliveNumber(int alive);
 	void setPositionNumber(int position);
 	void setGameState(bool isPlayer);
+	void setBulletNum(int bullet);
 
 
 private:
@@ -69,16 +70,24 @@ private:
 	Texture personTexture;
 	Texture cupTexture;
 	Texture winTexture;
-	Texture  loseTexture;	
+	Texture  loseTexture;
+	Texture outOfBulletTexture;
+	Texture bulletSymbolTexture;
+
 	Texture abilityNum;
 	Texture weaponTexture;
 	Texture gameState;
+	Texture bulletTexture;
+
 	Texture lapNum1;
 	Texture lapNum2;
 	Texture aliveNum1;
 	Texture aliveNum2;
 	Texture posNum1;
 	Texture posNum2;
+	Texture slashTexture;
+	Texture bulletNum1;
+	Texture bulletNum2;
 
 	//Empty texture
 	Texture emptyTexture;
@@ -134,66 +143,129 @@ private:
 	};
 
 	GLfloat cupVertices[20] = {
-		1505.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
-		1505.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
-		1545.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
-		1545.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+		1430.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1430.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1470.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1470.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
 	GLfloat rank1numVertices[20] = {
+		1475.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1475.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1495.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1495.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
+	GLfloat rank2numVertices[20] = {
+		1500.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1500.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1520.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1520.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
+	GLfloat totalRank1Vertices[20] = {
 		1550.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
 		1550.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
 		1570.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
 		1570.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
-	GLfloat rank2numVertices[20] = {
+	GLfloat totalRank2Vertices[20] = {
 		1575.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
 		1575.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
 		1595.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
 		1595.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
+	GLfloat rankSlashVertices[20] = {
+		1525.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1525.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1545.0f / 1600 * mainWindow.getWidth() * size, 50.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1545.0f / 1600 * mainWindow.getWidth() * size, 10.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
 	GLfloat flagVertices[20] = {
-		1505.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
-		1505.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
-		1545.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
-		1545.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+		1430.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1430.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1470.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1470.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
 	GLfloat lap1numVertices[20] = {
+		1475.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1475.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1495.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1495.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
+	GLfloat lap2numVertices[20] = {
+		1500.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1500.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1520.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1520.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
+	GLfloat totalLap1Vertices [20] = {
 		1550.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
 		1550.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
 		1570.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
 		1570.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
-	GLfloat lap2numVertices[20] = {
+	GLfloat totalLap2Vertices[20] = {
 		1575.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
 		1575.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
 		1595.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
 		1595.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
+	GLfloat lapSlashVertices[20] = {
+		1525.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1525.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1545.0f / 1600 * mainWindow.getWidth() * size, 100.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1545.0f / 1600 * mainWindow.getWidth() * size, 60.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
 	GLfloat personVertices[20] = {
-		1505.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
-		1505.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
-		1545.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
-		1545.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+		1430.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1430.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1470.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1470.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
 	GLfloat alive1numVertices[20] = {
+		1475.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1475.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1495.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1495.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
+	GLfloat alive2numVertices[20] = {
+		1500.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1500.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1520.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1520.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
+	GLfloat totalAlive1Vertices[20] = {
 		1550.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
 		1550.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
 		1570.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
 		1570.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
-	GLfloat alive2numVertices[20] = {
+	GLfloat totalAlive2Vertices[20] = {
 		1575.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
 		1575.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
 		1595.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
 		1595.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
+	GLfloat aliveSlashVertices[20] = {
+		1525.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1525.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1545.0f / 1600 * mainWindow.getWidth() * size, 150.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1545.0f / 1600 * mainWindow.getWidth() * size, 110.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
 	GLfloat gameStateVertices[20] = {
@@ -201,6 +273,27 @@ private:
 		350.f / 1600.f * mainWindow.getWidth() * size, 900.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f, 1.f,
 		1250.f / 1600.f * mainWindow.getWidth() * size, 900.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 1.f,
 		1250.f / 1600.f * mainWindow.getWidth() * size, 0.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
+	};
+
+	GLfloat bulletVertices[20] = {
+		10.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f ,0.f,
+		10.f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f, 1.f,
+		47.6f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 1.f,
+		47.6f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
+	};
+	
+	GLfloat bulletNum1Vertices[20] = {
+		140.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f ,0.f,
+		140.f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f, 1.f,
+		170.f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 1.f,
+		170.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
+	};
+
+	GLfloat bulletNum2Vertices[20] = {
+		180.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f ,0.f,
+		180.f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			0.f, 1.f,
+		210.f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 1.f,
+		210.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
 	};
 };
 

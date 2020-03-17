@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include <iostream>
 
+
 #include "../TeslaGamesEngine/snippetcommon/SnippetPrint.h"
 
 
@@ -75,6 +76,10 @@ void PhysicsEngine::initAudioForVehicles(AudioEngine* audio) {
 	}
 }
 
+void PhysicsEngine::initAITrack(Track* raceTrack) {
+	this->raceTrack = raceTrack;
+}
+
 
 
 void PhysicsEngine::addEnemyVehicle(float x, float y, float z)
@@ -84,6 +89,7 @@ void PhysicsEngine::addEnemyVehicle(float x, float y, float z)
 	Vehicle* v = new Vehicle(false, gPhysics, gCooking, gMaterial, gScene, gAllocator, x, y, z, 2);
 	v->initVehicleAudio(this->audioEngine);
 	v->actor->userData = v;
+	v->initAITrackPoints(&this->raceTrack->listOfPoints);
 	enemyVehicles.push_back(v);
 }
 
@@ -100,7 +106,9 @@ void PhysicsEngine::stepPhysics()
 
 	if (!enemyVehicles.empty()) {
 		for (int i = 0; i < enemyVehicles.size(); i++) {
-			enemyVehicles.at(i)->update(timestep, gScene);
+			Vehicle* fromList = enemyVehicles.at(i);
+			this->raceTrack->performMove(fromList);
+			fromList->update(timestep, gScene);
 		}
 	}
 
