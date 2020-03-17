@@ -586,7 +586,7 @@ int main()
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	raceMusic.setVolume(0.5f);
+	raceMusic.setVolume(0.35f);
 	raceMusic.loopSound(true);
 	raceMusic.playSound();
 
@@ -609,7 +609,10 @@ int main()
 
 	// Creating an enemy vehicle 
 	physEng->addEnemyVehicle(70, 5, -82);
-
+	physEng->addEnemyVehicle(70, 5, -70);
+	physEng->addEnemyVehicle(80, 5, -85);
+	physEng->addEnemyVehicle(80, 5, -80);
+	physEng->addEnemyVehicle(80, 5, -90);
 
 	//physEng->enemyVehicles[0]->setAITrack(&raceTrack);
 	//69.10,-2.65,-71.48,start

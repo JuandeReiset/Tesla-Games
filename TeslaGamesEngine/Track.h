@@ -20,6 +20,7 @@ class Track
 		~Track();
 		void addPointToList(float x, float y, float z, int action);
 		void initializeTrackPoints(int trackType);
+		void performStuckCorrectionMove(Vehicle * v);
 		void performMove(Vehicle * v);
 		void pastStartCurrentSlowdown(PxU32 curGear, float angleToTurn, Vehicle * v);
 		void pastTurnExitCurrentSlowDown(PxU32 curGear, float angleToTurn, Vehicle * v);

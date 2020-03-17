@@ -113,6 +113,47 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 			this->trackPointListIndex++;
 			this->trackPointListIndex = this->trackPointListIndex % length;
 			this->curTarget = *this->listOfPoints->at(trackPointListIndex);
+
+			bool isAICarStuck = false;
+			bool isAICarArabDrift = false;
+			this->AICarStuckFrameCounter = 0;
+			//this->AICarArabDriftFrameCounter = 0;
+		}
+		else {
+			//Check for getting stuck
+			this->AICarStuckFrameCounter = (AICarStuckFrameCounter + 1) % 480;
+
+			//Check every 30 frames
+			//this->AICarArabDriftFrameCounter = (this->AICarArabDriftFrameCounter + 1) % 30;
+
+			if (this->AICarStuckFrameCounter == 0 || this->isAICarStuck == true) {
+				if (this->oldStuckTarget.actionToTake == -1) {
+					this->oldStuckTarget = this->curTarget;
+				}
+				else {
+					if (this->oldStuckTarget == this->curTarget) {
+						if (this->isAICarStuck == false) {
+							float speed = std::abs(this->gVehicle4W->computeForwardSpeed());
+							if (speed < 3.f) {
+								this->isAICarStuck = true;
+							}
+						}
+						else {
+							this->AICarStuckMoveCounter = (this->AICarStuckMoveCounter + 1) % 120;
+							if (this->AICarStuckMoveCounter == 0) {
+								this->isAICarStuck = false;
+							}
+						}
+					}
+					else {
+						this->oldStuckTarget = this->curTarget;
+					}
+				}
+			}
+			else if (this->AICarArabDriftFrameCounter == 0) {
+
+			}
+
 		}
 	}
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;
@@ -368,7 +409,7 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 
 	this->turret.initShootCompAudio(engine);
 
-	float initialSoundVolume = 6.3f;
+	float initialSoundVolume = 9.f;
 
 	this->accelerateFromRest.setVolume(initialSoundVolume);
 	this->accelerateFromMotion.setVolume(initialSoundVolume);
