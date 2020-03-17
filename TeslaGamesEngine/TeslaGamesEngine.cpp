@@ -608,11 +608,17 @@ int main()
 	physEng->initAITrack(&raceTrack);
 
 	// Creating an enemy vehicle 
-	physEng->addEnemyVehicle(70, 5, -82);
+	physEng->addEnemyVehicle(70, 5, -80);
 	physEng->addEnemyVehicle(70, 5, -70);
 	physEng->addEnemyVehicle(80, 5, -85);
 	physEng->addEnemyVehicle(80, 5, -80);
 	physEng->addEnemyVehicle(80, 5, -90);
+	physEng->addEnemyVehicle(90, 5, -85);
+	physEng->addEnemyVehicle(90, 5, -80);
+	physEng->addEnemyVehicle(90, 5, -90);
+	physEng->addEnemyVehicle(100, 5, -85);
+	physEng->addEnemyVehicle(100, 5, -80);
+	physEng->addEnemyVehicle(100, 5, -90);
 
 	//physEng->enemyVehicles[0]->setAITrack(&raceTrack);
 	//69.10,-2.65,-71.48,start
