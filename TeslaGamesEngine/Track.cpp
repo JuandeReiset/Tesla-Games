@@ -43,9 +43,20 @@ void Track::initializeTrackPoints(int trackType) {
 
 //To use if you get stuck
 void Track::performStuckCorrectionMove(Vehicle* v) {
-	v->forwards(0.f);
-	v->turn(-0.4f);
-	v->reverse(0.9f);
+	TrackDrivingPoint* currentTarget = &v->curTarget;
+	float angleToTurn = getAngleToTurnBy(currentTarget, v);
+
+	if (angleToTurn < 0) {
+		v->forwards(0.f);
+		v->turn(0.4f); //going in reverse
+		v->reverse(0.9f);
+	}
+	else {
+		v->forwards(0.f);
+		v->turn(-0.4f);
+		v->reverse(0.9f);
+	}
+	
 }
 
 void Track::performMove(Vehicle* v) {

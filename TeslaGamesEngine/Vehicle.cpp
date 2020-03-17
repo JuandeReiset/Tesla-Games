@@ -409,7 +409,7 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 
 	this->turret.initShootCompAudio(engine);
 
-	float initialSoundVolume = 9.f;
+	float initialSoundVolume = 15.f;
 
 	this->accelerateFromRest.setVolume(initialSoundVolume);
 	this->accelerateFromMotion.setVolume(initialSoundVolume);
