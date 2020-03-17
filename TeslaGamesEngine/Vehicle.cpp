@@ -115,17 +115,10 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 			this->curTarget = *this->listOfPoints->at(trackPointListIndex);
 
 			bool isAICarStuck = false;
-			bool isAICarArabDrift = false;
-			this->AICarStuckFrameCounter = 0;
-			//this->AICarArabDriftFrameCounter = 0;
 		}
 		else {
 			//Check for getting stuck
 			this->AICarStuckFrameCounter = (AICarStuckFrameCounter + 1) % 480;
-
-			//Check every 30 frames
-			//this->AICarArabDriftFrameCounter = (this->AICarArabDriftFrameCounter + 1) % 30;
-
 			if (this->AICarStuckFrameCounter == 0 || this->isAICarStuck == true) {
 				if (this->oldStuckTarget.actionToTake == -1) {
 					this->oldStuckTarget = this->curTarget;
@@ -150,13 +143,8 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 					}
 				}
 			}
-			else if (this->AICarArabDriftFrameCounter == 0) {
-
-			}
-
 		}
 	}
-	//std::cout << "Sp: " << slide << " ge: " << std::endl;
 }
 
 //called when a vehicle hits a trigger volume lap marker. Val is the lapMarker value, trackTotalLaps is the
