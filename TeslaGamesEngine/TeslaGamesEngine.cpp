@@ -121,6 +121,7 @@ Model racetrack_walls;
 Model racetrack_floor;
 Model bulletobj;
 Model boxTest;
+Model oil;
 
 //Pickup models
 Model defense_pickup;
@@ -529,6 +530,8 @@ int main()
 	bulletobj.LoadModel("Models/bullet.obj");
 	defense_pickup.LoadModel("Models/defense_box.obj");
 	ammo_pickup.LoadModel("Models/ammo_box.obj");
+
+	oil.LoadModel("Models/oil.obj");
 
 
 	// TODO: Put FPS code into Game.Play()
@@ -952,8 +955,7 @@ int main()
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			}
 			
-			T_turret.RenderModel(); //renders turret
-			
+			T_turret.RenderModel(); //renders turret	
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -1012,17 +1014,15 @@ int main()
 			}
 		}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-
-
-	
-
 
 
 		//SHADOW RENDERING
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		
+		model = glm::mat4(1.0f);
+		glm::vec3 tem = glm::vec3(53,-2 ,-83);
+		model = glm::translate(model, tem); //Update turret pos with position of vehicle
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		oil.RenderModel();
 
 		//turn on blend mode
 		glEnable(GL_BLEND);
