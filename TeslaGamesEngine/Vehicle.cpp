@@ -113,9 +113,38 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 			this->trackPointListIndex++;
 			this->trackPointListIndex = this->trackPointListIndex % length;
 			this->curTarget = *this->listOfPoints->at(trackPointListIndex);
+
+			bool isAICarStuck = false;
+		}
+		else {
+			//Check for getting stuck
+			this->AICarStuckFrameCounter = (AICarStuckFrameCounter + 1) % 480;
+			if (this->AICarStuckFrameCounter == 0 || this->isAICarStuck == true) {
+				if (this->oldStuckTarget.actionToTake == -1) {
+					this->oldStuckTarget = this->curTarget;
+				}
+				else {
+					if (this->oldStuckTarget == this->curTarget) {
+						if (this->isAICarStuck == false) {
+							float speed = std::abs(this->gVehicle4W->computeForwardSpeed());
+							if (speed < 3.f) {
+								this->isAICarStuck = true;
+							}
+						}
+						else {
+							this->AICarStuckMoveCounter = (this->AICarStuckMoveCounter + 1) % 120;
+							if (this->AICarStuckMoveCounter == 0) {
+								this->isAICarStuck = false;
+							}
+						}
+					}
+					else {
+						this->oldStuckTarget = this->curTarget;
+					}
+				}
+			}
 		}
 	}
-	//std::cout << "Sp: " << slide << " ge: " << std::endl;
 }
 
 //called when a vehicle hits a trigger volume lap marker. Val is the lapMarker value, trackTotalLaps is the
@@ -368,7 +397,7 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 
 	this->turret.initShootCompAudio(engine);
 
-	float initialSoundVolume = 6.3f;
+	float initialSoundVolume = 15.f;
 
 	this->accelerateFromRest.setVolume(initialSoundVolume);
 	this->accelerateFromMotion.setVolume(initialSoundVolume);

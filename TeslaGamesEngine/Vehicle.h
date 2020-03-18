@@ -47,6 +47,12 @@ public:
 	TrackDrivingPoint curTarget;
 	int trackPointListIndex;
 	bool isAICar;
+	bool isAICarStuck = false;
+	int AICarStuckFrameCounter = 0;
+	int AICarStuckMoveCounter = 0;
+	TrackDrivingPoint oldStuckTarget = TrackDrivingPoint(0,0,0,-1);
+
+
 
 	//ability stuff
 	int ability;
