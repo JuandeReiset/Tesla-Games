@@ -9,6 +9,7 @@
 #include <cstring>
 #include <vector>
 #include <memory>
+#include <glm\ext\vector_float3.hpp>
 
 namespace audioConstants
 {
@@ -38,6 +39,7 @@ class AudioEngine
 		~AudioEngine();
 		void initialize();
 		void updateListenerPosition(float x, float y, float z);
+		void updateListenerOrientatation(glm::vec3 front, glm::vec3 up);
 		void initializeBuffers();
 		AudioBoomBox& createBoomBox(int soundFile);
 		void killSource(AudioBoomBox * boombox);

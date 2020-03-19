@@ -100,6 +100,12 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	}
 
 	update_turret();
+
+
+	//run smoke and oil effects 
+	updateCurrentTime();
+	updateSmoke();
+	updateOil();
 	
 	if (this->isAICar) {
 		PxVec3 pos = this->GetPosition();
@@ -113,9 +119,38 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 			this->trackPointListIndex++;
 			this->trackPointListIndex = this->trackPointListIndex % length;
 			this->curTarget = *this->listOfPoints->at(trackPointListIndex);
+
+			bool isAICarStuck = false;
+		}
+		else {
+			//Check for getting stuck
+			this->AICarStuckFrameCounter = (AICarStuckFrameCounter + 1) % 480;
+			if (this->AICarStuckFrameCounter == 0 || this->isAICarStuck == true) {
+				if (this->oldStuckTarget.actionToTake == -1) {
+					this->oldStuckTarget = this->curTarget;
+				}
+				else {
+					if (this->oldStuckTarget == this->curTarget) {
+						if (this->isAICarStuck == false) {
+							float speed = std::abs(this->gVehicle4W->computeForwardSpeed());
+							if (speed < 3.f) {
+								this->isAICarStuck = true;
+							}
+						}
+						else {
+							this->AICarStuckMoveCounter = (this->AICarStuckMoveCounter + 1) % 120;
+							if (this->AICarStuckMoveCounter == 0) {
+								this->isAICarStuck = false;
+							}
+						}
+					}
+					else {
+						this->oldStuckTarget = this->curTarget;
+					}
+				}
+			}
 		}
 	}
-	//std::cout << "Sp: " << slide << " ge: " << std::endl;
 }
 
 //called when a vehicle hits a trigger volume lap marker. Val is the lapMarker value, trackTotalLaps is the
@@ -180,7 +215,7 @@ void Vehicle::shoot(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensi
 	pos.x = pxpos.x;
 	pos.x = pxpos.y;
 	pos.z = pxpos.z;
-	turret.addBullet_toList(pos, uniModel, uniSpecularIntensity, uniShininess, v_dir.x, v_dir.y, v_dir.z);
+	turret.fire(pos, uniModel, uniSpecularIntensity, uniShininess, v_dir.x, v_dir.y, v_dir.z);
 	//turret.createBullet(pos,  uniModel, uniSpecularIntensity,  uniShininess, v_dir.x, v_dir.y, v_dir.z);
     
 }
@@ -253,6 +288,7 @@ void Vehicle::handleSound() {
 		if (curBrake > 0.f) {
 			this->accelerateFromRest.stopSound();
 			this->accelerateFromMotion.stopSound();
+			this->boostMax.stopSound();
 			if (curSpeed > speedSoundBoundary) {
 				if (!this->maxSpeed.isSoundPlaying()) {
 					this->maxSpeed.playSound();
@@ -268,12 +304,22 @@ void Vehicle::handleSound() {
 					if (curGear == PxVehicleGearsData::eFIRST) {
 						this->maxSpeed.stopSound();
 						this->accelerateFromMotion.stopSound();
+						this->boostMax.stopSound();
 						if (!this->accelerateFromRest.isSoundPlaying()) {
 							this->accelerateFromRest.playSound();
 						}
 					}
+					else if (curGear == PxVehicleGearsData::eREVERSE) {
+						this->accelerateFromMotion.stopSound();
+						this->boostMax.stopSound();
+						this->accelerateFromRest.stopSound();
+						if (!this->maxSpeed.isSoundPlaying()) {
+							this->maxSpeed.playSound();
+						}
+					}
 					else {
 						this->maxSpeed.stopSound();
+						this->boostMax.stopSound();
 						this->accelerateFromRest.stopSound();
 						if (!this->accelerateFromMotion.isSoundPlaying()) {
 							this->accelerateFromMotion.playSound();
@@ -283,13 +329,23 @@ void Vehicle::handleSound() {
 				else {
 					if (curGear == PxVehicleGearsData::eFIRST) {
 						this->maxSpeed.stopSound();
+						this->boostMax.stopSound();
 						this->accelerateFromMotion.stopSound();
 						if (!this->accelerateFromRest.isSoundPlaying()) {
 							this->accelerateFromRest.playSound();
 						}
 					}
+					else if (curGear == PxVehicleGearsData::eREVERSE) {
+						this->accelerateFromMotion.stopSound();
+						this->boostMax.stopSound();
+						this->accelerateFromRest.stopSound();
+						if (!this->maxSpeed.isSoundPlaying()) {
+							this->maxSpeed.playSound();
+						}
+					}
 					else if ((previousSpeed - 1.f) > curSpeed && slideSpeed <= slideSpeedBoundary) {
 						this->maxSpeed.stopSound();
+						this->boostMax.stopSound();
 						this->accelerateFromRest.stopSound();
 						if (!this->accelerateFromMotion.isSoundPlaying()) {
 							this->accelerateFromMotion.playSound();
@@ -297,8 +353,9 @@ void Vehicle::handleSound() {
 					}
 					else {
 						if (!this->accelerateFromMotion.isSoundPlaying() && (!this->accelerateFromRest.isSoundPlaying())) {
-							if (!this->maxSpeed.isSoundPlaying()) {
-								this->maxSpeed.playSound();
+							this->maxSpeed.stopSound();
+							if (!this->boostMax.isSoundPlaying()) {
+								this->boostMax.playSound();
 							}
 						}
 					}
@@ -308,6 +365,7 @@ void Vehicle::handleSound() {
 			else {
 				this->accelerateFromRest.stopSound();
 				this->accelerateFromMotion.stopSound();
+				this->boostMax.stopSound();
 				if (curSpeed > speedSoundBoundary) {
 					if (!this->maxSpeed.isSoundPlaying()) {
 						this->maxSpeed.playSound();
@@ -356,6 +414,9 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	expectedMarker = 1;
 	numLaps = 0;
 
+	smokeDuration = 10.f;
+	oilDuration = 5.f;
+
 }
 
 void Vehicle::initVehicleAudio(AudioEngine* engine) {
@@ -368,7 +429,7 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 
 	this->turret.initShootCompAudio(engine);
 
-	float initialSoundVolume = 6.3f;
+	float initialSoundVolume = 15.f;
 
 	this->accelerateFromRest.setVolume(initialSoundVolume);
 	this->accelerateFromMotion.setVolume(initialSoundVolume);
@@ -574,8 +635,8 @@ void Vehicle::getDamage(double damage) {
 }
 
 void Vehicle::firelazer() {
-	turret.fire();
-	health.SetHealth(0);
+	//turret.fire();
+	//health.SetHealth(0);
 }
 
 //adds one ability point
@@ -591,7 +652,7 @@ void Vehicle::pickup() {
 
 //drops caltrops and adds the newly added caltrop to the given list
 void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
-	if (ability == 0)
+	if (ability == 0 || affectedBySmoke)
 		return;
 
 	std::cout << "\nAbility Points: " << ability;
@@ -605,10 +666,95 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 	--ability;
 }
 
-void Vehicle::useOil() {
+void Vehicle::useOil(std::list<Oil*> *oilList) {
+	if (ability == 0 || affectedBySmoke)
+		return;
+
+	std::cout << "\nAbility Points: " << ability;
+
+	PxVec3 pos = GetPosition();
+
+	Oil* oil = new Oil(ID);
+	oil->createOil(glm::vec3(pos.x, pos.y, pos.z));
+	oilList->push_back(oil);
+
+	--ability;
+}
+
+void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
+	if (ability == 0 || affectedBySmoke)
+		return;
+
+	std::cout << "\nAbility Points: " << ability;
+
+	PxVec3 pos = GetPosition();
+
+	Smoke* smoke = new Smoke(ID);
+	smoke->createSmoke(glm::vec3(pos.x, pos.y, pos.z));
+	smokeList->push_back(smoke);
+
+	--ability;
+}
+
+void Vehicle::enableSmokeEffect()
+{
+	affectedBySmoke = true;
+	smokeStartTime = glfwGetTime();
+	std::cout << "SMOKE ACTIVATED" << std::endl;
+}
+
+void Vehicle::disableSmokeEffect()
+{
+	affectedBySmoke = false;
+	std::cout << "SMOKE DEACTIVATED" << std::endl;
+}
+
+void Vehicle::updateSmoke()
+{
+	if ((smokeStartTime + smokeDuration <= currentTime) && affectedBySmoke) {
+		disableSmokeEffect();
+	}
+}
+
+void Vehicle::enableOilEffect()
+{
+	affectedByOil = true;
+	oilStartTime = glfwGetTime();
+	std::cout << "OIL ACTIVATED" << std::endl;
+
+	actor->setMass(actor->getMass() * 0.3f);
+
+	//basic spinout
+	if(gVehicleInputData.getAnalogSteer() >= 0)
+		actor->addTorque(PxVec3(0, 13000, 0), PxForceMode::eIMPULSE);
+	else
+		actor->addTorque(PxVec3(0, -13000, 0), PxForceMode::eIMPULSE);
+	
+}
+
+void Vehicle::disableOilEffect()
+{
+	affectedByOil = false;
+	std::cout << "OIL DEACTIVATED" << std::endl;
+
+	actor->setMass(actor->getMass() / 0.3f);
+}
+
+void Vehicle::updateOil()
+{
+	if (affectedByOil) {
+		if (oilStartTime + oilDuration <= currentTime) {
+			disableOilEffect();
+		}
+		
+		//actor->addTorque(PxVec3(0, 300, 0), PxForceMode::eIMPULSE);
+	}
+	
 
 }
 
-void Vehicle::useSmoke() {
-
+void Vehicle::updateCurrentTime()
+{
+	currentTime = glfwGetTime();
 }
+

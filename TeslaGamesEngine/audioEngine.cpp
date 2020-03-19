@@ -52,6 +52,11 @@ void AudioEngine::initialize() {
 void AudioEngine::updateListenerPosition(float x, float y, float z) {
 	alListener3f(AL_POSITION, x, y, z);
 }
+void AudioEngine::updateListenerOrientatation(glm::vec3 front, glm::vec3 up) {
+	ALfloat listenerOri[] = { front.x, front.y, front.z, up.x, up.y, up.z };
+	alListenerfv(AL_ORIENTATION, listenerOri);
+}
+
 void AudioEngine::initializeBuffers() {
 	for (int i = 0; i < NUM_OF_SOUND_EFFECTS_POSSIBLE; i++) {
 		const char* file = soundFiles[i];

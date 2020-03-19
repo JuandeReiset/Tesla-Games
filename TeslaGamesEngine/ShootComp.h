@@ -24,8 +24,7 @@ class ShootComp :
 		//model stuff
 
 		//Add an bullet object and required rendering settings to a vector
-		void addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z);
-		void addBullet_toList(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess);
+		void fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z);
 		//method to pass all bullet objects to rendering
 		void renderAllBullets();														//render caltrops model
 
@@ -38,9 +37,8 @@ class ShootComp :
 		void Tick(float deltaTime);
 
 		//decrease ammo by 1
-		void fire();
-
-		// increase ammo by 10
+		void decrease_ammo();
+		// increase armor by 10
 		void recharge();
 
 		//evaluates if there is still ammo in the turret
@@ -62,8 +60,6 @@ class ShootComp :
 		// Stores current vehicle position
 		glm::vec3 start_position;
 
-		// 
-
 		int ammo;
 	private:
 		float life, birthTime, currentTime;											//each caltrop can exist 5 sec, if currentTime - birthTime > life, then destroy the instance
@@ -75,7 +71,6 @@ class ShootComp :
 		//float shoot_distance_x;
 		//float shoot_distance_z;
 		//glm::mat4 model;
-
 		
 
 		GLuint uniformModel, uniformSpecularIntensity, uniformShininess;

@@ -12,6 +12,7 @@ namespace trackDrivingPointActions
 class TrackDrivingPoint
 {
 	public:
+		friend bool operator== (TrackDrivingPoint & lhs, TrackDrivingPoint & rhs);
 		TrackDrivingPoint();
 		TrackDrivingPoint(float x, float y, float z, int action);
 		~TrackDrivingPoint();

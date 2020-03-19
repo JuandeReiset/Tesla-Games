@@ -28,6 +28,7 @@ public:
 	glm::vec3 getCameraDirection();
 	void initializeAudio(AudioEngine* engine);
 	void updateListenerPosition();
+	void updateListenerOrientation(glm::vec3 front, glm::vec3 up);
 	glm::vec3 getCameraCenter();
 	glm::vec3 front;
 	void setPosition(float x, float y, float z);

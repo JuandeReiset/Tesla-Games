@@ -421,6 +421,8 @@ int main()
 
 	physEng = new PhysicsEngine();
 
+	physEng->createPickupTriggerVolume(18, -2, -67, 4, 4, 4);
+
 	Renderer r = Renderer(mainWindow, camera);
 
 	Game mainGame = Game(r);
@@ -587,7 +589,7 @@ int main()
 	//The key is now that multiple sounds can be played at once. As long as sound card can support it
 	//Comment out one sound if you dont wanna hear it
 	//audioObject.playSound();
-	raceMusic.setVolume(0.5f);
+	raceMusic.setVolume(0.35f);
 	raceMusic.loopSound(true);
 	raceMusic.playSound();
 
@@ -609,7 +611,17 @@ int main()
 	physEng->initAITrack(&raceTrack);
 
 	// Creating an enemy vehicle 
-	physEng->addEnemyVehicle(70, 5, -82);
+	physEng->addEnemyVehicle(70, 5, -80);
+	physEng->addEnemyVehicle(70, 5, -70);
+	physEng->addEnemyVehicle(80, 5, -85);
+	physEng->addEnemyVehicle(80, 5, -80);
+	physEng->addEnemyVehicle(80, 5, -90);
+	physEng->addEnemyVehicle(90, 5, -85);
+	physEng->addEnemyVehicle(90, 5, -80);
+	physEng->addEnemyVehicle(90, 5, -90);
+	physEng->addEnemyVehicle(100, 5, -85);
+	physEng->addEnemyVehicle(100, 5, -80);
+	physEng->addEnemyVehicle(100, 5, -90);
 
 	std::vector<Vehicle*> vehicles;
 	vehicles.push_back(physEng->player);
@@ -832,14 +844,11 @@ int main()
 		//test with 2 pickup boxes
 		auto pickup = physEng->pickupBoxes.begin();
 		while (pickup != physEng->pickupBoxes.end()) {
-			//if it is picked up, delete it from the list
-			//it looks like it won't be triggered once it is deleted, but I think it's still in the triggerActor list
-			if ((*pickup)->getIsPicked()) {
-				physEng->pickupBoxes.erase(pickup++);
-			}
-			else {
+			(*pickup)->timeRespawnCheck();
+
+			if (!(*pickup)->getIsPicked()) {	//if getIsPicked == false, render it. Otherwise, ignore box
 				physx::PxVec3 wallPos = (*pickup)->actor->getGlobalPose().p;
-				glm::vec3 wallp(wallPos.x, wallPos.y+1.f, wallPos.z);
+				glm::vec3 wallp(wallPos.x, wallPos.y + 1.f, wallPos.z);
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, wallp);
 				//Consider making the pickup boxes a hardcoded size and hardcoding the 
@@ -849,8 +858,9 @@ int main()
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 				//boxTest.RenderModel();
 				defense_pickup.RenderModel();
-				++pickup;
 			}
+
+			++pickup;
 		}
 	
 		physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);	//holds camera vectors that match the car
@@ -865,15 +875,15 @@ int main()
 		
 		glm::vec3 camDir = camera.getCameraDirection();
 		if ((ha->GetHealth()) > 0) {
-			//Draw bullets after Refactor
-			if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder))) {
+			//Draw bullets after Refactor. If affected by smoke they cant shoot
+			if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) && !physEng->player->affectedBySmoke) {
 				//payer1->shoot(vehiclePosition,uniformModel,uniformSpecularIntensity,uniformShininess,Direction.x,Direction.y,Direction.z);
 				
 				if (isCameraFlipped) {
-					ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+					ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
 				}
 				else {
-					ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
+					ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
 				}
 				
 				//ha->SetHealth(0);// This hear will prevent bullet and car from rendering
@@ -921,7 +931,7 @@ int main()
 		}
 */
 		//when dpad down is pushed, make a new caltrop and trigger volume
-		if (player1.isButtonDown(XButtons.DPad_Down)) {
+		if (player1.isButtonDown(XButtons.DPad_Down) && !physEng->player->affectedBySmoke) {
 			PxVec3 p(physEng->player->GetPosition());
 			physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
 		}
@@ -940,7 +950,56 @@ int main()
 		}
 
 		//caltrops end here
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//OIL
+		//when dpad down is pushed, make a new caltrop and trigger volume
+		if (player1.isButtonDown(XButtons.DPad_Right) && !physEng->player->affectedBySmoke) {
+			PxVec3 p(physEng->player->GetPosition());
+			physEng->createOilTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
+		}
+
+		auto o = physEng->oilList.begin();
+		while (o!= physEng->oilList.end()) {	//remove dead caltrops
+			if ((*o)->isDead()) {
+				physEng->gScene->removeActor(*((*o)->actor));
+				physEng->oilList.erase(o++);
+			}
+			else {
+				(*o)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
+				(*o)->renderOil();
+				++o;
+			}
+		}
+
+		//oil ends here
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//SMOKE
+		//when dpad left is pushed, make a new smoke and trigger volume
+		if (player1.isButtonDown(XButtons.DPad_Left) && !physEng->player->affectedBySmoke) {
+			PxVec3 p(physEng->player->GetPosition());
+			physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
+		}
+
+		auto s = physEng->smokeList.begin();
+		while (s != physEng->smokeList.end()) {	//remove dead smoke
+			if ((*s)->isDead()) {
+				physEng->gScene->removeActor(*((*s)->actor));
+				physEng->smokeList.erase(s++);
+			}
+			else {
+				(*s)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
+				(*s)->renderSmoke();
+				++s;
+			}
+		}
+
+		//smoke ends here
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		//Enemy CARS rendering
 		//there is probably a much better way of rendering the other enemy cars, but this works for now
@@ -986,7 +1045,7 @@ int main()
 		glm::vec3 tem = glm::vec3(53,-2 ,-83);
 		model = glm::translate(model, tem); //Update turret pos with position of vehicle
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		oil.RenderModel();
+		//oil.RenderModel();
 
 		//turn on blend mode
 		glEnable(GL_BLEND);
@@ -1081,7 +1140,7 @@ int main()
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::Text(": %i Xpos: %.2f Ypos: %.2f Zpos: %.2f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
 			//ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
-			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), vehicleQuaternion.x, vehicleQuaternion, vehicleQuaternion.z);
+			ImGui::Text("Camera Xvec: %f Yvec: %f Zvec: %f", camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
 
 			ImGui::End();
