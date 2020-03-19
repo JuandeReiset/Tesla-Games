@@ -7,6 +7,7 @@ Caltrops::Caltrops(int idInput) {
 	currentTime = glfwGetTime();
 
 	caltropsObj.LoadModel("Models/caltrops.obj");
+
 	model = glm::mat4(1.f);
 	uniformModel = 0;
 	uniformSpecularIntensity = 0;

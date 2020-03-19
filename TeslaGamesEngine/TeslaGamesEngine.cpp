@@ -1080,7 +1080,7 @@ int main()
 		glm::vec3 tem = glm::vec3(53,-2 ,-83);
 		model = glm::translate(model, tem); //Update turret pos with position of vehicle
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		oil.RenderModel();
+		//oil.RenderModel();
 
 		//turn on blend mode
 		glEnable(GL_BLEND);

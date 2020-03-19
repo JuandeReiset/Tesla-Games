@@ -6,7 +6,7 @@ Oil::Oil(int idInput) {
 	birthTime = glfwGetTime();
 	currentTime = glfwGetTime();
 
-	oilObj.LoadModel("Models/caltrops.obj");
+	oilObj.LoadModel("Models/Oil.obj");
 	model = glm::mat4(1.f);
 	uniformModel = 0;
 	uniformSpecularIntensity = 0;
