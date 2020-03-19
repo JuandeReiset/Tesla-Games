@@ -70,24 +70,24 @@ private:
 	};
 
 	GLfloat startVertices[20] = {
-		675.f / 1600 * mainWindow.getWidth(), 600.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
-		675.f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
-		925.f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
-		925.f / 1600 * mainWindow.getWidth(), 600.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+		550.f / 1600 * mainWindow.getWidth(), 550.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		550.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		1050.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		1050.f / 1600 * mainWindow.getWidth(), 550.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 	
 	GLfloat settingVertices[20] = {
-		675.f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
-		675.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
-		925.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
-		925.f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+		550.f / 1600 * mainWindow.getWidth(), 650.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		550.f / 1600 * mainWindow.getWidth(), 850.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		1050.f / 1600 * mainWindow.getWidth(), 850.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		1050.f / 1600 * mainWindow.getWidth(), 650.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 	
 	GLfloat exitVertices[20] = {
-		675.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
-		675.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
-		925.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
-		925.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+		550.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		550.f / 1600 * mainWindow.getWidth(), 950.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		1050.f / 1600 * mainWindow.getWidth(), 950.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		1050.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 
 	void setOption(int op);

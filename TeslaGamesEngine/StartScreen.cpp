@@ -28,18 +28,18 @@ void StartScreen::loadTextures() {
 	backgroundTexture = Texture("Textures/background.png");
 	backgroundTexture.LoadTextureAlpha();
 
-	logoTexture = Texture("Textures/Untitled_Artwork (2).jpg");
+	logoTexture = Texture("Textures/logo.jpg");
 	logoTexture.LoadTexture();
 
-	startText1 = Texture("Textures/start.png");
+	startText1 = Texture("Textures/single1.png");
 	startText1.LoadTextureAlpha();
-	startText2 = Texture("Textures/start2.png");
+	startText2 = Texture("Textures/single2.png");
 	startText2.LoadTextureAlpha();
 	startText = startText2;
 
-	settingText1 = Texture("Textures/setting.png");
+	settingText1 = Texture("Textures/multi1.png");
 	settingText1.LoadTextureAlpha();
-	settingText2 = Texture("Textures/setting2.png");
+	settingText2 = Texture("Textures/multi2.png");
 	settingText2.LoadTextureAlpha();
 	settingText = settingText1;
 
