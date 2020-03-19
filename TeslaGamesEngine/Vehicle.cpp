@@ -100,6 +100,12 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	}
 
 	update_turret();
+
+
+	//run smoke and oil effects 
+	updateCurrentTime();
+	updateSmoke();
+	updateOil();
 	
 	if (this->isAICar) {
 		PxVec3 pos = this->GetPosition();
@@ -385,6 +391,9 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	expectedMarker = 1;
 	numLaps = 0;
 
+	smokeDuration = 10.f;
+	oilDuration = 5.f;
+
 }
 
 void Vehicle::initVehicleAudio(AudioEngine* engine) {
@@ -620,7 +629,7 @@ void Vehicle::pickup() {
 
 //drops caltrops and adds the newly added caltrop to the given list
 void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
-	if (ability == 0)
+	if (ability == 0 || affectedBySmoke)
 		return;
 
 	std::cout << "\nAbility Points: " << ability;
@@ -634,10 +643,95 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 	--ability;
 }
 
-void Vehicle::useOil() {
+void Vehicle::useOil(std::list<Oil*> *oilList) {
+	if (ability == 0 || affectedBySmoke)
+		return;
+
+	std::cout << "\nAbility Points: " << ability;
+
+	PxVec3 pos = GetPosition();
+
+	Oil* oil = new Oil(ID);
+	oil->createOil(glm::vec3(pos.x, pos.y, pos.z));
+	oilList->push_back(oil);
+
+	--ability;
+}
+
+void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
+	if (ability == 0 || affectedBySmoke)
+		return;
+
+	std::cout << "\nAbility Points: " << ability;
+
+	PxVec3 pos = GetPosition();
+
+	Smoke* smoke = new Smoke(ID);
+	smoke->createSmoke(glm::vec3(pos.x, pos.y, pos.z));
+	smokeList->push_back(smoke);
+
+	--ability;
+}
+
+void Vehicle::enableSmokeEffect()
+{
+	affectedBySmoke = true;
+	smokeStartTime = glfwGetTime();
+	std::cout << "SMOKE ACTIVATED" << std::endl;
+}
+
+void Vehicle::disableSmokeEffect()
+{
+	affectedBySmoke = false;
+	std::cout << "SMOKE DEACTIVATED" << std::endl;
+}
+
+void Vehicle::updateSmoke()
+{
+	if ((smokeStartTime + smokeDuration <= currentTime) && affectedBySmoke) {
+		disableSmokeEffect();
+	}
+}
+
+void Vehicle::enableOilEffect()
+{
+	affectedByOil = true;
+	oilStartTime = glfwGetTime();
+	std::cout << "OIL ACTIVATED" << std::endl;
+
+	actor->setMass(actor->getMass() * 0.3f);
+
+	//basic spinout
+	if(gVehicleInputData.getAnalogSteer() >= 0)
+		actor->addTorque(PxVec3(0, 13000, 0), PxForceMode::eIMPULSE);
+	else
+		actor->addTorque(PxVec3(0, -13000, 0), PxForceMode::eIMPULSE);
+	
+}
+
+void Vehicle::disableOilEffect()
+{
+	affectedByOil = false;
+	std::cout << "OIL DEACTIVATED" << std::endl;
+
+	actor->setMass(actor->getMass() / 0.3f);
+}
+
+void Vehicle::updateOil()
+{
+	if (affectedByOil) {
+		if (oilStartTime + oilDuration <= currentTime) {
+			disableOilEffect();
+		}
+		
+		//actor->addTorque(PxVec3(0, 300, 0), PxForceMode::eIMPULSE);
+	}
+	
 
 }
 
-void Vehicle::useSmoke() {
-
+void Vehicle::updateCurrentTime()
+{
+	currentTime = glfwGetTime();
 }
+
