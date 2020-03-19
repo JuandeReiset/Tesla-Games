@@ -62,6 +62,8 @@ class ShootComp :
 		// Stores current vehicle position
 		glm::vec3 start_position;
 
+		// 
+
 		int ammo;
 	private:
 		float life, birthTime, currentTime;											//each caltrop can exist 5 sec, if currentTime - birthTime > life, then destroy the instance
@@ -73,6 +75,7 @@ class ShootComp :
 		//float shoot_distance_x;
 		//float shoot_distance_z;
 		//glm::mat4 model;
+
 		
 
 		GLuint uniformModel, uniformSpecularIntensity, uniformShininess;

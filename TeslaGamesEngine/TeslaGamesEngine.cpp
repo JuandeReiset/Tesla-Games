@@ -63,6 +63,7 @@
 
 // AI stuff
 #include "AIDrivingComponent.h"
+#include "AIShootingComponent.h"
 
 // Stuff for imgui
 #include "imGui/imgui.h"
@@ -610,66 +611,18 @@ int main()
 	// Creating an enemy vehicle 
 	physEng->addEnemyVehicle(70, 5, -82);
 
+	std::vector<Vehicle*> vehicles;
+	vehicles.push_back(physEng->player);
+	auto enemyV = physEng->enemyVehicles[0];
+	AIShootingComponent aiShooting = AIShootingComponent(enemyV);
+	aiShooting.SetVehicles(vehicles);
 
-	//physEng->enemyVehicles[0]->setAITrack(&raceTrack);
-	//69.10,-2.65,-71.48,start
-	//-26.55,-4.44,-69.89,  -7.70, -2.26, -72.82slow
-	//-38.75,-3.67,-68.75,  -42.75, -3.45, -70.97Turn
-	//-73.33,-2.59,-27.62,ApexMin
-	//-54.40,-2.58,26.53,ApexMaj
-	//-5.57,-2.60,48.48,exit
-	//95.78,-2.57,33.85,slow
-	//117.08,-2.60,31.51,turn
-	//141.67,-2.51,-1.95,ApexMin
-	//141.28,-2.53,-36.02,ApexMaj
-	//120.79,-2.42,-51.46,exit
-
-	/*AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
-	//im adding the lap markers as the only targets for now
-	//aiDriving.AddDrivingTarget(70, -86);
-	//aiDriving.AddDrivingTarget(-76, -85);	
-	//aiDriving.AddDrivingTarget(-103, -45);
-	//aiDriving.AddDrivingTarget(-85, 39);
-	//aiDriving.AddDrivingTarget(-55, 51);	
-	//aiDriving.AddDrivingTarget(-5.5f, 6.8f);
-	//aiDriving.AddDrivingTarget(23, 36);
-	//aiDriving.AddDrivingTarget(105.3f, 53);
-	//aiDriving.AddDrivingTarget(212, 33);	
-	//aiDriving.AddDrivingTarget(220, -4.5f);
-	//aiDriving.AddDrivingTarget(225.5f, -58);
-	//aiDriving.AddDrivingTarget(165.5f, -90);
-	aiDriving.AddDrivingTarget(-40, -85);
-	aiDriving.AddDrivingTarget(-85, -80);
-	aiDriving.AddDrivingTarget(-95, -20);
-	aiDriving.AddDrivingTarget(-75, 45);
-
-	aiDriving.AddDrivingTarget(-34,58);
-	aiDriving.AddDrivingTarget(172, 40);
-	//aiDriving.AddDrivingTarget(188, -60);
-	
-	//aiDriving.AddDrivingTarget(-55, 45);
-	//aiDriving.AddDrivingTarget(-15, 15);
-	//aiDriving.AddDrivingTarget(-5, 10);
-	aiDriving.AddDrivingTarget(20, 35);
-	aiDriving.AddDrivingTarget(130, 65);
-	aiDriving.AddDrivingTarget(210, 40);
-	aiDriving.AddDrivingTarget(225, -60);
-
-
-
-	/*
-	physEng->addEnemyVehicle(15, 10, 0);
-	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
-	aiDriving2.AddDrivingTarget(45, 40);
-	aiDriving2.AddDrivingTarget(215, -70);
-	aiDriving2.AddDrivingTarget(-90, -75);
-	aiDriving2.AddDrivingTarget(-65, 55);
-	*/
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
 	while (!mainWindow.getShouldClose())
 	{
 		physEng->stepPhysics();
+		aiShooting.Aim();
 
 		const physx::PxVehicleDrive4W* vehicle = physEng->player->gVehicle4W;	//get vehicle
 		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
@@ -909,8 +862,6 @@ int main()
 
 		ShootComp* ba = physEng->player->getShootingComponent();
 		HealthComponent* ha = physEng->player->getHealthComponent();
-
-		//Vehicle* payer1 = physEng.player;
 		
 		glm::vec3 camDir = camera.getCameraDirection();
 		if ((ha->GetHealth()) > 0) {
@@ -944,6 +895,7 @@ int main()
 			glm::vec3 tem = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z); 
 			model = glm::translate(model, tem); //Update turret pos with position of vehicle
 			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); //resize turret
+			// TODO: This moves to ShootComp class
 			float angleAroundY = glm::degrees(atan2(camDir.x, camDir.z)); //calculate angle of rotation
 			float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
 			model = glm::rotate(model, angletoUse, y_rot);
@@ -1009,6 +961,18 @@ int main()
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 				//TeslaCar.RenderModel();
 			    Teslacar_chasis.RenderModel();
+
+				model = glm::mat4(1.0f);
+				glm::vec3 y_rot(0.0, 1.0, 0.0); //axis of rotation
+				glm::vec3 tem = glm::vec3(enemymodelMat.getPosition().x, enemymodelMat.getPosition().y, enemymodelMat.getPosition().z);
+				model = glm::translate(model, tem); //Update turret pos with position of vehicle
+				model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); //resize turret
+				auto aimdir_x = v->getShootingComponent()->Direction_x;
+				auto aimdir_z = v->getShootingComponent()->Direction_z;
+				float angleAroundY = glm::degrees(atan2(aimdir_x, aimdir_z)); //calculate angle of rotation
+				float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
+				model = glm::rotate(model, angletoUse, y_rot);
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 				T_turret.RenderModel();
 				//defense_pickup.RenderModel();
 			}

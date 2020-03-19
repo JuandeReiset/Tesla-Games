@@ -107,7 +107,7 @@ void PhysicsEngine::stepPhysics()
 	if (!enemyVehicles.empty()) {
 		for (int i = 0; i < enemyVehicles.size(); i++) {
 			Vehicle* fromList = enemyVehicles.at(i);
-			this->raceTrack->performMove(fromList);
+			// this->raceTrack->performMove(fromList);
 			fromList->update(timestep, gScene);
 		}
 	}

@@ -12,8 +12,7 @@ enum class AimingState
 	NoAmmo
 };
 
-class AIShootingComponent :
-	public ShootComp
+class AIShootingComponent
 {
 public:
 	AIShootingComponent();
@@ -31,6 +30,7 @@ public:
 private:
 	Vehicle* FindTarget();
 	bool IsTargetInView(Vehicle* aTarget);
+	bool IsReloading();
 	void FindAimingState();
 	void AimAtTarget();
 
@@ -39,5 +39,7 @@ private:
 	Vehicle* target;
 	AimingState aimingState;
 	float threshold;
+
+	float lastFiredTime;
 };
 
