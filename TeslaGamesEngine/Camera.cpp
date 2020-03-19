@@ -189,6 +189,9 @@ void Camera::initializeAudio(AudioEngine* engine) {
 void Camera::updateListenerPosition() {
 	this->audioEngine->updateListenerPosition(position.x, position.y, position.z);
 }
+void Camera::updateListenerOrientation(glm::vec3 front, glm::vec3 up) {
+	this->audioEngine->updateListenerOrientatation(front, up);
+}
 
 void Camera::update()
 {
@@ -200,6 +203,7 @@ void Camera::update()
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
 	updateListenerPosition();
+	updateListenerOrientation(front, up);
 }
 
 Camera::~Camera()
