@@ -288,6 +288,7 @@ void Vehicle::handleSound() {
 		if (curBrake > 0.f) {
 			this->accelerateFromRest.stopSound();
 			this->accelerateFromMotion.stopSound();
+			this->boostMax.stopSound();
 			if (curSpeed > speedSoundBoundary) {
 				if (!this->maxSpeed.isSoundPlaying()) {
 					this->maxSpeed.playSound();
@@ -303,12 +304,22 @@ void Vehicle::handleSound() {
 					if (curGear == PxVehicleGearsData::eFIRST) {
 						this->maxSpeed.stopSound();
 						this->accelerateFromMotion.stopSound();
+						this->boostMax.stopSound();
 						if (!this->accelerateFromRest.isSoundPlaying()) {
 							this->accelerateFromRest.playSound();
 						}
 					}
+					else if (curGear == PxVehicleGearsData::eREVERSE) {
+						this->accelerateFromMotion.stopSound();
+						this->boostMax.stopSound();
+						this->accelerateFromRest.stopSound();
+						if (!this->maxSpeed.isSoundPlaying()) {
+							this->maxSpeed.playSound();
+						}
+					}
 					else {
 						this->maxSpeed.stopSound();
+						this->boostMax.stopSound();
 						this->accelerateFromRest.stopSound();
 						if (!this->accelerateFromMotion.isSoundPlaying()) {
 							this->accelerateFromMotion.playSound();
@@ -318,13 +329,23 @@ void Vehicle::handleSound() {
 				else {
 					if (curGear == PxVehicleGearsData::eFIRST) {
 						this->maxSpeed.stopSound();
+						this->boostMax.stopSound();
 						this->accelerateFromMotion.stopSound();
 						if (!this->accelerateFromRest.isSoundPlaying()) {
 							this->accelerateFromRest.playSound();
 						}
 					}
+					else if (curGear == PxVehicleGearsData::eREVERSE) {
+						this->accelerateFromMotion.stopSound();
+						this->boostMax.stopSound();
+						this->accelerateFromRest.stopSound();
+						if (!this->maxSpeed.isSoundPlaying()) {
+							this->maxSpeed.playSound();
+						}
+					}
 					else if ((previousSpeed - 1.f) > curSpeed && slideSpeed <= slideSpeedBoundary) {
 						this->maxSpeed.stopSound();
+						this->boostMax.stopSound();
 						this->accelerateFromRest.stopSound();
 						if (!this->accelerateFromMotion.isSoundPlaying()) {
 							this->accelerateFromMotion.playSound();
@@ -332,8 +353,9 @@ void Vehicle::handleSound() {
 					}
 					else {
 						if (!this->accelerateFromMotion.isSoundPlaying() && (!this->accelerateFromRest.isSoundPlaying())) {
-							if (!this->maxSpeed.isSoundPlaying()) {
-								this->maxSpeed.playSound();
+							this->maxSpeed.stopSound();
+							if (!this->boostMax.isSoundPlaying()) {
+								this->boostMax.playSound();
 							}
 						}
 					}
@@ -343,6 +365,7 @@ void Vehicle::handleSound() {
 			else {
 				this->accelerateFromRest.stopSound();
 				this->accelerateFromMotion.stopSound();
+				this->boostMax.stopSound();
 				if (curSpeed > speedSoundBoundary) {
 					if (!this->maxSpeed.isSoundPlaying()) {
 						this->maxSpeed.playSound();
