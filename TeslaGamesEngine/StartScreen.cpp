@@ -138,8 +138,10 @@ void StartScreen::loadController(Controller *controller) {
 		setOption(op);
 	}
 	else if (controller->isButtonDown(XButtons.A)) {
-		if (op == 0)
+		if (op == 0) {
 			startScreenFlag = false;
+			menuFlag = true;
+		}
 		else if (op == 1) {
 			menuFlag = true;
 			startScreenFlag = false;

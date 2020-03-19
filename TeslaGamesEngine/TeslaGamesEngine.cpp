@@ -690,7 +690,8 @@ int main()
 		}
 
 		while (menuFlag) {
-
+			menu.use();
+			mainWindow.swapBuffers();
 		}
 
 		while (1)
@@ -785,13 +786,13 @@ int main()
 
 				continue;
 			}
-			*/
+			*//*
 			if (player1.isButtonDown(XButtons.Back)) {
 				menuFlag = 2;
 				op = 0;
 				menu.setOption(op);
 			}
-
+			*/
 			if (P1Connected)
 				parseControllerInput(&player1);
 			if (P2Connected)
