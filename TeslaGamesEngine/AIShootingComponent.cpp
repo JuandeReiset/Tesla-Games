@@ -24,13 +24,16 @@ void AIShootingComponent::Aim()
 	}
 	else {
 		// Aim at target if it is in view
-		if (IsTargetInView(target)) {
-			AimAtTarget();
+		if (AimAtTarget()) {
 			FindAimingState();
 			// Fire at target if aim is locked
 			if (aimingState == AimingState::Locked) {
 				std::cout << "FIRE @ " << glfwGetTime() << std::endl;
-				owner->getShootingComponent()->fire();
+				auto shooting = owner->getShootingComponent();
+				auto pos = owner->GetPosition();
+				// Setting ammo to 0 because of performance issues. Remove when those are fixed
+				shooting->ammo = 0;
+				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess);
 				lastFiredTime = glfwGetTime();
 			}
 		}
@@ -49,24 +52,28 @@ void AIShootingComponent::SetVehicles(std::vector<Vehicle*> vehiclesToSet)
 Vehicle * AIShootingComponent::FindTarget()
 {
 	// See if any other vehicle is in range
-	Vehicle* v = nullptr;
 	for (auto aVehicle : vehicles) {
 		if (IsTargetInView(aVehicle) && aVehicle != owner) {
-			v = aVehicle;
+			return aVehicle;
 		}
 	}
 
-	return v;
+	return nullptr;
 }
 
 bool AIShootingComponent::IsTargetInView(Vehicle* aTarget)
 {
-	// TODO: Raycast in PhysX
-	// Raycast in direction of target
-	// If ray hits anything, see if that is the target
-	// If yes, return true
-	// Else return false
-	return true;
+	physx::PxVec3 toTarget = aTarget->GetPosition() - owner->GetPosition();
+	toTarget.normalize();
+	// TODO: Rotate aim direction towards target
+	// Check that it stays within the cone in front (-40 > 40)
+	physx::PxVec3 forwardDirection = owner->GetTransform().q.getBasisVector2();
+
+	// Check if target is within an 80 degree cone in front of vehicle
+	if (abs(acos(toTarget.dot(forwardDirection))) * (180.f / 3.14) < 40.f) {
+		return true;
+	}
+	return false;
 }
 
 bool AIShootingComponent::IsReloading()
@@ -95,7 +102,7 @@ void AIShootingComponent::FindAimingState()
 	}
 }
 
-void AIShootingComponent::AimAtTarget()
+bool AIShootingComponent::AimAtTarget()
 {
 	// Get current aim direction (Forward vector of turret)
 	// Get direction to target (Target pos - owner pos)
@@ -108,12 +115,22 @@ void AIShootingComponent::AimAtTarget()
 	// Check if target is within an 80 degree cone in front of vehicle
 	if (abs(acos(toTarget.dot(forwardDirection))) * (180.f / 3.14) < 40.f) {
 		owner->getShootingComponent()->updateDirection(toTarget.x, toTarget.y, toTarget.z);
+		return true;
 	}
 	else {
 		target = nullptr;
+		return false;
+		
 	}
 
 	/*std::cout << "AIMING AT: " << toTarget.x << ", " << toTarget.y << ", " << toTarget.z << std::endl;*/
+}
+
+void AIShootingComponent::SetUniformLocations(GLuint model, GLuint spec, GLuint shine)
+{
+	uniformModel = model;
+	uniformSpecular = spec;
+	uniformShininess = shine;
 }
 
 AIShootingComponent::~AIShootingComponent()

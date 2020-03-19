@@ -25,6 +25,8 @@ public:
 	// TODO: Remove. This is for testing
 	void SetTarget(Vehicle* v) { target = v; }
 
+	void SetUniformLocations(GLuint model, GLuint spec, GLuint shine);
+
 	~AIShootingComponent();
 
 private:
@@ -32,7 +34,7 @@ private:
 	bool IsTargetInView(Vehicle* aTarget);
 	bool IsReloading();
 	void FindAimingState();
-	void AimAtTarget();
+	bool AimAtTarget();
 
 	std::vector<Vehicle*> vehicles;
 	Vehicle* owner;
@@ -41,5 +43,9 @@ private:
 	float threshold;
 
 	float lastFiredTime;
+
+	GLuint uniformModel = 0;
+	GLuint uniformSpecular= 0;
+	GLuint uniformShininess = 0;
 };
 

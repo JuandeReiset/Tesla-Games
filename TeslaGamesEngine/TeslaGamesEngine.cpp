@@ -625,16 +625,27 @@ int main()
 
 	std::vector<Vehicle*> vehicles;
 	vehicles.push_back(physEng->player);
-	auto enemyV = physEng->enemyVehicles[0];
-	AIShootingComponent aiShooting = AIShootingComponent(enemyV);
-	aiShooting.SetVehicles(vehicles);
+	std::vector<Vehicle*> aiVehicles = physEng->enemyVehicles;
+	vehicles.insert(vehicles.end(), aiVehicles.begin(), aiVehicles.end());
+
+	shaderList[0].UseShader();
+	std::vector<AIShootingComponent> aiShootingComponents;
+	for (auto ai : aiVehicles) {
+		AIShootingComponent aiShooting = AIShootingComponent(ai);
+		aiShooting.SetVehicles(vehicles);
+		aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
+		aiShootingComponents.push_back(aiShooting);
+	}
 
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
 	while (!mainWindow.getShouldClose())
 	{
 		physEng->stepPhysics();
-		aiShooting.Aim();
+
+		for (int i = 0; i < aiShootingComponents.size(); i++) {
+			aiShootingComponents[i].Aim();
+		}
 
 		const physx::PxVehicleDrive4W* vehicle = physEng->player->gVehicle4W;	//get vehicle
 		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
@@ -921,6 +932,9 @@ int main()
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
+		for (auto ai : physEng->enemyVehicles) {
+			ai->getShootingComponent()->renderAllBullets();
+		}
 		//CALTROPS
 /*
 		//if press down button, use caltrops
