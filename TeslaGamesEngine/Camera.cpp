@@ -128,7 +128,7 @@ void Camera::stickControl(GLfloat xChange, glm::vec3 carPos, glm::vec3 dir, bool
 		}
 	}
 	else{
-		if (reset || isFlipped) {
+		if (reset) {
 			if (abs(angleAroundTarget) < turnSpeed) {
 				angleAroundTarget = 0;
 				resetFlag = false;
