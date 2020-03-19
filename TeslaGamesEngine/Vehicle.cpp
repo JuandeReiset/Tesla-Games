@@ -209,7 +209,7 @@ void Vehicle::shoot(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensi
 	pos.x = pxpos.x;
 	pos.x = pxpos.y;
 	pos.z = pxpos.z;
-	turret.addBullet_toList(pos, uniModel, uniSpecularIntensity, uniShininess, v_dir.x, v_dir.y, v_dir.z);
+	turret.fire(pos, uniModel, uniSpecularIntensity, uniShininess, v_dir.x, v_dir.y, v_dir.z);
 	//turret.createBullet(pos,  uniModel, uniSpecularIntensity,  uniShininess, v_dir.x, v_dir.y, v_dir.z);
     
 }
@@ -603,8 +603,8 @@ void Vehicle::getDamage(double damage) {
 }
 
 void Vehicle::firelazer() {
-	turret.fire();
-	health.SetHealth(0);
+	//turret.fire();
+	//health.SetHealth(0);
 }
 
 //adds one ability point
