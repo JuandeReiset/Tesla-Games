@@ -82,7 +82,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			Smoke* s = (Smoke*)pairs[i].triggerActor->userData;
 
 			//should do damage (1pt) and should not hit the player it was placed by
-			if (v->ID != s->id) {
+			if (v->ID == s->id) {
 				//smoke gameplay effect
 				if(!v->affectedBySmoke)
 					v->enableSmokeEffect();

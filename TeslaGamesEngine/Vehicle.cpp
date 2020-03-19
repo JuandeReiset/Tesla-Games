@@ -577,7 +577,7 @@ void Vehicle::pickup() {
 
 //drops caltrops and adds the newly added caltrop to the given list
 void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
-	if (ability == 0)
+	if (ability == 0 || affectedBySmoke)
 		return;
 
 	std::cout << "\nAbility Points: " << ability;
@@ -592,7 +592,7 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 }
 
 void Vehicle::useOil(std::list<Oil*> *oilList) {
-	if (ability == 0)
+	if (ability == 0 || affectedBySmoke)
 		return;
 
 	std::cout << "\nAbility Points: " << ability;
@@ -607,7 +607,7 @@ void Vehicle::useOil(std::list<Oil*> *oilList) {
 }
 
 void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
-	if (ability == 0)
+	if (ability == 0 || affectedBySmoke)
 		return;
 
 	std::cout << "\nAbility Points: " << ability;

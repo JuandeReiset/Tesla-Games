@@ -772,8 +772,8 @@ int main()
 		
 		glm::vec3 camDir = camera.getCameraDirection();
 		if ((ha->GetHealth()) > 0) {
-			//Draw bullets after Refactor
-			if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder))) {
+			//Draw bullets after Refactor. If affected by smoke they cant shoot
+			if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) && !physEng->player->affectedBySmoke) {
 				//payer1->shoot(vehiclePosition,uniformModel,uniformSpecularIntensity,uniformShininess,Direction.x,Direction.y,Direction.z);
 				
 				if (isCameraFlipped) {
@@ -828,7 +828,7 @@ int main()
 		}
 */
 		//when dpad down is pushed, make a new caltrop and trigger volume
-		if (player1.isButtonDown(XButtons.DPad_Down)) {
+		if (player1.isButtonDown(XButtons.DPad_Down) && !physEng->player->affectedBySmoke) {
 			PxVec3 p(physEng->player->GetPosition());
 			physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
 		}
@@ -852,7 +852,7 @@ int main()
 
 		//OIL
 		//when dpad down is pushed, make a new caltrop and trigger volume
-		if (player1.isButtonDown(XButtons.DPad_Right)) {
+		if (player1.isButtonDown(XButtons.DPad_Right) && !physEng->player->affectedBySmoke) {
 			PxVec3 p(physEng->player->GetPosition());
 			physEng->createOilTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
 		}
@@ -876,7 +876,7 @@ int main()
 
 		//SMOKE
 		//when dpad left is pushed, make a new smoke and trigger volume
-		if (player1.isButtonDown(XButtons.DPad_Left)) {
+		if (player1.isButtonDown(XButtons.DPad_Left) && !physEng->player->affectedBySmoke) {
 			PxVec3 p(physEng->player->GetPosition());
 			physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
 		}
