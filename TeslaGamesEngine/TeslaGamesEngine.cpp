@@ -420,6 +420,8 @@ int main()
 
 	physEng = new PhysicsEngine();
 
+	physEng->createPickupTriggerVolume(18, -2, -67, 4, 4, 4);
+
 	Renderer r = Renderer(mainWindow, camera);
 
 	Game mainGame = Game(r);
@@ -974,8 +976,57 @@ int main()
 				}
 			}
 
-			//caltrops end here
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//caltrops end here
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//OIL
+		//when dpad down is pushed, make a new caltrop and trigger volume
+		if (player1.isButtonDown(XButtons.DPad_Right) && !physEng->player->affectedBySmoke) {
+			PxVec3 p(physEng->player->GetPosition());
+			physEng->createOilTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
+		}
+
+		auto o = physEng->oilList.begin();
+		while (o!= physEng->oilList.end()) {	//remove dead caltrops
+			if ((*o)->isDead()) {
+				physEng->gScene->removeActor(*((*o)->actor));
+				physEng->oilList.erase(o++);
+			}
+			else {
+				(*o)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
+				(*o)->renderOil();
+				++o;
+			}
+		}
+
+		//oil ends here
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//SMOKE
+		//when dpad left is pushed, make a new smoke and trigger volume
+		if (player1.isButtonDown(XButtons.DPad_Left) && !physEng->player->affectedBySmoke) {
+			PxVec3 p(physEng->player->GetPosition());
+			physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
+		}
+
+		auto s = physEng->smokeList.begin();
+		while (s != physEng->smokeList.end()) {	//remove dead smoke
+			if ((*s)->isDead()) {
+				physEng->gScene->removeActor(*((*s)->actor));
+				physEng->smokeList.erase(s++);
+			}
+			else {
+				(*s)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
+				(*s)->renderSmoke();
+				++s;
+			}
+		}
+
+		//smoke ends here
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 			//Enemy CARS rendering
 			//there is probably a much better way of rendering the other enemy cars, but this works for now
@@ -1098,14 +1149,14 @@ int main()
 				static float f = 0.0f;
 				static int counter = 0;
 
-				ImGui::Begin("Debug");
-				ImGui::Text("Driving mode and Position");
-				ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
-				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-				ImGui::Text(": %i Xpos: %.2f Ypos: %.2f Zpos: %.2f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
-				//ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
-				ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), vehicleQuaternion.x, vehicleQuaternion, vehicleQuaternion.z);
-				ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
+			ImGui::Begin("Debug");
+			ImGui::Text("Driving mode and Position");
+			ImGui::Text("Frame per Second counter");               // Display some text (you can use a format strings too)
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::Text(": %i Xpos: %.2f Ypos: %.2f Zpos: %.2f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
+			//ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
+			ImGui::Text("Camera Xvec: %f Yvec: %f Zvec: %f", camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+			ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
 
 				ImGui::End();
 			}
