@@ -115,6 +115,8 @@ PhysicsEngine* physEng;
 Model TeslaCar;
 Model Teslacar_chasis;
 Model T_turret;
+Model Enemy_TeslaCar_chasis;
+Model Enemy_TeslaCar_turret;
 
 Model racetrack;
 Model racetrack_walls;
@@ -522,6 +524,8 @@ int main()
 	TeslaCar.LoadModel("Models/TeslaGamesTruck2_test.obj");
 	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_modcar.obj");
 	T_turret.LoadModel("Models/TeslaGamesTruck2_modturret.obj");
+	Enemy_TeslaCar_chasis.LoadModel("Models/TeslaGamesTruck2_mod_redchasis.obj");
+	Enemy_TeslaCar_turret.LoadModel("Models/TeslaGamesTruck2_mod_redturret.obj");
 
 	boxTest.LoadModel("Models/wall.obj");
 	//caltrop.LoadModel("Models/caltrops.obj");
@@ -1066,8 +1070,8 @@ int main()
 
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 				//TeslaCar.RenderModel();
-			    Teslacar_chasis.RenderModel();
-				T_turret.RenderModel();
+			    Enemy_TeslaCar_chasis.RenderModel();
+				Enemy_TeslaCar_turret.RenderModel();
 				//defense_pickup.RenderModel();
 			}
 		}
