@@ -127,7 +127,7 @@ Model oil;
 Model defense_pickup;
 Model ammo_pickup;
 
-
+Model drivingPointModel;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -535,29 +535,12 @@ int main()
 
 	oil.LoadModel("Models/oil.obj");
 
-
+	drivingPointModel.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
 
 	glfwSwapInterval(1);
-	// imGui setting BEGINNING
-	/*
-#if __APPLE__
-// GL 3.2 + GLSL 150
-	const char* glsl_version = "#version 150";
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
-#else
-	// GL 3.0 + GLSL 130
-
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
-#endif
-*/
+	
 // Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -617,10 +600,10 @@ int main()
 	physEng->addEnemyVehicle(80, 5, -90);
 	physEng->addEnemyVehicle(90, 5, -85);
 	physEng->addEnemyVehicle(90, 5, -80);
-	physEng->addEnemyVehicle(90, 5, -90);
-	physEng->addEnemyVehicle(100, 5, -85);
-	physEng->addEnemyVehicle(100, 5, -80);
-	physEng->addEnemyVehicle(100, 5, -90);
+	//physEng->addEnemyVehicle(90, 5, -90);
+	//physEng->addEnemyVehicle(100, 5, -85);
+	//physEng->addEnemyVehicle(100, 5, -80);
+	//physEng->addEnemyVehicle(100, 5, -90);
 
 	//physEng->enemyVehicles[0]->setAITrack(&raceTrack);
 	//69.10,-2.65,-71.48,start
@@ -635,47 +618,7 @@ int main()
 	//141.28,-2.53,-36.02,ApexMaj
 	//120.79,-2.42,-51.46,exit
 
-	/*AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
-	//im adding the lap markers as the only targets for now
-	//aiDriving.AddDrivingTarget(70, -86);
-	//aiDriving.AddDrivingTarget(-76, -85);	
-	//aiDriving.AddDrivingTarget(-103, -45);
-	//aiDriving.AddDrivingTarget(-85, 39);
-	//aiDriving.AddDrivingTarget(-55, 51);	
-	//aiDriving.AddDrivingTarget(-5.5f, 6.8f);
-	//aiDriving.AddDrivingTarget(23, 36);
-	//aiDriving.AddDrivingTarget(105.3f, 53);
-	//aiDriving.AddDrivingTarget(212, 33);	
-	//aiDriving.AddDrivingTarget(220, -4.5f);
-	//aiDriving.AddDrivingTarget(225.5f, -58);
-	//aiDriving.AddDrivingTarget(165.5f, -90);
-	aiDriving.AddDrivingTarget(-40, -85);
-	aiDriving.AddDrivingTarget(-85, -80);
-	aiDriving.AddDrivingTarget(-95, -20);
-	aiDriving.AddDrivingTarget(-75, 45);
-
-	aiDriving.AddDrivingTarget(-34,58);
-	aiDriving.AddDrivingTarget(172, 40);
-	//aiDriving.AddDrivingTarget(188, -60);
 	
-	//aiDriving.AddDrivingTarget(-55, 45);
-	//aiDriving.AddDrivingTarget(-15, 15);
-	//aiDriving.AddDrivingTarget(-5, 10);
-	aiDriving.AddDrivingTarget(20, 35);
-	aiDriving.AddDrivingTarget(130, 65);
-	aiDriving.AddDrivingTarget(210, 40);
-	aiDriving.AddDrivingTarget(225, -60);
-
-
-
-	/*
-	physEng->addEnemyVehicle(15, 10, 0);
-	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
-	aiDriving2.AddDrivingTarget(45, 40);
-	aiDriving2.AddDrivingTarget(215, -70);
-	aiDriving2.AddDrivingTarget(-90, -75);
-	aiDriving2.AddDrivingTarget(-65, 55);
-	*/
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
 	while (!mainWindow.getShouldClose())
@@ -802,7 +745,7 @@ int main()
 					menuFlag = 0;
 				}
 				//continue game
-				else if (menuFlag = 2) {
+				else if (menuFlag == 2) {
 					menuFlag = 0;
 				}
 
@@ -863,6 +806,15 @@ int main()
 		//racetrack.RenderModel();
 		racetrack_walls.RenderModel();
 		racetrack_floor.RenderModel();
+
+		for (int i = 0; i < raceTrack.listOfPoints.size(); i++) {
+			TrackDrivingPoint point = *raceTrack.listOfPoints.at(i);
+			model = model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(point.x, point.y, point.z));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			drivingPointModel.RenderModel();
+		}
 
 		///////////////////////////////////////////////////////////////////////
 

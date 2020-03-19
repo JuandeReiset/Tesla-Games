@@ -21,9 +21,9 @@ void Track::initializeTrackPoints(int trackType) {
 		this->addPointToList(122.95, -2.62, 32.60, trackDrivingPointActions::TURN_IN);
 		this->addPointToList(150.05, -2.63, 5.78, trackDrivingPointActions::APEX_MAJOR);
 		this->addPointToList(129.00, -2.58, -57.16, trackDrivingPointActions::TURN_EXIT);
-	}
-	else if (trackType == trackTypeConstants::OVAL) {
-		this->addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
+
+		/*
+			this->addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
 		this->addPointToList(12.70, -2.48, -70.30, trackDrivingPointActions::SLOW_DOWN);
 		this->addPointToList(-56.95, -2.70, -68.95, trackDrivingPointActions::TURN_IN);
 		this->addPointToList(-77.63, -2.60, -36.85, trackDrivingPointActions::APEX_MINOR);
@@ -35,6 +35,23 @@ void Track::initializeTrackPoints(int trackType) {
 		this->addPointToList(150.66, -2.68, 18.69, trackDrivingPointActions::APEX_MINOR);
 		this->addPointToList(152.05, -2.68, -34.12, trackDrivingPointActions::APEX_MAJOR);
 		this->addPointToList(102.00, -2.66, -70.70, trackDrivingPointActions::TURN_EXIT);
+		*/
+	}
+	else if (trackType == trackTypeConstants::OVAL) {
+		this->addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
+		this->addPointToList(20.70, -2.48, -70.30, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(-42.95, -2.70, -80.95, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(-77.63, -2.60, -36.85, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(-69.18, -2.59, 7.72, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(-53.39, -2.59, 31.98, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(1.72, -2.64, 60.39, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(52.33, -2.60, 64.76, trackDrivingPointActions::TURN_EXIT);
+		this->addPointToList(78.33, -2.60, 60.76, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(115.87, -2.68, 41.60, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(150.66, -2.68, 18.69, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(159.05, -2.68, -22.62, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(130.66, -2.68, -58.69, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(100.00, -2.66, -68.70, trackDrivingPointActions::TURN_EXIT);
 	}
 	else if (trackType == trackTypeConstants::TESLA_T) {
 
