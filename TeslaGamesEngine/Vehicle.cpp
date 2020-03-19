@@ -107,7 +107,50 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	updateSmoke();
 	updateOil();
 	
-	//std::cout << "Sp: " << slide << " ge: " << std::endl;
+	if (this->isAICar) {
+		PxVec3 pos = this->GetPosition();
+		PxVec3 target = PxVec3(this->curTarget.x, this->curTarget.y, this->curTarget.z);
+		PxVec3 toTargetVec = (target - pos);
+		float distanceToTarget = toTargetVec.magnitude();
+
+		if (distanceToTarget <= this->curTarget.pointDistanceLimit) {
+			int length = this->listOfPoints->size();
+			this->pastTarget = curTarget;
+			this->trackPointListIndex++;
+			this->trackPointListIndex = this->trackPointListIndex % length;
+			this->curTarget = *this->listOfPoints->at(trackPointListIndex);
+
+			bool isAICarStuck = false;
+		}
+		else {
+			//Check for getting stuck
+			this->AICarStuckFrameCounter = (AICarStuckFrameCounter + 1) % 480;
+			if (this->AICarStuckFrameCounter == 0 || this->isAICarStuck == true) {
+				if (this->oldStuckTarget.actionToTake == -1) {
+					this->oldStuckTarget = this->curTarget;
+				}
+				else {
+					if (this->oldStuckTarget == this->curTarget) {
+						if (this->isAICarStuck == false) {
+							float speed = std::abs(this->gVehicle4W->computeForwardSpeed());
+							if (speed < 3.f) {
+								this->isAICarStuck = true;
+							}
+						}
+						else {
+							this->AICarStuckMoveCounter = (this->AICarStuckMoveCounter + 1) % 120;
+							if (this->AICarStuckMoveCounter == 0) {
+								this->isAICarStuck = false;
+							}
+						}
+					}
+					else {
+						this->oldStuckTarget = this->curTarget;
+					}
+				}
+			}
+		}
+	}
 }
 
 //called when a vehicle hits a trigger volume lap marker. Val is the lapMarker value, trackTotalLaps is the
@@ -141,6 +184,15 @@ void Vehicle::lapWinCondition()
 	
 }
 
+void Vehicle::initAITrackPoints(std::vector<std::unique_ptr<TrackDrivingPoint>>* listOfPoints) {
+	this->listOfPoints = listOfPoints;
+	this->pastTarget = *this->listOfPoints->at(0);
+	this->curTarget = *this->listOfPoints->at(1);
+	this->isAICar = true;
+	this->trackPointListIndex = 1;
+}
+
+
 void Vehicle::update_turret() {
 	PxVec3 pxpos = GetPosition();
 	glm::vec3 pos;
@@ -163,7 +215,7 @@ void Vehicle::shoot(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensi
 	pos.x = pxpos.x;
 	pos.x = pxpos.y;
 	pos.z = pxpos.z;
-	turret.addBullet_toList(pos, uniModel, uniSpecularIntensity, uniShininess, v_dir.x, v_dir.y, v_dir.z);
+	turret.fire(pos, uniModel, uniSpecularIntensity, uniShininess, v_dir.x, v_dir.y, v_dir.z);
 	//turret.createBullet(pos,  uniModel, uniSpecularIntensity,  uniShininess, v_dir.x, v_dir.y, v_dir.z);
     
 }
@@ -354,7 +406,7 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 
 	this->turret.initShootCompAudio(engine);
 
-	float initialSoundVolume = 6.3f;
+	float initialSoundVolume = 15.f;
 
 	this->accelerateFromRest.setVolume(initialSoundVolume);
 	this->accelerateFromMotion.setVolume(initialSoundVolume);
@@ -560,8 +612,8 @@ void Vehicle::getDamage(double damage) {
 }
 
 void Vehicle::firelazer() {
-	turret.fire();
-	health.SetHealth(0);
+	//turret.fire();
+	//health.SetHealth(0);
 }
 
 //adds one ability point

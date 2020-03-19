@@ -27,6 +27,8 @@ public:
 	GLint getWidth() { return width; };
 	GLint getHeight() { return height; };
 	bool getShouldClose() { return glfwWindowShouldClose(mainWindow); }
+	void setWindowClose() { glfwSetWindowShouldClose(mainWindow, GL_TRUE); }
+
 
 	bool* getsKeys() { return keys; }
 	GLfloat getXChange();

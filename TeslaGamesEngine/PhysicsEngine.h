@@ -20,6 +20,7 @@
 #include "../include/PhysX/PxSimulationEventCallback.h"
 #include <string>
 #include "audioEngine.h"
+#include "Track.h"
 
 class PhysicsEngine
 {
@@ -34,7 +35,10 @@ public:
 
 	PhysicsEngine();
 	void initAudioForVehicles(AudioEngine * audio);
-	void addEnemyVehicle(float x, float y, float z);	//add enemy vehicle at position (x,y,z)
+
+	void initAITrack(Track * raceTrack);
+
+	void addEnemyVehicle(float x, float y, float z);
 
 	physx::PxVec3 GetBoxPos();
 	void stepPhysics();
@@ -73,6 +77,7 @@ public:
 private:
 	void cleanupPhysics();
 	AudioEngine* audioEngine;
+	Track* raceTrack;
 
 	physx::PxDefaultAllocator gAllocator;
 	physx::PxDefaultErrorCallback gErrorCallback;

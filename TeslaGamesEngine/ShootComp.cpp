@@ -35,54 +35,10 @@ bool ShootComp::isDead() {
 void ShootComp::updateTime() {
 	currentTime = glfwGetTime();
 }
-/*
-void ShootComp::addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z) {
-	
-	fire();
-	
-	
-	start_position = glm::vec3(carPos.x, carPos.y + 0.5f, carPos.z);
-	//model = glm::translate(model, start_position);
-	//model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 
-	//bullet_speed = 0.2f;
-	Direction_x = Dir_x;
-	Direction_y = Dir_y;
-	Direction_z = Dir_z;
-	uniformModel = uniModel;
-	uniformShininess = uniShininess;
-	uniformSpecularIntensity = uniSpecularIntensity;
+void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z) {
 
-	//BulletObj.LoadModel("Models/bullet.obj");
-
-	
-}
-*/
-void ShootComp::addBullet_toList(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess) {
-
-	fire();
-
-	/*
-	if (is_there_ammo()) {
-		start_position = glm::vec3(carPos.x, carPos.y-0.2f, carPos.z);
-		Direction_x = x;
-		Direction_y = y;
-		Direction_z = z;
-		uniformModel = uniModel;
-		uniformShininess = uniShininess;
-		uniformSpecularIntensity = uniSpecularIntensity;
-
-		Bullet tmp_bullet = Bullet();
-		tmp_bullet.createBullet(start_position, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
-
-		bulletsList.push_back(tmp_bullet);
-
-	}
-	*/
-}
-void ShootComp::addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z) {
-
-	fire();
+	decrease_ammo();
 	
 
 	if (is_there_ammo()) {
@@ -111,7 +67,7 @@ void ShootComp::addBullet_toList(glm::vec3 carPos, GLuint uniModel, GLuint uniSp
 		tmp_bullet.createBullet(start_position, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
 		tmp_bullet2.createBullet(start_pos2, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
 		tmp_bullet3.createBullet(start_pos3, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
-		std::cout << "All 2 bullets CREATED \n";
+		std::cout << "All 3 bullets CREATED \n";
 
 		bulletsList.push_back(tmp_bullet);
 		bulletsList.push_back(tmp_bullet2);
@@ -145,7 +101,7 @@ void ShootComp::updateDirection(float x, float y, float z) {
 	Direction_z = z;
 }
 
-void ShootComp::fire() {
+void ShootComp::decrease_ammo() {
 	if (ammo > 0) {
 		ammo -= 1;
 	}
