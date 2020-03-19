@@ -100,6 +100,12 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	}
 
 	update_turret();
+
+
+	//run smoke and oil effects 
+	updateCurrentTime();
+	updateSmoke();
+	updateOil();
 	
 	//std::cout << "Sp: " << slide << " ge: " << std::endl;
 }
@@ -332,6 +338,9 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	currentMarker = 0;
 	expectedMarker = 1;
 	numLaps = 0;
+
+	smokeDuration = 10.f;
+	oilDuration = 5.f;
 
 }
 
@@ -612,27 +621,61 @@ void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
 	--ability;
 }
 
-
 void Vehicle::enableSmokeEffect()
 {
 	affectedBySmoke = true;
 	smokeStartTime = glfwGetTime();
+	std::cout << "SMOKE ACTIVATED" << std::endl;
 }
 
 void Vehicle::disableSmokeEffect()
 {
 	affectedBySmoke = false;
+	std::cout << "SMOKE DEACTIVATED" << std::endl;
+}
+
+void Vehicle::updateSmoke()
+{
+	if ((smokeStartTime + smokeDuration <= currentTime) && affectedBySmoke) {
+		disableSmokeEffect();
+	}
 }
 
 void Vehicle::enableOilEffect()
 {
 	affectedByOil = true;
 	oilStartTime = glfwGetTime();
+	std::cout << "OIL ACTIVATED" << std::endl;
+
+	actor->setMass(actor->getMass() * 0.3f);
+
+	//basic spinout
+	if(gVehicleInputData.getAnalogSteer() >= 0)
+		actor->addTorque(PxVec3(0, 13000, 0), PxForceMode::eIMPULSE);
+	else
+		actor->addTorque(PxVec3(0, -13000, 0), PxForceMode::eIMPULSE);
+	
 }
 
 void Vehicle::disableOilEffect()
 {
 	affectedByOil = false;
+	std::cout << "OIL DEACTIVATED" << std::endl;
+
+	actor->setMass(actor->getMass() / 0.3f);
+}
+
+void Vehicle::updateOil()
+{
+	if (affectedByOil) {
+		if (oilStartTime + oilDuration <= currentTime) {
+			disableOilEffect();
+		}
+		
+		//actor->addTorque(PxVec3(0, 300, 0), PxForceMode::eIMPULSE);
+	}
+	
+
 }
 
 void Vehicle::updateCurrentTime()

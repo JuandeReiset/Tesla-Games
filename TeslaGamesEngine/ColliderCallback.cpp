@@ -84,6 +84,8 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != s->id) {
 				//smoke gameplay effect
+				if(!v->affectedBySmoke)
+					v->enableSmokeEffect();
 			}
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "oil") == 0) {
@@ -95,6 +97,8 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != o->id) {
 				//oil gameplay effect
+				if(!v->affectedByOil)
+					v->enableOilEffect();
 			}
 		}
 	}

@@ -119,11 +119,13 @@ public:
 	float smokeStartTime, smokeDuration;
 	void enableSmokeEffect();
 	void disableSmokeEffect();
+	void updateSmoke();
 
 	bool affectedByOil;
 	float oilStartTime, oilDuration;
 	void enableOilEffect();
 	void disableOilEffect();
+	void updateOil();
 
 	float currentTime;
 	void updateCurrentTime();
