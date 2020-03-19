@@ -63,6 +63,7 @@ void StartScreen::load() {
 	loadTextures();
 	loadVertices();
 
+	op = 0;
 	return;
 }
 
@@ -116,4 +117,39 @@ void StartScreen::setOption(int op) {
 		settingText = settingText1;
 		exitText = exitText2;
 	}
+}
+
+void StartScreen::loadController(Controller *controller) {
+	controller->update();
+	
+	if (controller->isButtonDown(XButtons.DPad_Up)) {
+		if (op == 0)
+			;
+		else
+			--op;
+		setOption(op);
+		std::cout << op << std::endl;
+	}
+	else if (controller->isButtonDown(XButtons.DPad_Down)) {
+		if (op == 2)
+			;
+		else
+			++op;
+		setOption(op);
+	}
+	else if (controller->isButtonDown(XButtons.A)) {
+		if (op == 0)
+			startScreenFlag = false;
+		else if (op == 1) {
+			menuFlag = true;
+			startScreenFlag = false;
+		}
+		else if (op == 2) {
+			closeWindowFlag = true;
+			startScreenFlag = false;
+		}
+	}
+
+	controller->refreshState();
+
 }

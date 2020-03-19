@@ -6,3 +6,7 @@ Combat combat = Combat();
 bool armed = true;
 
 Window mainWindow;
+
+bool startScreenFlag = true;
+bool menuFlag = false;
+bool closeWindowFlag = false;

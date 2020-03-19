@@ -10,8 +10,7 @@
 #include "Window.h"
 #include "HUD.h"
 #include "Texture.h"
-
-
+#include "Controller.h"
 
 class StartScreen
 {
@@ -24,12 +23,14 @@ public:
 	void load();
 	void loadShader();
 
-	void setOption(int op);
+	void loadController(Controller *controller);
+
 
 private:
 	//I think it's more like a 2D graphic shader than a HUD shader, wrong name now :(
 	std::vector<HUD*> HUDList;
 	Shader hudShader;
+	int op;
 
 	unsigned int indices[6] = {
 		0, 1, 3,
@@ -88,5 +89,7 @@ private:
 		925.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
 		925.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
+
+	void setOption(int op);
 };
 
