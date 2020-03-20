@@ -25,6 +25,9 @@ class ShootComp :
 
 		//Add an bullet object and required rendering settings to a vector
 		void fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z);
+
+		// Fires using the current direction of the turret
+		void fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess);
 		//method to pass all bullet objects to rendering
 		void renderAllBullets();														//render caltrops model
 
