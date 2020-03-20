@@ -1,4 +1,13 @@
 #pragma once
+namespace trackInteractableObjects {
+	const int EMPTY = -1;
+	const int AMMO_PICKUP = -2;
+	const int TESLA_PICKUP = -3;
+	const int CALTROPS = -4;
+	const int OIL = -5;
+	const int SMOKE = -6;
+}
+
 namespace trackDrivingPointActions
 {
 	const int START = 0;
@@ -16,6 +25,7 @@ class TrackDrivingPoint
 		TrackDrivingPoint();
 		TrackDrivingPoint(float x, float y, float z, int action);
 		~TrackDrivingPoint();
+		void switchAction(int newAction);
 		float x;
 		float y;
 		float z;

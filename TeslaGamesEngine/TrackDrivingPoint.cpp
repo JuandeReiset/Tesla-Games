@@ -17,3 +17,7 @@ bool operator==(TrackDrivingPoint & lhs, TrackDrivingPoint & rhs)
 
 	return x && y && z && action;
 }
+
+void TrackDrivingPoint::switchAction(int newAction) {
+	this->actionToTake = newAction;
+}
