@@ -128,7 +128,7 @@ Model oil;
 Model defense_pickup;
 Model ammo_pickup;
 
-
+Model drivingPointModel;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -536,29 +536,12 @@ int main()
 
 	oil.LoadModel("Models/oil.obj");
 
-
+	drivingPointModel.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
 
 	glfwSwapInterval(1);
-	// imGui setting BEGINNING
-	/*
-#if __APPLE__
-// GL 3.2 + GLSL 150
-	const char* glsl_version = "#version 150";
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
-#else
-	// GL 3.0 + GLSL 130
-
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
-#endif
-*/
+	
 // Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -618,10 +601,11 @@ int main()
 	physEng->addEnemyVehicle(80, 5, -90);
 	physEng->addEnemyVehicle(90, 5, -85);
 	physEng->addEnemyVehicle(90, 5, -80);
-	physEng->addEnemyVehicle(90, 5, -90);
-	physEng->addEnemyVehicle(100, 5, -85);
-	physEng->addEnemyVehicle(100, 5, -80);
-	physEng->addEnemyVehicle(100, 5, -90);
+	//physEng->addEnemyVehicle(90, 5, -90);
+	//physEng->addEnemyVehicle(100, 5, -85);
+	//physEng->addEnemyVehicle(100, 5, -80);
+	//physEng->addEnemyVehicle(100, 5, -90);
+
 
 	std::vector<Vehicle*> vehicles;
 	vehicles.push_back(physEng->player);
@@ -767,7 +751,7 @@ int main()
 					menuFlag = 0;
 				}
 				//continue game
-				else if (menuFlag = 2) {
+				else if (menuFlag == 2) {
 					menuFlag = 0;
 				}
 
@@ -828,6 +812,15 @@ int main()
 		//racetrack.RenderModel();
 		racetrack_walls.RenderModel();
 		racetrack_floor.RenderModel();
+
+		/*for (int i = 0; i < raceTrack.listOfPoints.size(); i++) {
+			TrackDrivingPoint point = *raceTrack.listOfPoints.at(i);
+			model = model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(point.x, point.y, point.z));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			drivingPointModel.RenderModel();
+		}*/
 
 		///////////////////////////////////////////////////////////////////////
 
