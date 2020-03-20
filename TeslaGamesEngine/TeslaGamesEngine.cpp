@@ -807,14 +807,14 @@ int main()
 		racetrack_walls.RenderModel();
 		racetrack_floor.RenderModel();
 
-		for (int i = 0; i < raceTrack.listOfPoints.size(); i++) {
+		/*for (int i = 0; i < raceTrack.listOfPoints.size(); i++) {
 			TrackDrivingPoint point = *raceTrack.listOfPoints.at(i);
 			model = model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(point.x, point.y, point.z));
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 			drivingPointModel.RenderModel();
-		}
+		}*/
 
 		///////////////////////////////////////////////////////////////////////
 
