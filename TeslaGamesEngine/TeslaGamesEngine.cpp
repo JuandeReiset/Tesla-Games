@@ -692,11 +692,12 @@ int main()
 		}
 
 		while (menuFlag) {
+			menu.loadController(&player1);
 			menu.use();
 			mainWindow.swapBuffers();
 		}
 
-		while (1)
+		while (gameFlag)
 		{
 			physEng->stepPhysics();
 
@@ -903,15 +904,15 @@ int main()
 
 			glm::vec3 camDir = camera.getCameraDirection();
 			if ((ha->GetHealth()) > 0) {
-				//Draw bullets after Refactor
-				if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder))) {
+				//Draw bullets after Refactor. If affected by smoke they cant shoot
+				if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) && !physEng->player->affectedBySmoke) {
 					//payer1->shoot(vehiclePosition,uniformModel,uniformSpecularIntensity,uniformShininess,Direction.x,Direction.y,Direction.z);
 
 					if (isCameraFlipped) {
-						ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+						ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
 					}
 					else {
-						ba->addBullet_toList(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
+						ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
 					}
 
 					//ha->SetHealth(0);// This hear will prevent bullet and car from rendering

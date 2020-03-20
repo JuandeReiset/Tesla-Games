@@ -30,9 +30,12 @@ private:
 	std::vector<HUD*> HUDList;
 	Shader hudShader;
 
-	int op = 0;
-	int tn = 0;
-	int an = 9;
+	unsigned int op = 0;
+	unsigned int tn = 0;
+	unsigned int an = 9;
+	int arrow = -1;
+	
+	GLfloat last;
 
 	unsigned int indices[6] = {
 		0, 1, 3,
@@ -152,5 +155,7 @@ private:
 		1050.f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 
- 	void setOption(int op);
+ 	void setOption(int op, int tn, int an);
+	void setArrow();
+	void resetArrow();
 };

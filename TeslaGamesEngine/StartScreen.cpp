@@ -128,7 +128,6 @@ void StartScreen::loadController(Controller *controller) {
 		else
 			--op;
 		setOption(op);
-		std::cout << op << std::endl;
 	}
 	else if (controller->isButtonDown(XButtons.DPad_Down)) {
 		if (op == 2)
