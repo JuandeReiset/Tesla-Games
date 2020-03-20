@@ -11,3 +11,4 @@ bool startScreenFlag = true;
 bool menuFlag = false;
 bool closeWindowFlag = false;
 bool gameFlag = false;
+bool readyScreenFlag = false;

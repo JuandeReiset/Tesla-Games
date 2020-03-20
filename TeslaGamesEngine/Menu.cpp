@@ -239,7 +239,7 @@ void Menu::loadController(Controller* controller) {
 	else if (controller->isButtonDown(XButtons.A)) {
 		if (op == 2) {
 			menuFlag = false;
-			gameFlag = true;
+			readyScreenFlag = true;
 		}
 	}
 	else if (controller->isButtonDown(XButtons.B)) {

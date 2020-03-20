@@ -11,3 +11,4 @@ extern bool startScreenFlag;
 extern bool menuFlag;
 extern bool closeWindowFlag;
 extern bool gameFlag;
+extern bool readyScreenFlag;

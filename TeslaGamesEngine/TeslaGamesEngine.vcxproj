@@ -231,6 +231,7 @@
     <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h" />
     <ClInclude Include="PickupBox.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="ReadyScreen.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="resource1.h" />
@@ -303,6 +304,7 @@
     <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleTireFriction.cpp" />
     <ClCompile Include="PickupBox.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="ReadyScreen.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Shadow.cpp" />

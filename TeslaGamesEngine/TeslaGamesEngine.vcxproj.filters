@@ -65,6 +65,7 @@
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="StartScreen.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="ReadyScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -131,6 +132,7 @@
     <ClInclude Include="Track.h" />
     <ClInclude Include="StartScreen.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="ReadyScreen.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TeslaGamesEngine1.rc" />

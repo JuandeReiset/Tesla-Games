@@ -53,6 +53,7 @@
 #include "HUDcreator.h"
 #include "StartScreen.h"
 #include "Menu.h"
+#include "ReadyScreen.h"
 
 //Shadow stuff
 #include "Shadow.h"
@@ -416,6 +417,8 @@ int main()
 	startScreen.load();
 	Menu menu;
 	menu.load();
+	ReadyScreen readyScreen;
+	readyScreen.load();
 
 	int op = 0;
 
@@ -639,6 +642,12 @@ int main()
 		while (menuFlag) {
 			menu.loadController(&player1);
 			menu.use();
+			mainWindow.swapBuffers();
+		}
+
+		while (readyScreenFlag) {
+			readyScreen.loadController(&player1);
+			readyScreen.use();
 			mainWindow.swapBuffers();
 		}
 
