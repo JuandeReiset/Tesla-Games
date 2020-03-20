@@ -63,6 +63,7 @@
 
 // AI stuff
 #include "AIDrivingComponent.h"
+#include "AIShootingComponent.h"
 
 // Stuff for imgui
 #include "imGui/imgui.h"
@@ -127,7 +128,7 @@ Model oil;
 Model defense_pickup;
 Model ammo_pickup;
 
-
+Model drivingPointModel;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -535,29 +536,12 @@ int main()
 
 	oil.LoadModel("Models/oil.obj");
 
-
+	drivingPointModel.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
 
 	glfwSwapInterval(1);
-	// imGui setting BEGINNING
-	/*
-#if __APPLE__
-// GL 3.2 + GLSL 150
-	const char* glsl_version = "#version 150";
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
-#else
-	// GL 3.0 + GLSL 130
-
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
-#endif
-*/
+	
 // Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -617,65 +601,26 @@ int main()
 	physEng->addEnemyVehicle(80, 5, -90);
 	physEng->addEnemyVehicle(90, 5, -85);
 	physEng->addEnemyVehicle(90, 5, -80);
-	physEng->addEnemyVehicle(90, 5, -90);
-	physEng->addEnemyVehicle(100, 5, -85);
-	physEng->addEnemyVehicle(100, 5, -80);
-	physEng->addEnemyVehicle(100, 5, -90);
-
-	//physEng->enemyVehicles[0]->setAITrack(&raceTrack);
-	//69.10,-2.65,-71.48,start
-	//-26.55,-4.44,-69.89,  -7.70, -2.26, -72.82slow
-	//-38.75,-3.67,-68.75,  -42.75, -3.45, -70.97Turn
-	//-73.33,-2.59,-27.62,ApexMin
-	//-54.40,-2.58,26.53,ApexMaj
-	//-5.57,-2.60,48.48,exit
-	//95.78,-2.57,33.85,slow
-	//117.08,-2.60,31.51,turn
-	//141.67,-2.51,-1.95,ApexMin
-	//141.28,-2.53,-36.02,ApexMaj
-	//120.79,-2.42,-51.46,exit
-
-	/*AIDrivingComponent aiDriving = AIDrivingComponent(physEng->enemyVehicles[0]);
-	//im adding the lap markers as the only targets for now
-	//aiDriving.AddDrivingTarget(70, -86);
-	//aiDriving.AddDrivingTarget(-76, -85);	
-	//aiDriving.AddDrivingTarget(-103, -45);
-	//aiDriving.AddDrivingTarget(-85, 39);
-	//aiDriving.AddDrivingTarget(-55, 51);	
-	//aiDriving.AddDrivingTarget(-5.5f, 6.8f);
-	//aiDriving.AddDrivingTarget(23, 36);
-	//aiDriving.AddDrivingTarget(105.3f, 53);
-	//aiDriving.AddDrivingTarget(212, 33);	
-	//aiDriving.AddDrivingTarget(220, -4.5f);
-	//aiDriving.AddDrivingTarget(225.5f, -58);
-	//aiDriving.AddDrivingTarget(165.5f, -90);
-	aiDriving.AddDrivingTarget(-40, -85);
-	aiDriving.AddDrivingTarget(-85, -80);
-	aiDriving.AddDrivingTarget(-95, -20);
-	aiDriving.AddDrivingTarget(-75, 45);
-
-	aiDriving.AddDrivingTarget(-34,58);
-	aiDriving.AddDrivingTarget(172, 40);
-	//aiDriving.AddDrivingTarget(188, -60);
-	
-	//aiDriving.AddDrivingTarget(-55, 45);
-	//aiDriving.AddDrivingTarget(-15, 15);
-	//aiDriving.AddDrivingTarget(-5, 10);
-	aiDriving.AddDrivingTarget(20, 35);
-	aiDriving.AddDrivingTarget(130, 65);
-	aiDriving.AddDrivingTarget(210, 40);
-	aiDriving.AddDrivingTarget(225, -60);
+	//physEng->addEnemyVehicle(90, 5, -90);
+	//physEng->addEnemyVehicle(100, 5, -85);
+	//physEng->addEnemyVehicle(100, 5, -80);
+	//physEng->addEnemyVehicle(100, 5, -90);
 
 
+	std::vector<Vehicle*> vehicles;
+	vehicles.push_back(physEng->player);
+	std::vector<Vehicle*> aiVehicles = physEng->enemyVehicles;
+	vehicles.insert(vehicles.end(), aiVehicles.begin(), aiVehicles.end());
 
-	/*
-	physEng->addEnemyVehicle(15, 10, 0);
-	AIDrivingComponent aiDriving2 = AIDrivingComponent(physEng->enemyVehicles[1]);
-	aiDriving2.AddDrivingTarget(45, 40);
-	aiDriving2.AddDrivingTarget(215, -70);
-	aiDriving2.AddDrivingTarget(-90, -75);
-	aiDriving2.AddDrivingTarget(-65, 55);
-	*/
+	shaderList[0].UseShader();
+	std::vector<AIShootingComponent> aiShootingComponents;
+	for (auto ai : aiVehicles) {
+		AIShootingComponent aiShooting = AIShootingComponent(ai);
+		aiShooting.SetVehicles(vehicles);
+		aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
+		aiShootingComponents.push_back(aiShooting);
+	}
+
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
 	while (!mainWindow.getShouldClose()) {
@@ -701,12 +646,16 @@ int main()
 		{
 			physEng->stepPhysics();
 
-			const physx::PxVehicleDrive4W* vehicle = physEng->player->gVehicle4W;	//get vehicle
-			const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
-			physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
-			physx::PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
-			const physx::PxVec3 vehiclePositionPhysx = vDynamic->getGlobalPose().p;
-			glm::vec3 vehiclePosition(vehiclePositionPhysx.x, vehiclePositionPhysx.y, vehiclePositionPhysx.z);
+		for (int i = 0; i < aiShootingComponents.size(); i++) {
+			aiShootingComponents[i].Aim();
+		}
+
+		const physx::PxVehicleDrive4W* vehicle = physEng->player->gVehicle4W;	//get vehicle
+		const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
+		physx::PxQuat vehicleQuaternion = vDynamic->getGlobalPose().q;
+		physx::PxVec3 v_dir = vehicleQuaternion.getBasisVector2();
+		const physx::PxVec3 vehiclePositionPhysx = vDynamic->getGlobalPose().p;
+		glm::vec3 vehiclePosition(vehiclePositionPhysx.x, vehiclePositionPhysx.y, vehiclePositionPhysx.z);
 
 
 
@@ -843,7 +792,16 @@ int main()
 			racetrack_walls.RenderModel();
 			racetrack_floor.RenderModel();
 
-			///////////////////////////////////////////////////////////////////////
+		/*for (int i = 0; i < raceTrack.listOfPoints.size(); i++) {
+			TrackDrivingPoint point = *raceTrack.listOfPoints.at(i);
+			model = model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(point.x, point.y, point.z));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			drivingPointModel.RenderModel();
+		}*/
+
+		///////////////////////////////////////////////////////////////////////
 
 			//render all pickup boxes
 	/*
@@ -897,72 +855,74 @@ int main()
 			/////////////////////////////////////////////////////////////////////////////////
 					//BULLLETS AND PLAYING SHOOTING SOUND
 
-			ShootComp* ba = physEng->player->getShootingComponent();
-			HealthComponent* ha = physEng->player->getHealthComponent();
-
-			//Vehicle* payer1 = physEng.player;
-
-			glm::vec3 camDir = camera.getCameraDirection();
-			if ((ha->GetHealth()) > 0) {
-				//Draw bullets after Refactor. If affected by smoke they cant shoot
-				if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) && !physEng->player->affectedBySmoke) {
-					//payer1->shoot(vehiclePosition,uniformModel,uniformSpecularIntensity,uniformShininess,Direction.x,Direction.y,Direction.z);
-
-					if (isCameraFlipped) {
-						ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
-					}
-					else {
-						ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
-					}
-
-					//ha->SetHealth(0);// This hear will prevent bullet and car from rendering
+		ShootComp* ba = physEng->player->getShootingComponent();
+		HealthComponent* ha = physEng->player->getHealthComponent();
+		
+		glm::vec3 camDir = camera.getCameraDirection();
+		if ((ha->GetHealth()) > 0) {
+			//Draw bullets after Refactor. If affected by smoke they cant shoot
+			if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) && !physEng->player->affectedBySmoke) {
+				//payer1->shoot(vehiclePosition,uniformModel,uniformSpecularIntensity,uniformShininess,Direction.x,Direction.y,Direction.z);
+				
+				if (isCameraFlipped) {
+					ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
 				}
-				ba->renderAllBullets();
-				//payer1->renderBullets();
+				else {
+					ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
+				}
+				
+				//ha->SetHealth(0);// This hear will prevent bullet and car from rendering
+			 }
+			ba->renderAllBullets();
+			//payer1->renderBullets();
 
 				physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 				modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
 
-				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-				//TeslaCar.RenderModel();
-				Teslacar_chasis.RenderModel();
+			shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			//TeslaCar.RenderModel();
+			Teslacar_chasis.RenderModel();
+		
+			// Reset model
+			model = glm::mat4(1.0f);
+			glm::vec3 y_rot(0.0,1.0,0.0); //axis of rotation
+			glm::vec3 tem = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z); 
+			model = glm::translate(model, tem); //Update turret pos with position of vehicle
+			model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); //resize turret
+			// TODO: This moves to ShootComp class
+			float angleAroundY = glm::degrees(atan2(camDir.x, camDir.z)); //calculate angle of rotation
+			float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
+			model = glm::rotate(model, angletoUse, y_rot);
 
-				// Reset model
-				model = glm::mat4(1.0f);
-				glm::vec3 y_rot(0.0, 1.0, 0.0); //axis of rotation
-				glm::vec3 tem = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
-				model = glm::translate(model, tem); //Update turret pos with position of vehicle
-				model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); //resize turret
-				float angleAroundY = glm::degrees(atan2(camDir.x, camDir.z)); //calculate angle of rotation
-				float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
-				model = glm::rotate(model, angletoUse, y_rot);
-
-				if (isCameraFlipped) {
-					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
-				}
-				else {
-					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-				}
-
-				T_turret.RenderModel(); //renders turret	
+			if (isCameraFlipped) {
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, modelMat.front());
 			}
-			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-			//CALTROPS
-	/*
-			//if press down button, use caltrops
-			if (player1.isButtonDown(XButtons.DPad_Down)) {
-				std::unique_ptr<Caltrops> caltrop(new Caltrops());//using unique_ptr instead of pointer since we will release memory
-				caltrop->createCaltrops(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess);
-				caltropsList.push_back(std::move(caltrop));
+			else {
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			}
-	*/
-	//when dpad down is pushed, make a new caltrop and trigger volume
-			if (player1.isButtonDown(XButtons.DPad_Down)) {
-				PxVec3 p(physEng->player->GetPosition());
-				physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
-			}
+			
+			T_turret.RenderModel(); //renders turret	
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		for (auto ai : physEng->enemyVehicles) {
+			ai->getShootingComponent()->renderAllBullets();
+		}
+		//CALTROPS
+/*
+		//if press down button, use caltrops
+		if (player1.isButtonDown(XButtons.DPad_Down)) {
+			std::unique_ptr<Caltrops> caltrop(new Caltrops());//using unique_ptr instead of pointer since we will release memory
+			caltrop->createCaltrops(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess);
+			caltropsList.push_back(std::move(caltrop));
+		}
+*/
+		//when dpad down is pushed, make a new caltrop and trigger volume
+		if (player1.isButtonDown(XButtons.DPad_Down) && !physEng->player->affectedBySmoke) {
+			PxVec3 p(physEng->player->GetPosition());
+			physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
+		}
 
 			auto c = physEng->caltropsList.begin();
 			while (c != physEng->caltropsList.end()) {	//remove dead caltrops
@@ -1045,14 +1005,26 @@ int main()
 					enemymodelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
 					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, enemymodelMat.front());
 
-					shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-					//TeslaCar.RenderModel();
-					Teslacar_chasis.RenderModel();
-					T_turret.RenderModel();
-					//defense_pickup.RenderModel();
-				}
+				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+				//TeslaCar.RenderModel();
+			    Teslacar_chasis.RenderModel();
+
+				model = glm::mat4(1.0f);
+				glm::vec3 y_rot(0.0, 1.0, 0.0); //axis of rotation
+				glm::vec3 tem = glm::vec3(enemymodelMat.getPosition().x, enemymodelMat.getPosition().y, enemymodelMat.getPosition().z);
+				model = glm::translate(model, tem); //Update turret pos with position of vehicle
+				model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); //resize turret
+				auto aimdir_x = v->getShootingComponent()->Direction_x;
+				auto aimdir_z = v->getShootingComponent()->Direction_z;
+				float angleAroundY = glm::degrees(atan2(aimdir_x, aimdir_z)); //calculate angle of rotation
+				float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
+				model = glm::rotate(model, angletoUse, y_rot);
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				T_turret.RenderModel();
+				//defense_pickup.RenderModel();
 			}
-			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 					//SHADOW RENDERING
