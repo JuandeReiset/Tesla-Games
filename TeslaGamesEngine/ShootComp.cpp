@@ -75,6 +75,45 @@ void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntens
 	}
 
 }
+
+void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess) {
+
+	decrease_ammo();
+
+
+	if (is_there_ammo()) {
+
+		if (!this->shootSound.isSoundPlaying()) {
+			std::cout << "play sound" << std::endl;
+			this->shootSound.playSound();
+		}
+
+		start_position = glm::vec3(carPos.x, carPos.y - 0.2f, carPos.z);
+		uniformModel = uniModel;
+		uniformShininess = uniShininess;
+		uniformSpecularIntensity = uniSpecularIntensity;
+
+		glm::vec3 start_pos2 = glm::vec3(start_position.x + 5.f*Direction_x, start_position.y + 5.f*Direction_y, start_position.z + 5.f*Direction_z);
+		glm::vec3 start_pos3 = glm::vec3(start_pos2.x + 5.f*Direction_x, start_pos2.y + 5.f*Direction_y, start_pos2.z + 5.f*Direction_z);
+
+		Bullet tmp_bullet = Bullet();
+		Bullet tmp_bullet2 = Bullet();
+		Bullet tmp_bullet3 = Bullet();
+		tmp_bullet.createBullet(start_position, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
+
+		tmp_bullet.createBullet(start_position, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
+		tmp_bullet2.createBullet(start_pos2, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
+		tmp_bullet3.createBullet(start_pos3, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
+		std::cout << "All 3 bullets CREATED \n";
+
+		bulletsList.push_back(tmp_bullet);
+		bulletsList.push_back(tmp_bullet2);
+		bulletsList.push_back(tmp_bullet3);
+	}
+	
+
+}
+
 void ShootComp::renderAllBullets() {
 	auto b = bulletsList.begin();
 	while (b != bulletsList.end()) {
@@ -111,6 +150,7 @@ void ShootComp::decrease_ammo() {
 void ShootComp::recharge() {
 	ammo +=10;
 }
+
 bool ShootComp::is_there_ammo() {
 	if (ammo > 0) { return true; }
 	else { return false; }
