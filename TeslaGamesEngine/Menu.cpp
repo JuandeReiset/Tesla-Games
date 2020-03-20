@@ -41,11 +41,17 @@ void Menu::loadVertices() {
 	start->createHUD(startVertices, indices, 20, 6);
 	HUDList.push_back(start);
 
+	HUD* back = new HUD();
+	back->createHUD(backVertices, indices, 20, 6);
+	HUDList.push_back(back);
+
 }
 
 void Menu::loadTextures() {
 	backgroundTexture = Texture("Textures/background.png");
 	backgroundTexture.LoadTextureAlpha();
+	backTexture = Texture("Textures/goback.png");
+	backTexture.LoadTextureAlpha();
 
 	dig0Texture = Texture("Textures/numbers/0.png");
 	dig0Texture.LoadTextureAlpha();
@@ -162,6 +168,10 @@ void Menu::use() {
 
 	startTxt.UseTexture();
 	HUDList[9]->renderHUD();
+
+	backTexture.UseTexture();
+	HUDList[10]->renderHUD();
+
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -231,6 +241,10 @@ void Menu::loadController(Controller* controller) {
 			menuFlag = false;
 			gameFlag = true;
 		}
+	}
+	else if (controller->isButtonDown(XButtons.B)) {
+		menuFlag = false;
+		startScreenFlag = true;
 	}
 
 

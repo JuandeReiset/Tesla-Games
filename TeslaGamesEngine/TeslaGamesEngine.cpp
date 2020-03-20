@@ -910,14 +910,6 @@ int main()
 			ai->getShootingComponent()->renderAllBullets();
 		}
 		//CALTROPS
-/*
-		//if press down button, use caltrops
-		if (player1.isButtonDown(XButtons.DPad_Down)) {
-			std::unique_ptr<Caltrops> caltrop(new Caltrops());//using unique_ptr instead of pointer since we will release memory
-			caltrop->createCaltrops(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess);
-			caltropsList.push_back(std::move(caltrop));
-		}
-*/
 		//when dpad down is pushed, make a new caltrop and trigger volume
 		if (player1.isButtonDown(XButtons.DPad_Down) && !physEng->player->affectedBySmoke) {
 			PxVec3 p(physEng->player->GetPosition());
@@ -1033,7 +1025,6 @@ int main()
 			glm::vec3 tem = glm::vec3(53, -2, -83);
 			model = glm::translate(model, tem); //Update turret pos with position of vehicle
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-			oil.RenderModel();
 
 			//turn on blend mode
 			glEnable(GL_BLEND);
@@ -1082,11 +1073,11 @@ int main()
 			//HUD stars here
 
 			//get lose or win
-			if (physEng->player->numLaps == 3)
+			if (physEng->player->numLaps == 5)
 				winFlag = true;
 			else
 				for (auto v : physEng->enemyVehicles)
-					if (v->numLaps == 3)
+					if (v->numLaps == 5)
 						loseFlag = true;
 
 			if (winFlag == true)

@@ -52,6 +52,7 @@ private:
 	Texture startTxt;
 	Texture aiTxt;
 	Texture aiNumTxt;
+	Texture backTexture;
 
 	Texture track1Texture;
 	Texture track2Texture;
@@ -153,6 +154,13 @@ private:
 		550.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
 		1050.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
 		1050.f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+
+	GLfloat backVertices[20] = {
+		1400.f / 1600 * mainWindow.getWidth(), 820.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		1400.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		1600.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		1600.f / 1600 * mainWindow.getWidth(), 820.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 
  	void setOption(int op, int tn, int an);
