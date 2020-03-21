@@ -140,14 +140,24 @@ void StartScreen::loadController(Controller *controller) {
 		if (op == 0) {
 			startScreenFlag = false;
 			menuFlag = true;
+			gameFlag = false;
+			readyScreenFlag = false;
+			pauseFlag = false;
 		}
 		else if (op == 1) {
 			menuFlag = true;
 			startScreenFlag = false;
+			gameFlag = false;
+			readyScreenFlag = false;
+			pauseFlag = false;
 		}
 		else if (op == 2) {
 			closeWindowFlag = true;
 			startScreenFlag = false;
+			gameFlag = false;
+			menuFlag = false;
+			readyScreenFlag = false;
+			pauseFlag = false;
 		}
 	}
 

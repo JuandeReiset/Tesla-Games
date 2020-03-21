@@ -81,10 +81,16 @@ void ReadyScreen::loadController(Controller *controller) {
 	if (controller->isButtonDown(XButtons.A)) {
 		readyScreenFlag = false;
 		gameFlag = true;
+		startScreenFlag = false;
+		menuFlag = false;
+		pauseFlag = false;
 	}
 	else if (controller->isButtonDown(XButtons.B)) {
 		readyScreenFlag = false;
 		menuFlag = true;
+		startScreenFlag = false;
+		gameFlag = false;
+		pauseFlag = false;
 	}
 
 	controller->refreshState();

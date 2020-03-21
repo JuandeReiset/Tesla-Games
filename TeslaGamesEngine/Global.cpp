@@ -12,3 +12,4 @@ bool menuFlag = false;
 bool closeWindowFlag = false;
 bool gameFlag = false;
 bool readyScreenFlag = false;
+bool pauseFlag = false;

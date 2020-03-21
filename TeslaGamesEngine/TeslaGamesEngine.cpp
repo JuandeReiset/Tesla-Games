@@ -54,6 +54,7 @@
 #include "StartScreen.h"
 #include "Menu.h"
 #include "ReadyScreen.h"
+#include "PauseScreen.h"
 
 //Shadow stuff
 #include "Shadow.h"
@@ -280,6 +281,8 @@ void parseControllerInput(Controller* controller)
 	}
 	if (controller->isButtonDown(XButtons.Back)) {
 		//std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
+		gameFlag = false;
+		pauseFlag = true;
 	}
 	if (controller->isButtonDown(XButtons.Back)) {
 		//std::cout << controller->getIndex() << " " << "Back PRESSED and HELD" << std::endl;
@@ -419,8 +422,9 @@ int main()
 	menu.load();
 	ReadyScreen readyScreen;
 	readyScreen.load();
+	PauseScreen pauseScreen;
+	pauseScreen.load();
 
-	int op = 0;
 
 	physEng = new PhysicsEngine();
 
@@ -651,6 +655,12 @@ int main()
 			mainWindow.swapBuffers();
 		}
 
+		while (pauseFlag) {
+			pauseScreen.loadController(&player1);
+			pauseScreen.use();
+			mainWindow.swapBuffers();
+		}
+
 		while (gameFlag)
 		{
 			physEng->stepPhysics();
@@ -708,52 +718,6 @@ int main()
 			//end camera stuff
 
 
-			/*
-			if (menuFlag) {
-				if (player1.isButtonDown(XButtons.DPad_Up)) {
-					if (op == 0)
-						;
-					else
-						--op;
-					menu.setOption(op);
-				}
-				else if (player1.isButtonDown(XButtons.DPad_Down)) {
-					if (op == 1)
-						;
-					else
-						++op;
-					menu.setOption(op);
-				}
-				else if (player1.isButtonDown(XButtons.A)) {
-					//something will happen
-				}
-				else if (player1.isButtonDown(XButtons.B)) {
-					//back to start screen
-					if (menuFlag == 1) {
-						startScreenFlag = true;
-						menuFlag = 0;
-					}
-					//continue game
-					else if (menuFlag = 2) {
-						menuFlag = 0;
-					}
-
-					op = 0;
-					//startScreen.setOption(op);
-				}
-
-				menu.use();
-				mainWindow.swapBuffers();
-
-				continue;
-			}
-			*//*
-			if (player1.isButtonDown(XButtons.Back)) {
-				menuFlag = 2;
-				op = 0;
-				menu.setOption(op);
-			}
-			*/
 			if (P1Connected)
 				parseControllerInput(&player1);
 			if (P2Connected)

@@ -240,11 +240,17 @@ void Menu::loadController(Controller* controller) {
 		if (op == 2) {
 			menuFlag = false;
 			readyScreenFlag = true;
+			startScreenFlag = false;
+			pauseFlag = false;
+			gameFlag = false;
 		}
 	}
 	else if (controller->isButtonDown(XButtons.B)) {
 		menuFlag = false;
 		startScreenFlag = true;
+		gameFlag = false;
+		readyScreenFlag = false;
+		pauseFlag = false;
 	}
 
 
