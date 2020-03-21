@@ -13,3 +13,5 @@ extern bool closeWindowFlag;
 extern bool gameFlag;
 extern bool readyScreenFlag;
 extern bool pauseFlag;
+extern bool fromGameFlag;
+extern float backTime;

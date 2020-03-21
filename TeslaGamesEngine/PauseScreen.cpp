@@ -114,6 +114,8 @@ void PauseScreen::loadController(Controller* controller) {
 			menuFlag = false;
 			readyScreenFlag = false;
 			op = 0;
+			fromGameFlag = true;
+			backTime = glfwGetTime();
 			setOption();
 		}
 	}
