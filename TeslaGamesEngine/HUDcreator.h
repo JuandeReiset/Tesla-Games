@@ -115,10 +115,10 @@ private:
 	};
 
 	GLfloat emptyBar1Vertices[20] = {
-		1300.0f / 1600 * mainWindow.getWidth() * size, 880.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
-		1300.0f / 1600 * mainWindow.getWidth() * size, 900.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1200.0f / 1600 * mainWindow.getWidth() * size, 870.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1200.0f / 1600 * mainWindow.getWidth() * size, 900.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
 		1600.0f / 1600 * mainWindow.getWidth() * size, 900.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
-		1600.0f / 1600 * mainWindow.getWidth() * size, 880.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+		1600.0f / 1600 * mainWindow.getWidth() * size, 870.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
 	GLfloat emptyBar2Vertices[20] = {
@@ -129,10 +129,10 @@ private:
 	};
 
 	GLfloat plusVertices[20] = {
-		1270.0f / 1600 * mainWindow.getWidth() * size, 880.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
-		1270.0f / 1600 * mainWindow.getWidth() * size, 900.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
-		1290.0f / 1600 * mainWindow.getWidth() * size, 900.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
-		1290.0f / 1600 * mainWindow.getWidth() * size, 880.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+		1160.0f / 1600 * mainWindow.getWidth() * size, 870.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1160.0f / 1600 * mainWindow.getWidth() * size, 900.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1190.0f / 1600 * mainWindow.getWidth() * size, 900.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1190.0f / 1600 * mainWindow.getWidth() * size, 870.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
 
 	GLfloat nitroSymbolVertices[20] = {

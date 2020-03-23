@@ -231,24 +231,24 @@ void HUDcreator::use() {
 	HUDList[2]->renderHUD();
 
 	//empty bar2
-	emptyBarTexture.UseTexture();
-	HUDList[3]->renderHUD();
+	//emptyBarTexture.UseTexture();
+	//HUDList[3]->renderHUD();
 
 	//health bar
 	healthBarTexture.UseTexture();
 	HUDList[4]->renderHUD();
 
 	//nitro bar
-	nitroBarTexture.UseTexture();
-	HUDList[5]->renderHUD();
+	//nitroBarTexture.UseTexture();
+	//HUDList[5]->renderHUD();
 
 	//plus symbol
 	plusSymbolTexture.UseTexture();
 	HUDList[6]->renderHUD();
 
 	//nitro symbol
-	nitroSymbolTexture.UseTexture();
-	HUDList[7]->renderHUD();
+	//nitroSymbolTexture.UseTexture();
+	//HUDList[7]->renderHUD();
 
 	//race info
 	//current rank
