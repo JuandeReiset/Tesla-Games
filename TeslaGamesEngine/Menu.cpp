@@ -257,6 +257,21 @@ void Menu::loadController(Controller* controller) {
 	controller->refreshState();
 }
 
+int Menu::getSelectedGameMode()
+{
+	return this->op;
+}
+
+int Menu::getSelectedTrack()
+{
+	return this->tn;
+}
+
+int Menu::getSelectedNumOfAI()
+{
+	return this->an;
+}
+
 void Menu::setOption(int op, int tn, int an) {
 	switch (an) {
 	case 0:
