@@ -5,6 +5,7 @@
 #include <memory>
 #include <math.h>
 #include "Vehicle.h"
+#include "TrackInteractableStrip.h"
 
 namespace trackTypeConstants
 {
@@ -19,6 +20,7 @@ class Track
 		Track(int trackType);
 		~Track();
 		void addPointToList(float x, float y, float z, int action);
+		void addInteractableStripToList();
 		void initializeTrackPoints(int trackType);
 		void performStuckCorrectionMove(Vehicle * v);
 		void performMove(Vehicle * v);
@@ -33,5 +35,7 @@ class Track
 		void pastMajorCurrentMinor(PxU32 curGear, float angleToTurn, Vehicle * v);
 		void pastMinorCurrentExit(PxU32 curGear, float angleToTurn, Vehicle * v);
 		float getAngleToTurnBy(TrackDrivingPoint * currentTarget, Vehicle * v);
+
 		std::vector<std::unique_ptr<TrackDrivingPoint>> listOfPoints;
+		std::vector<std::unique_ptr<TrackInteractableStrip>> listOfLaneStrips;
 };
