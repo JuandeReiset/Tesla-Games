@@ -53,7 +53,6 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <PlatformToolset>v141</PlatformToolset>
-    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -245,6 +244,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Track.h" />
     <ClInclude Include="TrackDrivingPoint.h" />
+    <ClInclude Include="TrackInteractableStrip.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Turret.h" />
     <ClInclude Include="Vehicle.h" />
@@ -318,6 +318,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="TrackDrivingPoint.cpp" />
+    <ClCompile Include="TrackInteractableStrip.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Turret.cpp" />
     <ClCompile Include="Vehicle.cpp" />
