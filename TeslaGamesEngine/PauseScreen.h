@@ -1,4 +1,5 @@
 #pragma once
+
 #include <GL\glew.h>
 #include <glm/glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
@@ -12,10 +13,10 @@
 #include "Texture.h"
 #include "Controller.h"
 
-class StartScreen
+class PauseScreen
 {
 public:
-	StartScreen() = default;
+	PauseScreen() = default;
 
 	void loadVertices();
 	void loadTextures();
@@ -23,37 +24,32 @@ public:
 	void load();
 	void loadShader();
 
-	void loadController(Controller *controller);
+	void loadController(Controller* controller);
 
-
-private:
-	//I think it's more like a 2D graphic shader than a HUD shader, wrong name now :(
 	std::vector<HUD*> HUDList;
 	Shader hudShader;
-	int op;
+	int op = 0;
 
 	unsigned int indices[6] = {
 		0, 1, 3,
 		2, 1, 3
 	};
 
-	Texture backgroundTexture;
-	Texture logoTexture;
-	Texture startText;
-	Texture settingText;
-	Texture exitText;
-	Texture startText1;
-	Texture startText2;
-	Texture settingText1;
-	Texture settingText2;
-	Texture exitText1;
-	Texture exitText2;
-
 	// Vertex Shader of HUD_shader
 	const char* vHshader = "Shaders/HUD_shader.vert";
 
 	//Fragment shader of HUD_shader
 	const char* fHshader = "Shaders/HUD_shader.frag";
+
+	Texture backgroundTexture;
+	Texture logoTexture;
+	Texture resumeTxt;
+	Texture titleTxt;
+
+	Texture resume1Txt;
+	Texture resume2Txt;
+	Texture title1Txt;
+	Texture title2Txt;
 
 	GLfloat backgroundVertices[20] = {
 		0.0f / 1600 * mainWindow.getWidth(), 0.f / 900.0f * mainWindow.getHeight(), 0.0f,	0.0f, 0.0f,								//bottom left
@@ -69,27 +65,20 @@ private:
 		1131.5f / 1600 * mainWindow.getWidth(), 0.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 
-	GLfloat startVertices[20] = {
+	GLfloat resumeVertices[20] = {
 		550.f / 1600 * mainWindow.getWidth(), 550.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
 		550.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
 		1050.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
 		1050.f / 1600 * mainWindow.getWidth(), 550.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
-	
-	GLfloat settingVertices[20] = {
+
+	GLfloat titleVertices[20] = {
 		550.f / 1600 * mainWindow.getWidth(), 650.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
 		550.f / 1600 * mainWindow.getWidth(), 850.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
 		1050.f / 1600 * mainWindow.getWidth(), 850.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
 		1050.f / 1600 * mainWindow.getWidth(), 650.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
-	
-	GLfloat exitVertices[20] = {
-		550.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
-		550.f / 1600 * mainWindow.getWidth(), 950.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
-		1050.f / 1600 * mainWindow.getWidth(), 950.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
-		1050.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
-	};
 
-	void setOption(int op);
+	void setOption();
 };
 

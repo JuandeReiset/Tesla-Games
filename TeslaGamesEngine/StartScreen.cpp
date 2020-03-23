@@ -28,18 +28,18 @@ void StartScreen::loadTextures() {
 	backgroundTexture = Texture("Textures/background.png");
 	backgroundTexture.LoadTextureAlpha();
 
-	logoTexture = Texture("Textures/Untitled_Artwork (2).jpg");
+	logoTexture = Texture("Textures/logo.jpg");
 	logoTexture.LoadTexture();
 
-	startText1 = Texture("Textures/start.png");
+	startText1 = Texture("Textures/single1.png");
 	startText1.LoadTextureAlpha();
-	startText2 = Texture("Textures/start2.png");
+	startText2 = Texture("Textures/single2.png");
 	startText2.LoadTextureAlpha();
 	startText = startText2;
 
-	settingText1 = Texture("Textures/setting.png");
+	settingText1 = Texture("Textures/multi1.png");
 	settingText1.LoadTextureAlpha();
-	settingText2 = Texture("Textures/setting2.png");
+	settingText2 = Texture("Textures/multi2.png");
 	settingText2.LoadTextureAlpha();
 	settingText = settingText1;
 
@@ -63,6 +63,7 @@ void StartScreen::load() {
 	loadTextures();
 	loadVertices();
 
+	op = 0;
 	return;
 }
 
@@ -116,4 +117,50 @@ void StartScreen::setOption(int op) {
 		settingText = settingText1;
 		exitText = exitText2;
 	}
+}
+
+void StartScreen::loadController(Controller *controller) {
+	controller->update();
+	
+	if (controller->isButtonDown(XButtons.DPad_Up)) {
+		if (op == 0)
+			;
+		else
+			--op;
+		setOption(op);
+	}
+	else if (controller->isButtonDown(XButtons.DPad_Down)) {
+		if (op == 2)
+			;
+		else
+			++op;
+		setOption(op);
+	}
+	else if (controller->isButtonDown(XButtons.A)) {
+		if (op == 0) {
+			startScreenFlag = false;
+			menuFlag = true;
+			gameFlag = false;
+			readyScreenFlag = false;
+			pauseFlag = false;
+		}
+		else if (op == 1) {
+			menuFlag = true;
+			startScreenFlag = false;
+			gameFlag = false;
+			readyScreenFlag = false;
+			pauseFlag = false;
+		}
+		else if (op == 2) {
+			closeWindowFlag = true;
+			startScreenFlag = false;
+			gameFlag = false;
+			menuFlag = false;
+			readyScreenFlag = false;
+			pauseFlag = false;
+		}
+	}
+
+	controller->refreshState();
+
 }
