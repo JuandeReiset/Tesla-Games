@@ -536,7 +536,15 @@ int main()
 	camera.setFront(front.x, front.y, front.z);
 
 	while (!mainWindow.getShouldClose()) {
+		if (closeWindowFlag) {
+			mainWindow.setWindowClose();
+			continue;
+		}
+
 		while (startScreenFlag) {
+			if (!mainMenuMusic.isSoundPlaying()) {
+				mainMenuMusic.playSound();
+			}
 			if (fromGameFlag) {
 				if (glfwGetTime() - backTime > 0.5) {
 					startScreen.loadController(&player1);
@@ -551,6 +559,24 @@ int main()
 			mainWindow.swapBuffers();
 		}
 
+		while (menuFlag) {
+			menu.loadController(&player1);
+			menu.use();
+			mainWindow.swapBuffers();
+		}
+
+		while (readyScreenFlag) {
+			readyScreen.loadController(&player1);
+			readyScreen.use();
+			mainWindow.swapBuffers();
+		}
+
+		while (pauseFlag) {
+			audioSystem.pauseAllActiveSources();
+			pauseScreen.loadController(&player1);
+			pauseScreen.use();
+			mainWindow.swapBuffers();
+		}
 
 		if (setupGame == true) {
 			//Reset this variable to reset the game
@@ -560,7 +586,7 @@ int main()
 			int trackNum = menu.getSelectedTrack();
 			int AINum = menu.getSelectedNumOfAI();
 
-			
+
 			raceTrack.initializeTrackPoints(trackNum);
 			physEng->initAITrack(&raceTrack);
 			physEng->initAudioForVehicles(&audioSystem);
@@ -592,31 +618,18 @@ int main()
 			}
 		}
 
-		if (closeWindowFlag) {
-			mainWindow.setWindowClose();
-			continue;
-		}
-
-		while (menuFlag) {
-			menu.loadController(&player1);
-			menu.use();
-			mainWindow.swapBuffers();
-		}
-
-		while (readyScreenFlag) {
-			readyScreen.loadController(&player1);
-			readyScreen.use();
-			mainWindow.swapBuffers();
-		}
-
-		while (pauseFlag) {
-			pauseScreen.loadController(&player1);
-			pauseScreen.use();
-			mainWindow.swapBuffers();
-		}
-
 		while (gameFlag)
 		{
+			if (audioSystem.allHaveBeenPaused == true) {
+				audioSystem.resumeAllActiveSources();
+			}
+			if (mainMenuMusic.isSoundPlaying()) {
+				mainMenuMusic.stopSound();
+			}
+			if (!raceMusic.isSoundPlaying()) {
+				raceMusic.playSound();
+			}
+
 			physEng->stepPhysics();
 
 			for (int i = 0; i < aiShootingComponents.size(); i++) {
