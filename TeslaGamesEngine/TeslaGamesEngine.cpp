@@ -361,6 +361,7 @@ int main()
 
 	//bool startScreenFlag = true;
 	//int menuFlag = 0;
+	bool setupGame = true;
 
 	HUDcreator hud;
 	hud.load();
@@ -504,19 +505,17 @@ int main()
 
 	//Audio system setup
 	AudioEngine audioSystem = AudioEngine();
+
 	AudioBoomBox mainMenuMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
 	AudioBoomBox raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
 
-	
-	physEng->initAudioForVehicles(&audioSystem);
-	camera.initializeAudio(&audioSystem);
-
-	//The key is now that multiple sounds can be played at once. As long as sound card can support it
-	//Comment out one sound if you dont wanna hear it
-	//audioObject.playSound();
 	raceMusic.setVolume(0.35f);
 	raceMusic.loopSound(true);
-	raceMusic.playSound();
+
+	mainMenuMusic.setVolume(0.4f);
+	mainMenuMusic.loopSound(true);
+
+	
 
 	//Controller
 	Controller player1 = Controller(1);
@@ -528,40 +527,10 @@ int main()
 	std::cout << "Player1 connected: " << P1Connected << std::endl;
 	std::cout << "Player2 connected: " << P2Connected << std::endl;
 
-	//physEng.upwards();
-	//End of audio system setup/demo
 
 	//This does all the Ai stuff as far TeslaGameEngine is concerned
-	Track raceTrack = Track(trackTypeConstants::OVAL);
-	physEng->initAITrack(&raceTrack);
-
-	// Creating an enemy vehicle 
-	physEng->addEnemyVehicle(70, 5, -80);
-	physEng->addEnemyVehicle(70, 5, -70);
-	physEng->addEnemyVehicle(80, 5, -85);
-	physEng->addEnemyVehicle(80, 5, -80);
-	physEng->addEnemyVehicle(80, 5, -90);
-	physEng->addEnemyVehicle(90, 5, -85);
-	physEng->addEnemyVehicle(90, 5, -80);
-	//physEng->addEnemyVehicle(90, 5, -90);
-	//physEng->addEnemyVehicle(100, 5, -85);
-	//physEng->addEnemyVehicle(100, 5, -80);
-	//physEng->addEnemyVehicle(100, 5, -90);
-
-
-	std::vector<Vehicle*> vehicles;
-	vehicles.push_back(physEng->player);
-	std::vector<Vehicle*> aiVehicles = physEng->enemyVehicles;
-	vehicles.insert(vehicles.end(), aiVehicles.begin(), aiVehicles.end());
-
-	shaderList[0].UseShader();
+	Track raceTrack;
 	std::vector<AIShootingComponent> aiShootingComponents;
-	for (auto ai : aiVehicles) {
-		AIShootingComponent aiShooting = AIShootingComponent(ai);
-		aiShooting.SetVehicles(vehicles);
-		aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
-		aiShootingComponents.push_back(aiShooting);
-	}
 
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	camera.setFront(front.x, front.y, front.z);
@@ -580,6 +549,47 @@ int main()
 			startScreen.use();
 
 			mainWindow.swapBuffers();
+		}
+
+
+		if (setupGame == true) {
+			//Reset this variable to reset the game
+			setupGame = false;
+
+			int gameMode = menu.getSelectedGameMode();
+			int trackNum = menu.getSelectedTrack();
+			int AINum = menu.getSelectedNumOfAI();
+
+			
+			raceTrack.initializeTrackPoints(trackNum);
+			physEng->initAITrack(&raceTrack);
+			physEng->initAudioForVehicles(&audioSystem);
+			camera.initializeAudio(&audioSystem);
+
+			// Creating an enemy vehicle 
+			physEng->addEnemyVehicle(70, 5, -80);
+			physEng->addEnemyVehicle(70, 5, -70);
+			physEng->addEnemyVehicle(80, 5, -85);
+			physEng->addEnemyVehicle(80, 5, -80);
+			physEng->addEnemyVehicle(80, 5, -90);
+			physEng->addEnemyVehicle(90, 5, -85);
+			physEng->addEnemyVehicle(90, 5, -80);
+			//physEng->addEnemyVehicle(90, 5, -90);
+			//physEng->addEnemyVehicle(100, 5, -85);
+			//physEng->addEnemyVehicle(100, 5, -80);
+			//physEng->addEnemyVehicle(100, 5, -90);
+
+			std::vector<Vehicle*> vehicles;
+			vehicles.push_back(physEng->player);
+			std::vector<Vehicle*> aiVehicles = physEng->enemyVehicles;
+			vehicles.insert(vehicles.end(), aiVehicles.begin(), aiVehicles.end());
+			shaderList[0].UseShader();
+			for (auto ai : aiVehicles) {
+				AIShootingComponent aiShooting = AIShootingComponent(ai);
+				aiShooting.SetVehicles(vehicles);
+				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
+				aiShootingComponents.push_back(aiShooting);
+			}
 		}
 
 		if (closeWindowFlag) {

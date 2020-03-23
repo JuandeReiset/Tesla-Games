@@ -2,13 +2,17 @@
 
 Track::Track() {}
 Track::Track(int trackType) {
-	this->initializeTrackPoints(trackType);
+	if (this->listOfPoints.empty() == true) {
+		this->initializeTrackPoints(trackType);
+	}
+	
 }
 Track::~Track() {}
 void Track::addPointToList(float x, float y, float z, int action) {
 	this->listOfPoints.push_back(std::make_unique<TrackDrivingPoint>(x, y, z, action));
 }
 void Track::initializeTrackPoints(int trackType) {
+	this->listOfPoints.clear();
 	if (trackType == trackTypeConstants::OVAL_TEST) {
 		this->addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
 		this->addPointToList(-3.70, -2.26, -72.82, trackDrivingPointActions::SLOW_DOWN);
