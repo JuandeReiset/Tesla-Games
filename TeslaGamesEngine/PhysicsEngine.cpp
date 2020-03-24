@@ -10,12 +10,10 @@ using namespace physx;
 using namespace snippetvehicle;
 
 PhysicsEngine::PhysicsEngine() {
-	std::cout << "\nGOT TO PHYSENGG CONSTRUCTOR\n";
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
 	//set physics
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
-
 
 	//set scene
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -29,16 +27,10 @@ PhysicsEngine::PhysicsEngine() {
 	//creates the collider event handler needed for trigger volumes and adds to scene
 	colliderCallback = new ColliderCallback();
 	sceneDesc.simulationEventCallback = colliderCallback;
-	
 
 	gScene = gPhysics->createScene(sceneDesc);
-
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-
 	gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
-
-	player = new Vehicle(true, gPhysics, gCooking, gMaterial, gScene, gAllocator, 70, 5, -86, 1);
-	player->actor->userData = player;
 
 	//create obstacle (needed for now)
 	PxFilterData obstFilterData(snippetvehicle::COLLISION_FLAG_OBSTACLE, snippetvehicle::COLLISION_FLAG_OBSTACLE_AGAINST, 0, 0);
@@ -70,25 +62,29 @@ PhysicsEngine::PhysicsEngine() {
 }
 void PhysicsEngine::initAudioForVehicles(AudioEngine* audio) {
 	this->audioEngine = audio;
-	player->initVehicleAudio(this->audioEngine);
-	for (int i = 0; i < enemyVehicles.size(); i++) {
-		enemyVehicles[i]->initVehicleAudio(this->audioEngine);
-	}
 }
 
 void PhysicsEngine::initAITrack(Track* raceTrack) {
 	this->raceTrack = raceTrack;
 }
 
+void PhysicsEngine::addPlayerVehicle(int startIndex) {
+	TrackDrivingPoint point = *this->raceTrack->listOfStartPoints[startIndex];
+	player = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex);
+	player->actor->userData = player;
+	player->initVehicleAudio(this->audioEngine);
+}
 
 
-void PhysicsEngine::addEnemyVehicle(float x, float y, float z)
+void PhysicsEngine::addEnemyVehicle(int startIndex)
 {
+	TrackDrivingPoint point = *this->raceTrack->listOfStartPoints[startIndex];
 	//create vehicle object
 	//add it to the list of vehicle
-	Vehicle* v = new Vehicle(false, gPhysics, gCooking, gMaterial, gScene, gAllocator, x, y, z, 2);
-	v->initVehicleAudio(this->audioEngine);
+	Vehicle* v = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex);
 	v->actor->userData = v;
+	v->initVehicleAudio(this->audioEngine);
+
 	v->initAITrackPoints(&this->raceTrack->listOfPoints);
 	enemyVehicles.push_back(v);
 }

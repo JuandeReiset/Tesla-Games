@@ -16,6 +16,7 @@ namespace trackDrivingPointActions
 	const int APEX_MINOR = 3;
 	const int APEX_MAJOR = 4;
 	const int TURN_EXIT = 5;
+	const int START_LINE = 6;
 }
 
 class TrackDrivingPoint

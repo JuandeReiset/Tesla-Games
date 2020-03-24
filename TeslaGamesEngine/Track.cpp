@@ -11,6 +11,9 @@ Track::~Track() {}
 void Track::addPointToList(float x, float y, float z, int action) {
 	this->listOfPoints.push_back(std::make_unique<TrackDrivingPoint>(x, y, z, action));
 }
+void Track::addStartPointToList(float x, float y, float z) {
+	this->listOfStartPoints.push_back(std::make_unique<TrackDrivingPoint>(x, y, z, trackDrivingPointActions::START_LINE));
+}
 void Track::addInteractableStripToList() {
 	this->listOfLaneStrips.push_back(std::make_unique<TrackInteractableStrip>());
 }
@@ -46,6 +49,22 @@ void Track::initializeTrackPoints(int trackType) {
 		*/
 	}
 	else if (trackType == trackTypeConstants::OVAL) {
+		this->addStartPointToList(60, 5, -57);
+		this->addStartPointToList(60, 5, -66);
+		this->addStartPointToList(60, 5, -75);
+		this->addStartPointToList(60, 5, -84);
+
+		this->addStartPointToList(70, 5, -57);
+		this->addStartPointToList(70, 5, -66);
+		this->addStartPointToList(70, 5, -75);
+		this->addStartPointToList(70, 5, -84);
+
+		this->addStartPointToList(80, 5, -57);
+		this->addStartPointToList(80, 5, -66);
+		this->addStartPointToList(80, 5, -75);
+		this->addStartPointToList(80, 5, -84);
+		
+	
 		this->addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
 		this->addPointToList(20.70, -2.48, -70.30, trackDrivingPointActions::SLOW_DOWN);
 		this->addPointToList(-42.95, -2.70, -80.95, trackDrivingPointActions::TURN_IN);

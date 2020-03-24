@@ -580,6 +580,9 @@ int main()
 
 		if (setupGame == true) {
 			//Reset this variable to reset the game
+			physEng->initAudioForVehicles(&audioSystem);
+			camera.initializeAudio(&audioSystem);
+
 			setupGame = false;
 
 			int gameMode = menu.getSelectedGameMode();
@@ -589,21 +592,10 @@ int main()
 
 			raceTrack.initializeTrackPoints(trackNum);
 			physEng->initAITrack(&raceTrack);
-			physEng->initAudioForVehicles(&audioSystem);
-			camera.initializeAudio(&audioSystem);
-
-			// Creating an enemy vehicle 
-			physEng->addEnemyVehicle(70, 5, -80);
-			physEng->addEnemyVehicle(70, 5, -70);
-			physEng->addEnemyVehicle(80, 5, -85);
-			physEng->addEnemyVehicle(80, 5, -80);
-			physEng->addEnemyVehicle(80, 5, -90);
-			physEng->addEnemyVehicle(90, 5, -85);
-			physEng->addEnemyVehicle(90, 5, -80);
-			//physEng->addEnemyVehicle(90, 5, -90);
-			//physEng->addEnemyVehicle(100, 5, -85);
-			//physEng->addEnemyVehicle(100, 5, -80);
-			//physEng->addEnemyVehicle(100, 5, -90);
+			for (int i = 0; i < AINum; i++) {
+				physEng->addEnemyVehicle(i);
+			}
+			physEng->addPlayerVehicle(AINum + player1.getIndex());			
 
 			std::vector<Vehicle*> vehicles;
 			vehicles.push_back(physEng->player);
@@ -1057,6 +1049,9 @@ int main()
 			mainWindow.swapBuffers();
 
 			//Shooting actions
+			if (mainWindow.getShouldClose() == true) {
+				gameFlag = false;
+			}
 		}
 	}
 	// Cleanup
