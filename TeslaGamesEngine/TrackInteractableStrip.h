@@ -12,6 +12,6 @@ class TrackInteractableStrip
 		void setLaneStatus(int atIndex, int newStatus);
 		void clearLaneStatus(int atIndex);
 		//A lane is basically a car width, so really how many cars can fit on a strip of track
-		std::vector<std::shared_ptr<TrackDrivingPoint>> listOfLanePoints;
+		std::vector<std::unique_ptr<TrackDrivingPoint>> listOfLanePoints;
 };
 
