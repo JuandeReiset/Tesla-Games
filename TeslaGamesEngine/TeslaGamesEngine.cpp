@@ -470,8 +470,7 @@ int main()
 	boxTest.LoadModel("Models/wall.obj");
 	//caltrop.LoadModel("Models/caltrops.obj");
 	//racetrack.LoadModel("Models/track2.obj");
-	racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
-	racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
+	
 	
 	bulletobj.LoadModel("Models/bullet.obj");
 	defense_pickup.LoadModel("Models/defense_box.obj");
@@ -589,9 +588,17 @@ int main()
 			int trackNum = menu.getSelectedTrack();
 			int AINum = menu.getSelectedNumOfAI();
 
+			if (trackNum == trackTypeConstants::OVAL) {
+				racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
+				racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
+			}
+			else if (trackNum == trackTypeConstants::TESLA_T) {
+				//TODO Juan plz
+			}
 
 			raceTrack.initializeTrackPoints(trackNum);
 			physEng->initAITrack(&raceTrack);
+
 			for (int i = 0; i < AINum; i++) {
 				physEng->addEnemyVehicle(i);
 			}
