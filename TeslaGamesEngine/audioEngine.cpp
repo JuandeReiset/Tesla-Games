@@ -85,6 +85,27 @@ void AudioEngine::killSource(AudioBoomBox* boombox) {
 	}
 }
 
+void AudioEngine::pauseAllActiveSources() {
+	for (int i = 0; i < listOfSources.size(); i++) {
+		bool isPlaying = listOfSources[i]->isSoundPlaying();
+		if (isPlaying) {
+			listOfSources[i]->pauseSound();
+			this->sourcesPaused.push_back(i);
+		}
+	}
+	this->allHaveBeenPaused = true;
+}
+
+void AudioEngine::resumeAllActiveSources() {
+	if (this->allHaveBeenPaused == true) {
+		this->allHaveBeenPaused = false;
+		for (int index : this->sourcesPaused) {
+			listOfSources[index]->playSound();
+		}
+		this->sourcesPaused.clear();
+	}
+}
+
 void AudioEngine::killSources() {
 	listOfSources.clear();
 }

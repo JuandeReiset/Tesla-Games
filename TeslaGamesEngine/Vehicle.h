@@ -31,7 +31,7 @@ using namespace physx;
 class Vehicle : public Object
 {
 public:
-	Vehicle(bool isPlayerCheck, PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id);	//added id to this
+	Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id);	//added id to this
 	Vehicle(int id);//pls dont use this
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);

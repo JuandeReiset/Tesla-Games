@@ -7,7 +7,6 @@ class TrackInteractableStrip
 {
 	public:
 		TrackInteractableStrip();
-		TrackInteractableStrip(int totalLanes);
 		~TrackInteractableStrip();
 		void addLanePoint(float x, float y, float z, int status);
 		void setLaneStatus(int atIndex, int newStatus);

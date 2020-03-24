@@ -37,8 +37,9 @@ public:
 	void initAudioForVehicles(AudioEngine * audio);
 
 	void initAITrack(Track * raceTrack);
-
-	void addEnemyVehicle(float x, float y, float z);
+	void addPlayerVehicle(int startIndex);
+	void addEnemyVehicle(int startIndex);
+	
 
 	physx::PxVec3 GetBoxPos();
 	void stepPhysics();

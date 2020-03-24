@@ -44,6 +44,10 @@ class AudioEngine
 		AudioBoomBox& createBoomBox(int soundFile);
 		void killSource(AudioBoomBox * boombox);
 		void killSources();
+		void pauseAllActiveSources();
+		void resumeAllActiveSources();
+		std::vector<int> sourcesPaused;
+		bool allHaveBeenPaused;
 
 	private:
 		void CheckError();

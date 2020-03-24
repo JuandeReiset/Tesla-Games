@@ -26,6 +26,10 @@ public:
 
 	void loadController(Controller* controller);
 
+	int getSelectedGameMode();
+	int getSelectedTrack();
+	int getSelectedNumOfAI();
+
 private:
 	std::vector<HUD*> HUDList;
 	Shader hudShader;

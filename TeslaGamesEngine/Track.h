@@ -20,6 +20,7 @@ class Track
 		Track(int trackType);
 		~Track();
 		void addPointToList(float x, float y, float z, int action);
+		void addStartPointToList(float x, float y, float z);
 		void addInteractableStripToList();
 		void initializeTrackPoints(int trackType);
 		void performStuckCorrectionMove(Vehicle * v);
@@ -38,4 +39,5 @@ class Track
 
 		std::vector<std::unique_ptr<TrackDrivingPoint>> listOfPoints;
 		std::vector<std::unique_ptr<TrackInteractableStrip>> listOfLaneStrips;
+		std::vector<std::unique_ptr<TrackDrivingPoint>> listOfStartPoints;
 };
