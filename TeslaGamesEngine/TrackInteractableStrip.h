@@ -7,12 +7,11 @@ class TrackInteractableStrip
 {
 	public:
 		TrackInteractableStrip();
-		TrackInteractableStrip(int totalLanes);
 		~TrackInteractableStrip();
 		void addLanePoint(float x, float y, float z, int status);
 		void setLaneStatus(int atIndex, int newStatus);
 		void clearLaneStatus(int atIndex);
 		//A lane is basically a car width, so really how many cars can fit on a strip of track
-		std::vector<std::unique_ptr<TrackDrivingPoint>> listOfLanePoints;
+		std::vector<std::shared_ptr<TrackDrivingPoint>> listOfLanePoints;
 };
 

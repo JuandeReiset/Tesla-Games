@@ -17,6 +17,7 @@ void Track::addInteractableStripToList() {
 
 void Track::initializeTrackPoints(int trackType) {
 	this->listOfPoints.clear();
+	this->listOfLaneStrips.clear();
 	if (trackType == trackTypeConstants::OVAL_TEST) {
 		this->addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
 		this->addPointToList(-3.70, -2.26, -72.82, trackDrivingPointActions::SLOW_DOWN);
@@ -60,7 +61,7 @@ void Track::initializeTrackPoints(int trackType) {
 		this->addPointToList(130.66, -2.68, -58.69, trackDrivingPointActions::APEX_MINOR);
 		this->addPointToList(100.00, -2.66, -68.70, trackDrivingPointActions::TURN_EXIT);
     
-    //InteractZonePoints
+		//InteractZonePoints
 		this->addInteractableStripToList();
 		this->addInteractableStripToList();
 		this->addInteractableStripToList();
