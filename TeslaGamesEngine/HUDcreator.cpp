@@ -266,12 +266,12 @@ void HUDcreator::use() {
 	HUDList[13]->renderHUD();
 
 	//current alive
-	personTexture.UseTexture();
-	HUDList[14]->renderHUD();
-	aliveNum1.UseTexture();
-	HUDList[15]->renderHUD();
-	aliveNum2.UseTexture();
-	HUDList[16]->renderHUD();
+	//personTexture.UseTexture();
+	//HUDList[14]->renderHUD();
+	//aliveNum1.UseTexture();
+	//HUDList[15]->renderHUD();
+	//aliveNum2.UseTexture();
+	//HUDList[16]->renderHUD();
 
 	//win or lose
 	if (winOrLose) {
@@ -282,9 +282,11 @@ void HUDcreator::use() {
 	//total number stuff
 	slashTexture.UseTexture();
 	HUDList[18]->renderHUD();
-	dig2Texture.UseTexture();
+	//dig2Texture.UseTexture();
+	aliveNum1.UseTexture();
 	HUDList[19]->renderHUD();
-	dig0Texture.UseTexture();
+	//dig0Texture.UseTexture();
+	aliveNum2.UseTexture();
 	HUDList[20]->renderHUD();
 
 	slashTexture.UseTexture();
@@ -293,13 +295,14 @@ void HUDcreator::use() {
 	HUDList[22]->renderHUD();
 	dig5Texture.UseTexture();
 	HUDList[23]->renderHUD();
-
+/*
 	slashTexture.UseTexture();
 	HUDList[24]->renderHUD();
 	dig2Texture.UseTexture();
 	HUDList[25]->renderHUD();
 	dig0Texture.UseTexture();
 	HUDList[26]->renderHUD();
+*/
 
 	bulletTexture.UseTexture();
 	HUDList[27]->renderHUD();
