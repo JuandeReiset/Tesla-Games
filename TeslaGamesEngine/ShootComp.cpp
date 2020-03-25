@@ -56,8 +56,9 @@ void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntens
 		uniformShininess = uniShininess;
 		uniformSpecularIntensity = uniSpecularIntensity;
 
-	    glm::vec3 start_pos2 =glm::vec3(start_position.x+5.f*Direction_x, start_position.y + 5.f*Direction_y, start_position.z + 5.f*Direction_z);
-		glm::vec3 start_pos3 = glm::vec3(start_pos2.x + 5.f*Direction_x, start_pos2.y + 5.f*Direction_y, start_pos2.z + 5.f*Direction_z);
+		float gap = 30.f;
+	    glm::vec3 start_pos2 =glm::vec3(start_position.x+gap*Direction_x, start_position.y +gap*Direction_y , start_position.z + gap*Direction_z);
+		glm::vec3 start_pos3 = glm::vec3(start_pos2.x + gap*Direction_x, start_pos2.y + gap*Direction_y, start_pos2.z + gap*Direction_z);
 
 		Bullet tmp_bullet = Bullet();
 		Bullet tmp_bullet2 = Bullet();
