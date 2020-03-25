@@ -127,7 +127,7 @@ void Track::initializeTrackPoints(int trackType) {
 		z5.addLanePoint(72.96, -2.75, 65.72, trackInteractableObjects::EMPTY);
 	}
 	else if (trackType == trackTypeConstants::TESLA_T) {
-
+	
 	}
 }
 

@@ -602,7 +602,8 @@ int main()
 				racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 			}
 			else if (trackNum == trackTypeConstants::TESLA_T) {
-				//TODO Juan plz
+				racetrack_walls.LoadModel("Models/track2final_Twalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
+				racetrack_floor.LoadModel("Models/track2final_Tfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 			}
 
 			raceTrack.initializeTrackPoints(trackNum);
