@@ -116,9 +116,18 @@ Material dullMaterial;
 PhysicsEngine* physEng;
 
 //Player 1 objs
-Model TeslaCar;
+//Model TeslaCar;
 Model Teslacar_chasis;
 Model T_turret;
+//Player 2 objs
+Model Teslacar2_chasis;
+Model T2_turret;
+//Player 3 objs
+Model Teslacar3_chasis;
+Model T3_turret;
+//Player 4 objs
+Model Teslacar4_chasis;
+Model T4_turret;
 
 //AI Objs
 Model TeslaCarAI;
@@ -468,14 +477,23 @@ int main()
 	*/
 	skybox = Skybox(skyboxFaces);
 
-
-	TeslaCar.LoadModel("Models/TeslaGamesTruck2_test.obj");
+	//Loading TeslaTrucks models
+	////////////////////////////////////////////////////////////////////////
 	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_yellowchasis.obj");
 	T_turret.LoadModel("Models/TeslaGamesTruck2_yellowturret.obj");
 
+	Teslacar2_chasis.LoadModel("Models/TeslaGamesTruck2_bluechasis.obj");
+	T2_turret.LoadModel("Models/TeslaGamesTruck2_blueturret.obj");
+
+	Teslacar3_chasis.LoadModel("Models/TeslaGamesTruck2_greenchasis.obj");
+	T3_turret.LoadModel("Models/TeslaGamesTruck2_greenturret.obj");
+
+	Teslacar4_chasis.LoadModel("Models/TeslaGamesTruck2_purplechasis.obj");
+	T4_turret.LoadModel("Models/TeslaGamesTruck2_purpleturret.obj");
+
 	TeslacarAI_chasis.LoadModel("Models/TeslaGamesTruck2_redchasis.obj");
 	TAI_turret.LoadModel("Models/TeslaGamesTruck2_redturret.obj");
-
+	//////////////////////////////////////////////////////////////////////////
 	boxTest.LoadModel("Models/wall.obj");
 	//caltrop.LoadModel("Models/caltrops.obj");
 	//racetrack.LoadModel("Models/track2.obj");
