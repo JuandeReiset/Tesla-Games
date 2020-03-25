@@ -115,9 +115,15 @@ Material dullMaterial;
 
 PhysicsEngine* physEng;
 
+//Player 1 objs
 Model TeslaCar;
 Model Teslacar_chasis;
 Model T_turret;
+
+//AI Objs
+Model TeslaCarAI;
+Model TeslacarAI_chasis;
+Model TAI_turret;
 
 Model racetrack;
 Model racetrack_walls;
@@ -464,8 +470,11 @@ int main()
 
 
 	TeslaCar.LoadModel("Models/TeslaGamesTruck2_test.obj");
-	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_modcar.obj");
-	T_turret.LoadModel("Models/TeslaGamesTruck2_modturret.obj");
+	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_yellowchasis.obj");
+	T_turret.LoadModel("Models/TeslaGamesTruck2_yellowturret.obj");
+
+	TeslacarAI_chasis.LoadModel("Models/TeslaGamesTruck2_redchasis.obj");
+	TAI_turret.LoadModel("Models/TeslaGamesTruck2_redturret.obj");
 
 	boxTest.LoadModel("Models/wall.obj");
 	//caltrop.LoadModel("Models/caltrops.obj");
@@ -915,7 +924,7 @@ int main()
 
 					shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 					//TeslaCar.RenderModel();
-					Teslacar_chasis.RenderModel();
+					TeslacarAI_chasis.RenderModel();
 
 					model = glm::mat4(1.0f);
 					glm::vec3 y_rot(0.0, 1.0, 0.0); //axis of rotation
@@ -928,7 +937,7 @@ int main()
 					float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
 					model = glm::rotate(model, angletoUse, y_rot);
 					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-					T_turret.RenderModel();
+					TAI_turret.RenderModel();
 					//defense_pickup.RenderModel();
 				}
 			}
