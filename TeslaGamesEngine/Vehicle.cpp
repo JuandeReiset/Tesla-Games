@@ -242,6 +242,10 @@ void Vehicle::cleanup() {
 	this->audioEngine->killSource(&this->boostStart);
 	this->audioEngine->killSource(&this->boostMax);
 	this->audioEngine->killSource(&this->maxSpeed);
+
+	this->audioEngine->killSource(&this->deployCaltropsEffect);
+	this->audioEngine->killSource(&this->deployOilEffect);
+	this->audioEngine->killSource(&this->deploySmokeEffect);
 }
 
 void Vehicle::audioUpdate() {
@@ -253,7 +257,12 @@ void Vehicle::audioUpdate() {
 	this->boostMax.updateSourcePosition(position.x, position.y, position.z);
 	this->maxSpeed.updateSourcePosition(position.x, position.y, position.z);
 
+	this->deployCaltropsEffect.updateSourcePosition(position.x, position.y, position.z);
+	this->deployOilEffect.updateSourcePosition(position.x, position.y, position.z);
+	this->deploySmokeEffect.updateSourcePosition(position.x, position.y, position.z);
+
 	this->turret.updateAudioPosition(position.x, position.y, position.z);
+	this->health.setPosition(position.x, position.y, position.z);
 }
 
 
@@ -426,7 +435,12 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 	this->boostMax = audioEngine->createBoomBox(audioConstants::SOUND_FILE_BOOST_MAX);
 	this->maxSpeed = audioEngine->createBoomBox(audioConstants::SOUND_FILE_SPEED_MAX);
 
+	this->deployCaltropsEffect = audioEngine->createBoomBox(audioConstants::SOUND_FILE_DEPLOY_CALTROPS);
+	this->deployOilEffect = audioEngine->createBoomBox(audioConstants::SOUND_FILE_DEPLOY_OIL);
+	this->deploySmokeEffect = audioEngine->createBoomBox(audioConstants::SOUND_FILE_DEPLOY_SMOKE);
+
 	this->turret.initShootCompAudio(engine);
+	this->health.initAudioForHealthComponent(engine);
 
 	float initialSoundVolume = 15.f;
 
@@ -435,7 +449,9 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 	this->boostStart.setVolume(initialSoundVolume);
 	this->boostMax.setVolume(initialSoundVolume);
 	this->maxSpeed.setVolume(initialSoundVolume);
-	
+	this->deployCaltropsEffect.setVolume(initialSoundVolume);
+	this->deployOilEffect.setVolume(initialSoundVolume);
+	this->deploySmokeEffect.setVolume(initialSoundVolume);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -608,9 +624,8 @@ void Vehicle::keyPress(unsigned char key, const PxTransform& camera)
 	PX_UNUSED(camera);
 	PX_UNUSED(key);
 }
-
 void Vehicle::Tick(float deltaTime) {
-	std::cout << "Current health:" << currentHealth() << std::endl;
+	/*std::cout << "Current health:" << currentHealth() << std::endl;
 	if (currentHealth() <= 0)
 		dead_flag = 1;
 
@@ -619,18 +634,17 @@ void Vehicle::Tick(float deltaTime) {
 
 	if (turret.is_there_ammo())
 		armed = false;
-		
+		*/
 }
-
 double Vehicle::currentHealth() {
 	return health.GetHealth();
 }
 
-void Vehicle::getDamage(double damage) {
-	double h = health.GetHealth();
-	health.SetHealth(h - damage);
-	std::cout << "\nOUCH I JUST TOOK "<<damage<<" DAMAGE\n";
-	return;
+void Vehicle::takeTrapDamage(double dmgAmount) {
+	this->health.takeTrapDamage(dmgAmount);
+}
+void Vehicle::takeBulletDamage(double dmgAmount) {
+	this->health.takeDamageFromBullet(dmgAmount);
 }
 
 void Vehicle::firelazer() {
@@ -663,6 +677,8 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 	catropsList->push_back(caltrop);
 
 	--ability;
+
+	this->deployCaltropsEffect.playSound();
 }
 
 void Vehicle::useOil(std::list<Oil*> *oilList) {
@@ -678,6 +694,7 @@ void Vehicle::useOil(std::list<Oil*> *oilList) {
 	oilList->push_back(oil);
 
 	--ability;
+	this->deployOilEffect.playSound();
 }
 
 void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
@@ -693,6 +710,7 @@ void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
 	smokeList->push_back(smoke);
 
 	--ability;
+	this->deploySmokeEffect.playSound();
 }
 
 void Vehicle::enableSmokeEffect()
@@ -700,6 +718,7 @@ void Vehicle::enableSmokeEffect()
 	affectedBySmoke = true;
 	smokeStartTime = glfwGetTime();
 	std::cout << "SMOKE ACTIVATED" << std::endl;
+	this->takeTrapDamage(0.f);
 }
 
 void Vehicle::disableSmokeEffect()
@@ -728,6 +747,8 @@ void Vehicle::enableOilEffect()
 		actor->addTorque(PxVec3(0, 13000, 0), PxForceMode::eIMPULSE);
 	else
 		actor->addTorque(PxVec3(0, -13000, 0), PxForceMode::eIMPULSE);
+
+	this->takeTrapDamage(0.f);
 	
 }
 

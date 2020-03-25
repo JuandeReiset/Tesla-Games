@@ -72,7 +72,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != c->id) {
 				//do damage
-				v->getDamage(1);
+				v->takeTrapDamage(1);
 			}
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "smoke") == 0) {
