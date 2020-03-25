@@ -16,7 +16,9 @@ namespace audioConstants
 	const int SOUND_FILE_BOUNCE = 0;
 	const int SOUND_FILE_FINALCOUNT = 1;
 	const int SOUND_FILE_TTG_MAIN_MENU = 2;
-	const int SOUND_FILE_TTG_RACE = 3;
+	const int SOUND_FILE_TTG_RACE_HYPERLOOP = 3;
+	const int SOUND_FILE_TTG_RACE_STARLINK = 16;
+
 	const int SOUND_FILE_ACCEL_REST = 4;
 	const int SOUND_FILE_ACCEL_MOTION = 5;
 	const int SOUND_FILE_BOOST_START = 6;
@@ -29,6 +31,7 @@ namespace audioConstants
 	const int SOUND_FILE_DEPLOY_CALTROPS = 13;
 	const int SOUND_FILE_DEPLOY_OIL = 14;
 	const int SOUND_FILE_DEPLOY_SMOKE = 15;
+	
 	
 }
 
@@ -54,7 +57,7 @@ class AudioEngine
 		bool _strcmp(const char* base, const char* cp);
 		bool loadWavFile(const char* filename, ALuint* buffer);
 
-		static const int NUM_OF_SOUND_EFFECTS_POSSIBLE = 16;
+		static const int NUM_OF_SOUND_EFFECTS_POSSIBLE = 17;
 		const char* soundFiles[NUM_OF_SOUND_EFFECTS_POSSIBLE];
 
 		int sourcesMade;

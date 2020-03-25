@@ -533,15 +533,10 @@ int main()
 	AudioEngine audioSystem = AudioEngine();
 
 	AudioBoomBox mainMenuMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
-	AudioBoomBox raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE);
-
-	raceMusic.setVolume(0.35f);
-	raceMusic.loopSound(true);
+	AudioBoomBox raceMusic; 
 
 	mainMenuMusic.setVolume(0.4f);
 	mainMenuMusic.loopSound(true);
-
-	
 
 	//Controller
 	Controller player1 = Controller(1);
@@ -614,14 +609,23 @@ int main()
 			int gameMode = menu.getSelectedGameMode();
 			int trackNum = menu.getSelectedTrack();
 			int AINum = menu.getSelectedNumOfAI();
+			std::cout << trackNum << std::endl;
 
 			if (trackNum == trackTypeConstants::OVAL) {
 				racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
+
+				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_HYPERLOOP);
+				raceMusic.setVolume(0.35f);
+				raceMusic.loopSound(true);
 			}
 			else if (trackNum == trackTypeConstants::TESLA_T) {
 				racetrack_walls.LoadModel("Models/track2final_Twalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2final_Tfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
+
+				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_STARLINK);
+				raceMusic.setVolume(0.35f);
+				raceMusic.loopSound(true);
 			}
 
 			raceTrack.initializeTrackPoints(trackNum);

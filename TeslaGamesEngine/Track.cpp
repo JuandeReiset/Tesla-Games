@@ -127,7 +127,36 @@ void Track::initializeTrackPoints(int trackType) {
 		z5.addLanePoint(72.96, -2.75, 65.72, trackInteractableObjects::EMPTY);
 	}
 	else if (trackType == trackTypeConstants::TESLA_T) {
+		this->addStartPointToList(60, 5, -57);
+		this->addStartPointToList(60, 5, -66);
+		this->addStartPointToList(60, 5, -75);
+		this->addStartPointToList(60, 5, -84);
+
+		this->addStartPointToList(70, 5, -57);
+		this->addStartPointToList(70, 5, -66);
+		this->addStartPointToList(70, 5, -75);
+		this->addStartPointToList(70, 5, -84);
+
+		this->addStartPointToList(80, 5, -57);
+		this->addStartPointToList(80, 5, -66);
+		this->addStartPointToList(80, 5, -75);
+		this->addStartPointToList(80, 5, -84);
+		
 	
+		this->addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
+		this->addPointToList(20.70, -2.48, -70.30, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(-42.95, -2.70, -80.95, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(-77.63, -2.60, -36.85, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(-69.18, -2.59, 7.72, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(-53.39, -2.59, 31.98, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(1.72, -2.64, 60.39, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(52.33, -2.60, 64.76, trackDrivingPointActions::TURN_EXIT);
+		this->addPointToList(78.33, -2.60, 60.76, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(115.87, -2.68, 41.60, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(150.66, -2.68, 18.69, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(159.05, -2.68, -22.62, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(130.66, -2.68, -58.69, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(100.00, -2.66, -68.70, trackDrivingPointActions::TURN_EXIT);
 	}
 }
 
