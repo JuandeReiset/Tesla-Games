@@ -48,7 +48,7 @@ void Track::initializeTrackPoints(int trackType) {
 		this->addPointToList(102.00, -2.66, -70.70, trackDrivingPointActions::TURN_EXIT);
 		*/
 	}
-	else if (trackType == trackTypeConstants::OVAL) {
+	else if (trackType == trackTypeConstants::HYPERLOOP) {
 		this->addStartPointToList(60, 5, -57);
 		this->addStartPointToList(60, 5, -66);
 		this->addStartPointToList(60, 5, -75);
@@ -126,8 +126,59 @@ void Track::initializeTrackPoints(int trackType) {
 		z5.addLanePoint(71.77, -2.68, 56.15, trackInteractableObjects::EMPTY);
 		z5.addLanePoint(72.96, -2.75, 65.72, trackInteractableObjects::EMPTY);
 	}
-	else if (trackType == trackTypeConstants::TESLA_T) {
+	else if (trackType == trackTypeConstants::STARLINK) {
+		this->addStartPointToList(51, 5, -59);
+		this->addStartPointToList(51, 5, -66);
+		this->addStartPointToList(51, 5, -73);
+		this->addStartPointToList(51, 5, -80);
+
+		this->addStartPointToList(61, 5, -59);
+		this->addStartPointToList(61, 5, -66);
+		this->addStartPointToList(61, 5, -73);
+		this->addStartPointToList(61, 5, -80);
+
+		this->addStartPointToList(71, 5, -59);
+		this->addStartPointToList(71, 5, -66);
+		this->addStartPointToList(71, 5, -73);
+		this->addStartPointToList(71, 5, -80);
+		
 	
+		this->addPointToList(95.98, -1.99, -69.30, trackDrivingPointActions::START);
+		this->addPointToList(65.58, -1.85, -72.65, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(20.02, -1.69, -76.91, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(-43.79, -1.40, -104.40, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(-100.40, -0.95, -143.83, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(-129.06, -0.21, -199.76, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(-120.09, -0.20, -242.94, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(-73.43, 0.30, -271.54, trackDrivingPointActions::TURN_EXIT);
+		
+		this->addPointToList(77.38, -0.69, -337.53, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(248.30, 0.48, -398.24, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(312.24, 0.98, -411.54, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(380.36, 0.39, -359.26, trackDrivingPointActions::TURN_EXIT);
+		
+		this->addPointToList(400.80, 0.24, -311.17, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(399.08, 0.22, -278.28, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(386.78, 0.26, -241.28, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(365.04, 0.39, -208.30, trackDrivingPointActions::TURN_EXIT);
+
+		this->addPointToList(325.29, 0.49, -178.83, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(288.82, 0.64, -143.40, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(268.15, -0.68, -94.31, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(288.34, -2.60, -44.34, trackDrivingPointActions::TURN_EXIT);
+
+		this->addPointToList(310.29, 0.20, -30.34, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(335.97, 3.60, -22.34, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(370.36, 7.54, 52.89, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(330.30, 0.95, 141.30, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(265.89, -0.76, 160.50, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(187.04, -0.94, 130.97, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(155.03, -1.11, 80.15, trackDrivingPointActions::TURN_EXIT);
+
+		this->addPointToList(175.50, -1.05, 43.83, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(189.69, -1.60, 1.65, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(163.57, -2.39, -58.84, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(136.60, -2.22, -70.44, trackDrivingPointActions::TURN_EXIT);
 	}
 }
 
@@ -174,7 +225,8 @@ void Track::performMove(Vehicle* v) {
 	//******************************************************************************************************************
 	//**************************************** TURNING STUFF ***********************************************************
 	//******************************************************************************************************************
-	else if (pastAction == trackDrivingPointActions::SLOW_DOWN && currentAction == trackDrivingPointActions::TURN_IN) {
+	else if ( (pastAction == trackDrivingPointActions::SLOW_DOWN || pastAction == trackDrivingPointActions::TURN_EXIT) 
+				&& currentAction == trackDrivingPointActions::TURN_IN) {
 		//Slow down before entering the turn
 		this->pastSlowDownCurrentTurnIn(curGear, angleToTurn, v);
 	}
@@ -599,7 +651,7 @@ void Track::pastTurnExitCurrentStart(PxU32 curGear, float angleToTurn, Vehicle* 
 
 void Track::pastSlowDownCurrentTurnIn(PxU32 curGear, float angleToTurn, Vehicle* v) {
 	if (curGear > PxVehicleGearsData::eFOURTH) {
-		if (std::abs(angleToTurn) < 5.f) {
+		if (std::abs(angleToTurn) < 10.f) {
 			v->turn(0.f);
 			v->forwards(0.f);
 			v->reverse(1.f);
@@ -920,7 +972,7 @@ void Track::pastMinorCurrentMajor(PxU32 curGear, float angleToTurn, Vehicle* v) 
 	}
 	else {
 		if (std::abs(angleToTurn) < 15.f) {
-			v->forwards(0.8f);
+			v->forwards(0.85f);
 			v->reverse(0.f);
 			if (angleToTurn < 0) {
 				//turn left
@@ -998,7 +1050,7 @@ void Track::pastMinorCurrentMajor(PxU32 curGear, float angleToTurn, Vehicle* v) 
 
 }
 void Track::pastMajorCurrentMinor(PxU32 curGear, float angleToTurn, Vehicle* v) {
-	PxU32 maxGearAllowed = PxVehicleGearsData::eTHIRD;
+	PxU32 maxGearAllowed = PxVehicleGearsData::eFOURTH;
 	if (curGear > maxGearAllowed) {
 		v->reverse(0.4f);
 		v->forwards(0.f);

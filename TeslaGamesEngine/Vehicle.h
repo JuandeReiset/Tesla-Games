@@ -47,6 +47,7 @@ public:
 	void lapWinCondition();
 
 	void initAITrackPoints(std::vector<std::unique_ptr<TrackDrivingPoint>>* listOfPoints);
+	void incrementAITrackPoint();
 	TrackDrivingPoint pastTarget;
 	TrackDrivingPoint curTarget;
 	int trackPointListIndex;
