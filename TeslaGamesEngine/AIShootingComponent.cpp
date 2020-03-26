@@ -35,7 +35,7 @@ void AIShootingComponent::Aim()
 				// Setting ammo to 0 because of performance issues. Remove when those are fixed
 				//shooting->ammo = 0;
 				
-				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess);
+				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess,Shootdir.x,Shootdir.y,Shootdir.z);
 				if (target != nullptr) {
 					//target->update_health();
 					target->update_health();
@@ -122,6 +122,7 @@ bool AIShootingComponent::AimAtTarget()
 	// Check if target is within an 80 degree cone in front of vehicle
 	if (abs(acos(toTarget.dot(forwardDirection))) * (180.f / 3.14) < 40.f) {
 		owner->getShootingComponent()->updateDirection(toTarget.x, toTarget.y, toTarget.z);
+		Shootdir=glm::vec3(toTarget.x,toTarget.y,toTarget.z);
 		return true;
 	}
 	else {

@@ -1,7 +1,7 @@
 #pragma once
 #include "ShootComp.h"
 #include "Vehicle.h"
-
+#include <glm\glm.hpp>
 
 enum class AimingState
 {
@@ -35,7 +35,7 @@ private:
 	bool IsReloading();
 	void FindAimingState();
 	bool AimAtTarget();
-
+    glm::vec3 Shootdir;
 	std::vector<Vehicle*> vehicles;
 	Vehicle* owner;
 	Vehicle* target;
