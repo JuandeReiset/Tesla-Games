@@ -18,7 +18,7 @@ Donwload the Repository to your computer either by downloading the zip and unzip
 
 
 ## Usage
-Press on the executable file, or open in Visual Studio (working currently on the 2017 version) and run the project
+Press on the executable file, or open in Visual Studio (working currently on the 2017 and 2019 version) and run the project
 
 
 ## The 5 Musk-ateers (Authors)
