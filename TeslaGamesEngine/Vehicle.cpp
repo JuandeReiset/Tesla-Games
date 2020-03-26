@@ -113,12 +113,7 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 		float distanceToTarget = toTargetVec.magnitude();
 
 		if (distanceToTarget <= this->curTarget.pointDistanceLimit) {
-			int length = this->listOfPoints->size();
-			this->pastTarget = curTarget;
-			this->trackPointListIndex++;
-			this->trackPointListIndex = this->trackPointListIndex % length;
-			this->curTarget = *this->listOfPoints->at(trackPointListIndex);
-
+			this->incrementAITrackPoint();
 			bool isAICarStuck = false;
 		}
 		else {
@@ -189,6 +184,14 @@ void Vehicle::initAITrackPoints(std::vector<std::unique_ptr<TrackDrivingPoint>>*
 	this->curTarget = *this->listOfPoints->at(1);
 	this->isAICar = true;
 	this->trackPointListIndex = 1;
+}
+
+void Vehicle::incrementAITrackPoint() {
+	int length = this->listOfPoints->size();
+	this->pastTarget = curTarget;
+	this->trackPointListIndex++;
+	this->trackPointListIndex = this->trackPointListIndex % length;
+	this->curTarget = *this->listOfPoints->at(trackPointListIndex);
 }
 
 

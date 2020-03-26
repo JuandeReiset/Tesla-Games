@@ -10,8 +10,8 @@
 namespace trackTypeConstants
 {
 	const int OVAL_TEST= -1;
-	const int OVAL = 0;
-	const int TESLA_T = 1;
+	const int HYPERLOOP = 0;
+	const int STARLINK = 1;
 }
 class Track
 {

@@ -611,7 +611,7 @@ int main()
 			int AINum = menu.getSelectedNumOfAI();
 			std::cout << trackNum << std::endl;
 
-			if (trackNum == trackTypeConstants::OVAL) {
+			if (trackNum == trackTypeConstants::HYPERLOOP) {
 				racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 
@@ -619,7 +619,7 @@ int main()
 				raceMusic.setVolume(0.35f);
 				raceMusic.loopSound(true);
 			}
-			else if (trackNum == trackTypeConstants::TESLA_T) {
+			else if (trackNum == trackTypeConstants::STARLINK) {
 				racetrack_walls.LoadModel("Models/track2final_Twalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2final_Tfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 
@@ -634,7 +634,13 @@ int main()
 			for (int i = 0; i < AINum; i++) {
 				physEng->addEnemyVehicle(i);
 			}
-			physEng->addPlayerVehicle(AINum + player1.getIndex());			
+			physEng->addPlayerVehicle(AINum + player1.getIndex());
+
+			if (trackNum == trackTypeConstants::STARLINK) {
+				for (auto AI : physEng->enemyVehicles) {
+					AI->incrementAITrackPoint();
+				}
+			}
 
 			std::vector<Vehicle*> vehicles;
 			vehicles.push_back(physEng->player);
@@ -761,14 +767,14 @@ int main()
 			racetrack_walls.RenderModel();
 			racetrack_floor.RenderModel();
 
-			/*for (int i = 0; i < raceTrack.listOfPoints.size(); i++) {
+			for (int i = 0; i < raceTrack.listOfPoints.size(); i++) {
 				TrackDrivingPoint point = *raceTrack.listOfPoints.at(i);
 				model = model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(point.x, point.y, point.z));
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 				drivingPointModel.RenderModel();
-			}*/
+			}
 
 			//please use linked list instead of vector if you will delete stuff from the list at random position very often, linked list will save much more time
 
