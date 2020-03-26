@@ -30,11 +30,13 @@ public:
 	void setPositionNumber(int position);
 	void setGameState(bool isPlayer);
 	void setBulletNum(int bullet);
+	void setHealth(float health) { currentHealth = health; };
 
 
 private:
 	float size = 1.0f;										//HUD size
 	bool winOrLose = false;									//is someone finshed laps?
+	float currentHealth = 100;
 
 	std::vector<HUD*> HUDList;
 	std::vector<Texture> TextureList;
@@ -113,19 +115,19 @@ private:
 		192.5f / 1600 * mainWindow.getWidth() * size, 800 / 900.0f * mainWindow.getHeight() * size, 1.0f,		1.0f, 1.0f,
 		192.5f / 1600 * mainWindow.getWidth() * size, 770 / 900.0f * mainWindow.getHeight() * size, 1.0f,		1.0f, 0.0f
 	};
-
+	
 	GLfloat emptyBar1Vertices[20] = {
 		1200.0f / 1600 * mainWindow.getWidth() * size, 870.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
 		1200.0f / 1600 * mainWindow.getWidth() * size, 900.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
 		1600.0f / 1600 * mainWindow.getWidth() * size, 900.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
 		1600.0f / 1600 * mainWindow.getWidth() * size, 870.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
 	};
-
+	
 	GLfloat emptyBar2Vertices[20] = {
-		1300.0f / 1600 * mainWindow.getWidth() * size, 855.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
-		1300.0f / 1600 * mainWindow.getWidth() * size, 875.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
-		1600.0f / 1600 * mainWindow.getWidth() * size, 875.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
-		1600.0f / 1600 * mainWindow.getWidth() * size, 855.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+		0.0f / 1600 * mainWindow.getWidth() * size, 870.0f / 900.0f * mainWindow.getHeight() * size, 1.0f,		0.0f, 0.0f,
+		0.0f / 1600 * mainWindow.getWidth() * size, 900.0f / 900.0f * mainWindow.getHeight() * size, 1.0f,		0.0f, 1.0f,
+		400.0f / 1600 * mainWindow.getWidth() * size, 900.0f / 900.0f * mainWindow.getHeight() * size, 1.0f,		1.0f, 1.0f,
+		400.0f / 1600 * mainWindow.getWidth() * size, 870.0f / 900.0f * mainWindow.getHeight() * size, 1.0f,		1.0f, 0.0f
 	};
 
 	GLfloat plusVertices[20] = {
@@ -295,5 +297,6 @@ private:
 		210.f / 1600.f * mainWindow.getWidth() * size, 710.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 1.f,
 		210.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
 	};
+
 };
 

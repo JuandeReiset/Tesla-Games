@@ -15,15 +15,15 @@ void HUDcreator::loadHUD() {
 	HUDList.push_back(bar1);
 
 	HUD* bar2 = new HUD();
-	bar2->createHUD(emptyBar2Vertices, HUDindices, 20, 6);
+	bar2->createHUD(emptyBar1Vertices, HUDindices, 20, 6);
 	HUDList.push_back(bar2);
 
 	HUD* healthBar = new HUD();
-	healthBar->createHUD(emptyBar1Vertices, HUDindices, 20, 6);
+	healthBar->createHUD(emptyBar2Vertices, HUDindices, 20, 6);
 	HUDList.push_back(healthBar);
 
 	HUD* nitroBar = new HUD();
-	nitroBar->createHUD(emptyBar2Vertices, HUDindices, 20, 6);
+	nitroBar->createHUD(emptyBar1Vertices, HUDindices, 20, 6);
 	HUDList.push_back(nitroBar);
 
 	HUD* plusSymbol = new HUD();
@@ -215,15 +215,14 @@ void HUDcreator::use() {
 		HUDList[i]->renderHUD();
 	}
 */
-//weapon UI
+
+	//weapon UI
 	weaponTexture.UseTexture();
 	HUDList[0]->renderHUD();
 
 	//number of charges
 	abilityNum.UseTexture();
 	HUDList[1]->renderHUD();
-
-	//TODO: if out of charges, change ui
 
 	//bars
 	//empty bar1
@@ -235,9 +234,15 @@ void HUDcreator::use() {
 	//HUDList[3]->renderHUD();
 
 	//health bar
+	//model = glm::translate(model, glm::vec3(1200 - 12 * currentHealth, 0, 0));
+	model = glm::translate(model, glm::vec3(1200.0 / 1600.0 * mainWindow.getWidth(), 0, 0));
+	model = glm::scale(model, glm::vec3(currentHealth / 100, 1, 1));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	healthBarTexture.UseTexture();
 	HUDList[4]->renderHUD();
 
+	model = glm::mat4(1.f);
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	//nitro bar
 	//nitroBarTexture.UseTexture();
 	//HUDList[5]->renderHUD();
