@@ -34,13 +34,7 @@ void AIShootingComponent::Aim()
 				auto pos = owner->GetPosition();
 				// Setting ammo to 0 because of performance issues. Remove when those are fixed
 				//shooting->ammo = 0;
-				
 				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess,Shootdir.x,Shootdir.y,Shootdir.z);
-				if (target != nullptr) {
-					//target->update_health();
-					target->update_health();
-				}
-				
 				lastFiredTime = glfwGetTime();
 			}
 		}
