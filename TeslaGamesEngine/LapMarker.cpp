@@ -1,10 +1,8 @@
 #include "LapMarker.h"
 #include <iostream>
 
-LapMarker::LapMarker(int value, physx::PxVec3 p)
+LapMarker::LapMarker(int value)
 {
-	markerPosition = p;
-
 	if (value >= 0) {
 		markerValue = value;
 	}

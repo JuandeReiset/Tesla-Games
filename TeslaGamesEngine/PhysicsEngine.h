@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <algorithm>
 #include "Vehicle.h"
 #include "LapMarker.h"
 #include "PickupBox.h"
@@ -26,12 +27,12 @@ class PhysicsEngine
 {
 	//sorts the vehicles list by a custom set of rules for position
 	struct VehicleComparator {
-		bool operator()(const Vehicle& v1, const Vehicle& v2) {
-			if (v1.totalMarkersHit > v2.totalMarkersHit) {
+		bool operator()(Vehicle* v1, Vehicle* v2) {
+			if (v1->totalMarkersHit > v2->totalMarkersHit) {
 				return true;	
 			} 
-			else if (v1.totalMarkersHit == v2.totalMarkersHit) {
-				if (v1.distance <= v2.distance) {
+			else if (v1->totalMarkersHit == v2->totalMarkersHit) {
+				if (v1->distance <= v2->distance) {
 					return true;
 				}
 				else {
@@ -77,6 +78,9 @@ public:
 	std::list<Caltrops*> caltropsList;
 	std::list<Smoke*> smokeList;
 	std::list<Oil*> oilList;
+
+	std::vector<Vehicle*> allVehicles;
+	void sortVehicles();
 
 	PxRigidActor* testActor;
 

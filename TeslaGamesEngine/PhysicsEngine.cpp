@@ -71,7 +71,7 @@ void PhysicsEngine::initAITrack(Track* raceTrack) {
 
 void PhysicsEngine::addPlayerVehicle(int startIndex) {
 	TrackDrivingPoint point = *this->raceTrack->listOfStartPoints[startIndex];
-	player = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex, lapmarkers.size());
+	player = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex, &lapmarkers);
 	player->actor->userData = player;
 	player->initVehicleAudio(this->audioEngine);
 }
@@ -82,7 +82,7 @@ void PhysicsEngine::addEnemyVehicle(int startIndex)
 	TrackDrivingPoint point = *this->raceTrack->listOfStartPoints[startIndex];
 	//create vehicle object
 	//add it to the list of vehicle
-	Vehicle* v = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex, lapmarkers.size());
+	Vehicle* v = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex, &lapmarkers);
 	v->actor->userData = v;
 	v->initVehicleAudio(this->audioEngine);
 
@@ -98,6 +98,8 @@ physx::PxVec3 PhysicsEngine::GetBoxPos()
 void PhysicsEngine::stepPhysics()
 {
 	const PxF32 timestep = 1.0f / 60.0f;
+
+	sortVehicles();
 
 	player->update(timestep, gScene);
 
@@ -139,6 +141,11 @@ PLEASE PLEASE PLEASE USE THESE FUNCTIONS FOR ADDING TRIGGER VOLUMES! THIS WILL P
 */
 
 
+void PhysicsEngine::sortVehicles()
+{
+	sort(allVehicles.begin(), allVehicles.end(), VehicleComparator());
+}
+
 float PhysicsEngine::distance(PxVec3 vehiclePos, PxVec3 markerPos)
 {
 	float dis = sqrt(pow((markerPos.x - vehiclePos.x), 2) + pow((markerPos.y - vehiclePos.y), 2) + pow((markerPos.z - vehiclePos.z), 2));
@@ -173,7 +180,7 @@ void PhysicsEngine::createPickupTriggerVolume(float x, float y, float z)
 
 void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, float x, float y, float z, float width, float height, float depth)
 {
-	LapMarker* lapMarker = new LapMarker(lapMarkerValue, PxVec3(x,y,z));
+	LapMarker* lapMarker = new LapMarker(lapMarkerValue);
 
 
 	PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));

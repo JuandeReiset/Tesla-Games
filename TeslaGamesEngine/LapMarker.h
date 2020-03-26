@@ -7,8 +7,7 @@ class LapMarker :
 	public PhysicsObject
 {
 public:
-	LapMarker(int value, physx::PxVec3 p);
+	LapMarker(int value);
 	int markerValue;
-	physx::PxVec3 markerPosition;
 };
 

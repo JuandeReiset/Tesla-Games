@@ -660,6 +660,8 @@ int main()
 				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
 				aiShootingComponents.push_back(aiShooting);
 			}
+
+			physEng->allVehicles = vehicles;
 		}
 
 		while (gameFlag)
@@ -1047,6 +1049,13 @@ int main()
 				hud.setLapNumber(physEng->player->numLaps);
 			else
 				hud.setLapNumber(physEng->player->numLaps + 1);
+
+			if (physEng->allVehicles.at(0)->ID == physEng->player->ID) {
+				std::cout << "YOU ARE IN FIRST PLACE\n";
+			}
+			else {
+				std::cout << "YOU ARE NOT IN FIRST PLACE\n";
+			}
 
 
 			hud.setAbilityNumber(physEng->player->ability);
