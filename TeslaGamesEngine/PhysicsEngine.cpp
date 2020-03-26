@@ -1,6 +1,7 @@
 #include "PhysicsEngine.h"
 #include <ctype.h>
 #include <iostream>
+#include <cmath>
 
 
 #include "../TeslaGamesEngine/snippetcommon/SnippetPrint.h"
@@ -70,7 +71,7 @@ void PhysicsEngine::initAITrack(Track* raceTrack) {
 
 void PhysicsEngine::addPlayerVehicle(int startIndex) {
 	TrackDrivingPoint point = *this->raceTrack->listOfStartPoints[startIndex];
-	player = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex);
+	player = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex, lapmarkers.size());
 	player->actor->userData = player;
 	player->initVehicleAudio(this->audioEngine);
 }
@@ -81,7 +82,7 @@ void PhysicsEngine::addEnemyVehicle(int startIndex)
 	TrackDrivingPoint point = *this->raceTrack->listOfStartPoints[startIndex];
 	//create vehicle object
 	//add it to the list of vehicle
-	Vehicle* v = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex);
+	Vehicle* v = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex, lapmarkers.size());
 	v->actor->userData = v;
 	v->initVehicleAudio(this->audioEngine);
 
@@ -137,6 +138,13 @@ PLEASE PLEASE PLEASE USE THESE FUNCTIONS FOR ADDING TRIGGER VOLUMES! THIS WILL P
 
 */
 
+
+float PhysicsEngine::distance(PxVec3 vehiclePos, PxVec3 markerPos)
+{
+	float dis = sqrt(pow((markerPos.x - vehiclePos.x), 2) + pow((markerPos.y - vehiclePos.y), 2) + pow((markerPos.z - vehiclePos.z), 2));
+
+	return dis;
+}
 
 //creates a trigger volume at point (x,y,z) and adds it to the scene
 //this is for pickups

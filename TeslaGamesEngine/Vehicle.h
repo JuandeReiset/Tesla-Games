@@ -41,6 +41,7 @@ public:
 	//lap position stuff
 	int totalMarkersHit;
 	int numberOfMarkersInTrack;
+	float distance;
 
 	//lap components
 	bool isPlayer;

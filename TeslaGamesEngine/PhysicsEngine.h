@@ -24,6 +24,27 @@
 
 class PhysicsEngine
 {
+	//sorts the vehicles list by a custom set of rules for position
+	struct VehicleComparator {
+		bool operator()(const Vehicle& v1, const Vehicle& v2) {
+			if (v1.totalMarkersHit > v2.totalMarkersHit) {
+				return true;	
+			} 
+			else if (v1.totalMarkersHit == v2.totalMarkersHit) {
+				if (v1.distance <= v2.distance) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else {
+				return false;	//v2 is "smaller" so better
+			}
+		}
+	};
+
+
 public:
 	//super hacky im sorry
 	const std::string VEHICLE = "vehicle";
@@ -58,6 +79,9 @@ public:
 	std::list<Oil*> oilList;
 
 	PxRigidActor* testActor;
+
+	//finds distance between a vehicle and a lap marker
+	float distance(PxVec3 vehiclePos, PxVec3 markerPos);
 
 	ColliderCallback* colliderCallback;
 
