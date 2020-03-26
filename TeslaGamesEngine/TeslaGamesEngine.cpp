@@ -115,9 +115,24 @@ Material dullMaterial;
 
 PhysicsEngine* physEng;
 
-Model TeslaCar;
+//Player 1 objs
+//Model TeslaCar;
 Model Teslacar_chasis;
 Model T_turret;
+//Player 2 objs
+Model Teslacar2_chasis;
+Model T2_turret;
+//Player 3 objs
+Model Teslacar3_chasis;
+Model T3_turret;
+//Player 4 objs
+Model Teslacar4_chasis;
+Model T4_turret;
+
+//AI Objs
+Model TeslaCarAI;
+Model TeslacarAI_chasis;
+Model TAI_turret;
 
 Model racetrack;
 Model racetrack_walls;
@@ -469,11 +484,23 @@ int main()
 	*/
 	skybox = Skybox(skyboxFaces);
 
+	//Loading TeslaTrucks models
+	////////////////////////////////////////////////////////////////////////
+	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_yellowchasis.obj");
+	T_turret.LoadModel("Models/TeslaGamesTruck2_yellowturret.obj");
 
-	TeslaCar.LoadModel("Models/TeslaGamesTruck2_test.obj");
-	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_modcar.obj");
-	T_turret.LoadModel("Models/TeslaGamesTruck2_modturret.obj");
+	Teslacar2_chasis.LoadModel("Models/TeslaGamesTruck2_bluechasis.obj");
+	T2_turret.LoadModel("Models/TeslaGamesTruck2_blueturret.obj");
 
+	Teslacar3_chasis.LoadModel("Models/TeslaGamesTruck2_greenchasis.obj");
+	T3_turret.LoadModel("Models/TeslaGamesTruck2_greenturret.obj");
+
+	Teslacar4_chasis.LoadModel("Models/TeslaGamesTruck2_purplechasis.obj");
+	T4_turret.LoadModel("Models/TeslaGamesTruck2_purpleturret.obj");
+
+	TeslacarAI_chasis.LoadModel("Models/TeslaGamesTruck2_redchasis.obj");
+	TAI_turret.LoadModel("Models/TeslaGamesTruck2_redturret.obj");
+	//////////////////////////////////////////////////////////////////////////
 	boxTest.LoadModel("Models/wall.obj");
 	//caltrop.LoadModel("Models/caltrops.obj");
 	//racetrack.LoadModel("Models/track2.obj");
@@ -600,7 +627,8 @@ int main()
 				racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 			}
 			else if (trackNum == trackTypeConstants::TESLA_T) {
-				//TODO Juan plz
+				racetrack_walls.LoadModel("Models/track2final_Twalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
+				racetrack_floor.LoadModel("Models/track2final_Tfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 			}
 
 			raceTrack.initializeTrackPoints(trackNum);
@@ -922,7 +950,7 @@ int main()
 
 					shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 					//TeslaCar.RenderModel();
-					Teslacar_chasis.RenderModel();
+					TeslacarAI_chasis.RenderModel();
 
 					model = glm::mat4(1.0f);
 					glm::vec3 y_rot(0.0, 1.0, 0.0); //axis of rotation
@@ -935,7 +963,7 @@ int main()
 					float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
 					model = glm::rotate(model, angletoUse, y_rot);
 					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-					T_turret.RenderModel();
+					TAI_turret.RenderModel();
 					//defense_pickup.RenderModel();
 				}
 			}

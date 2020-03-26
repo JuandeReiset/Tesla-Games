@@ -115,10 +115,10 @@ public:
 		eDRIVE_MODE_BRAKE,
 		eDRIVE_MODE_NONE
 	};
-	
 	void Tick(float deltaTime);
 	double currentHealth();											//get the current health
-	void getDamage(double damage);									//get damage for damaging object
+	void takeTrapDamage(double dmgAmount);
+	void takeBulletDamage(double dmgAmount);									//get damage for damaging object
 	void firelazer();
 
 	void pickup();													//pick up a(n) item/ability
@@ -154,6 +154,9 @@ private:
 	AudioBoomBox maxSpeed;
 	AudioBoomBox boostStart;
 	AudioBoomBox boostMax;
+	AudioBoomBox deployCaltropsEffect;
+	AudioBoomBox deployOilEffect;
+	AudioBoomBox deploySmokeEffect;
 
 	std::vector<std::unique_ptr<TrackDrivingPoint>>* listOfPoints;
 

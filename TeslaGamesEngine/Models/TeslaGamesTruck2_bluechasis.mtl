@@ -1,0 +1,68 @@
+# Blender MTL File: 'TeslaGamesTruck2_mod_blue.blend'
+# Material Count: 6
+
+newmtl TeslaBlack
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.123710 0.123710 0.123710
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\Black_photo.jpg
+
+newmtl TeslaFrontLight
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\Colors for tesla models\\Blue_T.jpg
+
+newmtl TeslaRearLight
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\redTailight.jpg
+
+newmtl Tesla_Logo
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\logo2.jpg
+
+newmtl Teslacbase
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\whitemetal.jpg
+
+newmtl Windowtext
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\juanl\\Downloads\\Colors for tesla models\\Blue_T.jpg
