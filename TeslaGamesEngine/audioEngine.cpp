@@ -36,7 +36,6 @@ void AudioEngine::initialize() {
 	soundFiles[2] = "./audioFiles/TTG_main_menu_v2.wav";
 	soundFiles[3] = "./audioFiles/TTG_race_hyperloop.wav";
 	soundFiles[16] = "./audioFiles/TTG_race_starlink.wav";
-
 	soundFiles[4] = "./audioFiles/vehicle_acceleration_from_rest_MONO.wav";
 	soundFiles[5] = "./audioFiles/vehicle_acceleration_from_motion_MONO.wav";
 	soundFiles[6] = "./audioFiles/vehicle_boost_start_MONO.wav";
