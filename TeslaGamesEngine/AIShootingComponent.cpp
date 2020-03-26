@@ -17,10 +17,11 @@ AIShootingComponent::AIShootingComponent(Vehicle * v)
 }
 
 void AIShootingComponent::Aim()
-{
+{    
 	// Find a target
 	if (!target) {
 		target = FindTarget();
+		
 	}
 	else {
 		// Aim at target if it is in view
@@ -32,8 +33,14 @@ void AIShootingComponent::Aim()
 				auto shooting = owner->getShootingComponent();
 				auto pos = owner->GetPosition();
 				// Setting ammo to 0 because of performance issues. Remove when those are fixed
-				shooting->ammo = 0;
+				//shooting->ammo = 0;
+				
 				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess);
+				if (target != nullptr) {
+					//target->update_health();
+					target->update_health();
+				}
+				
 				lastFiredTime = glfwGetTime();
 			}
 		}

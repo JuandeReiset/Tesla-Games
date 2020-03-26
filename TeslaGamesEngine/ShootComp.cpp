@@ -71,8 +71,8 @@ void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntens
 		std::cout << "All 3 bullets CREATED \n";
 
 		bulletsList.push_back(tmp_bullet);
-		bulletsList.push_back(tmp_bullet2);
-		bulletsList.push_back(tmp_bullet3);
+		//bulletsList.push_back(tmp_bullet2);
+		//bulletsList.push_back(tmp_bullet3);
 	}
 
 }
@@ -108,8 +108,8 @@ void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntens
 		std::cout << "All 3 bullets CREATED \n";
 
 		bulletsList.push_back(tmp_bullet);
-		bulletsList.push_back(tmp_bullet2);
-		bulletsList.push_back(tmp_bullet3);
+		//bulletsList.push_back(tmp_bullet2);
+		//bulletsList.push_back(tmp_bullet3);
 	}
 	
 

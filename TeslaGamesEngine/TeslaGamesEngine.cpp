@@ -867,9 +867,8 @@ int main()
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-			for (auto ai : physEng->enemyVehicles) {
-				ai->getShootingComponent()->renderAllBullets();
-			}
+
+			
 			//CALTROPS
 			//when dpad down is pushed, make a new caltrop and trigger volume
 			if (player1.isButtonDown(XButtons.DPad_Down) && !physEng->player->affectedBySmoke) {
@@ -959,23 +958,33 @@ int main()
 					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, enemymodelMat.front());
 
 					shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-					//TeslaCar.RenderModel();
-					TeslacarAI_chasis.RenderModel();
 
-					model = glm::mat4(1.0f);
-					glm::vec3 y_rot(0.0, 1.0, 0.0); //axis of rotation
-					glm::vec3 tem = glm::vec3(enemymodelMat.getPosition().x, enemymodelMat.getPosition().y, enemymodelMat.getPosition().z);
-					model = glm::translate(model, tem); //Update turret pos with position of vehicle
-					model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); //resize turret
-					auto aimdir_x = v->getShootingComponent()->Direction_x;
-					auto aimdir_z = v->getShootingComponent()->Direction_z;
-					float angleAroundY = glm::degrees(atan2(aimdir_x, aimdir_z)); //calculate angle of rotation
-					float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
-					model = glm::rotate(model, angletoUse, y_rot);
-					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-					TAI_turret.RenderModel();
-					//defense_pickup.RenderModel();
+					HealthComponent* th = v->getHealthComponent();
+
+					if (th->GetHealth() > 10) {
+
+						//std::cout<<"Current vehicle health is:  " << th->GetHealth() << std::endl;
+						TeslacarAI_chasis.RenderModel();
+
+						model = glm::mat4(1.0f);
+						glm::vec3 y_rot(0.0, 1.0, 0.0); //axis of rotation
+						glm::vec3 tem = glm::vec3(enemymodelMat.getPosition().x, enemymodelMat.getPosition().y, enemymodelMat.getPosition().z);
+						model = glm::translate(model, tem); //Update turret pos with position of vehicle
+						model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); //resize turret
+						auto aimdir_x = v->getShootingComponent()->Direction_x;
+						auto aimdir_z = v->getShootingComponent()->Direction_z;
+						float angleAroundY = glm::degrees(atan2(aimdir_x, aimdir_z)); //calculate angle of rotation
+						float angletoUse = angleAroundY * 3.14 / 180; //convert to radians
+						model = glm::rotate(model, angletoUse, y_rot);
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						TAI_turret.RenderModel();
+					}
 				}
+			}
+
+			//Render enemy bullets
+			for (auto ai : physEng->enemyVehicles) {
+				ai->getShootingComponent()->renderAllBullets();
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
