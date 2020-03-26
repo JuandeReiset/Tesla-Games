@@ -61,7 +61,7 @@ public:
 
 	ColliderCallback* colliderCallback;
 
-	void createPickupTriggerVolume(float x, float y, float z, float width, float height, float depth);
+	void createPickupTriggerVolume(float x, float y, float z);
 	void createLapMarkerTriggerVolume(int lapMarkerValue, float x, float y, float z, float width, float height, float depth);
 	void createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth);
 	void createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth);

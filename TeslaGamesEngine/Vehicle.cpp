@@ -6,7 +6,7 @@
 using namespace physx;
 using namespace snippetvehicle;
 
-Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id) {
+Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id, int totalLapMarkers) {
 	physx::PxF32 gSteerVsForwardSpeedData[] =
 	{
 		0.0f,		0.9f,
@@ -62,6 +62,9 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 	ID = id;
 
 	ability = 3;	//each vehicle has 3 ability use by default
+
+	numberOfMarkersInTrack = totalLapMarkers;
+	totalMarkersHit = 0;
 }
 Vehicle::Vehicle(int id) : ID(id) {}
 Vehicle::~Vehicle() { cleanup(); }
@@ -150,13 +153,14 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 //called when a vehicle hits a trigger volume lap marker. Val is the lapMarker value, trackTotalLaps is the
 //total number of laps needed to win on that track, trackTotalLapMarkers is the total number of lap markers
 //placed around the track
-void Vehicle::hitLapMarker(int val, int trackTotalLaps, int trackTotalLapMarkers)
+void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 {
 	if (expectedMarker == val) {	//good hit
 		std::cout << "HIT LAP MARKER " << val << "!\n";
+		totalMarkersHit++;
 		//update expected and current marker vals
-		expectedMarker = (expectedMarker + 1) % trackTotalLapMarkers;
-		currentMarker = (currentMarker + 1) % trackTotalLapMarkers;
+		expectedMarker = (expectedMarker + 1) % numberOfMarkersInTrack;
+		currentMarker = (currentMarker + 1) % numberOfMarkersInTrack;
 
 		if (currentMarker == 0 && expectedMarker == 1) {	//completed a lap
 			numLaps++;

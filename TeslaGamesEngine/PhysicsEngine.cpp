@@ -41,10 +41,10 @@ PhysicsEngine::PhysicsEngine() {
 	wallActor->attachShape(*boxwall);
 	//gScene->addActor(*wallActor);
 
-	//createPickupTriggerVolume(0, 0, 0, 2, 2, 2);
-	createPickupTriggerVolume(0, 2, 10, 2, 2, 2);
-	createPickupTriggerVolume(2, 2, 10, 2, 2, 2);
-	//createPickupTriggerVolume(33, 1, -87, 4, 2, 1.65f);	//these sizes and the render scale values make a nice box size
+	//createPickupTriggerVolume(0, 0, 0);
+	createPickupTriggerVolume(0, 2, 10);
+	createPickupTriggerVolume(2, 2, 10);
+	//createPickupTriggerVolume(33, 1, -87);
 
 	//new lap markers
 	createLapMarkerTriggerVolume(0, 70, 2, -86, 4, 10, 30);			//0, start/finish position
@@ -140,11 +140,11 @@ PLEASE PLEASE PLEASE USE THESE FUNCTIONS FOR ADDING TRIGGER VOLUMES! THIS WILL P
 
 //creates a trigger volume at point (x,y,z) and adds it to the scene
 //this is for pickups
-void PhysicsEngine::createPickupTriggerVolume(float x, float y, float z, float width, float height, float depth)
+void PhysicsEngine::createPickupTriggerVolume(float x, float y, float z)
 {
 	PickupBox* pickup = new PickupBox();
 
-	PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+	PxBoxGeometry geometry(PxVec3(0.8f, 0.8f, 0.8f));
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -165,7 +165,7 @@ void PhysicsEngine::createPickupTriggerVolume(float x, float y, float z, float w
 
 void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, float x, float y, float z, float width, float height, float depth)
 {
-	LapMarker* lapMarker = new LapMarker(lapMarkerValue);
+	LapMarker* lapMarker = new LapMarker(lapMarkerValue, PxVec3(x,y,z));
 
 
 	PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
