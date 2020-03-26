@@ -68,7 +68,7 @@
     <ClCompile Include="TrackInteractableStrip.cpp" />
     <ClCompile Include="ReadyScreen.cpp" />
     <ClCompile Include="PauseScreen.cpp" />
-
+    <ClCompile Include="Raycast_shooting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -138,7 +138,7 @@
     <ClInclude Include="TrackInteractableStrip.h" />
     <ClInclude Include="ReadyScreen.h" />
     <ClInclude Include="PauseScreen.h" />
-
+    <ClInclude Include="Raycast_shooting.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TeslaGamesEngine1.rc" />
