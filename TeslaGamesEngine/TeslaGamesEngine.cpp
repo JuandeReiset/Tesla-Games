@@ -257,6 +257,13 @@ void parseControllerInput(Controller* controller)
 		gameFlag = false;
 		pauseFlag = true;
 	}
+
+	//press up to suicide (for testing health bar)
+	if (controller->isButtonDown(XButtons.DPad_Up)) {
+		physEng->player->update_health();
+
+		std::cout << "Current health: " << physEng->player->getHealthComponent()->GetHealth() << std::endl;
+	}
 	
 	//Sticks and triggers
 	if (!controller->LStick_InDeadzone()) {
@@ -1037,6 +1044,7 @@ int main()
 			//don't now how to get position right now
 			//hud.setPositionNumber();
 			hud.setBulletNum(physEng->player->getShootingComponent()->ammo);
+			hud.setHealth(physEng->player->getHealthComponent()->GetHealth());
 
 			hud.use();
 
