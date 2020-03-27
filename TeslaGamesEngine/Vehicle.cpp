@@ -6,7 +6,7 @@
 using namespace physx;
 using namespace snippetvehicle;
 
-Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id) {
+Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id, std::vector<LapMarker*>* markers) {
 	physx::PxF32 gSteerVsForwardSpeedData[] =
 	{
 		0.0f,		0.9f,
@@ -62,6 +62,10 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 	ID = id;
 
 	ability = 3;	//each vehicle has 3 ability use by default
+
+	numberOfMarkersInTrack = markers->size();
+	totalMarkersHit = 0;
+	lapMarkers = markers;
 }
 Vehicle::Vehicle(int id) : ID(id) {}
 Vehicle::~Vehicle() { cleanup(); }
@@ -105,6 +109,10 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	updateCurrentTime();
 	updateSmoke();
 	updateOil();
+
+	//update distance for position/ranking
+	updateDistance();
+
 	
 	if (this->isAICar) {
 		PxVec3 pos = this->GetPosition();
@@ -147,17 +155,28 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	}
 }
 
+//updates the distance from this vehicle to the next lap marker
+void Vehicle::updateDistance()
+{
+	PxVec3 vehiclePos(actor->getGlobalPose().p);
+	PxVec3 markerPos(lapMarkers->at(expectedMarker)->actor->getGlobalPose().p);
+
+	distance = sqrt(pow((markerPos.x - vehiclePos.x), 2) + pow((markerPos.y - vehiclePos.y), 2) + pow((markerPos.z - vehiclePos.z), 2));
+}
+
 //called when a vehicle hits a trigger volume lap marker. Val is the lapMarker value, trackTotalLaps is the
 //total number of laps needed to win on that track, trackTotalLapMarkers is the total number of lap markers
 //placed around the track
-void Vehicle::hitLapMarker(int val, int trackTotalLaps, int trackTotalLapMarkers)
+void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 {
 	if (expectedMarker == val) {	//good hit
 		std::cout << "HIT LAP MARKER " << val << "!\n";
+		totalMarkersHit++;
 		//update expected and current marker vals
-		expectedMarker = (expectedMarker + 1) % trackTotalLapMarkers;
-		currentMarker = (currentMarker + 1) % trackTotalLapMarkers;
+		expectedMarker = (expectedMarker + 1) % numberOfMarkersInTrack;
+		currentMarker = (currentMarker + 1) % numberOfMarkersInTrack;
 
+		//start marker is 0, first marker after start is 1
 		if (currentMarker == 0 && expectedMarker == 1) {	//completed a lap
 			numLaps++;
 			if (numLaps == trackTotalLaps) {	//you win!

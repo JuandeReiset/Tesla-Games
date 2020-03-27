@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <list>
+#include <vector>
 
 #include "PhysX/include/PxSimulationEventCallback.h"
 #include "HealthComponent.h"
@@ -19,6 +20,7 @@
 #include "Caltrops.h"
 #include "Smoke.h"
 #include "Oil.h"
+#include "LapMarker.h"
 
 //#include "Bullet.h"
 #include "TrackDrivingPoint.h"
@@ -31,19 +33,27 @@ using namespace physx;
 class Vehicle : public Object
 {
 public:
-	Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id);	//added id to this
+	std::vector<LapMarker*>* lapMarkers;
+
+	Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id, std::vector<LapMarker*>* markers);	//added id to this
 	Vehicle(int id);//pls dont use this
 	~Vehicle();
 	void update(physx::PxF32 timestep, PxScene* gScene);
 
 	int ID;
 
+	//lap position stuff
+	int totalMarkersHit;
+	int numberOfMarkersInTrack;
+	float distance;
+	void updateDistance();
+
 	//lap components
 	bool isPlayer;
 	int currentMarker;
 	int expectedMarker;
 	int numLaps;
-	void hitLapMarker(int val, int trackTotalLaps, int trackTotalLapMarkers);
+	void hitLapMarker(int val, int trackTotalLaps);
 	void lapWinCondition();
 
 	void initAITrackPoints(std::vector<std::unique_ptr<TrackDrivingPoint>>* listOfPoints);

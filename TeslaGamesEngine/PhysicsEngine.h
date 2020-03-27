@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <algorithm>
 #include "Vehicle.h"
 #include "LapMarker.h"
 #include "PickupBox.h"
@@ -24,6 +25,27 @@
 
 class PhysicsEngine
 {
+	//sorts the vehicles list by a custom set of rules for position
+	struct VehicleComparator {
+		bool operator()(Vehicle* v1, Vehicle* v2) {
+			if (v1->totalMarkersHit > v2->totalMarkersHit) {
+				return true;	
+			} 
+			else if (v1->totalMarkersHit == v2->totalMarkersHit) {
+				if (v1->distance <= v2->distance) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else {
+				return false;	//v2 is "smaller" so better
+			}
+		}
+	};
+
+
 public:
 	//super hacky im sorry
 	const std::string VEHICLE = "vehicle";
@@ -58,15 +80,20 @@ public:
 	std::list<Smoke*> smokeList;
 	std::list<Oil*> oilList;
 
+	std::vector<Vehicle*> allVehicles;
+	void sortVehicles();
+
 	PxRigidActor* testActor;
 
 	ColliderCallback* colliderCallback;
 
-	void createPickupTriggerVolume(float x, float y, float z, float width, float height, float depth);
-	void createLapMarkerTriggerVolume(int lapMarkerValue, float x, float y, float z, float width, float height, float depth);
+
+	void createPickupTriggerVolume(float x, float y, float z);
+	void createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 position, PxVec3 dimensions);
 	void createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth, int player);
 	void createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth, int player);
 	void createOilTriggerVolume(float x, float y, float z, float width, float height, float depth, int player);
+
 
 	void update_dir_render4Vehicle(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z);
 
@@ -75,6 +102,10 @@ public:
 	physx::PxMaterial* gMaterial = NULL;
 
 	physx::PxCooking* gCooking = NULL;
+
+	void loadLapMarkers();
+
+	void setTrack(Track* t);
 
 private:
 	void cleanupPhysics();
