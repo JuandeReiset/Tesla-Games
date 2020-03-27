@@ -71,7 +71,8 @@ public:
 	physx::PxRigidStatic* sphereActor = NULL;
 	physx::PxRigidStatic* wallActor = NULL;
 
-	Vehicle* player;	//the player vehicle
+	std::vector<Vehicle*> playerVehicles;
+	// Vehicle* player;	//the player vehicle
 	std::vector<Vehicle*> enemyVehicles;	//the AI vehicles
 	std::vector<LapMarker*> lapmarkers;		//the lap markers
 	std::list<PickupBox*> pickupBoxes;	//the pickup boxes
@@ -86,11 +87,13 @@ public:
 
 	ColliderCallback* colliderCallback;
 
+
 	void createPickupTriggerVolume(float x, float y, float z);
 	void createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 position, PxVec3 dimensions);
-	void createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth);
-	void createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth);
-	void createOilTriggerVolume(float x, float y, float z, float width, float height, float depth);
+	void createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth, int player);
+	void createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth, int player);
+	void createOilTriggerVolume(float x, float y, float z, float width, float height, float depth, int player);
+
 
 	void update_dir_render4Vehicle(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z);
 

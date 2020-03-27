@@ -57,10 +57,14 @@ void PhysicsEngine::initAITrack(Track* raceTrack) {
 
 void PhysicsEngine::addPlayerVehicle(int startIndex) {
 	TrackDrivingPoint point = *this->raceTrack->listOfStartPoints[startIndex];
-	player = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex, &lapmarkers);
+
+	auto player = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex, &lapmarkers);
 	player->isPlayer = true;
+
+  
 	player->actor->userData = player;
 	player->initVehicleAudio(this->audioEngine);
+	playerVehicles.push_back(player);
 }
 
 
@@ -87,9 +91,12 @@ void PhysicsEngine::stepPhysics()
 {
 	const PxF32 timestep = 1.0f / 60.0f;
 
-	sortVehicles();
 
-	player->update(timestep, gScene);
+  sortVehicles();
+  
+	for (auto player : playerVehicles) {
+		player->update(timestep, gScene);
+	}
 
 	if (!enemyVehicles.empty()) {
 		for (int i = 0; i < enemyVehicles.size(); i++) {
@@ -186,11 +193,11 @@ void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 posi
 	lapmarkers.push_back(lapMarker);
 }
 
-void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth)
+void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth, int player)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	player->useCaltrops(&caltropsList);
+	playerVehicles[player]->useCaltrops(&caltropsList);
 
 	if(caltropsList.back() == NULL) {
 		std::cout << "\nError: Could not create caltrops! No more charges!\n";
@@ -215,11 +222,11 @@ void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float
 	}
 }
 
-void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth)
+void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth, int player)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	player->useSmoke(&smokeList);
+	playerVehicles[player]->useSmoke(&smokeList);
 
 	if (smokeList.back() == NULL) {
 		std::cout << "\nError: Could not create smoke! No more charges!\n";
@@ -245,11 +252,11 @@ void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float wi
 	}
 }
 
-void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float width, float height, float depth)
+void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float width, float height, float depth, int player)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	player->useOil(&oilList);
+	playerVehicles[player]->useOil(&oilList);
 
 	if (oilList.back() == NULL) {
 		std::cout << "\nError: Could not create oil! No more charges!\n";
@@ -276,8 +283,9 @@ void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float widt
 
 void PhysicsEngine::cleanupPhysics()
 {
-	player->cleanupPhysics(gAllocator);
-
+	for (auto player : playerVehicles) {
+		player->cleanupPhysics(gAllocator);
+	}
 	if (!enemyVehicles.empty()) {
 		for (int i = 0; i < enemyVehicles.size(); i++) {
 			enemyVehicles.at(i)->cleanupPhysics(gAllocator);
