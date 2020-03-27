@@ -150,6 +150,7 @@ void StartScreen::loadController(Controller *controller) {
 			gameFlag = false;
 			readyScreenFlag = false;
 			pauseFlag = false;
+			multiplayerFlag = true;
 		}
 		else if (op == 2) {
 			closeWindowFlag = true;

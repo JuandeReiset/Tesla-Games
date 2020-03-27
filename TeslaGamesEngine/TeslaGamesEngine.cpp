@@ -447,24 +447,6 @@ int main()
 
 	// TODO: Set up for all player counts
 	glm::mat4 projection;
-	if (multiplayer) {
-		switch (players) {
-		case 2:
-			projection = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight())*2, 0.1f, 1000.0f);
-			break;
-		case 3:
-			// Fall through for now
-		case 4:
-			// Fall through for now
-		default:
-			multiplayer = false;
-			projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-			break;
-		}
-	}
-	else {
-		projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-	}
 
 	if (multiplayer) {
 		switch (players) {
@@ -626,11 +608,34 @@ int main()
 				raceMusic.loopSound(true);
 			}
 
+			if (multiplayerFlag) {
+				switch (players) {
+				case 2:
+					projection = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()) * 2, 0.1f, 1000.0f);
+					break;
+				case 3:
+					// Fall through for now
+				case 4:
+					// Fall through for now
+				default:
+					projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+					break;
+				}
+			}
+			else {
+				projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+			}
+
 			raceTrack.initializeTrackPoints(trackNum);
 			physEng->initAITrack(&raceTrack);
 
 			// TODO: Using to make multiplayer testing easier. Will remove
-			AINum = 0;
+			if (multiplayerFlag) {
+				AINum = 0;
+			}
+			else {
+				players = 1;
+			}
 			for (int i = 0; i < AINum; i++) {
 				physEng->addEnemyVehicle(i);
 			}
@@ -704,17 +709,23 @@ int main()
 
 			// Render for each player
 
-			for (int player = 0; player < 2; player++) {
+			for (int player = 0; player < players; player++) {
 
 				// Init viewport
 				int display_w, display_h;
 				glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
 
-				if (player == 0) {
-					glViewport(0, display_h / 2, display_w, display_h / 2);
+				// Setup viewports depending on if it is or is not multiplayer
+				if (multiplayerFlag) {
+					if (player == 0) {
+						glViewport(0, display_h / 2, display_w, display_h / 2);
+					}
+					if (player == 1) {
+						glViewport(0, 0, display_w, display_h / 2);
+					}
 				}
-				if (player == 1) {
-					glViewport(0, 0, display_w, display_h / 2);
+				else {
+					glViewport(0, 0, display_w, display_h);
 				}
 
 				// Update camera

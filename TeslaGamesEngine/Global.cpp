@@ -14,5 +14,6 @@ bool gameFlag = false;
 bool readyScreenFlag = false;
 bool pauseFlag = false;
 bool fromGameFlag = false;
+bool multiplayerFlag = false;
 
 float backTime = 0.f;
