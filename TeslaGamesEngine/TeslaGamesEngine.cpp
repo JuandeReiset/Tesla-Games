@@ -444,14 +444,15 @@ int main()
 
 	// Multiplayer set up begins
 	// TODO: For testing - we should actually get these values as input
-	multiplayer = true;
 	SetPlayers(2);
 
 	// TODO: Set up for all player counts
 	glm::mat4 projection;
 
-	if (multiplayer) {
 		switch (players) {
+		case 1:
+			// Player 1
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
 		case 2:
 			// Player 1
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
@@ -465,10 +466,6 @@ int main()
 		default:
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
 		}
-	}
-	else {
-		cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
-	}
 
 	// Multiplayer set up ends
 
@@ -695,13 +692,13 @@ int main()
 					physEng->playerVehicles[1]->forwards(0.75f);
 				}
 				if (keys['A']) {
-					physEng->playerVehicles[1]->turn(0.5f);
+					physEng->playerVehicles[1]->turn(-0.5f);
 				}
 				if (keys['S']) {
 					physEng->playerVehicles[1]->reverse(0.75f);
 				}
 				if (keys['D']) {
-					physEng->playerVehicles[1]->turn(-0.5f);
+					physEng->playerVehicles[1]->turn(0.5f);
 				}
 			}
 
