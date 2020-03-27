@@ -820,6 +820,8 @@ int main()
 			HealthComponent* ha = physEng->player->getHealthComponent();
 		
 			glm::vec3 camDir = camera.getCameraDirection();
+
+			//Temporary condition for player that shows when player DIES, need to replace with something that eliminates all components
 			if ((ha->GetHealth()) > 0) {
 				//Draw bullets after Refactor. If affected by smoke they cant shoot
 				if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) && !physEng->player->affectedBySmoke) {
