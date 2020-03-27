@@ -45,6 +45,8 @@ private:
 	GLint width, height;
 	GLint bufferWidth, bufferHeight;
 
+	int players = 1;
+
 	bool keys[1024];
 
 	GLfloat lastX;

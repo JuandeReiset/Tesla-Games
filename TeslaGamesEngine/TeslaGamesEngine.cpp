@@ -185,6 +185,10 @@ static const char* vShadow_shader = "Shaders/shadow_shader.vert";
 //Fragment shader of shadow_shader
 static const char* fShadow_shader = "Shaders/shadow_shader.frag";
 
+// Multiplayer stuff
+bool multiplayer = true;
+int players = 2;
+
 
 struct yawPitch {
 	float yaw;
@@ -326,7 +330,12 @@ void RenderScene()
 
 void RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
-	glViewport(0, 0, 1366, 768);
+	// JASHAN
+	auto w = mainWindow.getBufferWidth();
+	auto h = mainWindow.getBufferHeight();
+	glViewport(0, 0, w, h/2);
+	glViewport(0, h/2, w, h/2);
+
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -375,9 +384,25 @@ void RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	RenderScene();
 }
 
+void SetPlayers(int p)
+{
+	int MAXPLAYERS = 2;
+	if (p > MAXPLAYERS) {
+		players = MAXPLAYERS;
+	}
+	else if (p < 1) {
+		players = 1;
+	}
+	else {
+		players = p;
+	}
+
+}
+
 int main()
 {
 	const char* glsl_version = "#version 130"; // USED FOR IMGUI SETTING
+	// TODO: Make this a variable value set in code
 	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
@@ -407,12 +432,6 @@ int main()
 	// Rendering setup
 	CreateShaders();
 	createShadows();
-
-	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f);
-	yawPitch yp;
-	yp.yaw = 90.f;
-	yp.pitch = -20.0f;
-
 
 	bool winFlag = false;
 	bool loseFlag = false;
@@ -462,9 +481,6 @@ int main()
 		20.0f);
 	spotLightCount++;
 
-	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-
-
 	std::vector<std::string> skyboxFaces;
 	///*
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -483,6 +499,68 @@ int main()
 	skyboxFaces.push_back("Textures/Skybox/Sunny_01A_front.jpg");
 	*/
 	skybox = Skybox(skyboxFaces);
+
+	glfwSwapInterval(1);
+
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsClassic();
+
+	// Setup Platform/Renderer bindings
+
+	ImGui_ImplGlfw_InitForOpenGL(mainWindow.getWindow(), true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
+
+	// Imgui setting END
+
+	//Audio system setup
+	AudioEngine audioSystem = AudioEngine();
+
+	AudioBoomBox mainMenuMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
+	AudioBoomBox raceMusic;
+
+	mainMenuMusic.setVolume(0.4f);
+	mainMenuMusic.loopSound(true);
+
+	// Multiplayer set up begins
+	// TODO: For testing - we should actually get these values as input
+	multiplayer = true;
+	SetPlayers(2);
+
+	// TODO: Set up for all player counts
+	glm::mat4 projection;
+	if (multiplayer) {
+		switch (players) {
+		case 2:
+			projection = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight())*2, 0.1f, 1000.0f);
+			break;
+		case 3:
+			// Fall through for now
+		case 4:
+			// Fall through for now
+		default:
+			multiplayer = false;
+			projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+			break;
+		}
+	}
+	else {
+		projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+	}
+
+	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f);
+	yawPitch yp;
+	yp.yaw = 90.f;
+	yp.pitch = -20.0f;
+
+	// Multiplayer set up ends
 
 	//Loading TeslaTrucks models
 	////////////////////////////////////////////////////////////////////////
@@ -515,35 +593,6 @@ int main()
 	drivingPointModel.LoadModel("Models/bullet.obj");
 	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
-
-	glfwSwapInterval(1);
-	
-	// Setup Dear ImGui context
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-	//ImGui::StyleColorsClassic();
-
-	// Setup Platform/Renderer bindings
-
-	ImGui_ImplGlfw_InitForOpenGL(mainWindow.getWindow(), true);
-	ImGui_ImplOpenGL3_Init(glsl_version);
-
-	// Imgui setting END
-
-	//Audio system setup
-	AudioEngine audioSystem = AudioEngine();
-
-	AudioBoomBox mainMenuMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_MAIN_MENU);
-	AudioBoomBox raceMusic; 
-
-	mainMenuMusic.setVolume(0.4f);
-	mainMenuMusic.loopSound(true);
 
 	//Controller
 	Controller player1 = Controller(1);
@@ -1089,7 +1138,26 @@ int main()
 			ImGui::Render();
 			int display_w, display_h;
 			glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
-			glViewport(0, 0, display_w, display_h);
+			// JASHAN - this sets the various displays for multiplayer
+			if (multiplayer) {
+				switch (players) {
+				case 2:
+					glViewport(0, 0, display_w, display_h / 2);
+					glViewport(0, display_h / 2, display_w, display_h / 2);
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				default:
+					multiplayer = false;
+					break;
+				}
+			}
+			else {
+				glViewport(0, 0, display_w, display_h);
+			}
+			
 			//glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 			//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 			//glClear(GL_COLOR_BUFFER_BIT);
