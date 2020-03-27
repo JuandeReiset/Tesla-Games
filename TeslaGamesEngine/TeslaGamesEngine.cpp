@@ -573,8 +573,11 @@ int main()
 		}
 
 		while (pauseFlag) {
+			int display_w, display_h;
+			glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
+			glViewport(0, 0, display_w, display_h);
 			audioSystem.pauseAllActiveSources();
-			pauseScreen.loadController(&player1);
+			pauseScreen.loadController(&controllers[0]);
 			pauseScreen.use();
 			mainWindow.swapBuffers();
 		}
