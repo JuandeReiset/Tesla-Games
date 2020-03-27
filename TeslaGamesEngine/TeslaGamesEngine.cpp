@@ -400,7 +400,7 @@ int main()
 
 	physEng = new PhysicsEngine();
 
-	//physEng->createPickupTriggerVolume(18, -2, -67, 4, 4, 4);
+	physEng->createPickupTriggerVolume(18, -2, -67);
 
 	Renderer r = Renderer(mainWindow, camera);
 
@@ -636,6 +636,8 @@ int main()
 			}
 
 			raceTrack.initializeTrackPoints(trackNum);
+			raceTrack.initializeLapMarkers(trackNum);
+			physEng->setTrack(&raceTrack);
 			physEng->initAITrack(&raceTrack);
 
 			for (int i = 0; i < AINum; i++) {
@@ -660,6 +662,13 @@ int main()
 				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
 				aiShootingComponents.push_back(aiShooting);
 			}
+
+			physEng->loadLapMarkers();
+			for (auto v : vehicles) {
+				v->numberOfMarkersInTrack = physEng->lapmarkers.size();
+			}
+
+			physEng->allVehicles = vehicles;
 		}
 
 		while (gameFlag)
@@ -795,12 +804,12 @@ int main()
 				}
 				else {
 					physx::PxVec3 wallPos = (*pickup)->actor->getGlobalPose().p;
-					glm::vec3 wallp(wallPos.x, wallPos.y + 1.f, wallPos.z);
+					glm::vec3 wallp(wallPos.x, wallPos.y + 0.5f, wallPos.z);
 					model = glm::mat4(1.0f);
 					model = glm::translate(model, wallp);
 					//Consider making the pickup boxes a hardcoded size and hardcoding the 
 					//trigger volumes to be the same size
-					model = glm::scale(model, glm::vec3(1.1f, 0.3f, 0.2f));	//keep these scale values!
+					model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	//keep these scale values!
 					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 					shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 					//boxTest.RenderModel();
@@ -1048,6 +1057,12 @@ int main()
 			else
 				hud.setLapNumber(physEng->player->numLaps + 1);
 
+
+			int playerID = physEng->player->ID;
+			auto iter = std::find_if(physEng->allVehicles.begin(), physEng->allVehicles.end(), [&playerID](const Vehicle* v) {return v->ID == playerID; });
+			int jndex = std::distance(physEng->allVehicles.begin(), iter);
+
+			//std::cout << "YOU ARE IN " << jndex + 1 << " PLACE!\n";
 
 			hud.setAbilityNumber(physEng->player->ability);
 			hud.setAliveNumber(physEng->enemyVehicles.size());

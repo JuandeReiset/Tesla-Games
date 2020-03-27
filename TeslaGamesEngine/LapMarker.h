@@ -9,5 +9,8 @@ class LapMarker :
 public:
 	LapMarker(int value);
 	int markerValue;
+
+	physx::PxVec3 position;
+	physx::PxVec3 dimensions;
 };
 

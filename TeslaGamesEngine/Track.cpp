@@ -1249,3 +1249,62 @@ float Track::getAngleToTurnBy(TrackDrivingPoint* currentTarget, Vehicle* v) {
 	
 	return angle;
 }
+
+//adds the correct lap markers to the vector
+void Track::initializeLapMarkers(int trackType)
+{
+	if (trackType == trackTypeConstants::HYPERLOOP) {
+		for (int i = 0; i < 5; i++) {
+			LapMarker* l = new LapMarker(i);
+			lapMarkers.push_back(l);
+		}
+
+		lapMarkers[0]->position = PxVec3(52.5f, -1.f, -74.f);	//start/finish line
+		lapMarkers[0]->dimensions = PxVec3(1, 5, 23);
+		lapMarkers[1]->position = PxVec3(7.f, -1.f, -72.5f);
+		lapMarkers[1]->dimensions = PxVec3(1, 5, 23);
+		lapMarkers[2]->position = PxVec3(-78.f, -1.f, -2.75f);
+		lapMarkers[2]->dimensions = PxVec3(21, 5, 8);
+		lapMarkers[3]->position = PxVec3(54.5f, -1.f, 49.f);
+		lapMarkers[3]->dimensions = PxVec3(5, 5, 22);
+		lapMarkers[4]->position = PxVec3(150.5f, -1.f, -7.5f);
+		lapMarkers[4]->dimensions = PxVec3(22, 5, 3);
+		
+
+	}
+	else if (trackType == trackTypeConstants::STARLINK) {
+		for (int i = 0; i < 14; i++) {
+			LapMarker* l = new LapMarker(i);
+			lapMarkers.push_back(l);
+		}
+
+		lapMarkers[0]->position = PxVec3(49.f, -1.f, -72.5f);	//start/finish line
+		lapMarkers[0]->dimensions = PxVec3(4, 15, 18);
+		lapMarkers[1]->position = PxVec3(-65.f, -1.f, -115.5f);	
+		lapMarkers[1]->dimensions = PxVec3(13, 15, 14);
+		lapMarkers[2]->position = PxVec3(-111.f, -1.f, -250.f);	
+		lapMarkers[2]->dimensions = PxVec3(13, 15, 13);
+		lapMarkers[3]->position = PxVec3(186.f, -1.f, -380.5f);	
+		lapMarkers[3]->dimensions = PxVec3(8, 15, 17);
+		lapMarkers[4]->position = PxVec3(333.f, -1.f, -403.f);	
+		lapMarkers[4]->dimensions = PxVec3(7, 15, 17);
+		lapMarkers[5]->position = PxVec3(377.25f, -1.f, -367.25f);	
+		lapMarkers[5]->dimensions = PxVec3(16, 15, 10);
+		lapMarkers[6]->position = PxVec3(389.f, -1.f, -256.f);	
+		lapMarkers[6]->dimensions = PxVec3(16, 15, 6);
+		lapMarkers[7]->position = PxVec3(285.5f, -1.f, -137.f);	
+		lapMarkers[7]->dimensions = PxVec3(13, 15, 13);
+		lapMarkers[8]->position = PxVec3(277.f, -1.f, -69.5f);	
+		lapMarkers[8]->dimensions = PxVec3(15, 15, 9);
+		lapMarkers[9]->position = PxVec3(361.5f, -1.f, 34.f);	
+		lapMarkers[9]->dimensions = PxVec3(17, 15, 6);
+		lapMarkers[10]->position = PxVec3(329.f, -1.f, 134.5f);	
+		lapMarkers[10]->dimensions = PxVec3(12, 15, 13);
+		lapMarkers[11]->position = PxVec3(202.f, -1.f, 148.5f);	
+		lapMarkers[11]->dimensions = PxVec3(9, 15, 15);
+		lapMarkers[12]->position = PxVec3(166.5f, -1.f, 68.5f);	
+		lapMarkers[12]->dimensions = PxVec3(17, 15, 5);
+		lapMarkers[13]->position = PxVec3(179.f, -1.f, -29.f);	
+		lapMarkers[13]->dimensions = PxVec3(16, 15, 5);
+	}
+}
