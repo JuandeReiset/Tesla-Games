@@ -582,7 +582,7 @@ int main()
 			mainWindow.swapBuffers();
 		}
 
-		if (setupGame == true) {
+		if (setupGame) {
 			//Reset this variable to reset the game
 			physEng->initAudioForVehicles(&audioSystem);
 			cameras[0].initializeAudio(&audioSystem);
@@ -638,6 +638,7 @@ int main()
 			}
 			else {
 				players = 1;
+				std::cout << "Not multiplayer";
 			}
 			for (int i = 0; i < AINum; i++) {
 				physEng->addEnemyVehicle(i);
