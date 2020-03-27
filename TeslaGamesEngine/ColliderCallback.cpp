@@ -60,7 +60,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			// std::cout << "LAP MARKER VALUE: " << l->markerValue << std::endl;
 
 			//hardcoded number of laps and markers
-			v->hitLapMarker(l->markerValue, 3, 12);	//3 laps, 12 markers (0->11)
+			v->hitLapMarker(l->markerValue, 5);	//5 laps
 			
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "caltrops") == 0) {

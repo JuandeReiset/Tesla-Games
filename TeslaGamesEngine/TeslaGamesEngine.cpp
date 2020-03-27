@@ -342,7 +342,7 @@ int main()
 
 	physEng = new PhysicsEngine();
 
-	//physEng->createPickupTriggerVolume(18, -2, -67, 4, 4, 4);
+	physEng->createPickupTriggerVolume(18, -2, -67);
 
 	// Rendering setup
 	CreateShaders();
@@ -629,6 +629,8 @@ int main()
 			}
 
 			raceTrack.initializeTrackPoints(trackNum);
+			raceTrack.initializeLapMarkers(trackNum);
+			physEng->setTrack(&raceTrack);
 			physEng->initAITrack(&raceTrack);
 
 			// TODO: Using to make multiplayer testing easier. Will remove
@@ -662,6 +664,13 @@ int main()
 				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
 				aiShootingComponents.push_back(aiShooting);
 			}
+
+			physEng->loadLapMarkers();
+			for (auto v : vehicles) {
+				v->numberOfMarkersInTrack = physEng->lapmarkers.size();
+			}
+
+			physEng->allVehicles = vehicles;
 		}
 
 		while (gameFlag)
@@ -723,8 +732,8 @@ int main()
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			// Render for each player
 
+			// Render for each player
 			for (int player = 0; player < players; player++) {
 
 				//  Get values from physics engine
@@ -1074,9 +1083,30 @@ int main()
 					//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 					glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameras[player].calculateViewMatrix()));
 
+
 					shadowTexture.UseTexture();
 					shadowList[0]->renderShadow();
 				}
+
+  /*
+  //this is for displaying the players position in the race, I'll redo this to allow multiple players so
+  //please keep this comment in here so I don't have to rewrite it all!!
+			int playerID = physEng->player->ID;
+			auto iter = std::find_if(physEng->allVehicles.begin(), physEng->allVehicles.end(), [&playerID](const Vehicle* v) {return v->ID == playerID; });
+			int jndex = std::distance(physEng->allVehicles.begin(), iter);
+
+			//std::cout << "YOU ARE IN " << jndex + 1 << " PLACE!\n";
+*/
+
+  /*
+			hud.setAbilityNumber(physEng->player->ability);
+			hud.setAliveNumber(physEng->enemyVehicles.size());
+			//don't now how to get position right now
+			//hud.setPositionNumber();
+			hud.setBulletNum(physEng->player->getShootingComponent()->ammo);
+			hud.setHealth(physEng->player->getHealthComponent()->GetHealth());
+      */
+
 
 				glEnable(GL_DEPTH_TEST);
 
