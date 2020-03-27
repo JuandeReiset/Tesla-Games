@@ -865,8 +865,8 @@ int main()
 						}
 					}
 
-					// Player 2 can fire with Q as well
-					if (player == 1 && keys['Q'] && !physEng->playerVehicles[player]->affectedBySmoke) {
+					// Player 2 can fire with Q as well (only when no controller detected)
+					if (player == 1 && keys['Q'] && !physEng->playerVehicles[player]->affectedBySmoke && !P2Connected) {
 						if (isCameraFlipped) {
 							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
 						}
