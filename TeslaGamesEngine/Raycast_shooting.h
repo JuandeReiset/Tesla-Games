@@ -7,7 +7,10 @@
 class Raycast_shooting
 {
 public:
-
+	Raycast_shooting(std::vector<Vehicle*> listvehicles);
+	void determine_hit(glm::vec3 startpos, glm::vec3 Dir);
+	bool is_in_direction(Vehicle* v);
+	void handle_hit(Vehicle v1);
 
 private:
 	glm::vec3 Start_pos;
@@ -15,7 +18,7 @@ private:
 
 	std::vector<Vehicle*> vehicles;
 	Vehicle* owner;
-	Vehicle* target;
+	Vehicle* target_vehicle;
    
 };
 

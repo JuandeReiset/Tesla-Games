@@ -945,7 +945,13 @@ int main()
 			//there is probably a much better way of rendering the other enemy cars, but this works for now
 			if (!physEng->enemyVehicles.empty()) {
 				for (int i = 0; i < physEng->enemyVehicles.size(); i++) {
+
+
 					Vehicle* v = physEng->enemyVehicles.at(i);
+					HealthComponent* th = v->getHealthComponent();
+					//th->SetHealth(0);
+					if (th->GetHealth() > 10) {
+
 					const physx::PxVehicleDrive4W* enemyV = v->gVehicle4W;	//get vehicle
 					const physx::PxRigidDynamic* enemyvDynamic = enemyV->getRigidDynamicActor();
 					physx::PxQuat enemyvehicleQuaternion = enemyvDynamic->getGlobalPose().q;
@@ -958,10 +964,6 @@ int main()
 					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, enemymodelMat.front());
 
 					shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-
-					HealthComponent* th = v->getHealthComponent();
-
-					if (th->GetHealth() > 10) {
 
 						//std::cout<<"Current vehicle health is:  " << th->GetHealth() << std::endl;
 						TeslacarAI_chasis.RenderModel();
