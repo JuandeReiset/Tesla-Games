@@ -949,7 +949,7 @@ int main()
 
 					Vehicle* v = physEng->enemyVehicles.at(i);
 					HealthComponent* th = v->getHealthComponent();
-					//th->SetHealth(0);
+					//Temporal condition that "Destroys" the object; should create a method that destroys The vehicles and handle stuff
 					if (th->GetHealth() > 10) {
 
 					const physx::PxVehicleDrive4W* enemyV = v->gVehicle4W;	//get vehicle

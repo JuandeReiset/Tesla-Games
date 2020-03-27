@@ -21,7 +21,6 @@ void AIShootingComponent::Aim()
 	// Find a target
 	if (!target) {
 		target = FindTarget();
-		
 	}
 	else {
 		// Aim at target if it is in view
@@ -29,16 +28,13 @@ void AIShootingComponent::Aim()
 			FindAimingState();
 			// Fire at target if aim is locked
 			if (aimingState == AimingState::Locked) {
-				std::cout << "FIRE @ " << glfwGetTime() << std::endl;
+				//std::cout << "FIRE @ " << glfwGetTime() << std::endl;
 				auto shooting = owner->getShootingComponent();
-				auto enemyhealth = target->getHealthComponent();
 				auto pos = owner->GetPosition();
 				// Setting ammo to 0 because of performance issues. Remove when those are fixed
-				//shooting->ammo = 0;
 				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess,Shootdir.x,Shootdir.y,Shootdir.z);
-				//enemyhealth->SetHealth(0);
-				
 				lastFiredTime = glfwGetTime();
+				//target->update_health();
 			}
 		}
 		// Target not in view, find new target

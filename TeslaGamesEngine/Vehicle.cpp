@@ -232,7 +232,7 @@ ShootComp* Vehicle::getShootingComponent() {
 
 void Vehicle::update_health() {
 	int currentHealth = health.GetHealth();
-	health.SetHealth(0);
+	health.SetHealth(currentHealth-10);
 }
 
 HealthComponent* Vehicle::getHealthComponent() {

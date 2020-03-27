@@ -31,7 +31,7 @@ void Bullet::createBullet(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularI
 	model = glm::translate(model, position);
 	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 
-	bullet_speed = 1.f;
+	bullet_speed = 8.f;
 	Direction_x = Dir_x;
 	Direction_y = Dir_y;
 	Direction_z = Dir_z;
