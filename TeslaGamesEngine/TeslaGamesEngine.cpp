@@ -1057,13 +1057,12 @@ int main()
 			else
 				hud.setLapNumber(physEng->player->numLaps + 1);
 
-			if (physEng->allVehicles.at(0)->ID == physEng->player->ID) {
-				std::cout << "YOU ARE IN FIRST PLACE\n";
-			}
-			else {
-				std::cout << "YOU ARE NOT IN FIRST PLACE\n";
-			}
 
+			int playerID = physEng->player->ID;
+			auto iter = std::find_if(physEng->allVehicles.begin(), physEng->allVehicles.end(), [&playerID](const Vehicle* v) {return v->ID == playerID; });
+			int jndex = std::distance(physEng->allVehicles.begin(), iter);
+
+			//std::cout << "YOU ARE IN " << jndex + 1 << " PLACE!\n";
 
 			hud.setAbilityNumber(physEng->player->ability);
 			hud.setAliveNumber(physEng->enemyVehicles.size());
