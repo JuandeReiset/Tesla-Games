@@ -244,7 +244,8 @@ void parseControllerInput(Controller* controller)
 	controller->update();
 
 	// TODO: Change this to get player from controller ID
-	auto player = physEng->playerVehicles[0];
+	auto id = controller->getIndex();
+	auto player = physEng->playerVehicles[id];
 	if (controller->isButtonPressed(XButtons.B)) {
 		if (!controller->LStick_InDeadzone()) {
 			player->handbrakeTurn(0.9f, controller->leftStick_X());
@@ -444,10 +445,8 @@ int main()
 	mainMenuMusic.loopSound(true);
 
 	// Multiplayer set up begins
-	// TODO: For testing - we should actually get these values as input
 	SetPlayers(2);
 
-	// TODO: Set up for all player counts
 	glm::mat4 projection;
 
 		switch (players) {
@@ -512,7 +511,6 @@ int main()
 	oil.LoadModel("Models/oil.obj");
 
 	drivingPointModel.LoadModel("Models/bullet.obj");
-	// TODO: Put FPS code into Game.Play()
 	// Loop until window closed
 
 	//Controller
@@ -634,18 +632,14 @@ int main()
 			physEng->initAITrack(&raceTrack);
 
 			// TODO: Using to make multiplayer testing easier. Will remove
-			if (multiplayerFlag) {
-				AINum = 0;
-			}
-			else {
+			if (!multiplayerFlag) {
 				players = 1;
-				std::cout << "Not multiplayer";
 			}
+
 			for (int i = 0; i < AINum; i++) {
 				physEng->addEnemyVehicle(i);
 			}
 
-			// JASHAN here is where you add the players in
 			for (int i = 0; i < players; i++) {
 				physEng->addPlayerVehicle(AINum + controllers[i].getIndex());
 			}
@@ -656,7 +650,6 @@ int main()
 				}
 			}
 
-			// TODO: This should include the multiple players
 			std::vector<Vehicle*> vehicles;
 			std::vector<Vehicle*> playerVehicles = physEng->playerVehicles;
 			std::vector<Vehicle*> aiVehicles = physEng->enemyVehicles;
@@ -813,6 +806,8 @@ int main()
 				racetrack_walls.RenderModel();
 				racetrack_floor.RenderModel();
 
+
+				/* Can uncomment to draw the TrackDrivingPoints if needed for testing
 				for (int i = 0; i < raceTrack.listOfPoints.size(); i++) {
 					TrackDrivingPoint point = *raceTrack.listOfPoints.at(i);
 					model = model = glm::mat4(1.0f);
@@ -820,7 +815,7 @@ int main()
 					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 					shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 					drivingPointModel.RenderModel();
-				}
+				}*/ 
 
 				// Draw pickup boxes
 				auto pickup = physEng->pickupBoxes.begin();
@@ -1036,6 +1031,13 @@ int main()
 					ai->getShootingComponent()->renderAllBullets();
 				}
 
+				// Render all other player bullets and traps
+				for (int i = 0; i < players; i++) {
+					if (i != player) {
+						physEng->playerVehicles[i]->getShootingComponent()->renderAllBullets();
+					}
+				}
+
 				// Render shadows
 				model = glm::mat4(1.0f);
 				glm::vec3 tem = glm::vec3(53, -2, -83);
@@ -1051,16 +1053,19 @@ int main()
 				uniformView = shadowShader.GetViewLocation();
 
 				// Player vehicle's shadow
-				model = glm::mat4(1.0f);
-				physx::PxMat44 carModel(vDynamic->getGlobalPose());	// Make model matrix from transform of rigid dynamic
-				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, carModel.front());
-				glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-				glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameras[player].calculateViewMatrix()));
+				for (auto v : physEng->playerVehicles) {
+					physx::PxMat44 AIcarModel(v->GetTransform());
 
-				shadowTexture.UseTexture();
-				shadowList[0]->renderShadow();
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, AIcarModel.front());
+					glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+					//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameras[player].calculateViewMatrix()));
 
-				// AI vehicles' shadows TODO: Should also find other players shadows
+					shadowTexture.UseTexture();
+					shadowList[0]->renderShadow();
+				}
+
+				// AI vehicles' shadows 
 				for (auto v : physEng->enemyVehicles) {
 					physx::PxMat44 AIcarModel(v->GetTransform());
 
@@ -1116,10 +1121,8 @@ int main()
 
 
 			// ImGUI debugging info
-			// TODO: Fix this shit
-			int p = 0;
 
-			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameras[p].calculateViewMatrix()));
+			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameras[0].calculateViewMatrix()));
 
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
@@ -1134,7 +1137,7 @@ int main()
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			// ImGui::Text(": %i Xpos: %.2f Ypos: %.2f Zpos: %.2f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
 			// ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
-			ImGui::Text("Camera Xvec: %f Yvec: %f Zvec: %f", cameras[p].getCameraPosition().x, cameras[p].getCameraPosition().y, cameras[p].getCameraPosition().z);
+			ImGui::Text("Camera Xvec: %f Yvec: %f Zvec: %f", cameras[0].getCameraPosition().x, cameras[0].getCameraPosition().y, cameras[0].getCameraPosition().z);
 			// ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
 
 				ImGui::End();
