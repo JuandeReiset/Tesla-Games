@@ -1,5 +1,6 @@
 #pragma once
 #include "ShootComp.h"
+#include "Raycast_shooting.h"
 #include "Vehicle.h"
 #include <glm\glm.hpp>
 
@@ -43,6 +44,8 @@ private:
 	float threshold;
 
 	float lastFiredTime;
+
+	Raycast_shooting raycast_handler;
 
 	GLuint uniformModel = 0;
 	GLuint uniformSpecular= 0;

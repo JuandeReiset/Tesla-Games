@@ -1,7 +1,10 @@
 #include "Raycast_shooting.h"
 
-Raycast_shooting::Raycast_shooting(std::vector<Vehicle*> listvehicles) {
-	this->vehicles = listvehicles;
+Raycast_shooting::Raycast_shooting() {
+	
+}
+void Raycast_shooting::set_vehiclelist(std::vector<Vehicle*> vehiclesToSet) {
+	vehicles = vehiclesToSet;
 }
 
 void Raycast_shooting::determine_hit(glm::vec3 startpos, glm::vec3 Dir) {
@@ -12,6 +15,17 @@ void Raycast_shooting::determine_hit(glm::vec3 startpos, glm::vec3 Dir) {
 		}
 	}
 	
+}
+
+void Raycast_shooting::determine_hit_AI() {
+
+	int iSecret = rand() % 10 + 1;
+
+	if (iSecret > 2) {
+		handle_hit(target_vehicle);
+	}
+	
+
 }
 
 bool Raycast_shooting::is_in_direction(Vehicle* target) {
@@ -35,6 +49,10 @@ bool Raycast_shooting::is_in_direction(Vehicle* target) {
 
 	}
 }
-void Raycast_shooting::handle_hit(Vehicle v1) {
-	v1.update_health();
+void Raycast_shooting::handle_hit(Vehicle* v1) {
+	v1->update_health();
+}
+
+void Raycast_shooting::set_Target(Vehicle* target) {
+	target_vehicle = target;
 }

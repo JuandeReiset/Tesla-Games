@@ -33,6 +33,7 @@ void AIShootingComponent::Aim()
 				auto pos = owner->GetPosition();
 				// Setting ammo to 0 because of performance issues. Remove when those are fixed
 				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess,Shootdir.x,Shootdir.y,Shootdir.z);
+				raycast_handler.determine_hit_AI(); //Determines if the target gets hit by AI or not
 				lastFiredTime = glfwGetTime();
 				//target->update_health();
 			}
@@ -47,6 +48,7 @@ void AIShootingComponent::Aim()
 void AIShootingComponent::SetVehicles(std::vector<Vehicle*> vehiclesToSet)
 {
 	vehicles = vehiclesToSet;
+	raycast_handler.set_vehiclelist(vehiclesToSet);
 }
 
 Vehicle * AIShootingComponent::FindTarget()
@@ -55,6 +57,7 @@ Vehicle * AIShootingComponent::FindTarget()
 	for (auto aVehicle : vehicles) {
 		if (IsTargetInView(aVehicle) && aVehicle != owner) {
 			aVehicle->update_health();
+			raycast_handler.set_Target(aVehicle);//Sets the target for the raycast
 			return aVehicle;
 		}
 	}
