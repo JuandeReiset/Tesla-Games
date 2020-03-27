@@ -84,13 +84,10 @@ public:
 
 	PxRigidActor* testActor;
 
-	//finds distance between a vehicle and a lap marker
-	float distance(PxVec3 vehiclePos, PxVec3 markerPos);
-
 	ColliderCallback* colliderCallback;
 
 	void createPickupTriggerVolume(float x, float y, float z);
-	void createLapMarkerTriggerVolume(int lapMarkerValue, float x, float y, float z, float width, float height, float depth);
+	void createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 position, PxVec3 dimensions);
 	void createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth);
 	void createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth);
 	void createOilTriggerVolume(float x, float y, float z, float width, float height, float depth);
@@ -102,6 +99,10 @@ public:
 	physx::PxMaterial* gMaterial = NULL;
 
 	physx::PxCooking* gCooking = NULL;
+
+	void loadLapMarkers();
+
+	void setTrack(Track* t);
 
 private:
 	void cleanupPhysics();

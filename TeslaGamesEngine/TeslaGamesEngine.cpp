@@ -636,6 +636,8 @@ int main()
 			}
 
 			raceTrack.initializeTrackPoints(trackNum);
+			raceTrack.initializeLapMarkers(trackNum);
+			physEng->setTrack(&raceTrack);
 			physEng->initAITrack(&raceTrack);
 
 			for (int i = 0; i < AINum; i++) {
@@ -659,6 +661,11 @@ int main()
 				aiShooting.SetVehicles(vehicles);
 				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
 				aiShootingComponents.push_back(aiShooting);
+			}
+
+			physEng->loadLapMarkers();
+			for (auto v : vehicles) {
+				v->numberOfMarkersInTrack = physEng->lapmarkers.size();
 			}
 
 			physEng->allVehicles = vehicles;

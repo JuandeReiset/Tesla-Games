@@ -46,20 +46,6 @@ PhysicsEngine::PhysicsEngine() {
 	createPickupTriggerVolume(0, 2, 10);
 	createPickupTriggerVolume(2, 2, 10);
 	//createPickupTriggerVolume(33, 1, -87);
-
-	//new lap markers
-	createLapMarkerTriggerVolume(0, 70, 2, -86, 4, 10, 30);			//0, start/finish position
-	createLapMarkerTriggerVolume(1, -76, 2, -85, 11, 10, 30);		//1
-	createLapMarkerTriggerVolume(2, -100, 2, -45, 30, 10, 6);		//2
-	createLapMarkerTriggerVolume(3, -85, 2, 39, 26, 10, 15);		//3
-	createLapMarkerTriggerVolume(4, -55, 2, 51, 17, 10, 20);		//4
-	createLapMarkerTriggerVolume(5, -7, 2, 5, 6, 10, 31);			//5
-	createLapMarkerTriggerVolume(6, 23, 2, 36, 19, 10, 19);			//6
-	createLapMarkerTriggerVolume(7, 105.3f, 2, 53, 5, 10, 30);		//7
-	createLapMarkerTriggerVolume(8, 212, 2, 33, 10, 10, 23);		//8
-	createLapMarkerTriggerVolume(9, 215, 2, -2, 28, 10, 7);			//9
-	createLapMarkerTriggerVolume(10, 225.5f, 2, -58, 30, 10, 6);	//10
-	createLapMarkerTriggerVolume(11, 165.5f, 2, -85, 6, 10, 30);	//11
 }
 void PhysicsEngine::initAudioForVehicles(AudioEngine* audio) {
 	this->audioEngine = audio;
@@ -72,6 +58,7 @@ void PhysicsEngine::initAITrack(Track* raceTrack) {
 void PhysicsEngine::addPlayerVehicle(int startIndex) {
 	TrackDrivingPoint point = *this->raceTrack->listOfStartPoints[startIndex];
 	player = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex, &lapmarkers);
+	player->isPlayer = true;
 	player->actor->userData = player;
 	player->initVehicleAudio(this->audioEngine);
 }
@@ -83,6 +70,7 @@ void PhysicsEngine::addEnemyVehicle(int startIndex)
 	//create vehicle object
 	//add it to the list of vehicle
 	Vehicle* v = new Vehicle(gPhysics, gCooking, gMaterial, gScene, gAllocator, point.x, point.y, point.z, startIndex, &lapmarkers);
+	v->isPlayer = false;
 	v->actor->userData = v;
 	v->initVehicleAudio(this->audioEngine);
 
@@ -146,12 +134,6 @@ void PhysicsEngine::sortVehicles()
 	sort(allVehicles.begin(), allVehicles.end(), VehicleComparator());
 }
 
-float PhysicsEngine::distance(PxVec3 vehiclePos, PxVec3 markerPos)
-{
-	float dis = sqrt(pow((markerPos.x - vehiclePos.x), 2) + pow((markerPos.y - vehiclePos.y), 2) + pow((markerPos.z - vehiclePos.z), 2));
-
-	return dis;
-}
 
 //creates a trigger volume at point (x,y,z) and adds it to the scene
 //this is for pickups
@@ -178,13 +160,14 @@ void PhysicsEngine::createPickupTriggerVolume(float x, float y, float z)
 	pickupBoxes.push_back(pickup);
 }
 
-void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, float x, float y, float z, float width, float height, float depth)
+//width, height and depth are half extents (dimensions are actually 2width x 2height x 2depth)
+void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 position, PxVec3 dimensions)
 {
 	LapMarker* lapMarker = new LapMarker(lapMarkerValue);
 
 
-	PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
-	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+	PxBoxGeometry geometry(dimensions);
+	PxTransform transform(position, PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
 	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
@@ -317,5 +300,19 @@ void PhysicsEngine::cleanupPhysics()
 		PX_RELEASE(transport);
 	}
 	PX_RELEASE(gFoundation);
+}
+
+
+//reads in list of track markers from raceTrack and adds them as trigger volumes to the scene
+void PhysicsEngine::loadLapMarkers()
+{
+	for (auto i : raceTrack->lapMarkers) {
+		createLapMarkerTriggerVolume(i->markerValue, i->position, i->dimensions);
+	}
+}
+
+void PhysicsEngine::setTrack(Track* t)
+{
+	raceTrack = t;
 }
 

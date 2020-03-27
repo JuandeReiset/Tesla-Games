@@ -1249,3 +1249,30 @@ float Track::getAngleToTurnBy(TrackDrivingPoint* currentTarget, Vehicle* v) {
 	
 	return angle;
 }
+
+//adds the correct lap markers to the vector
+void Track::initializeLapMarkers(int trackType)
+{
+	if (trackType == trackTypeConstants::HYPERLOOP) {
+		for (int i = 0; i < 5; i++) {
+			LapMarker* l = new LapMarker(i);
+			lapMarkers.push_back(l);
+		}
+
+		lapMarkers[0]->position = PxVec3(52.5f, -1.f, -74.f);	//start/finish line
+		lapMarkers[0]->dimensions = PxVec3(1, 5, 23);
+		lapMarkers[1]->position = PxVec3(7.f, -1.f, -72.5f);
+		lapMarkers[1]->dimensions = PxVec3(1, 5, 23);
+		lapMarkers[2]->position = PxVec3(-78.f, -1.f, -2.75f);
+		lapMarkers[2]->dimensions = PxVec3(21, 5, 8);
+		lapMarkers[3]->position = PxVec3(54.5f, -1.f, 49.f);
+		lapMarkers[3]->dimensions = PxVec3(5, 5, 22);
+		lapMarkers[4]->position = PxVec3(150.5f, -1.f, -7.5f);
+		lapMarkers[4]->dimensions = PxVec3(22, 5, 3);
+		
+
+	}
+	else if (trackType == trackTypeConstants::STARLINK) {
+
+	}
+}
