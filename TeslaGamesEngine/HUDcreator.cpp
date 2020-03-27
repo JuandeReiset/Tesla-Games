@@ -201,9 +201,9 @@ void HUDcreator::use() {
 
 	GLint uniformModel = hudShader.GetModelLocation();
 	GLint uniformProjection = hudShader.GetProjectionLocation();
-
+	
 	glm::mat4 model = glm::mat4(1.0f);
-	glm::mat4 ortho = glm::ortho(0.0f, (float)mainWindow.getWidth(), (float)mainWindow.getHeight(), 0.0f);						//orthograohic projection
+	glm::mat4 ortho = glm::ortho(0.0f, (float)mainWindow.getWidth(), (float)mainWindow.getHeight(), 0.0f);
 
 	glDisable(GL_DEPTH_TEST);																									//disable the depth-testing
 

@@ -74,6 +74,8 @@
 
 // end of stuff for imgui
 
+bool hideDebug = true;
+
 struct localAxis {
 	glm::vec3 front;
 	glm::vec3 right;
@@ -186,7 +188,6 @@ static const char* vShadow_shader = "Shaders/shadow_shader.vert";
 static const char* fShadow_shader = "Shaders/shadow_shader.frag";
 
 // Multiplayer stuff
-bool multiplayer = true;
 int players = 2;
 
 
@@ -690,8 +691,8 @@ int main()
 
 			// ONLY BEING USED TO TEST PLAYER 2
 			// PRESS W TO DRIVE, A TO TURN LEFT, S TO REVERSE, D TO TURN RIGHT 
+			auto keys = mainWindow.getsKeys();
 			if (!P2Connected) {
-				auto keys = mainWindow.getsKeys();
 				if (keys['W']) {
 					physEng->playerVehicles[1]->forwards(0.75f);
 				}
@@ -704,6 +705,13 @@ int main()
 				if (keys['D']) {
 					physEng->playerVehicles[1]->turn(0.5f);
 				}
+			}
+
+			if (keys['H']) {
+				hideDebug = true;
+			}
+			if (keys['U']) {
+				hideDebug = false;
 			}
 
 			/* Game logic */ 
@@ -855,6 +863,17 @@ int main()
 						else {
 							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
 						}
+					}
+
+					// Player 2 can fire with Q as well
+					if (player == 1 && keys['Q'] && !physEng->playerVehicles[player]->affectedBySmoke) {
+						if (isCameraFlipped) {
+							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+						}
+						else {
+							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
+						}
+						keys['Q'] = false;
 					}
 					ba->renderAllBullets();
 
@@ -1055,6 +1074,33 @@ int main()
 				}
 
 				glEnable(GL_DEPTH_TEST);
+
+				// HUD
+				if (physEng->playerVehicles[player]->numLaps == 5)
+					winFlag = true;
+				else
+					for (auto v : physEng->enemyVehicles)
+						if (v->numLaps == 5)
+							loseFlag = true;
+
+				if (winFlag == true)
+					hud.setGameState(true);
+				if (loseFlag == true)
+					hud.setGameState(false);
+				if (winFlag)
+					hud.setLapNumber(physEng->playerVehicles[player]->numLaps);
+				else
+					hud.setLapNumber(physEng->playerVehicles[player]->numLaps + 1);
+
+
+				hud.setAbilityNumber(physEng->playerVehicles[player]->ability);
+				hud.setAliveNumber(physEng->enemyVehicles.size());
+				// Don't now how to get position right now
+				// hud.setPositionNumber();
+				hud.setBulletNum(physEng->playerVehicles[player]->getShootingComponent()->ammo);
+				hud.setHealth(physEng->playerVehicles[player]->getHealthComponent()->GetHealth());
+
+				hud.use();
 			}
 
 			/* Audio */ 
@@ -1068,34 +1114,6 @@ int main()
 				raceMusic.playSound();
 			}
 
-			// Get lose or win 
-			// TODO: Needs to work for all players
-			int player = 0;
-			if (physEng->playerVehicles[player]->numLaps == 5)
-				winFlag = true;
-			else
-				for (auto v : physEng->enemyVehicles)
-					if (v->numLaps == 5)
-						loseFlag = true;
-
-			if (winFlag == true)
-				hud.setGameState(true);
-			if (loseFlag == true)
-				hud.setGameState(false);
-			if (winFlag)
-				hud.setLapNumber(physEng->playerVehicles[player]->numLaps);
-			else
-				hud.setLapNumber(physEng->playerVehicles[player]->numLaps + 1);
-
-
-			hud.setAbilityNumber(physEng->playerVehicles[player]->ability);
-			hud.setAliveNumber(physEng->enemyVehicles.size());
-			// Don't now how to get position right now
-			// hud.setPositionNumber();
-			hud.setBulletNum(physEng->playerVehicles[player]->getShootingComponent()->ammo);
-			hud.setHealth(physEng->playerVehicles[player]->getHealthComponent()->GetHealth());
-
-			hud.use();
 
 			// ImGUI debugging info
 			// TODO: Fix this shit
@@ -1123,8 +1141,10 @@ int main()
 			}
 
 			// Rendering imgui
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			if (!hideDebug) {
+				ImGui::Render();
+				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			}
 
 			mainWindow.swapBuffers();
 
