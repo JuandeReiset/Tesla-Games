@@ -1,8 +1,8 @@
 #include "Smoke.h"
 
-Smoke::Smoke(int idInput) {
+Smoke::Smoke(int idInput, float duration) {
 	id = idInput;
-	life = 5.f;											//lifetime is 5 sec
+	life = duration;											//lifetime is 5 sec
 	birthTime = glfwGetTime();
 	currentTime = glfwGetTime();
 
@@ -16,11 +16,16 @@ Smoke::Smoke(int idInput) {
 }
 
 bool Smoke::isDead() {
-	updateTime();
-	if (currentTime - birthTime >= life)
-		return true;
-	else
+	if (life <= -1.f) {
 		return false;
+	}
+	else {
+		updateTime();
+		if (currentTime - birthTime >= life)
+			return true;
+		else
+			return false;
+	}
 }
 
 void Smoke::updateTime() {

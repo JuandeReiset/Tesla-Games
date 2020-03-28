@@ -686,7 +686,7 @@ void Vehicle::pickup() {
 }
 
 //drops caltrops and adds the newly added caltrop to the given list
-void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
+void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList, float duration) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -694,7 +694,7 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 
 	PxVec3 pos = GetPosition();
 
-	Caltrops* caltrop = new Caltrops(ID);
+	Caltrops* caltrop = new Caltrops(ID, duration);
 	caltrop->createCaltrops(glm::vec3(pos.x, pos.y, pos.z));
 	catropsList->push_back(caltrop);
 
@@ -703,7 +703,7 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 	this->deployCaltropsEffect.playSound();
 }
 
-void Vehicle::useOil(std::list<Oil*> *oilList) {
+void Vehicle::useOil(std::list<Oil*> *oilList, float duration) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -711,7 +711,7 @@ void Vehicle::useOil(std::list<Oil*> *oilList) {
 
 	PxVec3 pos = GetPosition();
 
-	Oil* oil = new Oil(ID);
+	Oil* oil = new Oil(ID, duration);
 	oil->createOil(glm::vec3(pos.x, pos.y, pos.z));
 	oilList->push_back(oil);
 
@@ -719,7 +719,7 @@ void Vehicle::useOil(std::list<Oil*> *oilList) {
 	this->deployOilEffect.playSound();
 }
 
-void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
+void Vehicle::useSmoke(std::list<Smoke*>* smokeList, float duration) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -727,7 +727,7 @@ void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
 
 	PxVec3 pos = GetPosition();
 
-	Smoke* smoke = new Smoke(ID);
+	Smoke* smoke = new Smoke(ID, duration);
 	smoke->createSmoke(glm::vec3(pos.x, pos.y, pos.z));
 	smokeList->push_back(smoke);
 

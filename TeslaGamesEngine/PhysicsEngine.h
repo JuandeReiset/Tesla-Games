@@ -88,9 +88,9 @@ public:
 
 	void createPickupTriggerVolume(float x, float y, float z);
 	void createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 position, PxVec3 dimensions);
-	void createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth);
-	void createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth);
-	void createOilTriggerVolume(float x, float y, float z, float width, float height, float depth);
+	void createCaltropsTriggerVolume(float x, float y, float z, float duration);
+	void createSmokeTriggerVolume(float x, float y, float z, float duration);
+	void createOilTriggerVolume(float x, float y, float z, float duration);
 
 	void update_dir_render4Vehicle(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z);
 

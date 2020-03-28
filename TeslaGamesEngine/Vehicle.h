@@ -135,9 +135,9 @@ public:
 	void pickup();													//pick up a(n) item/ability
 
 	//pls add your ability stuff here
-	void useCaltrops(std::list<Caltrops*> *caltropsList);
-	void useSmoke(std::list<Smoke*> *smokeList);
-	void useOil(std::list<Oil*> *oilList);
+	void useCaltrops(std::list<Caltrops*> *caltropsList, float duration);
+	void useSmoke(std::list<Smoke*> *smokeList, float duration);
+	void useOil(std::list<Oil*> *oilList, float duration);
 
 	bool affectedBySmoke;
 	float smokeStartTime, smokeDuration;

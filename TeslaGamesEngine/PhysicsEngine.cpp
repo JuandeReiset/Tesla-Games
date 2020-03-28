@@ -186,17 +186,18 @@ void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 posi
 	lapmarkers.push_back(lapMarker);
 }
 
-void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth)
+void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float duration)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	player->useCaltrops(&caltropsList);
+	player->useCaltrops(&caltropsList, duration);
 
 	if(caltropsList.back() == NULL) {
 		std::cout << "\nError: Could not create caltrops! No more charges!\n";
 	}
 	else {
-		PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+		std::cout << "X  Y  Z: " << x << " " << y << " " << z << "\n";
+		PxBoxGeometry geometry(PxVec3(1.25f,1.f, 1.25f));
 		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -215,17 +216,18 @@ void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float
 	}
 }
 
-void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth)
+void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float duration)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	player->useSmoke(&smokeList);
+	player->useSmoke(&smokeList, duration);
 
 	if (smokeList.back() == NULL) {
 		std::cout << "\nError: Could not create smoke! No more charges!\n";
 	}
 	else {
-		PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+		PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+		
 		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -245,17 +247,17 @@ void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float wi
 	}
 }
 
-void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float width, float height, float depth)
+void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float duration)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	player->useOil(&oilList);
+	player->useOil(&oilList, duration);
 
 	if (oilList.back() == NULL) {
 		std::cout << "\nError: Could not create oil! No more charges!\n";
 	}
 	else {
-		PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+		PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
 		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 

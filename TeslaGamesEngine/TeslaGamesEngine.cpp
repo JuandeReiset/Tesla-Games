@@ -651,6 +651,32 @@ int main()
 				}
 			}
 
+			//setup all track traps
+			for (int i = 0; i < raceTrack.listOfLaneStrips.size(); i++) {
+				TrackInteractableStrip& zone = *raceTrack.listOfLaneStrips.at(i);
+				for (int j = 0; j < zone.listOfLanePoints.size(); j++) {
+					TrackDrivingPoint& p = *zone.listOfLanePoints[j];
+					
+					switch (p.actionToTake)
+					{
+					case -2:	//ammo pickup
+						break;
+					case -3:	//normal pickup
+						physEng->createPickupTriggerVolume(p.x, p.y, p.z);
+						break;
+					case -4:	//caltrops
+						physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, -1.f);
+						break;
+					case -5:	//oil
+						physEng->createOilTriggerVolume(p.x, p.y, p.z, -1.f);
+						break;
+					case -6:	//smoke
+						physEng->createSmokeTriggerVolume(p.x, p.y, p.z, -1.f);
+						break;
+					}
+				}
+			}
+
 			std::vector<Vehicle*> vehicles;
 			vehicles.push_back(physEng->player);
 			std::vector<Vehicle*> aiVehicles = physEng->enemyVehicles;
@@ -883,7 +909,7 @@ int main()
 			//when dpad down is pushed, make a new caltrop and trigger volume
 			if (player1.isButtonDown(XButtons.DPad_Down) && !physEng->player->affectedBySmoke) {
 				PxVec3 p(physEng->player->GetPosition());
-				physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
+				physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 5.f);
 			}
 
 			auto c = physEng->caltropsList.begin();
@@ -907,7 +933,7 @@ int main()
 			//when dpad down is pushed, make a new caltrop and trigger volume
 			if (player1.isButtonDown(XButtons.DPad_Right) && !physEng->player->affectedBySmoke) {
 				PxVec3 p(physEng->player->GetPosition());
-				physEng->createOilTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
+				physEng->createOilTriggerVolume(p.x, p.y, p.z, 5.f);
 			}
 
 			auto o = physEng->oilList.begin();
@@ -931,7 +957,7 @@ int main()
 			//when dpad left is pushed, make a new smoke and trigger volume
 			if (player1.isButtonDown(XButtons.DPad_Left) && !physEng->player->affectedBySmoke) {
 				PxVec3 p(physEng->player->GetPosition());
-				physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f);
+				physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 5.f);
 			}
 
 			auto s = physEng->smokeList.begin();
