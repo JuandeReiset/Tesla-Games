@@ -56,7 +56,7 @@ Vehicle * AIShootingComponent::FindTarget()
 	// See if any other vehicle is in range
 	for (auto aVehicle : vehicles) {
 		if (IsTargetInView(aVehicle) && aVehicle != owner) {
-			aVehicle->update_health();
+			//aVehicle->update_health();
 			raycast_handler.set_Target(aVehicle);//Sets the target for the raycast
 			return aVehicle;
 		}
