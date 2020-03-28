@@ -94,6 +94,11 @@ public:
 	void createSmokeTriggerVolume(float x, float y, float z, float duration, int player);
 	void createOilTriggerVolume(float x, float y, float z, float duration, int player);
 
+	
+	void createTrackCaltrops(float x, float y, float z, float duration);	//this is used for the track ai
+	void createTrackOil(float x, float y, float z, float duration);	//this is used for the track ai
+	void createTrackSmoke(float x, float y, float z, float duration);	//this is used for the track ai
+
 
 	void update_dir_render4Vehicle(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z);
 

@@ -197,7 +197,7 @@ void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useCaltrops(&caltropsList);
+	playerVehicles[player]->useCaltrops(&caltropsList, duration);
 
 	if(caltropsList.back() == NULL) {
 		std::cout << "\nError: Could not create caltrops! No more charges!\n";
@@ -227,7 +227,7 @@ void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float du
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useSmoke(&smokeList);
+	playerVehicles[player]->useSmoke(&smokeList, duration);
 
 	if (smokeList.back() == NULL) {
 		std::cout << "\nError: Could not create smoke! No more charges!\n";
@@ -258,7 +258,7 @@ void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float dura
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useOil(&oilList);
+	playerVehicles[player]->useOil(&oilList, duration);
 
 	if (oilList.back() == NULL) {
 		std::cout << "\nError: Could not create oil! No more charges!\n";
@@ -281,6 +281,34 @@ void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float dura
 
 		gScene->addActor(*actor);
 	}
+}
+
+void PhysicsEngine::createTrackCaltrops(float x, float y, float z, float duration)
+{
+	//change the id to some track default id so it can hit everyone
+	//change createSmoke position to whatever is read in by this function
+	//change smokeList to the list held in PhysicsEngine.h
+	//repeat this for oil and caltrops
+	Smoke* smoke = new Smoke(ID, duration);
+	smoke->createSmoke(glm::vec3(pos.x, pos.y, pos.z));
+	smokeList->push_back(smoke);
+
+	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	oilList.back()->actor = actor;
+	actor->setName(OIL.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	oilList.back()->actor->userData = oilList.back();
+
+	gScene->addActor(*actor);
 }
 
 void PhysicsEngine::cleanupPhysics()

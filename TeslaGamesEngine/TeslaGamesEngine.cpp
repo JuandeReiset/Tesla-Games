@@ -666,13 +666,13 @@ int main()
 						physEng->createPickupTriggerVolume(p.x, p.y, p.z);
 						break;
 					case -4:	//caltrops
-						physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, -1.f);
+						physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, -1.f);	//make new function for track placement
 						break;
 					case -5:	//oil
-						physEng->createOilTriggerVolume(p.x, p.y, p.z, -1.f);
+						physEng->createOilTriggerVolume(p.x, p.y, p.z, -1.f);	//make new function for track placement
 						break;
 					case -6:	//smoke
-						physEng->createSmokeTriggerVolume(p.x, p.y, p.z, -1.f);
+						physEng->createSmokeTriggerVolume(p.x, p.y, p.z, -1.f);	//make new function for track placement
 						break;
 					}
 				}
