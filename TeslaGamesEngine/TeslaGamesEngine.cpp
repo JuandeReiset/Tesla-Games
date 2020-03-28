@@ -657,6 +657,7 @@ int main()
 			std::vector<Vehicle*> aiVehicles = physEng->enemyVehicles;
 			vehicles.insert(vehicles.end(), playerVehicles.begin(), playerVehicles.end());
 			vehicles.insert(vehicles.end(), aiVehicles.begin(), aiVehicles.end());
+			physEng->allVehicles = vehicles;
 			shaderList[0].UseShader();
 			for (auto ai : aiVehicles) {
 				AIShootingComponent aiShooting = AIShootingComponent(ai);
@@ -1088,26 +1089,6 @@ int main()
 					shadowList[0]->renderShadow();
 				}
 
-  /*
-  //this is for displaying the players position in the race, I'll redo this to allow multiple players so
-  //please keep this comment in here so I don't have to rewrite it all!!
-			int playerID = physEng->player->ID;
-			auto iter = std::find_if(physEng->allVehicles.begin(), physEng->allVehicles.end(), [&playerID](const Vehicle* v) {return v->ID == playerID; });
-			int jndex = std::distance(physEng->allVehicles.begin(), iter);
-
-			//std::cout << "YOU ARE IN " << jndex + 1 << " PLACE!\n";
-*/
-
-  /*
-			hud.setAbilityNumber(physEng->player->ability);
-			hud.setAliveNumber(physEng->enemyVehicles.size());
-			//don't now how to get position right now
-			//hud.setPositionNumber();
-			hud.setBulletNum(physEng->player->getShootingComponent()->ammo);
-			hud.setHealth(physEng->player->getHealthComponent()->GetHealth());
-      */
-
-
 				glEnable(GL_DEPTH_TEST);
 
 				// HUD
@@ -1128,10 +1109,13 @@ int main()
 					hud.setLapNumber(physEng->playerVehicles[player]->numLaps + 1);
 
 
+				int playerID = physEng->playerVehicles[player]->ID;
+				auto iter = std::find_if(physEng->allVehicles.begin(), physEng->allVehicles.end(), [&playerID](const Vehicle* v) {return v->ID == playerID; });
+				int index = std::distance(physEng->allVehicles.begin(), iter);
+
 				hud.setAbilityNumber(physEng->playerVehicles[player]->ability);
-				hud.setAliveNumber(physEng->enemyVehicles.size());
-				// Don't now how to get position right now
-				// hud.setPositionNumber();
+				hud.setAliveNumber(physEng->allVehicles.size());
+				hud.setPositionNumber(index + 1);
 				hud.setBulletNum(physEng->playerVehicles[player]->getShootingComponent()->ammo);
 				hud.setHealth(physEng->playerVehicles[player]->getHealthComponent()->GetHealth());
 
