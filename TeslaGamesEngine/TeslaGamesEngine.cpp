@@ -666,13 +666,13 @@ int main()
 						physEng->createPickupTriggerVolume(p.x, p.y, p.z);
 						break;
 					case -4:	//caltrops
-						physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, -1.f);	//make new function for track placement
+						physEng->createTrackCaltrops(p.x, p.y, p.z, -1.f);	//make new function for track placement
 						break;
 					case -5:	//oil
-						physEng->createOilTriggerVolume(p.x, p.y, p.z, -1.f);	//make new function for track placement
+						physEng->createTrackOil(p.x, p.y, p.z, -1.f);	//make new function for track placement
 						break;
 					case -6:	//smoke
-						physEng->createSmokeTriggerVolume(p.x, p.y, p.z, -1.f);	//make new function for track placement
+						physEng->createTrackSmoke(p.x, p.y, p.z, -1.f);	//make new function for track placement
 						break;
 					}
 				}
@@ -868,7 +868,7 @@ int main()
 						model = glm::translate(model, wallp);
 						/* Consider making the pickup boxes a hardcoded size and hardcoding the
 							trigger volumes to be the same size */
-						model = glm::scale(model, glm::vec3(1.1f, 0.3f, 0.2f));	//keep these scale values!
+						model = glm::scale(model, glm::vec3(0.8f, 0.8, 0.8f));	//keep these scale values!
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 						// boxTest.RenderModel();
@@ -939,7 +939,7 @@ int main()
 				// Draw and create caltrops
 				if (controllers[player].isButtonDown(XButtons.DPad_Down) && !physEng->playerVehicles[player]->affectedBySmoke) {
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f, player);
+					physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 5.f, player);
 				}
 
 				auto c = physEng->caltropsList.begin();
@@ -958,7 +958,7 @@ int main()
 				// Draw and create oil
 				if (controllers[player].isButtonDown(XButtons.DPad_Right) && !physEng->playerVehicles[player]->affectedBySmoke) {
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createOilTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f, player);
+					physEng->createOilTriggerVolume(p.x, p.y, p.z, 5.f, player);
 				}
 
 				auto o = physEng->oilList.begin();
@@ -977,7 +977,7 @@ int main()
 				// Draw and create smoke
 				if (controllers[player].isButtonDown(XButtons.DPad_Left) && !physEng->playerVehicles[player]->affectedBySmoke) {
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f, player);
+					physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 5.f, player);
 				}
 
 				auto s = physEng->smokeList.begin();

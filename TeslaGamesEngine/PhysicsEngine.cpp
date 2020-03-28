@@ -285,13 +285,35 @@ void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float dura
 
 void PhysicsEngine::createTrackCaltrops(float x, float y, float z, float duration)
 {
-	//change the id to some track default id so it can hit everyone
-	//change createSmoke position to whatever is read in by this function
-	//change smokeList to the list held in PhysicsEngine.h
-	//repeat this for oil and caltrops
-	Smoke* smoke = new Smoke(ID, duration);
-	smoke->createSmoke(glm::vec3(pos.x, pos.y, pos.z));
-	smokeList->push_back(smoke);
+	//we'll say the id for track traps is -1
+	Caltrops* caltrop = new Caltrops(-1, duration);
+	caltrop->createCaltrops(glm::vec3(x, y, z));
+	caltropsList.push_back(caltrop);
+
+	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	caltropsList.back()->actor = actor;
+	actor->setName(CALTROPS.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	caltropsList.back()->actor->userData = caltropsList.back();
+
+	gScene->addActor(*actor);
+}
+
+void PhysicsEngine::createTrackOil(float x, float y, float z, float duration)
+{
+	//we'll say the id for track traps is -1
+	Oil* oil = new Oil(-1, duration);
+	oil->createOil(glm::vec3(x, y, z));
+	oilList.push_back(oil);
 
 	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
@@ -307,6 +329,31 @@ void PhysicsEngine::createTrackCaltrops(float x, float y, float z, float duratio
 	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
 	oilList.back()->actor->userData = oilList.back();
+
+	gScene->addActor(*actor);
+}
+
+void PhysicsEngine::createTrackSmoke(float x, float y, float z, float duration)
+{
+	//we'll say the id for track traps is -1
+	Smoke* smoke = new Smoke(-1, duration);
+	smoke->createSmoke(glm::vec3(x, y, z));
+	smokeList.push_back(smoke);
+
+	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	smokeList.back()->actor = actor;
+	actor->setName(SMOKE.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	smokeList.back()->actor->userData = smokeList.back();
 
 	gScene->addActor(*actor);
 }
