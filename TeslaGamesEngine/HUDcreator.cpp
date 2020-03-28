@@ -201,9 +201,9 @@ void HUDcreator::use() {
 
 	GLint uniformModel = hudShader.GetModelLocation();
 	GLint uniformProjection = hudShader.GetProjectionLocation();
-
+	
 	glm::mat4 model = glm::mat4(1.0f);
-	glm::mat4 ortho = glm::ortho(0.0f, (float)mainWindow.getWidth(), (float)mainWindow.getHeight(), 0.0f);						//orthograohic projection
+	glm::mat4 ortho = glm::ortho(0.0f, (float)mainWindow.getWidth(), (float)mainWindow.getHeight(), 0.0f);
 
 	glDisable(GL_DEPTH_TEST);																									//disable the depth-testing
 
@@ -259,7 +259,9 @@ void HUDcreator::use() {
 	//current rank
 	cupTexture.UseTexture();
 	HUDList[8]->renderHUD();
-	dig2Texture.UseTexture();
+	posNum1.UseTexture();
+	HUDList[9]->renderHUD();
+	posNum2.UseTexture();
 	HUDList[10]->renderHUD();
 
 	//current laps
@@ -294,6 +296,7 @@ void HUDcreator::use() {
 	aliveNum2.UseTexture();
 	HUDList[20]->renderHUD();
 
+	// Total laps
 	slashTexture.UseTexture();
 	HUDList[21]->renderHUD();
 	dig0Texture.UseTexture();
@@ -509,6 +512,76 @@ void HUDcreator::setAliveNumber(int alive) {
 		break;
 	case 9:
 		aliveNum2 = dig9Texture;
+	}
+}
+
+void HUDcreator::setPositionNumber(int position)
+{
+	int num2 = position % 10;
+	int num1 = position / 10;
+
+	switch (num1) {
+	case 0:
+		posNum1 = dig0Texture;
+		break;
+	case 1:
+		posNum1 = dig1Texture;
+		break;
+	case 2:
+		posNum1 = dig2Texture;
+		break;
+	case 3:
+		posNum1 = dig3Texture;
+		break;
+	case 4:
+		posNum1 = dig4Texture;
+		break;
+	case 5:
+		posNum1 = dig5Texture;
+		break;
+	case 6:
+		posNum1 = dig6Texture;
+		break;
+	case 7:
+		posNum1 = dig7Texture;
+		break;
+	case 8:
+		posNum1 = dig8Texture;
+		break;
+	case 9:
+		posNum1 = dig9Texture;
+	}
+
+	switch (num2) {
+	case 0:
+		posNum2 = dig0Texture;
+		break;
+	case 1:
+		posNum2 = dig1Texture;
+		break;
+	case 2:
+		posNum2 = dig2Texture;
+		break;
+	case 3:
+		posNum2 = dig3Texture;
+		break;
+	case 4:
+		posNum2 = dig4Texture;
+		break;
+	case 5:
+		posNum2 = dig5Texture;
+		break;
+	case 6:
+		posNum2 = dig6Texture;
+		break;
+	case 7:
+		posNum2 = dig7Texture;
+		break;
+	case 8:
+		posNum2 = dig8Texture;
+		break;
+	case 9:
+		posNum2 = dig9Texture;
 	}
 }
 
