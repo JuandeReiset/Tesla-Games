@@ -555,11 +555,13 @@ int main()
 				startScreen.loadController(&player1);
 
 			startScreen.use();
+			menu.resetAiNum();
 
 			mainWindow.swapBuffers();
 		}
 
 		while (menuFlag) {
+			menu.setAiDefault(multiplayerFlag);
 			menu.loadController(&player1);
 			menu.use();
 			mainWindow.swapBuffers();

@@ -25,6 +25,8 @@ public:
 	void loadShader();
 
 	void loadController(Controller* controller);
+	void setAiDefault(bool multi) { multiplayer = multi; }
+	void resetAiNum();
 
 	int getSelectedGameMode();
 	int getSelectedTrack();
@@ -36,9 +38,10 @@ private:
 
 	unsigned int op = 0;
 	unsigned int tn = 0;
-	unsigned int an = 9;
+	unsigned int an = 4;
 	int arrow = -1;
-	
+	bool multiplayer;
+
 	GLfloat last;
 
 	unsigned int indices[6] = {
