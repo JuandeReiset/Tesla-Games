@@ -5,7 +5,7 @@ ShootComp::ShootComp() {
 	birthTime = glfwGetTime();
 	currentTime = glfwGetTime();
 
-	ammo = 10;
+	ammo = 0;
 
 	
 	//model = glm::mat4(1.f);
