@@ -43,6 +43,9 @@
 #include "AudioEngine.h"
 #include "AudioBoomBox.h"
 
+// Raycasting stuff
+#include "Raycast_shooting.h"
+
 //Controller stuff
 #include "Controller.h"
 
@@ -159,6 +162,8 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 
 bool isCameraFlipped = false;
+
+Raycast_shooting raycast_handler;
 
 float shoot_distance_x = 0; // Bullet vector movement for x
 float shoot_distance_y = 0; // Bullet vector movement for y
@@ -687,6 +692,7 @@ int main()
 			vehicles.insert(vehicles.end(), playerVehicles.begin(), playerVehicles.end());
 			vehicles.insert(vehicles.end(), aiVehicles.begin(), aiVehicles.end());
 			physEng->allVehicles = vehicles;
+			raycast_handler.set_vehiclelist(vehicles);
 			shaderList[0].UseShader();
 			for (auto ai : aiVehicles) {
 				AIShootingComponent aiShooting = AIShootingComponent(ai);
@@ -914,27 +920,6 @@ int main()
 
 				glm::vec3 camDir = cameras[player].getCameraDirection();
 				if ((ha->GetHealth()) > 0) {
-					// Draw bullets after Refactor. If affected by smoke they cant shoot
-					if ((controllers[player].isButtonDown(XButtons.R_Shoulder) || controllers[player].isButtonDown(XButtons.L_Shoulder)) && !physEng->playerVehicles[player]->affectedBySmoke) {
-						if (isCameraFlipped) {
-							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
-						}
-						else {
-							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
-						}
-					}
-
-					// Player 2 can fire with Q as well (only when no controller detected)
-					if (player == 1 && keys['Q'] && !physEng->playerVehicles[player]->affectedBySmoke && !P2Connected) {
-						if (isCameraFlipped) {
-							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
-						}
-						else {
-							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
-						}
-						keys['Q'] = false;
-					}
-					ba->renderAllBullets();
 
 					physx::PxMat44 modelMat(vDynamic->getGlobalPose());	// Make model matrix from transform of rigid dynamic
 					modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	// Scales the model
@@ -961,7 +946,41 @@ int main()
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 					}
 
-					playerTurretModels[player].RenderModel(); //renders turret	
+					playerTurretModels[player].RenderModel(); //renders turret
+
+					// Draw bullets after Refactor. If affected by smoke they cant shoot
+					if ((controllers[player].isButtonDown(XButtons.R_Shoulder) || controllers[player].isButtonDown(XButtons.L_Shoulder)) && !physEng->playerVehicles[player]->affectedBySmoke) {
+						if (isCameraFlipped) {
+							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+							glm::vec3 startcoords = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
+							glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
+							//raycast_handler.set_STARTPOS(startcoords);
+							raycast_handler.set_Owner(physEng->playerVehicles[player]);
+							//std::cout << "DETERMINE HIT REACHED" << std::endl;
+							raycast_handler.determine_hit(startcoords, shootdir);
+						}
+						else {
+							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
+							glm::vec3 startcoords = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
+							glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
+							//raycast_handler.set_STARTPOS(startcoords);
+							raycast_handler.set_Owner(physEng->playerVehicles[player]);
+							//std::cout << "DETERMINE HIT REACHED" << std::endl;
+							raycast_handler.determine_hit(startcoords, shootdir);
+						}
+					}
+
+					// Player 2 can fire with Q as well (only when no controller detected)
+					if (player == 1 && keys['Q'] && !physEng->playerVehicles[player]->affectedBySmoke && !P2Connected) {
+						if (isCameraFlipped) {
+							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+						}
+						else {
+							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
+						}
+						keys['Q'] = false;
+					}
+					ba->renderAllBullets();	
 				}
 
 				// Draw and create caltrops
