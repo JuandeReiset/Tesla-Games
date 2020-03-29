@@ -878,7 +878,7 @@ int main()
 				}
 
 				physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);
-				physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
+				physx::PxVec3 Direction = vehicleQuaternion.getBasisVector2();
 
 				// Draw bullets & turret
 				ShootComp* ba = physEng->playerVehicles[player]->getShootingComponent();
@@ -1134,10 +1134,13 @@ int main()
 				else
 					hud.setLapNumber(physEng->playerVehicles[player]->numLaps + 1);
 
-
+				
+				//calculates position
 				int playerID = physEng->playerVehicles[player]->ID;
 				auto iter = std::find_if(physEng->allVehicles.begin(), physEng->allVehicles.end(), [&playerID](const Vehicle* v) {return v->ID == playerID; });
 				int index = std::distance(physEng->allVehicles.begin(), iter);
+				std::cout << "PLAYER " << player << " IS IN " << index + 1 << " PLACE!\n";
+				
 
 				hud.setAbilityNumber(physEng->playerVehicles[player]->ability);
 				hud.setAliveNumber(physEng->allVehicles.size());
