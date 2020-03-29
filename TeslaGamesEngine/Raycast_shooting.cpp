@@ -47,18 +47,20 @@ bool Raycast_shooting::is_in_direction(Vehicle* possible_target,glm::vec3 Shootd
 	physx::PxVec3 fineRayEnd = owner->GetPosition();  //point of the raycast
 	float travelled = 0.0;						// how far we've walked across the whole ray when we cross over the terrain the first time
 	bool intersectionFound = false;				// result that we send back
-	float vehicle_bounds = 5.f;
+	float vehicle_bounds_z = 5.f;
+	float vehicle_bounds_y = 2.f;
+	float vehicle_bounds_x = 2.5f;
 	while (!intersectionFound && travelled <= rayLength)
 	{
 		travelled += 1.f;
 		fineRayEnd += toTarget * 1.f;
 		std::cout << "Evaluating raycast: Pos X " << fineRayEnd.x << " Pos Y " << fineRayEnd.y << "Pos Z " << fineRayEnd.z << std::endl;
 		// raycast between those two points using a binary search
-		if (fineRayEnd.x > tcp.x-vehicle_bounds && fineRayEnd.x < tcp.x +vehicle_bounds)
+		if (fineRayEnd.x > tcp.x-vehicle_bounds_x && fineRayEnd.x < tcp.x +vehicle_bounds_x)
 		{
-			if (fineRayEnd.y > tcp.y - vehicle_bounds && fineRayEnd.y < tcp.y + vehicle_bounds)
+			if (fineRayEnd.y > tcp.y - vehicle_bounds_y && fineRayEnd.y < tcp.y + vehicle_bounds_y)
 			{
-				if (fineRayEnd.z > tcp.z - vehicle_bounds && fineRayEnd.z < tcp.z + vehicle_bounds)
+				if (fineRayEnd.z > tcp.z - vehicle_bounds_z && fineRayEnd.z < tcp.z + vehicle_bounds_z)
 				{
 					intersectionFound = true;
 					std::cout << "HIT INTERSECTIONS" << std::endl;
