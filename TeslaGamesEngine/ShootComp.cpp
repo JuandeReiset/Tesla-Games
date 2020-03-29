@@ -44,7 +44,7 @@ void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntens
 	if (is_there_ammo()) {
 
 		if (!this->shootSound.isSoundPlaying()) {
-			std::cout << "play sound" << std::endl;
+			//std::cout << "play sound" << std::endl;
 			this->shootSound.playSound();
 		}
 
@@ -56,23 +56,10 @@ void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntens
 		uniformShininess = uniShininess;
 		uniformSpecularIntensity = uniSpecularIntensity;
 
-		float gap = 30.f;
-	    glm::vec3 start_pos2 =glm::vec3(start_position.x+gap*Direction_x, start_position.y +gap*Direction_y , start_position.z + gap*Direction_z);
-		glm::vec3 start_pos3 = glm::vec3(start_pos2.x + gap*Direction_x, start_pos2.y + gap*Direction_y, start_pos2.z + gap*Direction_z);
-
 		Bullet tmp_bullet = Bullet();
-		Bullet tmp_bullet2 = Bullet();
-		Bullet tmp_bullet3 = Bullet();
-		tmp_bullet.createBullet(start_position, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
 
 		tmp_bullet.createBullet(start_position, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
-		tmp_bullet2.createBullet(start_pos2, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
-		tmp_bullet3.createBullet(start_pos3, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
-		std::cout << "All 3 bullets CREATED \n";
-
 		bulletsList.push_back(tmp_bullet);
-		//bulletsList.push_back(tmp_bullet2);
-		//bulletsList.push_back(tmp_bullet3);
 	}
 
 }
@@ -85,7 +72,7 @@ void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntens
 	if (is_there_ammo()) {
 
 		if (!this->shootSound.isSoundPlaying()) {
-			std::cout << "play sound" << std::endl;
+			//std::cout << "play sound" << std::endl;
 			this->shootSound.playSound();
 		}
 
@@ -145,7 +132,7 @@ void ShootComp::decrease_ammo() {
 	if (ammo > 0) {
 		ammo -= 1;
 	}
-	std::cout << "Bulled fired!  Bullet counter = " << ammo<<"\n";
+	//std::cout << "Bulled fired!  Bullet counter = " << ammo<<"\n";
 }
 
 void ShootComp::recharge() {

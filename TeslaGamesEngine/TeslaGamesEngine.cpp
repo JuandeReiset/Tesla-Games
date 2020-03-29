@@ -39,6 +39,8 @@
 #include "Vehicle.h"
 #include "Game.h"
 
+//Raycasting stuff
+#include "Raycast_shooting.h"
 //AudioStuff
 #include "AudioEngine.h"
 #include "AudioBoomBox.h"
@@ -158,6 +160,7 @@ GLfloat lastTime = 0.0f;
 
 bool isCameraFlipped = false;
 
+Raycast_shooting raycast_handler;
 float shoot_distance_x = 0; // Bullet vector movement for x
 float shoot_distance_y = 0; // Bullet vector movement for y
 float shoot_distance_z = 0; //Bullet vector movement for z
@@ -653,6 +656,9 @@ int main()
 			vehicles.push_back(physEng->player);
 			std::vector<Vehicle*> aiVehicles = physEng->enemyVehicles;
 			vehicles.insert(vehicles.end(), aiVehicles.begin(), aiVehicles.end());
+			//set up the raycast handler for players using all vehicles in game
+			raycast_handler.set_vehiclelist(vehicles);
+			//
 			shaderList[0].UseShader();
 			for (auto ai : aiVehicles) {
 				AIShootingComponent aiShooting = AIShootingComponent(ai);
@@ -660,6 +666,7 @@ int main()
 				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
 				aiShootingComponents.push_back(aiShooting);
 			}
+			
 		}
 
 		while (gameFlag)
@@ -823,17 +830,7 @@ int main()
 
 			//Temporary condition for player that shows when player DIES, need to replace with something that eliminates all components
 			if ((ha->GetHealth()) > 0) {
-				//Draw bullets after Refactor. If affected by smoke they cant shoot
-				if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) && !physEng->player->affectedBySmoke) {
-					if (isCameraFlipped) {
-						ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
-					}
-					else {
-						ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
-					}
-				 }
-				ba->renderAllBullets();
-				//payer1->renderBullets();
+				
 
 					physx::PxMat44 modelMat(vDynamic->getGlobalPose());	//make model matrix from transform of rigid dynamic
 					modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	//scales the model
@@ -862,6 +859,33 @@ int main()
 				}
 			
 				T_turret.RenderModel(); //renders turret	
+
+				//Draw bullets after Refactor. If affected by smoke they cant shoot
+				if ((player1.isButtonDown(XButtons.R_Shoulder) || player1.isButtonDown(XButtons.L_Shoulder)) && !physEng->player->affectedBySmoke) {
+					if (isCameraFlipped) {
+						ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+
+						glm::vec3 startcoords = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
+						glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
+						//raycast_handler.set_STARTPOS(startcoords);
+						raycast_handler.set_Owner(physEng->player);
+						std::cout << "DETERMINE HIT REACHED" << std::endl;
+						raycast_handler.determine_hit(startcoords,shootdir);
+					}
+					else {
+						ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
+						glm::vec3 startcoords = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
+						glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
+						//raycast_handler.set_STARTPOS(startcoords);
+						raycast_handler.set_Owner(physEng->player);
+						std::cout << "DETERMINE HIT REACHED" << std::endl;
+						raycast_handler.determine_hit(startcoords, shootdir);
+					}
+				}
+				ba->renderAllBullets();
+				//payer1->renderBullets();
+
+
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		

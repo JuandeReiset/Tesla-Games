@@ -11,10 +11,12 @@ public:
 	void set_vehiclelist(std::vector<Vehicle*> vehiclesToSet);
 	void determine_hit(glm::vec3 startpos, glm::vec3 Dir);
 	void determine_hit_AI();
-	bool is_in_direction(Vehicle* v);
+	bool is_in_direction(Vehicle* possible_target);
 	void handle_hit(Vehicle* v1);
 
 	void set_Target(Vehicle* target);
+	void set_Owner(Vehicle* owner);
+	void set_STARTPOS(glm::vec3 sp);
 
 private:
 	glm::vec3 Start_pos;
