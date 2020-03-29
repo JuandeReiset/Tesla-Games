@@ -54,7 +54,7 @@ bool Raycast_shooting::is_in_direction(Vehicle* possible_target,glm::vec3 Shootd
 	{
 		travelled += 1.f;
 		fineRayEnd += toTarget * 1.f;
-		std::cout << "Evaluating raycast: Pos X " << fineRayEnd.x << " Pos Y " << fineRayEnd.y << "Pos Z " << fineRayEnd.z << std::endl;
+		//std::cout << "Evaluating raycast: Pos X " << fineRayEnd.x << " Pos Y " << fineRayEnd.y << "Pos Z " << fineRayEnd.z << std::endl;
 		// raycast between those two points using a binary search
 		if (fineRayEnd.x > tcp.x-vehicle_bounds_x && fineRayEnd.x < tcp.x +vehicle_bounds_x)
 		{
