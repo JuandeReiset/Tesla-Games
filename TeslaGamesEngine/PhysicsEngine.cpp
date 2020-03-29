@@ -167,6 +167,29 @@ void PhysicsEngine::createPickupTriggerVolume(float x, float y, float z)
 	pickupBoxes.push_back(pickup);
 }
 
+void PhysicsEngine::createAmmoTriggerVolume(float x, float y, float z)
+{
+	AmmoBox* ammo = new AmmoBox();
+
+	PxBoxGeometry geometry(PxVec3(0.8f, 0.8f, 0.8f));
+	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	ammo->actor = actor;
+	actor->setName(AMMO.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	ammo->actor->userData = ammo;
+
+	gScene->addActor(*actor);
+	ammoBoxes.push_back(ammo);
+}
+
 //width, height and depth are half extents (dimensions are actually 2width x 2height x 2depth)
 void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 position, PxVec3 dimensions)
 {

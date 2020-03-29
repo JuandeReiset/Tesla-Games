@@ -41,6 +41,9 @@ class ShootComp :
 
 		//decrease ammo by 1
 		void decrease_ammo();
+
+		//increase ammo by 1
+		void increase_ammo();
 		// increase armor by 10
 		void recharge();
 

@@ -661,6 +661,7 @@ int main()
 					switch (p.actionToTake)
 					{
 					case -2:	//ammo pickup
+						physEng->createAmmoTriggerVolume(p.x, p.y, p.z);
 						break;
 					case -3:	//normal pickup
 						physEng->createPickupTriggerVolume(p.x, p.y, p.z);
@@ -874,6 +875,29 @@ int main()
 						// boxTest.RenderModel();
 						defense_pickup.RenderModel();
 						++pickup;
+					}
+				}
+
+				// Draw ammo boxes
+				auto ammo = physEng->ammoBoxes.begin();
+				while (ammo != physEng->ammoBoxes.end()) {
+					// If it is picked up, delete it from the list
+					// It looks like it won't be triggered once it is deleted, but I think it's still in the triggerActor list
+					if ((*ammo)->getIsPicked()) {
+						physEng->ammoBoxes.erase(ammo++);
+					}
+					else {
+						physx::PxVec3 wallPos = (*ammo)->actor->getGlobalPose().p;
+						glm::vec3 wallp(wallPos.x, wallPos.y + 1.f, wallPos.z);
+						model = glm::mat4(1.0f);
+						model = glm::translate(model, wallp);
+
+						model = glm::scale(model, glm::vec3(0.8f, 0.8, 0.8f));	//keep these scale values!
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+						// boxTest.RenderModel();
+						ammo_pickup.RenderModel();
+						++ammo;
 					}
 				}
 

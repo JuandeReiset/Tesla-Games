@@ -186,6 +186,11 @@ void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 	}
 }
 
+//modify for multiple players
+//store a vector of winners in phys eng 
+//when this method is tripped, add the vehicle (based on id) to that vector
+//Maybe do a check in collider where hitLapMarker returns a value, if true add the vehicle to a list
+//and share that list with phys eng?
 void Vehicle::lapWinCondition()
 {
 	if (isPlayer) {
@@ -683,6 +688,12 @@ void Vehicle::pickup() {
 		++ability;
 
 	std::cout << "ability:" << ability << std::endl;
+}
+
+//ammo pickup, increases ammo by 1 to a max of 10
+void Vehicle::ammo()
+{
+	turret.increase_ammo();
 }
 
 //drops caltrops and adds the newly added caltrop to the given list

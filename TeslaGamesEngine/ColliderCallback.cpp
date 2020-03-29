@@ -2,6 +2,7 @@
 #include "Vehicle.h"
 #include "LapMarker.h"
 #include "PickupBox.h"
+#include "AmmoBox.h"
 #include <iostream>
 
 using namespace std;
@@ -42,13 +43,18 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 				p->setIsPicked();
 				v->pickup();
 			}
-			
-			//otherwise ignore the box
-			
-			//I don't know how to remove it from triggerActor once it is hit
-			//and now every hit will pick up a bunch of items, I guess it's the same reason you mentioned :(
+		}
+		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "ammo") == 0) {
+			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;	//this holds a ptr to the actual Vehicle object
+			AmmoBox* a = (AmmoBox*)pairs[i].triggerActor->userData;	//this holds a ptr to the actual PickupBox object
 
-			//add logic here
+			//if the box hasnt been picked up yet
+			if (!a->getIsPicked()) {	//this avoids hitting the same box multiple times
+				cout << "\nTrigger Block: Ammo Box\n";
+				a->setIsPicked();
+				v->ammo();
+			}
+
 		}
 		//vehicle and lap marker/counter
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "lapmarker") == 0) {

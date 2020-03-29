@@ -133,6 +133,8 @@ public:
 	void firelazer();
 
 	void pickup();													//pick up a(n) item/ability
+	//ammo pickup, increases ammo by 1 to a max of 10
+	void ammo();
 
 	//pls add your ability stuff here
 	void useCaltrops(std::list<Caltrops*> *caltropsList, float duration);

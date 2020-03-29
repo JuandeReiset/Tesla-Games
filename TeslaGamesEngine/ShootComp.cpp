@@ -148,6 +148,15 @@ void ShootComp::decrease_ammo() {
 	std::cout << "Bulled fired!  Bullet counter = " << ammo<<"\n";
 }
 
+void ShootComp::increase_ammo()
+{
+	if (ammo < 10) {
+		ammo += 1;
+	}
+
+	std::cout << "Turret loaded!  Bullet counter = " << ammo << "\n";
+}
+
 void ShootComp::recharge() {
 	ammo +=10;
 }
