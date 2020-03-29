@@ -48,16 +48,20 @@ bool Raycast_shooting::is_in_direction(Vehicle* possible_target) {
 
 	while (!intersectionFound && travelled <= rayLength)
 	{
-		travelled += 2.f;
-		fineRayEnd += toTarget * 2.f;
-
+		travelled += 5.f;
+		fineRayEnd += toTarget * 5.f;
+		std::cout << "Evaluating raycast: Pos X " << fineRayEnd.x << " Pos Y " << fineRayEnd.y << "Pos Z " << fineRayEnd.z << std::endl;
 		// raycast between those two points using a binary search
 		if (fineRayEnd.x > tcp.x-2.f && fineRayEnd.x < tcp.x +2.f)
 		{
-			if (fineRayEnd.y > tcp.y - 2.f && fineRayEnd.y < tcp.y + 2.f) {
-				if (fineRayEnd.z > tcp.z - 2.f && fineRayEnd.z < tcp.z + 2.f) {
+			if (fineRayEnd.y > tcp.y - 2.f && fineRayEnd.y < tcp.y + 2.f) 
+			{
+				if (fineRayEnd.z > tcp.z - 2.f && fineRayEnd.z < tcp.z + 2.f)
+				{
 					intersectionFound = true;
 					std::cout << "HIT INTERSECTIONS" << std::endl;
+					std::cout << "iNTERSECTION FOUND AT: Pos X " << fineRayEnd.x << " Pos Y " << fineRayEnd.y << "Pos Z " << fineRayEnd.z << std::endl;
+					std::cout << "The Target vehicle position was at: Pos X " << targetcurrentposition.x << " Pos Y " << targetcurrentposition.y << "Pos Z " << targetcurrentposition.z << std::endl;
 				}
 			}
 		}

@@ -869,7 +869,7 @@ int main()
 						glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
 						//raycast_handler.set_STARTPOS(startcoords);
 						raycast_handler.set_Owner(physEng->player);
-						std::cout << "DETERMINE HIT REACHED" << std::endl;
+						//std::cout << "DETERMINE HIT REACHED" << std::endl;
 						raycast_handler.determine_hit(startcoords,shootdir);
 					}
 					else {
@@ -878,7 +878,7 @@ int main()
 						glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
 						//raycast_handler.set_STARTPOS(startcoords);
 						raycast_handler.set_Owner(physEng->player);
-						std::cout << "DETERMINE HIT REACHED" << std::endl;
+						//std::cout << "DETERMINE HIT REACHED" << std::endl;
 						raycast_handler.determine_hit(startcoords, shootdir);
 					}
 				}
