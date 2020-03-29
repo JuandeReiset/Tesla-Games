@@ -13,7 +13,7 @@
 class Caltrops:DamagingObject
 {
 public:
-	Caltrops(int idInput);
+	Caltrops(int idInput, float duration);
 	~Caltrops();
 
 	physx::PxRigidActor* actor;

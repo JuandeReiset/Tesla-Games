@@ -12,7 +12,7 @@ class Smoke :
 	public DamagingObject
 {
 public:
-	Smoke(int idInput);
+	Smoke(int idInput, float duration);
 	~Smoke();
 
 	physx::PxRigidActor* actor;

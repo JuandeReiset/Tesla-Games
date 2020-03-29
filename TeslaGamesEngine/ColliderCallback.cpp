@@ -2,6 +2,7 @@
 #include "Vehicle.h"
 #include "LapMarker.h"
 #include "PickupBox.h"
+#include "AmmoBox.h"
 #include <iostream>
 
 using namespace std;
@@ -37,18 +38,24 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			PickupBox* p = (PickupBox*)pairs[i].triggerActor->userData;	//this holds a ptr to the actual PickupBox object
 
 			//if the box hasnt been picked up yet
-			if (!p->getIsPicked()) {	//this avoids hitting the same box multiple times
+			//if you are ranked 1 the pickup is disabled, or if you have max charges
+			if (!p->getIsPicked() && v->ranking != 1 && v->ability != 9) {	//this avoids hitting the same box multiple times
 				cout << "\nTrigger Block: Pickup Box\n";
 				p->setIsPicked();
 				v->pickup();
 			}
-			
-			//otherwise ignore the box
-			
-			//I don't know how to remove it from triggerActor once it is hit
-			//and now every hit will pick up a bunch of items, I guess it's the same reason you mentioned :(
+		}
+		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "ammo") == 0) {
+			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;	//this holds a ptr to the actual Vehicle object
+			AmmoBox* a = (AmmoBox*)pairs[i].triggerActor->userData;	//this holds a ptr to the actual PickupBox object
 
-			//add logic here
+			//if the box hasnt been picked up yet
+			if (!a->getIsPicked() && v->ranking != 1 && v->getShootingComponent()->ammo != 10) {	//this avoids hitting the same box multiple times
+				cout << "\nTrigger Block: Ammo Box\n";
+				a->setIsPicked();
+				v->ammo();
+			}
+
 		}
 		//vehicle and lap marker/counter
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "lapmarker") == 0) {
@@ -71,8 +78,14 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != c->id) {
-				//do damage
-				v->takeTrapDamage(1);
+				if (!(!v->isPlayer && c->id == -1)) {
+					cout << "DAMAGE DEALT\n";
+					//do damage
+					v->takeTrapDamage(5);
+				} 
+				else
+					cout << "AI TRACK TRAP COLLISION\n";
+				
 			}
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "smoke") == 0) {
@@ -84,8 +97,10 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != s->id) {
 				//smoke gameplay effect
-				if(!v->affectedBySmoke)
+				if(!v->affectedBySmoke && !(!v->isPlayer && s->id == -1))
 					v->enableSmokeEffect();
+				else
+					cout << "AI TRACK TRAP COLLISION\n";
 			}
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "oil") == 0) {
@@ -97,8 +112,10 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != o->id) {
 				//oil gameplay effect
-				if(!v->affectedByOil)
+				if(!v->affectedByOil && !(!v->isPlayer && o->id == -1))
 					v->enableOilEffect();
+				else
+					cout << "AI TRACK TRAP COLLISION\n";
 			}
 		}
 	}

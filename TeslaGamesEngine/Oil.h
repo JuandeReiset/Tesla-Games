@@ -12,7 +12,7 @@ class Oil :
 	public DamagingObject
 {
 public:
-	Oil(int idInput);
+	Oil(int idInput, float duration);
 	~Oil();
 
 	physx::PxRigidActor* actor;

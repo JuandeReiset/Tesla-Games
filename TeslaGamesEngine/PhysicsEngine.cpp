@@ -167,6 +167,29 @@ void PhysicsEngine::createPickupTriggerVolume(float x, float y, float z)
 	pickupBoxes.push_back(pickup);
 }
 
+void PhysicsEngine::createAmmoTriggerVolume(float x, float y, float z)
+{
+	AmmoBox* ammo = new AmmoBox();
+
+	PxBoxGeometry geometry(PxVec3(0.8f, 0.8f, 0.8f));
+	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	ammo->actor = actor;
+	actor->setName(AMMO.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	ammo->actor->userData = ammo;
+
+	gScene->addActor(*actor);
+	ammoBoxes.push_back(ammo);
+}
+
 //width, height and depth are half extents (dimensions are actually 2width x 2height x 2depth)
 void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 position, PxVec3 dimensions)
 {
@@ -193,17 +216,18 @@ void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 posi
 	lapmarkers.push_back(lapMarker);
 }
 
-void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth, int player)
+void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float duration, int player)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useCaltrops(&caltropsList);
+	playerVehicles[player]->useCaltrops(&caltropsList, duration);
 
 	if(caltropsList.back() == NULL) {
 		std::cout << "\nError: Could not create caltrops! No more charges!\n";
-	}
+	} 
 	else {
-		PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+		std::cout << "X  Y  Z: " << x << " " << y << " " << z << "\n";
+		PxBoxGeometry geometry(PxVec3(1.25f,1.f, 1.25f));
 		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -222,17 +246,18 @@ void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float
 	}
 }
 
-void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth, int player)
+void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float duration, int player)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useSmoke(&smokeList);
+	playerVehicles[player]->useSmoke(&smokeList, duration);
 
 	if (smokeList.back() == NULL) {
 		std::cout << "\nError: Could not create smoke! No more charges!\n";
 	}
 	else {
-		PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+		PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+		
 		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -252,17 +277,17 @@ void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float wi
 	}
 }
 
-void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float width, float height, float depth, int player)
+void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float duration, int player)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useOil(&oilList);
+	playerVehicles[player]->useOil(&oilList, duration);
 
 	if (oilList.back() == NULL) {
 		std::cout << "\nError: Could not create oil! No more charges!\n";
 	}
 	else {
-		PxBoxGeometry geometry(PxVec3(width / 2, height / 2, depth / 2));
+		PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
 		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -279,6 +304,81 @@ void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float widt
 
 		gScene->addActor(*actor);
 	}
+}
+
+void PhysicsEngine::createTrackCaltrops(float x, float y, float z, float duration)
+{
+	//we'll say the id for track traps is -1
+	Caltrops* caltrop = new Caltrops(-1, duration);
+	caltrop->createCaltrops(glm::vec3(x, y, z));
+	caltropsList.push_back(caltrop);
+
+	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	caltropsList.back()->actor = actor;
+	actor->setName(CALTROPS.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	caltropsList.back()->actor->userData = caltropsList.back();
+
+	gScene->addActor(*actor);
+}
+
+void PhysicsEngine::createTrackOil(float x, float y, float z, float duration)
+{
+	//we'll say the id for track traps is -1
+	Oil* oil = new Oil(-1, duration);
+	oil->createOil(glm::vec3(x, y, z));
+	oilList.push_back(oil);
+
+	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	oilList.back()->actor = actor;
+	actor->setName(OIL.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	oilList.back()->actor->userData = oilList.back();
+
+	gScene->addActor(*actor);
+}
+
+void PhysicsEngine::createTrackSmoke(float x, float y, float z, float duration)
+{
+	//we'll say the id for track traps is -1
+	Smoke* smoke = new Smoke(-1, duration);
+	smoke->createSmoke(glm::vec3(x, y, z));
+	smokeList.push_back(smoke);
+
+	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	smokeList.back()->actor = actor;
+	actor->setName(SMOKE.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	smokeList.back()->actor->userData = smokeList.back();
+
+	gScene->addActor(*actor);
 }
 
 void PhysicsEngine::cleanupPhysics()

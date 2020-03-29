@@ -532,6 +532,8 @@ int main()
 	Track raceTrack;
 	std::vector<AIShootingComponent> aiShootingComponents;
 
+	std::vector<Vehicle*> vehicles;
+
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	cameras[0].setFront(front.x, front.y, front.z);
 
@@ -654,7 +656,34 @@ int main()
 				}
 			}
 
-			std::vector<Vehicle*> vehicles;
+			//setup all track traps
+			for (int i = 0; i < raceTrack.listOfLaneStrips.size(); i++) {
+				TrackInteractableStrip& zone = *raceTrack.listOfLaneStrips.at(i);
+				for (int j = 0; j < zone.listOfLanePoints.size(); j++) {
+					TrackDrivingPoint& p = *zone.listOfLanePoints[j];
+					
+					switch (p.actionToTake)
+					{
+					case -2:	//ammo pickup
+						physEng->createAmmoTriggerVolume(p.x, p.y, p.z);
+						break;
+					case -3:	//normal pickup
+						physEng->createPickupTriggerVolume(p.x, p.y, p.z);
+						break;
+					case -4:	//caltrops
+						physEng->createTrackCaltrops(p.x, p.y, p.z, -1.f);	//make new function for track placement
+						break;
+					case -5:	//oil
+						physEng->createTrackOil(p.x, p.y, p.z, -1.f);	//make new function for track placement
+						break;
+					case -6:	//smoke
+						physEng->createTrackSmoke(p.x, p.y, p.z, -1.f);	//make new function for track placement
+						break;
+					}
+				}
+			}
+
+
 			std::vector<Vehicle*> playerVehicles = physEng->playerVehicles;
 			std::vector<Vehicle*> aiVehicles = physEng->enemyVehicles;
 			vehicles.insert(vehicles.end(), playerVehicles.begin(), playerVehicles.end());
@@ -835,7 +864,8 @@ int main()
 					// If it is picked up, delete it from the list
 					// It looks like it won't be triggered once it is deleted, but I think it's still in the triggerActor list
 					if ((*pickup)->getIsPicked()) {
-						physEng->pickupBoxes.erase(pickup++);
+						//physEng->pickupBoxes.erase(pickup++);		//deletes box
+						(*pickup++)->timeRespawnCheck();			//respawn check for box
 					}
 					else {
 						physx::PxVec3 wallPos = (*pickup)->actor->getGlobalPose().p;
@@ -844,7 +874,7 @@ int main()
 						model = glm::translate(model, wallp);
 						/* Consider making the pickup boxes a hardcoded size and hardcoding the
 							trigger volumes to be the same size */
-						model = glm::scale(model, glm::vec3(1.1f, 0.3f, 0.2f));	//keep these scale values!
+						model = glm::scale(model, glm::vec3(0.8f, 0.8, 0.8f));	//keep these scale values!
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 						// boxTest.RenderModel();
@@ -853,8 +883,32 @@ int main()
 					}
 				}
 
+				// Draw ammo boxes
+				auto ammo = physEng->ammoBoxes.begin();
+				while (ammo != physEng->ammoBoxes.end()) {
+					// If it is picked up, delete it from the list
+					// It looks like it won't be triggered once it is deleted, but I think it's still in the triggerActor list
+					if ((*ammo)->getIsPicked()) {
+						//physEng->ammoBoxes.erase(ammo++);		//deletes box
+						(*ammo++)->timeRespawnCheck();			//respawn check for box
+					}
+					else {
+						physx::PxVec3 wallPos = (*ammo)->actor->getGlobalPose().p;
+						glm::vec3 wallp(wallPos.x, wallPos.y + 1.f, wallPos.z);
+						model = glm::mat4(1.0f);
+						model = glm::translate(model, wallp);
+
+						model = glm::scale(model, glm::vec3(0.8f, 0.8, 0.8f));	//keep these scale values!
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+						// boxTest.RenderModel();
+						ammo_pickup.RenderModel();
+						++ammo;
+					}
+				}
+
 				physx::PxVec3 forwardvec = physx::PxVec3(vehicleQuaternion.x, 0, vehicleQuaternion.z);
-				physx::PxVec3  Direction = vehicleQuaternion.getBasisVector2();
+				physx::PxVec3 Direction = vehicleQuaternion.getBasisVector2();
 
 				// Draw bullets & turret
 				ShootComp* ba = physEng->playerVehicles[player]->getShootingComponent();
@@ -915,7 +969,7 @@ int main()
 				// Draw and create caltrops
 				if (controllers[player].isButtonDown(XButtons.DPad_Down) && !physEng->playerVehicles[player]->affectedBySmoke) {
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f, player);
+					physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 5.f, player);
 				}
 
 				auto c = physEng->caltropsList.begin();
@@ -934,7 +988,7 @@ int main()
 				// Draw and create oil
 				if (controllers[player].isButtonDown(XButtons.DPad_Right) && !physEng->playerVehicles[player]->affectedBySmoke) {
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createOilTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f, player);
+					physEng->createOilTriggerVolume(p.x, p.y, p.z, 5.f, player);
 				}
 
 				auto o = physEng->oilList.begin();
@@ -953,7 +1007,7 @@ int main()
 				// Draw and create smoke
 				if (controllers[player].isButtonDown(XButtons.DPad_Left) && !physEng->playerVehicles[player]->affectedBySmoke) {
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 2.5f, 2, 2.5f, player);
+					physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 5.f, player);
 				}
 
 				auto s = physEng->smokeList.begin();
@@ -1110,10 +1164,20 @@ int main()
 				else
 					hud.setLapNumber(physEng->playerVehicles[player]->numLaps + 1);
 
-
+///////////////////////////////////////////////////RANKING////////////////////////////////////////////////////////////////////////////////////////////				
+				//move this to all vehicles
+				//calculates position
 				int playerID = physEng->playerVehicles[player]->ID;
 				auto iter = std::find_if(physEng->allVehicles.begin(), physEng->allVehicles.end(), [&playerID](const Vehicle* v) {return v->ID == playerID; });
 				int index = std::distance(physEng->allVehicles.begin(), iter);
+				//assign ranking for vehicle here
+				physEng->playerVehicles[player]->ranking = index + 1;
+				std::cout << "PLAYER " << player << " IS IN " << index + 1 << " PLACE!\n";
+				
+///////////////////////////////////////////////////RANKING////////////////////////////////////////////////////////////////////////////////////////////
+
+				//std::cout << "X Y Z: " << physEng->playerVehicles[player]->GetPosition().x << " " << physEng->playerVehicles[player]->GetPosition().y << " " << physEng->playerVehicles[player]->GetPosition().z << "\n";
+				
 
 				hud.setAbilityNumber(physEng->playerVehicles[player]->ability);
 				hud.setAliveNumber(physEng->allVehicles.size());
@@ -1123,6 +1187,20 @@ int main()
 
 				hud.use();
 			}
+
+			//move ranking here (currently here since ai needs ranking here
+			//we technically do the players twice, once just above and once here
+			//but I didnt wanna mess around with the hud stuff
+			//we can clean this up for milestone 5
+			for (int i = 0; i < physEng->allVehicles.size(); i++) {
+				int carID = physEng->allVehicles[i]->ID;
+				auto iter = std::find_if(physEng->allVehicles.begin(), physEng->allVehicles.end(), [&carID](const Vehicle* v) {return v->ID == carID; });
+				int index = std::distance(physEng->allVehicles.begin(), iter);
+				physEng->allVehicles[i]->ranking = index + 1;
+			}
+
+
+			//move position loop here
 
 			/* Audio */ 
 			if (audioSystem.allHaveBeenPaused == true) {

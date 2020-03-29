@@ -4,6 +4,7 @@
 #include "Vehicle.h"
 #include "LapMarker.h"
 #include "PickupBox.h"
+#include "AmmoBox.h"
 #include "Caltrops.h"
 #include "Smoke.h"
 #include "Oil.h"
@@ -54,6 +55,7 @@ public:
 	const std::string CALTROPS = "caltrops";
 	const std::string SMOKE = "smoke";
 	const std::string OIL = "oil";
+	const std::string AMMO = "ammo";
 
 	PhysicsEngine();
 	void initAudioForVehicles(AudioEngine * audio);
@@ -79,6 +81,7 @@ public:
 	std::list<Caltrops*> caltropsList;
 	std::list<Smoke*> smokeList;
 	std::list<Oil*> oilList;
+	std::list<AmmoBox*> ammoBoxes;
 
 	std::vector<Vehicle*> allVehicles;
 	void sortVehicles();
@@ -89,10 +92,16 @@ public:
 
 
 	void createPickupTriggerVolume(float x, float y, float z);
+	void createAmmoTriggerVolume(float x, float y, float z);
 	void createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 position, PxVec3 dimensions);
-	void createCaltropsTriggerVolume(float x, float y, float z, float width, float height, float depth, int player);
-	void createSmokeTriggerVolume(float x, float y, float z, float width, float height, float depth, int player);
-	void createOilTriggerVolume(float x, float y, float z, float width, float height, float depth, int player);
+	void createCaltropsTriggerVolume(float x, float y, float z, float duration, int player);
+	void createSmokeTriggerVolume(float x, float y, float z, float duration, int player);
+	void createOilTriggerVolume(float x, float y, float z, float duration, int player);
+
+	
+	void createTrackCaltrops(float x, float y, float z, float duration);	//this is used for the track ai
+	void createTrackOil(float x, float y, float z, float duration);	//this is used for the track ai
+	void createTrackSmoke(float x, float y, float z, float duration);	//this is used for the track ai
 
 
 	void update_dir_render4Vehicle(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z);
