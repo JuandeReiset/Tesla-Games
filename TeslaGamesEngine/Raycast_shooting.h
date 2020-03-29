@@ -11,7 +11,7 @@ public:
 	void set_vehiclelist(std::vector<Vehicle*> vehiclesToSet);
 	void determine_hit(glm::vec3 startpos, glm::vec3 Dir);
 	void determine_hit_AI();
-	bool is_in_direction(Vehicle* possible_target);
+	bool is_in_direction(Vehicle* possible_target,glm::vec3 Shootdir);
 	void handle_hit(Vehicle* v1); //updates vehicle hp once hit
 
 	void set_Target(Vehicle* target); //used for AI raycasting 

@@ -11,8 +11,9 @@ void Raycast_shooting::determine_hit(glm::vec3 startpos, glm::vec3 Dir) {
 
 	for (auto aVehicle : vehicles) {
 		//std::cout << "There is Vehicles in the list" << std::endl;
-		if (is_in_direction(aVehicle) && aVehicle != owner) {
-			if (owner->getShootingComponent()->is_there_ammo()) {
+		if (owner->getShootingComponent()->is_there_ammo()) {
+			if (is_in_direction(aVehicle, Dir) && aVehicle != owner) {
+			
 				handle_hit(aVehicle);
 				
 				//break;
@@ -33,12 +34,12 @@ void Raycast_shooting::determine_hit_AI() {
 
 }
 
-bool Raycast_shooting::is_in_direction(Vehicle* possible_target) {
+bool Raycast_shooting::is_in_direction(Vehicle* possible_target,glm::vec3 Shootdir) {
 	// Get current aim direction (Forward vector of turret)
 	// Get direction to target (Target pos - owner pos)
 	physx::PxVec3 targetcurrentposition = possible_target->GetPosition();
 	
-	physx::PxVec3 toTarget = possible_target->GetPosition() - owner->GetPosition();
+	physx::PxVec3 toTarget = physx::PxVec3 (Shootdir.x,Shootdir.y,Shootdir.z);
 	toTarget.normalize();
 	glm::vec3 tcp = glm::vec3(targetcurrentposition.x, targetcurrentposition.y, targetcurrentposition.z); //target current position in world
 	float rayLength = 200.f; //The length of the raycast ray
@@ -46,7 +47,7 @@ bool Raycast_shooting::is_in_direction(Vehicle* possible_target) {
 	physx::PxVec3 fineRayEnd = owner->GetPosition();  //point of the raycast
 	float travelled = 0.0;						// how far we've walked across the whole ray when we cross over the terrain the first time
 	bool intersectionFound = false;				// result that we send back
-	float vehicle_bounds = 20.f;
+	float vehicle_bounds = 5.f;
 	while (!intersectionFound && travelled <= rayLength)
 	{
 		travelled += 1.f;
