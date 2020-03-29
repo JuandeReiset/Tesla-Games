@@ -33,8 +33,7 @@ void TrackInteractableStrip::setLaneStatus(int atIndex, int newStatus) {
 	this->listOfLanePoints[atIndex]->switchAction(newStatus);
 }
 void TrackInteractableStrip::clearLaneStatus(int atIndex) {
-	TrackDrivingPoint ref = *this->listOfLanePoints[atIndex];
-	int oldAction = ref.actionToTake;
+	int oldAction = this->listOfLanePoints[atIndex]->actionToTake;
 
 	//Remove status or something
 	//TODO: Stephen plz
