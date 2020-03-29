@@ -45,18 +45,18 @@ bool Raycast_shooting::is_in_direction(Vehicle* possible_target) {
 	physx::PxVec3 fineRayEnd = owner->GetPosition();  //point of the raycast
 	float travelled = 0.0;						// how far we've walked across the whole ray when we cross over the terrain the first time
 	bool intersectionFound = false;				// result that we send back
-
+	float vehicle_bounds = 20.f;
 	while (!intersectionFound && travelled <= rayLength)
 	{
-		travelled += 5.f;
-		fineRayEnd += toTarget * 5.f;
+		travelled += 2.f;
+		fineRayEnd += toTarget * 2.f;
 		std::cout << "Evaluating raycast: Pos X " << fineRayEnd.x << " Pos Y " << fineRayEnd.y << "Pos Z " << fineRayEnd.z << std::endl;
 		// raycast between those two points using a binary search
-		if (fineRayEnd.x > tcp.x-2.f && fineRayEnd.x < tcp.x +2.f)
+		if (fineRayEnd.x > tcp.x-vehicle_bounds && fineRayEnd.x < tcp.x +vehicle_bounds)
 		{
-			if (fineRayEnd.y > tcp.y - 2.f && fineRayEnd.y < tcp.y + 2.f) 
+			if (fineRayEnd.y > tcp.y - vehicle_bounds && fineRayEnd.y < tcp.y + vehicle_bounds)
 			{
-				if (fineRayEnd.z > tcp.z - 2.f && fineRayEnd.z < tcp.z + 2.f)
+				if (fineRayEnd.z > tcp.z - vehicle_bounds && fineRayEnd.z < tcp.z + vehicle_bounds)
 				{
 					intersectionFound = true;
 					std::cout << "HIT INTERSECTIONS" << std::endl;
