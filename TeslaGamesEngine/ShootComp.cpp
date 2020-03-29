@@ -158,7 +158,7 @@ void ShootComp::increase_ammo()
 }
 
 void ShootComp::recharge() {
-	ammo +=10;
+	ammo +=1;
 }
 
 bool ShootComp::is_there_ammo() {

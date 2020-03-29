@@ -47,6 +47,7 @@ public:
 	int numberOfMarkersInTrack;
 	float distance;
 	void updateDistance();
+	int ranking;
 
 	//lap components
 	bool isPlayer;

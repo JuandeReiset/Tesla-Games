@@ -38,7 +38,8 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			PickupBox* p = (PickupBox*)pairs[i].triggerActor->userData;	//this holds a ptr to the actual PickupBox object
 
 			//if the box hasnt been picked up yet
-			if (!p->getIsPicked()) {	//this avoids hitting the same box multiple times
+			//if you are ranked 1 the pickup is disabled
+			if (!p->getIsPicked() && v->ranking != 1) {	//this avoids hitting the same box multiple times
 				cout << "\nTrigger Block: Pickup Box\n";
 				p->setIsPicked();
 				v->pickup();

@@ -448,6 +448,7 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	currentMarker = 0;
 	expectedMarker = 1;
 	numLaps = 0;
+	ranking = 0;
 
 	smokeDuration = 10.f;
 	oilDuration = 5.f;
@@ -693,7 +694,7 @@ void Vehicle::pickup() {
 //ammo pickup, increases ammo by 1 to a max of 10
 void Vehicle::ammo()
 {
-	turret.increase_ammo();
+	turret.recharge();
 }
 
 //drops caltrops and adds the newly added caltrop to the given list
