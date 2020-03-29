@@ -55,7 +55,9 @@ public:
 	int expectedMarker;
 	int numLaps;
 	void hitLapMarker(int val, int trackTotalLaps);
-	void lapWinCondition();
+	void wins();
+	bool hasWon;
+	int winRank;
 
 	void initAITrackPoints(std::vector<std::unique_ptr<TrackDrivingPoint>>* listOfPoints);
 	void incrementAITrackPoint();

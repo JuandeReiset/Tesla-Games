@@ -6,7 +6,7 @@ Smoke::Smoke(int idInput, float duration) {
 	birthTime = glfwGetTime();
 	currentTime = glfwGetTime();
 
-	smokeObj.LoadModel("Models/caltrops.obj");
+	smokeObj.LoadModel("Models/smoke.obj");
 	model = glm::mat4(1.f);
 	uniformModel = 0;
 	uniformSpecularIntensity = 0;

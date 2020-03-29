@@ -687,6 +687,10 @@ int main()
 			vehicles.insert(vehicles.end(), playerVehicles.begin(), playerVehicles.end());
 			vehicles.insert(vehicles.end(), aiVehicles.begin(), aiVehicles.end());
 			physEng->allVehicles = vehicles;
+
+			//copy the vector of vehicles to the list of alive vehicles
+			std::copy(vehicles.begin(), vehicles.end(), std::back_inserter(physEng->aliveVehicles));
+
 			shaderList[0].UseShader();
 			for (auto ai : aiVehicles) {
 				AIShootingComponent aiShooting = AIShootingComponent(ai);
@@ -1146,6 +1150,7 @@ int main()
 				glEnable(GL_DEPTH_TEST);
 
 				// HUD
+				//change this to use the new win condition
 				if (physEng->playerVehicles[player]->numLaps == 5)
 					winFlag = true;
 				else
