@@ -78,8 +78,14 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != c->id) {
-				//do damage
-				v->takeTrapDamage(1);
+				if (!(!v->isPlayer && c->id == -1)) {
+					cout << "DAMAGE DEALT\n";
+					//do damage
+					v->takeTrapDamage(5);
+				} 
+				else
+					cout << "AI TRACK TRAP COLLISION\n";
+				
 			}
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "smoke") == 0) {
@@ -91,8 +97,10 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != s->id) {
 				//smoke gameplay effect
-				if(!v->affectedBySmoke)
+				if(!v->affectedBySmoke && !(!v->isPlayer && s->id == -1))
 					v->enableSmokeEffect();
+				else
+					cout << "AI TRACK TRAP COLLISION\n";
 			}
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "oil") == 0) {
@@ -104,8 +112,10 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != o->id) {
 				//oil gameplay effect
-				if(!v->affectedByOil)
+				if(!v->affectedByOil && !(!v->isPlayer && o->id == -1))
 					v->enableOilEffect();
+				else
+					cout << "AI TRACK TRAP COLLISION\n";
 			}
 		}
 	}
