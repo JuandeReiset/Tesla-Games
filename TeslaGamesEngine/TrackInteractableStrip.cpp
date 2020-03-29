@@ -7,10 +7,9 @@ void TrackInteractableStrip::addLanePoint(float x, float y, float z, int status)
 }
 void TrackInteractableStrip::setLaneStatus(int atIndex, int newStatus) {
 
-	TrackDrivingPoint ref = *this->listOfLanePoints[atIndex];
-	float pointX = ref.x;
-	float pointY = ref.y;
-	float pointZ = ref.z;
+	float pointX = this->listOfLanePoints[atIndex]->x;
+	float pointY = this->listOfLanePoints[atIndex]->y;
+	float pointZ = this->listOfLanePoints[atIndex]->z;
 
 	this->clearLaneStatus(atIndex);
 	//TODO:
@@ -31,7 +30,7 @@ void TrackInteractableStrip::setLaneStatus(int atIndex, int newStatus) {
 
 	}
 	
-	ref.switchAction(newStatus);
+	this->listOfLanePoints[atIndex]->switchAction(newStatus);
 }
 void TrackInteractableStrip::clearLaneStatus(int atIndex) {
 	TrackDrivingPoint ref = *this->listOfLanePoints[atIndex];
