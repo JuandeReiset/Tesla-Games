@@ -1171,7 +1171,7 @@ int main()
 				//assign ranking for vehicle here
 				physEng->playerVehicles[player]->ranking = index + 1;
 				std::cout << "PLAYER " << player << " IS IN " << index + 1 << " PLACE!\n";
-
+				
 ///////////////////////////////////////////////////RANKING////////////////////////////////////////////////////////////////////////////////////////////
 
 				//std::cout << "X Y Z: " << physEng->playerVehicles[player]->GetPosition().x << " " << physEng->playerVehicles[player]->GetPosition().y << " " << physEng->playerVehicles[player]->GetPosition().z << "\n";
@@ -1186,7 +1186,16 @@ int main()
 				hud.use();
 			}
 
-			//move ranking here
+			//move ranking here (currently here since ai needs ranking here
+			//we technically do the players twice, once just above and once here
+			//but I didnt wanna mess around with the hud stuff
+			//we can clean this up for milestone 5
+			for (int i = 0; i < physEng->allVehicles.size(); i++) {
+				int carID = physEng->allVehicles[i]->ID;
+				auto iter = std::find_if(physEng->allVehicles.begin(), physEng->allVehicles.end(), [&carID](const Vehicle* v) {return v->ID == carID; });
+				int index = std::distance(physEng->allVehicles.begin(), iter);
+				physEng->allVehicles[i]->ranking = index + 1;
+			}
 
 
 			//move position loop here
