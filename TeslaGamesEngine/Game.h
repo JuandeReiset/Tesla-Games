@@ -17,6 +17,7 @@ public:
 	~Game();
 
 private:
+	int players;
 	// List of all objects in this world to iterate over
 	std::vector<Object*> objects;
 	// Renderer to handle all drawing

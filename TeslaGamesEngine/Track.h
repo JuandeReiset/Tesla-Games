@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <math.h>
+#include "LapMarker.h"
 #include "Vehicle.h"
 #include "TrackInteractableStrip.h"
 
@@ -36,6 +37,9 @@ class Track
 		void pastMajorCurrentMinor(PxU32 curGear, float angleToTurn, Vehicle * v);
 		void pastMinorCurrentExit(PxU32 curGear, float angleToTurn, Vehicle * v);
 		float getAngleToTurnBy(TrackDrivingPoint * currentTarget, Vehicle * v);
+
+		std::vector<LapMarker*> lapMarkers;
+		void initializeLapMarkers(int trackType);
 
 		std::vector<std::unique_ptr<TrackDrivingPoint>> listOfPoints;
 		std::vector<std::unique_ptr<TrackInteractableStrip>> listOfLaneStrips;

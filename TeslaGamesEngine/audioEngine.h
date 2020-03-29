@@ -31,8 +31,7 @@ namespace audioConstants
 	const int SOUND_FILE_DEPLOY_CALTROPS = 13;
 	const int SOUND_FILE_DEPLOY_OIL = 14;
 	const int SOUND_FILE_DEPLOY_SMOKE = 15;
-	
-	
+
 }
 
 class AudioEngine

@@ -34,6 +34,7 @@ public:
 
 
 private:
+	int id;
 	float size = 1.0f;										//HUD size
 	bool winOrLose = false;									//is someone finshed laps?
 	float currentHealth = 100;

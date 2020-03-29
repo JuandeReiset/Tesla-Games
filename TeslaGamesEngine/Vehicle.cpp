@@ -6,7 +6,7 @@
 using namespace physx;
 using namespace snippetvehicle;
 
-Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id) {
+Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id, std::vector<LapMarker*>* markers) {
 	physx::PxF32 gSteerVsForwardSpeedData[] =
 	{
 		0.0f,		0.9f,
@@ -62,6 +62,10 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 	ID = id;
 
 	ability = 3;	//each vehicle has 3 ability use by default
+
+	numberOfMarkersInTrack = markers->size();
+	totalMarkersHit = 0;
+	lapMarkers = markers;
 }
 Vehicle::Vehicle(int id) : ID(id) {}
 Vehicle::~Vehicle() { cleanup(); }
@@ -105,6 +109,10 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	updateCurrentTime();
 	updateSmoke();
 	updateOil();
+
+	//update distance for position/ranking
+	updateDistance();
+
 	
 	if (this->isAICar) {
 		PxVec3 pos = this->GetPosition();
@@ -147,17 +155,28 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	}
 }
 
+//updates the distance from this vehicle to the next lap marker
+void Vehicle::updateDistance()
+{
+	PxVec3 vehiclePos(actor->getGlobalPose().p);
+	PxVec3 markerPos(lapMarkers->at(expectedMarker)->actor->getGlobalPose().p);
+
+	distance = sqrt(pow((markerPos.x - vehiclePos.x), 2) + pow((markerPos.y - vehiclePos.y), 2) + pow((markerPos.z - vehiclePos.z), 2));
+}
+
 //called when a vehicle hits a trigger volume lap marker. Val is the lapMarker value, trackTotalLaps is the
 //total number of laps needed to win on that track, trackTotalLapMarkers is the total number of lap markers
 //placed around the track
-void Vehicle::hitLapMarker(int val, int trackTotalLaps, int trackTotalLapMarkers)
+void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 {
 	if (expectedMarker == val) {	//good hit
 		std::cout << "HIT LAP MARKER " << val << "!\n";
+		totalMarkersHit++;
 		//update expected and current marker vals
-		expectedMarker = (expectedMarker + 1) % trackTotalLapMarkers;
-		currentMarker = (currentMarker + 1) % trackTotalLapMarkers;
+		expectedMarker = (expectedMarker + 1) % numberOfMarkersInTrack;
+		currentMarker = (currentMarker + 1) % numberOfMarkersInTrack;
 
+		//start marker is 0, first marker after start is 1
 		if (currentMarker == 0 && expectedMarker == 1) {	//completed a lap
 			numLaps++;
 			if (numLaps == trackTotalLaps) {	//you win!
@@ -167,6 +186,11 @@ void Vehicle::hitLapMarker(int val, int trackTotalLaps, int trackTotalLapMarkers
 	}
 }
 
+//modify for multiple players
+//store a vector of winners in phys eng 
+//when this method is tripped, add the vehicle (based on id) to that vector
+//Maybe do a check in collider where hitLapMarker returns a value, if true add the vehicle to a list
+//and share that list with phys eng?
 void Vehicle::lapWinCondition()
 {
 	if (isPlayer) {
@@ -424,6 +448,7 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	currentMarker = 0;
 	expectedMarker = 1;
 	numLaps = 0;
+	ranking = 0;
 
 	smokeDuration = 10.f;
 	oilDuration = 5.f;
@@ -666,8 +691,14 @@ void Vehicle::pickup() {
 	std::cout << "ability:" << ability << std::endl;
 }
 
+//ammo pickup, increases ammo by 1 to a max of 10
+void Vehicle::ammo()
+{
+	turret.recharge();
+}
+
 //drops caltrops and adds the newly added caltrop to the given list
-void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
+void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList, float duration) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -675,7 +706,7 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 
 	PxVec3 pos = GetPosition();
 
-	Caltrops* caltrop = new Caltrops(ID);
+	Caltrops* caltrop = new Caltrops(ID, duration);
 	caltrop->createCaltrops(glm::vec3(pos.x, pos.y, pos.z));
 	catropsList->push_back(caltrop);
 
@@ -684,7 +715,7 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 	this->deployCaltropsEffect.playSound();
 }
 
-void Vehicle::useOil(std::list<Oil*> *oilList) {
+void Vehicle::useOil(std::list<Oil*> *oilList, float duration) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -692,7 +723,7 @@ void Vehicle::useOil(std::list<Oil*> *oilList) {
 
 	PxVec3 pos = GetPosition();
 
-	Oil* oil = new Oil(ID);
+	Oil* oil = new Oil(ID, duration);
 	oil->createOil(glm::vec3(pos.x, pos.y, pos.z));
 	oilList->push_back(oil);
 
@@ -700,7 +731,7 @@ void Vehicle::useOil(std::list<Oil*> *oilList) {
 	this->deployOilEffect.playSound();
 }
 
-void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
+void Vehicle::useSmoke(std::list<Smoke*>* smokeList, float duration) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -708,7 +739,7 @@ void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
 
 	PxVec3 pos = GetPosition();
 
-	Smoke* smoke = new Smoke(ID);
+	Smoke* smoke = new Smoke(ID, duration);
 	smoke->createSmoke(glm::vec3(pos.x, pos.y, pos.z));
 	smokeList->push_back(smoke);
 

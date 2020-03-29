@@ -143,6 +143,7 @@ void StartScreen::loadController(Controller *controller) {
 			gameFlag = false;
 			readyScreenFlag = false;
 			pauseFlag = false;
+			multiplayerFlag = false;
 		}
 		else if (op == 1) {
 			menuFlag = true;
@@ -150,6 +151,7 @@ void StartScreen::loadController(Controller *controller) {
 			gameFlag = false;
 			readyScreenFlag = false;
 			pauseFlag = false;
+			multiplayerFlag = true;
 		}
 		else if (op == 2) {
 			closeWindowFlag = true;

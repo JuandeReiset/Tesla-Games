@@ -184,6 +184,7 @@
   <ItemGroup>
     <ClInclude Include="AIDrivingComponent.h" />
     <ClInclude Include="AIShootingComponent.h" />
+    <ClInclude Include="AmmoBox.h" />
     <ClInclude Include="AudioBoomBox.h" />
     <ClInclude Include="audioEngine.h" />
     <ClInclude Include="Bullet.h" />
@@ -254,6 +255,7 @@
   <ItemGroup>
     <ClCompile Include="AIDrivingComponent.cpp" />
     <ClCompile Include="AIShootingComponent.cpp" />
+    <ClCompile Include="AmmoBox.cpp" />
     <ClCompile Include="AudioBoomBox.cpp" />
     <ClCompile Include="audioEngine.cpp" />
     <ClCompile Include="Bullet.cpp" />
