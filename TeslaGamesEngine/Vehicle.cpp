@@ -186,6 +186,11 @@ void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 	}
 }
 
+//modify for multiple players
+//store a vector of winners in phys eng 
+//when this method is tripped, add the vehicle (based on id) to that vector
+//Maybe do a check in collider where hitLapMarker returns a value, if true add the vehicle to a list
+//and share that list with phys eng?
 void Vehicle::lapWinCondition()
 {
 	if (isPlayer) {
@@ -443,6 +448,7 @@ void Vehicle::initVehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* 
 	currentMarker = 0;
 	expectedMarker = 1;
 	numLaps = 0;
+	ranking = 0;
 
 	smokeDuration = 10.f;
 	oilDuration = 5.f;
@@ -685,8 +691,14 @@ void Vehicle::pickup() {
 	std::cout << "ability:" << ability << std::endl;
 }
 
+//ammo pickup, increases ammo by 1 to a max of 10
+void Vehicle::ammo()
+{
+	turret.recharge();
+}
+
 //drops caltrops and adds the newly added caltrop to the given list
-void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
+void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList, float duration) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -694,7 +706,7 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 
 	PxVec3 pos = GetPosition();
 
-	Caltrops* caltrop = new Caltrops(ID);
+	Caltrops* caltrop = new Caltrops(ID, duration);
 	caltrop->createCaltrops(glm::vec3(pos.x, pos.y, pos.z));
 	catropsList->push_back(caltrop);
 
@@ -703,7 +715,7 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList) {
 	this->deployCaltropsEffect.playSound();
 }
 
-void Vehicle::useOil(std::list<Oil*> *oilList) {
+void Vehicle::useOil(std::list<Oil*> *oilList, float duration) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -711,7 +723,7 @@ void Vehicle::useOil(std::list<Oil*> *oilList) {
 
 	PxVec3 pos = GetPosition();
 
-	Oil* oil = new Oil(ID);
+	Oil* oil = new Oil(ID, duration);
 	oil->createOil(glm::vec3(pos.x, pos.y, pos.z));
 	oilList->push_back(oil);
 
@@ -719,7 +731,7 @@ void Vehicle::useOil(std::list<Oil*> *oilList) {
 	this->deployOilEffect.playSound();
 }
 
-void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
+void Vehicle::useSmoke(std::list<Smoke*>* smokeList, float duration) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -727,7 +739,7 @@ void Vehicle::useSmoke(std::list<Smoke*>* smokeList) {
 
 	PxVec3 pos = GetPosition();
 
-	Smoke* smoke = new Smoke(ID);
+	Smoke* smoke = new Smoke(ID, duration);
 	smoke->createSmoke(glm::vec3(pos.x, pos.y, pos.z));
 	smokeList->push_back(smoke);
 

@@ -47,6 +47,7 @@ public:
 	int numberOfMarkersInTrack;
 	float distance;
 	void updateDistance();
+	int ranking;
 
 	//lap components
 	bool isPlayer;
@@ -133,11 +134,13 @@ public:
 	void firelazer();
 
 	void pickup();													//pick up a(n) item/ability
+	//ammo pickup, increases ammo by 1 to a max of 10
+	void ammo();
 
 	//pls add your ability stuff here
-	void useCaltrops(std::list<Caltrops*> *caltropsList);
-	void useSmoke(std::list<Smoke*> *smokeList);
-	void useOil(std::list<Oil*> *oilList);
+	void useCaltrops(std::list<Caltrops*> *caltropsList, float duration);
+	void useSmoke(std::list<Smoke*> *smokeList, float duration);
+	void useOil(std::list<Oil*> *oilList, float duration);
 
 	bool affectedBySmoke;
 	float smokeStartTime, smokeDuration;

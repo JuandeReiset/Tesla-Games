@@ -1,8 +1,8 @@
 #include "Caltrops.h"
 
-Caltrops::Caltrops(int idInput) {
+Caltrops::Caltrops(int idInput, float duration) {
 	id = idInput;
-	life = 5.f;											//lifetime is 5 sec
+	life = duration;											//lifetime is 5 sec
 	birthTime = glfwGetTime();
 	currentTime = glfwGetTime();
 
@@ -17,11 +17,17 @@ Caltrops::Caltrops(int idInput) {
 }
 
 bool Caltrops::isDead() {
-	updateTime();
-	if (currentTime - birthTime >= life)
-		return true;
-	else
+	if (life <= -1.f) {	//infinite duration
 		return false;
+	}
+	else {
+		updateTime();
+		if (currentTime - birthTime >= life)
+			return true;
+		else
+			return false;
+	}
+	
 }
 
 void Caltrops::updateTime() {
