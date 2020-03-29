@@ -1140,6 +1140,8 @@ int main()
 				auto iter = std::find_if(physEng->allVehicles.begin(), physEng->allVehicles.end(), [&playerID](const Vehicle* v) {return v->ID == playerID; });
 				int index = std::distance(physEng->allVehicles.begin(), iter);
 				std::cout << "PLAYER " << player << " IS IN " << index + 1 << " PLACE!\n";
+
+				//std::cout << "X Y Z: " << physEng->playerVehicles[player]->GetPosition().x << " " << physEng->playerVehicles[player]->GetPosition().y << " " << physEng->playerVehicles[player]->GetPosition().z << "\n";
 				
 
 				hud.setAbilityNumber(physEng->playerVehicles[player]->ability);
