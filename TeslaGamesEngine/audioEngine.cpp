@@ -41,7 +41,7 @@ void AudioEngine::initialize() {
 	soundFiles[6] = "./audioFiles/vehicle_boost_start_MONO.wav";
 	soundFiles[7] = "./audioFiles/vehicle_boost_speed_max_MONO.wav";
 	soundFiles[8] = "./audioFiles/vehicle_top_speed_MONO.wav";
-	soundFiles[9] = "./audioFiles/vehicle_turret_triple_burst_MONO.wav";
+	soundFiles[9] = "./audioFiles/vehicle_turret_single_burst_MONO.wav";
 	soundFiles[10] = "./audioFiles/vehicle_damage_hit_bullet_MONO.wav";
 	soundFiles[11] = "./audioFiles/vehicle_damage_hit_trap_MONO.wav";
 	soundFiles[12] = "./audioFiles/vehicle_damage_impact_MONO.wav";
