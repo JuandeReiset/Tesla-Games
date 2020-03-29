@@ -39,6 +39,7 @@ bool Raycast_shooting::is_in_direction(Vehicle* possible_target) {
 	physx::PxVec3 targetcurrentposition = possible_target->GetPosition();
 	
 	physx::PxVec3 toTarget = possible_target->GetPosition() - owner->GetPosition();
+	toTarget.normalize();
 	glm::vec3 tcp = glm::vec3(targetcurrentposition.x, targetcurrentposition.y, targetcurrentposition.z); //target current position in world
 	float rayLength = 200.f; //The length of the raycast ray
 
@@ -61,7 +62,7 @@ bool Raycast_shooting::is_in_direction(Vehicle* possible_target) {
 					intersectionFound = true;
 					std::cout << "HIT INTERSECTIONS" << std::endl;
 					std::cout << "iNTERSECTION FOUND AT: Pos X " << fineRayEnd.x << " Pos Y " << fineRayEnd.y << "Pos Z " << fineRayEnd.z << std::endl;
-					std::cout << "The Target vehicle position was at: Pos X " << targetcurrentposition.x << " Pos Y " << targetcurrentposition.y << "Pos Z " << targetcurrentposition.z << std::endl;
+					std::cout << "The Target vehicle position was at: Pos X " << tcp.x << " Pos Y " << tcp.y << "Pos Z " << tcp.z << std::endl << std::endl<< std::endl;
 				}
 			}
 		}
