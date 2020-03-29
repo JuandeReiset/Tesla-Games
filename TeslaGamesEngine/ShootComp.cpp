@@ -42,12 +42,10 @@ void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntens
 	
 
 	if (is_there_ammo()) {
-
 		if (!this->shootSound.isSoundPlaying()) {
 			//std::cout << "play sound" << std::endl;
 			this->shootSound.playSound();
 		}
-
 		start_position = glm::vec3(carPos.x, carPos.y - 0.2f, carPos.z);
 		Direction_x = x;
 		Direction_y = y;
