@@ -40,12 +40,7 @@ PhysicsEngine::PhysicsEngine() {
 	boxwall->setSimulationFilterData(obstFilterData);
 	wallActor->setGlobalPose(PxTransform(PxVec3(0, 2, 5)));
 	wallActor->attachShape(*boxwall);
-	//gScene->addActor(*wallActor);
 
-	//createPickupTriggerVolume(0, 0, 0);
-	createPickupTriggerVolume(0, 2, 10);
-	createPickupTriggerVolume(2, 2, 10);
-	//createPickupTriggerVolume(33, 1, -87);
 
 	gameFinished = false;
 }

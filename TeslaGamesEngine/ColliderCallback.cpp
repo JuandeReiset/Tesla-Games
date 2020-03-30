@@ -67,7 +67,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			// std::cout << "LAP MARKER VALUE: " << l->markerValue << std::endl;
 
 			//hardcoded number of laps and markers
-			v->hitLapMarker(l->markerValue, 1);	//5 laps
+			v->hitLapMarker(l->markerValue, 5);	//5 laps
 			
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "caltrops") == 0) {
@@ -81,7 +81,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 				if (!(!v->isPlayer && c->id == -1)) {
 					//cout << "DAMAGE DEALT\n";
 					//do damage
-					v->takeTrapDamage(3);
+					v->takeTrapDamage(2);
 				} 
 				//else
 					//cout << "AI TRACK TRAP COLLISION\n";

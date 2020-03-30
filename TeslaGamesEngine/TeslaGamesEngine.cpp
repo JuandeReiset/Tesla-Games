@@ -347,8 +347,6 @@ int main()
 
 	physEng = new PhysicsEngine();
 
-	physEng->createPickupTriggerVolume(18, -2, -67);
-
 	// Rendering setup
 	CreateShaders();
 	createShadows();
