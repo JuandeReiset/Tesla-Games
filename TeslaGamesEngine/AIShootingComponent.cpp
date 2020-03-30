@@ -17,7 +17,7 @@ AIShootingComponent::AIShootingComponent(Vehicle * v)
 }
 
 void AIShootingComponent::Aim()
-{
+{    
 	// Find a target
 	if (!target) {
 		target = FindTarget();
@@ -28,13 +28,14 @@ void AIShootingComponent::Aim()
 			FindAimingState();
 			// Fire at target if aim is locked
 			if (aimingState == AimingState::Locked) {
-				std::cout << "FIRE @ " << glfwGetTime() << std::endl;
+				//std::cout << "FIRE @ " << glfwGetTime() << std::endl;
 				auto shooting = owner->getShootingComponent();
 				auto pos = owner->GetPosition();
 				// Setting ammo to 0 because of performance issues. Remove when those are fixed
-				shooting->ammo = 0;
-				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess);
+				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess,Shootdir.x,Shootdir.y,Shootdir.z);
+				raycast_handler.determine_hit_AI(); //Determines if the target gets hit by AI or not
 				lastFiredTime = glfwGetTime();
+				//target->update_health();
 			}
 		}
 		// Target not in view, find new target
@@ -47,6 +48,7 @@ void AIShootingComponent::Aim()
 void AIShootingComponent::SetVehicles(std::vector<Vehicle*> vehiclesToSet)
 {
 	vehicles = vehiclesToSet;
+	raycast_handler.set_vehiclelist(vehiclesToSet);
 }
 
 Vehicle * AIShootingComponent::FindTarget()
@@ -54,6 +56,8 @@ Vehicle * AIShootingComponent::FindTarget()
 	// See if any other vehicle is in range
 	for (auto aVehicle : vehicles) {
 		if (IsTargetInView(aVehicle) && aVehicle != owner) {
+			//aVehicle->update_health();
+			raycast_handler.set_Target(aVehicle);//Sets the target for the raycast
 			return aVehicle;
 		}
 	}
@@ -115,6 +119,7 @@ bool AIShootingComponent::AimAtTarget()
 	// Check if target is within an 80 degree cone in front of vehicle
 	if (abs(acos(toTarget.dot(forwardDirection))) * (180.f / 3.14) < 40.f) {
 		owner->getShootingComponent()->updateDirection(toTarget.x, toTarget.y, toTarget.z);
+		Shootdir=glm::vec3(toTarget.x,toTarget.y,toTarget.z);
 		return true;
 	}
 	else {
