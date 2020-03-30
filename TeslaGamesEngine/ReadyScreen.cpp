@@ -83,7 +83,7 @@ void ReadyScreen::use() {
 
 	backTexture.UseTexture();
 	HUDList[3]->renderHUD();
-
+/*
 	if (p1Ready) {
 		player1Texture.UseTexture();
 		HUDList[4]->renderHUD();
@@ -93,43 +93,22 @@ void ReadyScreen::use() {
 		player2Texture.UseTexture();
 		HUDList[5]->renderHUD();
 	}
-
+*/
 	glEnable(GL_DEPTH_TEST);
 
 	return;
 }
 
-void ReadyScreen::loadController(Controller *controller, int player) {
+void ReadyScreen::loadController(Controller *controller) {
 	controller->update();
 
 	if (controller->isButtonDown(XButtons.A)) {
-		switch (player) {
-		case 1:
-			p1Ready = true;
-			break;
-		case 2:
-			p2Ready = true;
-		}
-
-		if (multiplayerFlag) {
-			if (p1Ready && p2Ready) {
-				readyScreenFlag = false;
-				gameFlag = true;
-				startScreenFlag = false;
-				menuFlag = false;
-				pauseFlag = false;
-				p1Ready = false;
-				p2Ready = false;
-			}
-		}
-		else {
-			readyScreenFlag = false;
-			gameFlag = true;
-			startScreenFlag = false;
-			menuFlag = false;
-			pauseFlag = false;
-			p1Ready = false;
-		}
+		
+		readyScreenFlag = false;
+		gameFlag = true;
+		startScreenFlag = false;
+		menuFlag = false;
+		pauseFlag = false;
 	}
 	else if (controller->isButtonDown(XButtons.B)) {
 		readyScreenFlag = false;
