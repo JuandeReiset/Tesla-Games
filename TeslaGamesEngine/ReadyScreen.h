@@ -24,7 +24,7 @@ public:
 	void load();
 	void loadShader();
 
-	void loadController(Controller* controller);
+	void loadController(Controller* controller, int player);
 
 private:
 	std::vector<HUD*> HUDList;
@@ -45,6 +45,11 @@ private:
 	Texture controllerTexture;
 	Texture readyTexture;
 	Texture backTexture;
+	Texture player1Texture;
+	Texture player2Texture;
+
+	bool p1Ready = false;
+	bool p2Ready = false;
 
 	GLfloat backgroundVertices[20] = {
 		0.0f / 1600 * mainWindow.getWidth(), 0.f / 900.0f * mainWindow.getHeight(), 0.0f,	0.0f, 0.0f,								//bottom left
@@ -75,5 +80,18 @@ private:
 		1600.f / 1600 * mainWindow.getWidth(), 820.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 
+	GLfloat player1Vertices[20] = {
+		50.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		50.f / 1600 * mainWindow.getWidth(), 850.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		150.f / 1600 * mainWindow.getWidth(), 850.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		150.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+
+	GLfloat player2Vertices[20] = {
+		350.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		350.f / 1600 * mainWindow.getWidth(), 850.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		450.f / 1600 * mainWindow.getWidth(), 850.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		450.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
 };
 

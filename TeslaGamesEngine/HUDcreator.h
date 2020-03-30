@@ -31,7 +31,7 @@ public:
 	void setGameState(bool isPlayer);
 	void setBulletNum(int bullet);
 	void setHealth(float health) { currentHealth = health; };
-
+	void setDisabled(bool isDisabled);
 
 private:
 	int id;

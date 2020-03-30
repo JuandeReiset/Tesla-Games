@@ -663,3 +663,11 @@ void HUDcreator::setBulletNum(int bullet) {
 		bulletNum2 = dig9Texture;
 	}
 }
+
+void HUDcreator::setDisabled(bool isDisabled) {
+	if (isDisabled) {
+		bulletTexture = outOfBulletTexture;
+		weaponTexture = outOfWeaponTexture;
+
+	}
+}

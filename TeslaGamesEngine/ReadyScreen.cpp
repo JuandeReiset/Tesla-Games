@@ -16,6 +16,14 @@ void ReadyScreen::loadVertices() {
 	HUD* back = new HUD();
 	back->createHUD(backVertices, indices, 20, 6);
 	HUDList.push_back(back);
+
+	HUD* player1 = new HUD();
+	player1->createHUD(player1Vertices, indices, 20, 6);
+	HUDList.push_back(player1);
+
+	HUD* player2 = new HUD();
+	player2->createHUD(player2Vertices, indices, 20, 6);
+	HUDList.push_back(player2);
 }
 
 void ReadyScreen::loadTextures() {
@@ -30,6 +38,12 @@ void ReadyScreen::loadTextures() {
 
 	backTexture = Texture("Textures/goback.png");
 	backTexture.LoadTextureAlpha();
+
+	player1Texture = Texture("Textures/p1.png");
+	player1Texture.LoadTextureAlpha();
+
+	player2Texture = Texture("Textures/p2.png");
+	player2Texture.LoadTextureAlpha();
 }
 
 void ReadyScreen::loadShader() {
@@ -70,20 +84,52 @@ void ReadyScreen::use() {
 	backTexture.UseTexture();
 	HUDList[3]->renderHUD();
 
+	if (p1Ready) {
+		player1Texture.UseTexture();
+		HUDList[4]->renderHUD();
+	}
+
+	if (p2Ready) {
+		player2Texture.UseTexture();
+		HUDList[5]->renderHUD();
+	}
+
 	glEnable(GL_DEPTH_TEST);
 
 	return;
 }
 
-void ReadyScreen::loadController(Controller *controller) {
+void ReadyScreen::loadController(Controller *controller, int player) {
 	controller->update();
 
 	if (controller->isButtonDown(XButtons.A)) {
-		readyScreenFlag = false;
-		gameFlag = true;
-		startScreenFlag = false;
-		menuFlag = false;
-		pauseFlag = false;
+		switch (player) {
+		case 1:
+			p1Ready = true;
+			break;
+		case 2:
+			p2Ready = true;
+		}
+
+		if (multiplayerFlag) {
+			if (p1Ready && p2Ready) {
+				readyScreenFlag = false;
+				gameFlag = true;
+				startScreenFlag = false;
+				menuFlag = false;
+				pauseFlag = false;
+				p1Ready = false;
+				p2Ready = false;
+			}
+		}
+		else {
+			readyScreenFlag = false;
+			gameFlag = true;
+			startScreenFlag = false;
+			menuFlag = false;
+			pauseFlag = false;
+			p1Ready = false;
+		}
 	}
 	else if (controller->isButtonDown(XButtons.B)) {
 		readyScreenFlag = false;
