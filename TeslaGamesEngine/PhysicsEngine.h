@@ -102,9 +102,9 @@ public:
 	void createPickupTriggerVolume(float x, float y, float z);
 	void createAmmoTriggerVolume(float x, float y, float z);
 	void createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 position, PxVec3 dimensions);
-	void createCaltropsTriggerVolume(float x, float y, float z, float duration, int player);
-	void createSmokeTriggerVolume(float x, float y, float z, float duration, int player);
-	void createOilTriggerVolume(float x, float y, float z, float duration, int player);
+	void createCaltropsTriggerVolume(float x, float y, float z, float duration, int id);
+	void createSmokeTriggerVolume(float x, float y, float z, float duration, int id);
+	void createOilTriggerVolume(float x, float y, float z, float duration, int id);
 
 	
 	void createTrackCaltrops(float x, float y, float z, float duration);	//this is used for the track ai

@@ -84,6 +84,7 @@ physx::PxVec3 PhysicsEngine::GetBoxPos()
 	return wallActor->getGlobalPose().p;
 }
 
+
 void PhysicsEngine::stepPhysics()
 {
 	const PxF32 timestep = 1.0f / 60.0f;
@@ -272,11 +273,15 @@ void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 posi
 	lapmarkers.push_back(lapMarker);
 }
 
-void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float duration, int player)
+void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float duration, int id)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useCaltrops(&caltropsList, duration);
+
+	auto iter = std::find_if(allVehicles.begin(), allVehicles.end(), [&id](const Vehicle* v) {return v->ID == id; });
+	int index = std::distance(allVehicles.begin(), iter);
+
+	allVehicles[index]->useCaltrops(&caltropsList, duration);
 
 	if(caltropsList.back() == NULL) {
 		std::cout << "\nError: Could not create caltrops! No more charges!\n";
@@ -301,11 +306,14 @@ void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float
 	}
 }
 
-void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float duration, int player)
+void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float duration, int id)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useSmoke(&smokeList, duration);
+	auto iter = std::find_if(allVehicles.begin(), allVehicles.end(), [&id](const Vehicle* v) {return v->ID == id; });
+	int index = std::distance(allVehicles.begin(), iter);
+
+	allVehicles[index]->useSmoke(&smokeList, duration);
 
 	if (smokeList.back() == NULL) {
 		std::cout << "\nError: Could not create smoke! No more charges!\n";
@@ -332,11 +340,14 @@ void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float du
 	}
 }
 
-void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float duration, int player)
+void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float duration, int id)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useOil(&oilList, duration);
+	auto iter = std::find_if(allVehicles.begin(), allVehicles.end(), [&id](const Vehicle* v) {return v->ID == id; });
+	int index = std::distance(allVehicles.begin(), iter);
+
+	allVehicles[index]->useOil(&oilList, duration);
 
 	if (oilList.back() == NULL) {
 		std::cout << "\nError: Could not create oil! No more charges!\n";
@@ -364,7 +375,7 @@ void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float dura
 void PhysicsEngine::createTrackCaltrops(float x, float y, float z, float duration)
 {
 	//we'll say the id for track traps is -1
-	Caltrops* caltrop = new Caltrops(-1, duration);
+	Caltrops* caltrop = new Caltrops(-69420, duration);
 	caltrop->createCaltrops(glm::vec3(x, y, z));
 	caltropsList.push_back(caltrop);
 
@@ -389,7 +400,7 @@ void PhysicsEngine::createTrackCaltrops(float x, float y, float z, float duratio
 void PhysicsEngine::createTrackOil(float x, float y, float z, float duration)
 {
 	//we'll say the id for track traps is -1
-	Oil* oil = new Oil(-1, duration);
+	Oil* oil = new Oil(-69420, duration);
 	oil->createOil(glm::vec3(x, y, z));
 	oilList.push_back(oil);
 
@@ -414,7 +425,7 @@ void PhysicsEngine::createTrackOil(float x, float y, float z, float duration)
 void PhysicsEngine::createTrackSmoke(float x, float y, float z, float duration)
 {
 	//we'll say the id for track traps is -1
-	Smoke* smoke = new Smoke(-1, duration);
+	Smoke* smoke = new Smoke(-69420, duration);
 	smoke->createSmoke(glm::vec3(x, y, z));
 	smokeList.push_back(smoke);
 

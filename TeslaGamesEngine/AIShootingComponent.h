@@ -30,20 +30,28 @@ public:
 
 	~AIShootingComponent();
 
+	int wantToPlaceTrap;
+	Vehicle* owner;
+
 private:
 	Vehicle* FindTarget();
 	bool IsTargetInView(Vehicle* aTarget);
+	bool IsVehicleBehind(Vehicle* aTarget);
 	bool IsReloading();
 	void FindAimingState();
 	bool AimAtTarget();
     glm::vec3 Shootdir;
 	std::vector<Vehicle*> vehicles;
-	Vehicle* owner;
+	
 	Vehicle* target;
 	AimingState aimingState;
 	float threshold;
 
 	float lastFiredTime;
+
+	bool shouldUseAbility;
+	float lastAbilityTime;
+	float abilityCooldownTime;
 
 	Raycast_shooting raycast_handler;
 
