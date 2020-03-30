@@ -701,7 +701,7 @@ int main()
 			raycast_handler.set_vehiclelist(vehicles);
 			shaderList[0].UseShader();
 			for (auto ai : aiVehicles) {
-				std::cout << "AI OWNER ID: " << ai->ID << "\n";
+				//std::cout << "AI OWNER ID: " << ai->ID << "\n";
 				AIShootingComponent aiShooting = AIShootingComponent(ai);
 				aiShooting.SetVehicles(vehicles);
 				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
@@ -782,7 +782,7 @@ int main()
 					switch (ai.wantToPlaceTrap) {
 					case 1:		//caltrops
 						physEng->createCaltropsTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
-						std::cout << "OWNER ID: " << ai.owner->ID << "\n";
+						//std::cout << "OWNER ID: " << ai.owner->ID << "\n";
 						break;
 					case 2:		//oil
 						physEng->createOilTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
