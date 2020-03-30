@@ -81,9 +81,6 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != c->id) {
-				if (v->isPlayer) {
-					cout << "\nPLAYER HIT BY CALTROP ID: " << c->id << "\n";
-				}
 
 				if (!(!v->isPlayer && c->id == -69420)) {
 					
@@ -106,9 +103,6 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != s->id) {
-				if (v->isPlayer) {
-					cout << "\nPLAYER HIT BY SMOKE ID: " << s->id << "\n";
-				}
 				//smoke gameplay effect
 				if(!v->affectedBySmoke && !(!v->isPlayer && s->id == -69420))
 					v->enableSmokeEffect();
@@ -125,9 +119,6 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			//cout << "OIL ID: " << o->id << " VEHICLE: " << v->ID << "\n";
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != o->id) {
-				if (v->isPlayer) {
-					cout << "\nPLAYER HIT BY OIL ID: " << o->id << "\n";
-				}
 				//oil gameplay effect
 				if(!v->affectedByOil && !(!v->isPlayer && o->id == -69420))
 					v->enableOilEffect();
