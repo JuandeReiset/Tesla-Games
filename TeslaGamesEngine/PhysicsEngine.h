@@ -91,6 +91,7 @@ public:
 	//true means someone has won the game
 	bool gameFinished;
 	bool winConditionCheck();
+
 	
 
 	PxRigidActor* testActor;

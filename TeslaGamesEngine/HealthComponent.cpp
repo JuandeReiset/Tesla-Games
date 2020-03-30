@@ -31,12 +31,16 @@ void HealthComponent::audioUpdate() {
 }
 
 void HealthComponent::takeDamageFromBullet(float damageVal) {
-	this->localHealth = this->localHealth - damageVal;
-	this->bulletHitEffect.playSound();
+	if (this->localHealth > 0) {
+		this->localHealth = this->localHealth - damageVal;
+		this->bulletHitEffect.playSound();
+	}
 }
 void HealthComponent::takeTrapDamage(float damageVal) {
-	this->localHealth = this->localHealth - damageVal;
-	this->trapDamageEffect.playSound();
+	if (this->localHealth > 0) {
+		this->localHealth = this->localHealth - damageVal;
+		this->trapDamageEffect.playSound();
+	}
 }
 void HealthComponent::setPosition(float x, float y, float z) {
 	this->posX = x;

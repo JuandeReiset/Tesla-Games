@@ -45,6 +45,9 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 				v->pickup();
 			}
 		}
+		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "vehicle") == 0){
+			cout << "VEHICLE IMPACT DETECTED!\n";
+		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "ammo") == 0) {
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;	//this holds a ptr to the actual Vehicle object
 			AmmoBox* a = (AmmoBox*)pairs[i].triggerActor->userData;	//this holds a ptr to the actual PickupBox object
@@ -67,7 +70,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			// std::cout << "LAP MARKER VALUE: " << l->markerValue << std::endl;
 
 			//hardcoded number of laps and markers
-			v->hitLapMarker(l->markerValue, 5);	//5 laps
+			v->hitLapMarker(l->markerValue, 1);	//5 laps
 			
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "caltrops") == 0) {
@@ -81,10 +84,10 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 				if (!(!v->isPlayer && c->id == -1)) {
 					cout << "DAMAGE DEALT\n";
 					//do damage
-					v->takeTrapDamage(5);
+					v->takeTrapDamage(3);
 				} 
-				else
-					cout << "AI TRACK TRAP COLLISION\n";
+				//else
+					//cout << "AI TRACK TRAP COLLISION\n";
 				
 			}
 		}
@@ -99,8 +102,8 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 				//smoke gameplay effect
 				if(!v->affectedBySmoke && !(!v->isPlayer && s->id == -1))
 					v->enableSmokeEffect();
-				else
-					cout << "AI TRACK TRAP COLLISION\n";
+				//else
+					//cout << "AI TRACK TRAP COLLISION\n";
 			}
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "oil") == 0) {
@@ -114,8 +117,8 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 				//oil gameplay effect
 				if(!v->affectedByOil && !(!v->isPlayer && o->id == -1))
 					v->enableOilEffect();
-				else
-					cout << "AI TRACK TRAP COLLISION\n";
+				//else
+					//cout << "AI TRACK TRAP COLLISION\n";
 			}
 		}
 	}

@@ -96,7 +96,10 @@ void PhysicsEngine::stepPhysics()
 	sortVehicles();
 
 	cleanupTheDead();
-	gameFinished = winConditionCheck();
+
+	if (!gameFinished) {
+		gameFinished = winConditionCheck();
+	}
   
 	for (auto player : playerVehicles) {
 		player->update(timestep, gScene);
@@ -165,7 +168,7 @@ void PhysicsEngine::cleanupTheDead()
 bool PhysicsEngine::winConditionCheck()
 {
 	//1 alive vehicle left
-	if (aliveVehicles.size() == 1 && aliveVehicles.front()->currentHealth > 0) {
+	if (aliveVehicles.size() == 1 && aliveVehicles.front()->currentHealth() > 0) {
 		aliveVehicles.front()->wins();
 		return true;
 	}
@@ -173,12 +176,16 @@ bool PhysicsEngine::winConditionCheck()
 	//if all players are dead, signal that the ai has a win!
 	bool allPlayersDead = true;
 	for (int i = 0; i < playerVehicles.size(); i++) {
-		if (playerVehicles[i]->currentHealth > 0) {
-			allPlayersDead = allPlayersDead && false;
+		if (playerVehicles[i]->currentHealth() > 0) {
+			allPlayersDead = false;
 		}
 	}
 	
 	if (allPlayersDead) {
+		//set ai to winners
+		for (int i = 0; i < enemyVehicles.size(); i++) {
+			enemyVehicles.at(i)->wins();
+		}
 		return true;
 	}
 
@@ -189,6 +196,7 @@ bool PhysicsEngine::winConditionCheck()
 			//must have won from the lap marker win condition
 			return true;
 		}
+		it++;
 	}
 
 	return false;
@@ -280,7 +288,7 @@ void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float
 	} 
 	else {
 		std::cout << "X  Y  Z: " << x << " " << y << " " << z << "\n";
-		PxBoxGeometry geometry(PxVec3(1.25f,1.f, 1.25f));
+		PxBoxGeometry geometry(PxVec3(1.5f,5.f, 1.5f));
 		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -309,7 +317,7 @@ void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float du
 		std::cout << "\nError: Could not create smoke! No more charges!\n";
 	}
 	else {
-		PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+		PxBoxGeometry geometry(PxVec3(2.2f, 5.f, 2.2f));
 		
 		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
@@ -340,7 +348,7 @@ void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float dura
 		std::cout << "\nError: Could not create oil! No more charges!\n";
 	}
 	else {
-		PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+		PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
 		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -366,7 +374,7 @@ void PhysicsEngine::createTrackCaltrops(float x, float y, float z, float duratio
 	caltrop->createCaltrops(glm::vec3(x, y, z));
 	caltropsList.push_back(caltrop);
 
-	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -391,7 +399,7 @@ void PhysicsEngine::createTrackOil(float x, float y, float z, float duration)
 	oil->createOil(glm::vec3(x, y, z));
 	oilList.push_back(oil);
 
-	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -416,7 +424,7 @@ void PhysicsEngine::createTrackSmoke(float x, float y, float z, float duration)
 	smoke->createSmoke(glm::vec3(x, y, z));
 	smokeList.push_back(smoke);
 
-	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxBoxGeometry geometry(PxVec3(2.2f, 5.f, 2.2f));	//smoke is good
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 

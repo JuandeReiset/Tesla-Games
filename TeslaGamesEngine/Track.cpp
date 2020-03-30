@@ -89,12 +89,12 @@ void Track::initializeTrackPoints(int trackType) {
 
 		TrackInteractableStrip& z1 = *this->listOfLaneStrips.at(0);
 		//these work
-		z1.addLanePoint(-60.24, -2.60, -7.90, trackInteractableObjects::TESLA_PICKUP);
-		z1.addLanePoint(-68.14, -2.60, -4.85, trackInteractableObjects::AMMO_PICKUP);
-		z1.addLanePoint(-74, -2.60, -57, trackInteractableObjects::TESLA_PICKUP);
-		z1.addLanePoint(-78.62, -2.60, -0.79, trackInteractableObjects::AMMO_PICKUP);
-		z1.addLanePoint(-84.51, -2.62, 1.49, trackInteractableObjects::TESLA_PICKUP);
-		z1.addLanePoint(-92.22, -2.64, 4.48, trackInteractableObjects::AMMO_PICKUP);
+		z1.addLanePoint(-60.24, -2.60, -7.90, trackInteractableObjects::OIL);
+		z1.addLanePoint(-68.14, -2.60, -4.85, trackInteractableObjects::OIL);
+		z1.addLanePoint(-74, -2.60, -57, trackInteractableObjects::OIL);
+		z1.addLanePoint(-78.62, -2.60, -0.79, trackInteractableObjects::OIL);
+		z1.addLanePoint(-84.51, -2.62, 1.49, trackInteractableObjects::OIL);
+		z1.addLanePoint(-92.22, -2.64, 4.48, trackInteractableObjects::OIL);
 
 		TrackInteractableStrip& z2 = *this->listOfLaneStrips.at(1);
 		z2.addLanePoint(10.36, -2.55, 34.32, trackInteractableObjects::OIL);

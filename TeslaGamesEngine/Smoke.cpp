@@ -35,7 +35,7 @@ void Smoke::updateTime() {
 void Smoke::createSmoke(glm::vec3 carPos) {
 	position = glm::vec3(carPos.x, carPos.y - 1.2f, carPos.z);
 	model = glm::translate(model, position);
-	model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
+	model = glm::scale(model, glm::vec3(0.8f, 0.8f, 0.8f));
 
 }
 
