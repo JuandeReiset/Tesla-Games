@@ -281,29 +281,7 @@ void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float
 	auto iter = std::find_if(allVehicles.begin(), allVehicles.end(), [&id](const Vehicle* v) {return v->ID == id; });
 	int index = std::distance(allVehicles.begin(), iter);
 
-	allVehicles[index]->useCaltrops(&caltropsList, duration);
-
-	if(caltropsList.back() == NULL) {
-		std::cout << "\nError: Could not create caltrops! No more charges!\n";
-	} 
-	else {
-		PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
-		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
-		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
-
-		PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
-		caltropsList.back()->actor = actor;
-		actor->setName(CALTROPS.c_str());
-		PxShape* shape;
-		actor->getShapes(&shape, 1);
-		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
-		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
-
-		caltropsList.back()->actor->userData = caltropsList.back();
-
-		gScene->addActor(*actor);
-	}
+	allVehicles[index]->useCaltrops(&caltropsList, duration, gScene, gPhysics, PxVec3(x, y, z));
 }
 
 void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float duration, int id)
@@ -313,31 +291,7 @@ void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float du
 	auto iter = std::find_if(allVehicles.begin(), allVehicles.end(), [&id](const Vehicle* v) {return v->ID == id; });
 	int index = std::distance(allVehicles.begin(), iter);
 
-	allVehicles[index]->useSmoke(&smokeList, duration);
-
-	if (smokeList.back() == NULL) {
-		std::cout << "\nError: Could not create smoke! No more charges!\n";
-	}
-	else {
-		PxBoxGeometry geometry(PxVec3(2.2f, 5.f, 2.2f));
-		
-		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
-		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
-
-		PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
-		smokeList.back()->actor = actor;
-		actor->setName(SMOKE.c_str());
-		PxShape* shape;
-		actor->getShapes(&shape, 1);
-		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
-		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
-
-		
-		smokeList.back()->actor->userData = smokeList.back();
-
-		gScene->addActor(*actor);
-	}
+	allVehicles[index]->useSmoke(&smokeList, duration, gScene, gPhysics, PxVec3(x, y, z));
 }
 
 void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float duration, int id)
@@ -347,29 +301,7 @@ void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float dura
 	auto iter = std::find_if(allVehicles.begin(), allVehicles.end(), [&id](const Vehicle* v) {return v->ID == id; });
 	int index = std::distance(allVehicles.begin(), iter);
 
-	allVehicles[index]->useOil(&oilList, duration);
-
-	if (oilList.back() == NULL) {
-		std::cout << "\nError: Could not create oil! No more charges!\n";
-	}
-	else {
-		PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
-		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
-		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
-
-		PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
-		oilList.back()->actor = actor;
-		actor->setName(OIL.c_str());
-		PxShape* shape;
-		actor->getShapes(&shape, 1);
-		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
-		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
-
-		oilList.back()->actor->userData = oilList.back();
-
-		gScene->addActor(*actor);
-	}
+	allVehicles[index]->useOil(&oilList, duration, gScene, gPhysics, PxVec3(x,y,z));
 }
 
 void PhysicsEngine::createTrackCaltrops(float x, float y, float z, float duration)

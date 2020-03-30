@@ -660,7 +660,7 @@ int main()
 				}
 			}
 
-			
+
 			//setup all track traps
 			for (int i = 0; i < raceTrack.listOfLaneStrips.size(); i++) {
 				TrackInteractableStrip& zone = *raceTrack.listOfLaneStrips.at(i);
@@ -1019,6 +1019,7 @@ int main()
 				auto c = physEng->caltropsList.begin();
 				while (c != physEng->caltropsList.end()) {	//remove dead caltrops
 					if ((*c)->isDead()) {
+						(*c)->id = 1000;
 						physEng->gScene->removeActor(*((*c)->actor));
 						physEng->caltropsList.erase(c);
 						c++;
@@ -1040,6 +1041,7 @@ int main()
 				auto o = physEng->oilList.begin();
 				while (o != physEng->oilList.end()) {	//remove dead caltrops
 					if ((*o)->isDead()) {
+						(*o)->id = 1000;
 						physEng->gScene->removeActor(*((*o)->actor));
 						physEng->oilList.erase(o);
 						o++;
@@ -1061,6 +1063,7 @@ int main()
 				auto s = physEng->smokeList.begin();
 				while (s != physEng->smokeList.end()) {	//remove dead smoke
 					if ((*s)->isDead()) {
+						(*s)->id = 1000;
 						physEng->gScene->removeActor(*((*s)->actor));
 						physEng->smokeList.erase(s);
 						s++;

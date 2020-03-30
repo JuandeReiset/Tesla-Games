@@ -693,7 +693,7 @@ void Vehicle::ammo()
 }
 
 //drops caltrops and adds the newly added caltrop to the given list
-void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList, float duration) {
+void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList, float duration, PxScene* gScene, PxPhysics* gPhysics, PxVec3 position) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -705,12 +705,29 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList, float duration) {
 	caltrop->createCaltrops(glm::vec3(pos.x, pos.y, pos.z));
 	catropsList->push_back(caltrop);
 
+	PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
+	PxTransform transform(position, PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	catropsList->back()->actor = actor;
+	actor->setName(CALTROPS.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	catropsList->back()->actor->userData = catropsList->back();
+
+	gScene->addActor(*actor);
+
 	--ability;
 
 	this->deployCaltropsEffect.playSound();
 }
 
-void Vehicle::useOil(std::list<Oil*> *oilList, float duration) {
+void Vehicle::useOil(std::list<Oil*> *oilList, float duration, PxScene* gScene, PxPhysics* gPhysics, PxVec3 position) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -722,11 +739,28 @@ void Vehicle::useOil(std::list<Oil*> *oilList, float duration) {
 	oil->createOil(glm::vec3(pos.x, pos.y, pos.z));
 	oilList->push_back(oil);
 
+	PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
+	PxTransform transform(position, PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	oilList->back()->actor = actor;
+	actor->setName(OIL.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	oilList->back()->actor->userData = oilList->back();
+
+	gScene->addActor(*actor);
+
 	--ability;
 	this->deployOilEffect.playSound();
 }
 
-void Vehicle::useSmoke(std::list<Smoke*>* smokeList, float duration) {
+void Vehicle::useSmoke(std::list<Smoke*>* smokeList, float duration, PxScene* gScene, PxPhysics* gPhysics, PxVec3 position) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -737,6 +771,23 @@ void Vehicle::useSmoke(std::list<Smoke*>* smokeList, float duration) {
 	Smoke* smoke = new Smoke(ID, duration);
 	smoke->createSmoke(glm::vec3(pos.x, pos.y, pos.z));
 	smokeList->push_back(smoke);
+
+	PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
+	PxTransform transform(position, PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	smokeList->back()->actor = actor;
+	actor->setName(SMOKE.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	smokeList->back()->actor->userData = smokeList->back();
+
+	gScene->addActor(*actor);
 
 	--ability;
 	this->deploySmokeEffect.playSound();
