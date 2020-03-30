@@ -570,7 +570,13 @@ int main()
 		}
 
 		while (readyScreenFlag) {
-			readyScreen.loadController(&player1);
+			if (!multiplayerFlag)
+				readyScreen.loadController(&player1, 1);
+			
+			else {
+				readyScreen.loadController(&player1, 1);
+				readyScreen.loadController(&player2, 2);
+			}
 			readyScreen.use();
 			mainWindow.swapBuffers();
 		}
