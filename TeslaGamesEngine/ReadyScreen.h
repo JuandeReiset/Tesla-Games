@@ -24,7 +24,7 @@ public:
 	void load();
 	void loadShader();
 
-	void loadController(Controller* controller, int player);
+	void loadController(Controller* controller);
 
 private:
 	std::vector<HUD*> HUDList;
@@ -48,8 +48,8 @@ private:
 	Texture player1Texture;
 	Texture player2Texture;
 
-	bool p1Ready = false;
-	bool p2Ready = false;
+//	bool p1Ready = false;
+	//bool p2Ready = false;
 
 	GLfloat backgroundVertices[20] = {
 		0.0f / 1600 * mainWindow.getWidth(), 0.f / 900.0f * mainWindow.getHeight(), 0.0f,	0.0f, 0.0f,								//bottom left
