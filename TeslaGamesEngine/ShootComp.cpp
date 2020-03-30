@@ -38,9 +38,6 @@ void ShootComp::updateTime() {
 
 void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float x, float y, float z) {
 
-	decrease_ammo();
-	
-
 	if (is_there_ammo()) {
 		if (!this->shootSound.isSoundPlaying()) {
 			//std::cout << "play sound" << std::endl;
@@ -59,12 +56,11 @@ void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntens
 		tmp_bullet.createBullet(start_position, uniformModel, uniformSpecularIntensity, uniformShininess, Direction_x, Direction_y, Direction_z);
 		bulletsList.push_back(tmp_bullet);
 	}
+	decrease_ammo();
 
 }
 
 void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess) {
-
-	decrease_ammo();
 
 
 	if (is_there_ammo()) {
@@ -97,7 +93,7 @@ void ShootComp::fire(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntens
 		//bulletsList.push_back(tmp_bullet3);
 	}
 	
-
+	decrease_ammo();
 }
 
 void ShootComp::renderAllBullets() {
