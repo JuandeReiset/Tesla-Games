@@ -562,18 +562,26 @@ int main()
 				startScreen.loadController(&player1);
 
 			startScreen.use();
+			menu.resetAiNum();
 
 			mainWindow.swapBuffers();
 		}
 
 		while (menuFlag) {
+			menu.setAiDefault(multiplayerFlag);
 			menu.loadController(&player1);
 			menu.use();
 			mainWindow.swapBuffers();
 		}
 
 		while (readyScreenFlag) {
-			readyScreen.loadController(&player1);
+			if (!multiplayerFlag)
+				readyScreen.loadController(&player1, 1);
+			
+			else {
+				readyScreen.loadController(&player1, 1);
+				readyScreen.loadController(&player2, 2);
+			}
 			readyScreen.use();
 			mainWindow.swapBuffers();
 		}
@@ -1201,7 +1209,7 @@ int main()
 				hud.setPositionNumber(index + 1);
 				hud.setBulletNum(physEng->playerVehicles[player]->getShootingComponent()->ammo);
 				hud.setHealth(physEng->playerVehicles[player]->getHealthComponent()->GetHealth());
-
+				hud.setDisabled(physEng->playerVehicles[player]->affectedBySmoke);
 				hud.use();
 			}
 
