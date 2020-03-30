@@ -347,8 +347,6 @@ int main()
 
 	physEng = new PhysicsEngine();
 
-	physEng->createPickupTriggerVolume(18, -2, -67);
-
 	// Rendering setup
 	CreateShaders();
 	createShadows();
@@ -537,6 +535,7 @@ int main()
 	Track raceTrack;
 	std::vector<AIShootingComponent> aiShootingComponents;
 
+	//all vehicles
 	std::vector<Vehicle*> vehicles;
 
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
@@ -700,6 +699,10 @@ int main()
 			vehicles.insert(vehicles.end(), playerVehicles.begin(), playerVehicles.end());
 			vehicles.insert(vehicles.end(), aiVehicles.begin(), aiVehicles.end());
 			physEng->allVehicles = vehicles;
+
+			//copy the vector of vehicles to the list of alive vehicles
+			std::copy(vehicles.begin(), vehicles.end(), std::back_inserter(physEng->aliveVehicles));
+
 			raycast_handler.set_vehiclelist(vehicles);
 			shaderList[0].UseShader();
 			for (auto ai : aiVehicles) {
@@ -1173,12 +1176,21 @@ int main()
 				glEnable(GL_DEPTH_TEST);
 
 				// HUD
-				if (physEng->playerVehicles[player]->numLaps == 5)
-					winFlag = true;
-				else
-					for (auto v : physEng->enemyVehicles)
-						if (v->numLaps == 5)
-							loseFlag = true;
+				//check physEng to see if the win condition has been hit
+				if (physEng->gameFinished) {
+					for (auto v : vehicles) {
+						if (v->hasWon) {
+							if (v->isPlayer) {	//winner is player
+								winFlag = true;
+								loseFlag = false;
+							}
+							else {	//winner is ai
+								winFlag = false;
+								loseFlag = true;
+							}
+						}
+					}
+				}
 
 				if (winFlag == true)
 					hud.setGameState(true);
@@ -1197,7 +1209,7 @@ int main()
 				int index = std::distance(physEng->allVehicles.begin(), iter);
 				//assign ranking for vehicle here
 				physEng->playerVehicles[player]->ranking = index + 1;
-				std::cout << "PLAYER " << player << " IS IN " << index + 1 << " PLACE!\n";
+				//std::cout << "PLAYER " << player << " IS IN " << index + 1 << " PLACE!\n";
 				
 ///////////////////////////////////////////////////RANKING////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -85,6 +85,14 @@ public:
 
 	std::vector<Vehicle*> allVehicles;
 	void sortVehicles();
+	std::list<Vehicle*> aliveVehicles;
+	//removes dead vehicles from the aliveVehicles list
+	void cleanupTheDead();
+	//true means someone has won the game
+	bool gameFinished;
+	bool winConditionCheck();
+
+	
 
 	PxRigidActor* testActor;
 

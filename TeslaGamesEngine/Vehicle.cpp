@@ -66,6 +66,9 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 	numberOfMarkersInTrack = markers->size();
 	totalMarkersHit = 0;
 	lapMarkers = markers;
+
+	hasWon = false;
+	winRank = 0;
 }
 Vehicle::Vehicle(int id) : ID(id) {}
 Vehicle::~Vehicle() { cleanup(); }
@@ -179,28 +182,20 @@ void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 		//start marker is 0, first marker after start is 1
 		if (currentMarker == 0 && expectedMarker == 1) {	//completed a lap
 			numLaps++;
-			if (numLaps == trackTotalLaps) {	//you win!
-				lapWinCondition();
+			if (numLaps == trackTotalLaps && ranking == 1) {	//you win!
+				wins();
 			}
 		}
 	}
 }
 
-//modify for multiple players
-//store a vector of winners in phys eng 
-//when this method is tripped, add the vehicle (based on id) to that vector
-//Maybe do a check in collider where hitLapMarker returns a value, if true add the vehicle to a list
-//and share that list with phys eng?
-void Vehicle::lapWinCondition()
+
+void Vehicle::wins()
 {
-	if (isPlayer) {
-		std::cout << "CONGRATULATIONS PLAYER!! YOU WIN!\n";
-	}
-	else {
-		std::cout << "ENEMY OPPONENT HAS WON!\n";
-	}
-	
+	hasWon = true;
+	winRank = ranking;
 }
+
 
 void Vehicle::initAITrackPoints(std::vector<std::unique_ptr<TrackDrivingPoint>>* listOfPoints) {
 	this->listOfPoints = listOfPoints;
