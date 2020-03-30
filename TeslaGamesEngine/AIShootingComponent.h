@@ -32,6 +32,7 @@ public:
 private:
 	Vehicle* FindTarget();
 	bool IsTargetInView(Vehicle* aTarget);
+	bool IsVehicleBehind(Vehicle* aTarget);
 	bool IsReloading();
 	void FindAimingState();
 	bool AimAtTarget();
@@ -43,6 +44,10 @@ private:
 	float threshold;
 
 	float lastFiredTime;
+
+	bool shouldUseAbility;
+	float lastAbilityTime;
+	float abilityCooldownTime;
 
 	GLuint uniformModel = 0;
 	GLuint uniformSpecular= 0;
