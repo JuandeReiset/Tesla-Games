@@ -39,21 +39,18 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 
 			//if the box hasnt been picked up yet
 			//if you are ranked 1 the pickup is disabled, or if you have max charges
-			if (!p->getIsPicked() && v->ranking != 1 && v->ability != 9) {	//this avoids hitting the same box multiple times
+			if (!p->getIsPicked() /*&& v->ranking != 1 && v->ability != 9*/) {	//this avoids hitting the same box multiple times
 				cout << "\nTrigger Block: Pickup Box\n";
 				p->setIsPicked();
 				v->pickup();
 			}
-		}
-		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "vehicle") == 0){
-			cout << "VEHICLE IMPACT DETECTED!\n";
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "ammo") == 0) {
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;	//this holds a ptr to the actual Vehicle object
 			AmmoBox* a = (AmmoBox*)pairs[i].triggerActor->userData;	//this holds a ptr to the actual PickupBox object
 
 			//if the box hasnt been picked up yet
-			if (!a->getIsPicked() && v->ranking != 1 && v->getShootingComponent()->ammo != 10) {	//this avoids hitting the same box multiple times
+			if (!a->getIsPicked() /*&& v->ranking != 1 && v->getShootingComponent()->ammo != 10*/) {	//this avoids hitting the same box multiple times
 				cout << "\nTrigger Block: Ammo Box\n";
 				a->setIsPicked();
 				v->ammo();
@@ -82,7 +79,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != c->id) {
 				if (!(!v->isPlayer && c->id == -1)) {
-					cout << "DAMAGE DEALT\n";
+					//cout << "DAMAGE DEALT\n";
 					//do damage
 					v->takeTrapDamage(3);
 				} 

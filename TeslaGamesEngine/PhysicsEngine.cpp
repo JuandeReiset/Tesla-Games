@@ -287,8 +287,7 @@ void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float
 		std::cout << "\nError: Could not create caltrops! No more charges!\n";
 	} 
 	else {
-		std::cout << "X  Y  Z: " << x << " " << y << " " << z << "\n";
-		PxBoxGeometry geometry(PxVec3(1.5f,5.f, 1.5f));
+		PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
 		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
