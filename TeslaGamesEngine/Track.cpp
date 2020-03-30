@@ -121,9 +121,9 @@ void Track::initializeTrackPoints(int trackType) {
 
 		TrackInteractableStrip& z5 = *this->listOfLaneStrips.at(4);
 		z5.addLanePoint(66.87, -2.48, 26.56, trackInteractableObjects::SMOKE);
-		z5.addLanePoint(68.08, -2.53, 33.87, trackInteractableObjects::SMOKE);
+		z5.addLanePoint(68.08, -2.53, 33.87, trackInteractableObjects::EMPTY);
 		z5.addLanePoint(69.19, -2.58, 40.59, trackInteractableObjects::SMOKE);
-		z5.addLanePoint(70.35, -2.62, 47.57, trackInteractableObjects::SMOKE);
+		z5.addLanePoint(70.35, -2.62, 47.57, trackInteractableObjects::EMPTY);
 		z5.addLanePoint(71.77, -2.68, 56.15, trackInteractableObjects::SMOKE);
 		z5.addLanePoint(72.96, -2.75, 65.72, trackInteractableObjects::SMOKE);
 	}

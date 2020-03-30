@@ -173,7 +173,7 @@ void Vehicle::updateDistance()
 void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 {
 	if (expectedMarker == val) {	//good hit
-		std::cout << "HIT LAP MARKER " << val << "!\n";
+		//std::cout << "HIT LAP MARKER " << val << "!\n";
 		totalMarkersHit++;
 		//update expected and current marker vals
 		expectedMarker = (expectedMarker + 1) % numberOfMarkersInTrack;

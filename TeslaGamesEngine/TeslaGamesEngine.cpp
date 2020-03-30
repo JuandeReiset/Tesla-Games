@@ -660,6 +660,7 @@ int main()
 				}
 			}
 
+			
 			//setup all track traps
 			for (int i = 0; i < raceTrack.listOfLaneStrips.size(); i++) {
 				TrackInteractableStrip& zone = *raceTrack.listOfLaneStrips.at(i);
@@ -700,6 +701,7 @@ int main()
 			raycast_handler.set_vehiclelist(vehicles);
 			shaderList[0].UseShader();
 			for (auto ai : aiVehicles) {
+				std::cout << "AI OWNER ID: " << ai->ID << "\n";
 				AIShootingComponent aiShooting = AIShootingComponent(ai);
 				aiShooting.SetVehicles(vehicles);
 				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
@@ -773,6 +775,25 @@ int main()
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+			//handle ai placing traps
+			for (auto ai : aiShootingComponents) {
+				if (ai.wantToPlaceTrap > 0) {
+					switch (ai.wantToPlaceTrap) {
+					case 1:		//caltrops
+						physEng->createCaltropsTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
+						std::cout << "OWNER ID: " << ai.owner->ID << "\n";
+						break;
+					case 2:		//oil
+						physEng->createOilTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
+						break;
+					case 3:		//smoke
+						physEng->createSmokeTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
+						break;
+					}
+				}
+				
+			}
 
 			// Render for each player
 			for (int player = 0; player < players; player++) {
@@ -991,14 +1012,16 @@ int main()
 				// Draw and create caltrops
 				if (controllers[player].isButtonDown(XButtons.DPad_Down) && !physEng->playerVehicles[player]->affectedBySmoke) {
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 5.f, player);
+					physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 5.f, physEng->playerVehicles[player]->ID);
 				}
 
+				//std::cout << "CALTROPS SIZE: " << physEng->caltropsList.size() << "\n";
 				auto c = physEng->caltropsList.begin();
 				while (c != physEng->caltropsList.end()) {	//remove dead caltrops
 					if ((*c)->isDead()) {
 						physEng->gScene->removeActor(*((*c)->actor));
-						physEng->caltropsList.erase(c++);
+						physEng->caltropsList.erase(c);
+						c++;
 					}
 					else {
 						(*c)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
@@ -1010,14 +1033,16 @@ int main()
 				// Draw and create oil
 				if (controllers[player].isButtonDown(XButtons.DPad_Right) && !physEng->playerVehicles[player]->affectedBySmoke) {
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createOilTriggerVolume(p.x, p.y, p.z, 5.f, player);
+					physEng->createOilTriggerVolume(p.x, p.y, p.z, 5.f, physEng->playerVehicles[player]->ID);
 				}
 
+				//std::cout << "OIL SIZE: " << physEng->oilList.size()<<"\n";
 				auto o = physEng->oilList.begin();
 				while (o != physEng->oilList.end()) {	//remove dead caltrops
 					if ((*o)->isDead()) {
 						physEng->gScene->removeActor(*((*o)->actor));
-						physEng->oilList.erase(o++);
+						physEng->oilList.erase(o);
+						o++;
 					}
 					else {
 						(*o)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
@@ -1029,14 +1054,16 @@ int main()
 				// Draw and create smoke
 				if (controllers[player].isButtonDown(XButtons.DPad_Left) && !physEng->playerVehicles[player]->affectedBySmoke) {
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 5.f, player);
+					physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 5.f, physEng->playerVehicles[player]->ID);
 				}
 
+				//std::cout << "SMOKE SIZE: " << physEng->smokeList.size() << "\n";
 				auto s = physEng->smokeList.begin();
 				while (s != physEng->smokeList.end()) {	//remove dead smoke
 					if ((*s)->isDead()) {
 						physEng->gScene->removeActor(*((*s)->actor));
-						physEng->smokeList.erase(s++);
+						physEng->smokeList.erase(s);
+						s++;
 					}
 					else {
 						(*s)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
@@ -1075,8 +1102,12 @@ int main()
 						model = glm::rotate(model, angletoUse, y_rot);
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						TAI_turret.RenderModel();
+
+						
 					}
 				}
+
+				
 
 				// Render other players cars
 				if (multiplayerFlag) {
@@ -1218,6 +1249,8 @@ int main()
 				hud.setDisabled(physEng->playerVehicles[player]->affectedBySmoke);
 				hud.use();
 			}
+
+			
 
 			//move ranking here (currently here since ai needs ranking here
 			//we technically do the players twice, once just above and once here

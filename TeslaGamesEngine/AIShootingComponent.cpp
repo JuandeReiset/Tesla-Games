@@ -4,6 +4,7 @@
 
 AIShootingComponent::AIShootingComponent()
 {
+	wantToPlaceTrap = 0;
 }
 
 void AIShootingComponent::Tick(float deltaTime)
@@ -13,7 +14,9 @@ void AIShootingComponent::Tick(float deltaTime)
 
 AIShootingComponent::AIShootingComponent(Vehicle * v)
 {
+	wantToPlaceTrap = 0;
 	owner = v;
+	abilityCooldownTime = 10.f;
 }
 
 void AIShootingComponent::Aim()
@@ -42,6 +45,23 @@ void AIShootingComponent::Aim()
 		else {
 			target = nullptr;
 		}
+
+		float currentTime = glfwGetTime();
+		if (shouldUseAbility && owner->ability > 0 && (currentTime - lastAbilityTime) > abilityCooldownTime) {
+			// This is the AI shooting component. Use this to call abilities
+			auto shooting = owner->getShootingComponent();
+			PxVec3 p(owner->GetPosition());
+			wantToPlaceTrap = rand() % 3 + 1; // Choose random ability
+			
+			
+			// Set random cooldown from 0 to 10 seconds
+			//abilityCooldownTime = 10.f * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX));
+			//min 3 max 10
+			lastAbilityTime = currentTime;
+		}
+		else {
+			wantToPlaceTrap = -1;
+		}
 	}
 }
 
@@ -62,7 +82,33 @@ Vehicle * AIShootingComponent::FindTarget()
 		}
 	}
 
+	// See if there is a vehicle behind you
+	shouldUseAbility = false;
+	for (auto aVehicle : vehicles) {
+		if (IsVehicleBehind(aVehicle)) {
+			shouldUseAbility = true;
+			break;
+		}
+	}
+
 	return nullptr;
+}
+
+
+bool AIShootingComponent::IsVehicleBehind(Vehicle* aTarget)
+{
+	physx::PxVec3 toTarget = aTarget->GetPosition() - owner->GetPosition();
+	toTarget.normalize();
+	// Check that it stays within the cone in front (-40 > 40)
+	physx::PxVec3 backwardDirection = owner->GetTransform().q.getBasisVector2();
+	backwardDirection *= -1.f;
+
+	// Check if target is within an 80 degree cone in behind of vehicle
+	if (abs(acos(toTarget.dot(backwardDirection))) * (180.f / 3.14) < 40.f) {
+		return true;
+	}
+
+	return false;
 }
 
 bool AIShootingComponent::IsTargetInView(Vehicle* aTarget)
