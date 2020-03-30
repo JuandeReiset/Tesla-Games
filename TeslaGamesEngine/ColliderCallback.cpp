@@ -80,8 +80,10 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			//cout << "CALTROPS ID: " << c->id << " VEHICLE: "<<v->ID<<"\n";
 
 			//should do damage (1pt) and should not hit the player it was placed by
-			if (v->ID != c->id && !c->isDead()) {
-				if (!(!v->isPlayer && c->id == -1)) {
+			if (v->ID != c->id) {
+
+				if (!(!v->isPlayer && c->id == -69420)) {
+					
 					//cout << "DAMAGE DEALT\n";
 					//do damage
 					v->takeTrapDamage(1);
@@ -100,9 +102,9 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			//cout << "SMOKE ID: " << s->id << " VEHICLE: " << v->ID << "\n";
 
 			//should do damage (1pt) and should not hit the player it was placed by
-			if (v->ID != s->id && !s->isDead()) {
+			if (v->ID != s->id) {
 				//smoke gameplay effect
-				if(!v->affectedBySmoke && !(!v->isPlayer && s->id == -1))
+				if(!v->affectedBySmoke && !(!v->isPlayer && s->id == -69420))
 					v->enableSmokeEffect();
 				//else
 					//cout << "AI TRACK TRAP COLLISION\n";
@@ -116,9 +118,9 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 
 			//cout << "OIL ID: " << o->id << " VEHICLE: " << v->ID << "\n";
 			//should do damage (1pt) and should not hit the player it was placed by
-			if (v->ID != o->id && !o->isDead()) {
+			if (v->ID != o->id) {
 				//oil gameplay effect
-				if(!v->affectedByOil && !(!v->isPlayer && o->id == -1))
+				if(!v->affectedByOil && !(!v->isPlayer && o->id == -69420))
 					v->enableOilEffect();
 				//else
 					//cout << "AI TRACK TRAP COLLISION\n";

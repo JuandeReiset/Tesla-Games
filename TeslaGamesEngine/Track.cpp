@@ -92,8 +92,8 @@ void Track::initializeTrackPoints(int trackType) {
 		z1.addLanePoint(-60.24, -2.60, -7.90, trackInteractableObjects::OIL);
 		z1.addLanePoint(-68.14, -2.60, -4.85, trackInteractableObjects::OIL);
 		z1.addLanePoint(-74, -2.60, -0.57, trackInteractableObjects::OIL);
-		z1.addLanePoint(-78.62, -2.60, -0.79, trackInteractableObjects::OIL);
-		z1.addLanePoint(-84.51, -2.62, 1.49, trackInteractableObjects::OIL);
+		z1.addLanePoint(-78.62, -2.60, -0.79, trackInteractableObjects::EMPTY);
+		z1.addLanePoint(-84.51, -2.62, 1.49, trackInteractableObjects::EMPTY);
 		z1.addLanePoint(-92.22, -2.64, 4.48, trackInteractableObjects::OIL);
 
 		TrackInteractableStrip& z2 = *this->listOfLaneStrips.at(1);
@@ -204,7 +204,7 @@ void Track::initializeTrackPoints(int trackType) {
 		//these work
 		z1.addLanePoint(-132.3, 0.63, -250.4, trackInteractableObjects::OIL);
 		z1.addLanePoint(-127.4, 0.53, -247, trackInteractableObjects::OIL);
-		z1.addLanePoint(-122.7, 0.44, -243.7, trackInteractableObjects::OIL);
+		z1.addLanePoint(-122.7, 0.44, -243.7, trackInteractableObjects::EMPTY);
 		z1.addLanePoint(-116.3, 0.32, -239.3, trackInteractableObjects::OIL);
 		z1.addLanePoint(-108.4, 0.17, -233.9, trackInteractableObjects::OIL);
 
@@ -219,7 +219,7 @@ void Track::initializeTrackPoints(int trackType) {
 		TrackInteractableStrip& z3 = *this->listOfLaneStrips.at(3);
 		//these work
 		z3.addLanePoint(383.74, 0.65, -383.16, trackInteractableObjects::SMOKE);
-		z3.addLanePoint(378.50, 0.60, -381.5, trackInteractableObjects::SMOKE);
+		z3.addLanePoint(378.50, 0.60, -381.5, trackInteractableObjects::EMPTY);
 		z3.addLanePoint(371.99, 0.55, -377.65, trackInteractableObjects::SMOKE);
 		z3.addLanePoint(365.33, 0.50, -373.77, trackInteractableObjects::SMOKE);
 		z3.addLanePoint(359.51, 0.46, -370.38, trackInteractableObjects::SMOKE);
@@ -244,7 +244,7 @@ void Track::initializeTrackPoints(int trackType) {
 		//these work
 		z6.addLanePoint(175.61, -0.98, 147.73, trackInteractableObjects::CALTROPS);
 		z6.addLanePoint(180.18, -0.97, 143.09, trackInteractableObjects::OIL);
-		z6.addLanePoint(184.84, -0.95, 138.36, trackInteractableObjects::CALTROPS);
+		z6.addLanePoint(184.84, -0.95, 138.36, trackInteractableObjects::EMPTY);
 		z6.addLanePoint(190.40, -0.93, 132.68, trackInteractableObjects::OIL);
 		z6.addLanePoint(195.55, -0.90, 127.39, trackInteractableObjects::CALTROPS);
 

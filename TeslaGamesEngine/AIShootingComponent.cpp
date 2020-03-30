@@ -53,7 +53,6 @@ void AIShootingComponent::Aim()
 			PxVec3 p(owner->GetPosition());
 			wantToPlaceTrap = rand() % 3 + 1; // Choose random ability
 			
-			
 			// Set random cooldown from 0 to 10 seconds
 			//abilityCooldownTime = 10.f * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX));
 			//min 3 max 10
