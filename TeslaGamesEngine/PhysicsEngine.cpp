@@ -84,9 +84,6 @@ physx::PxVec3 PhysicsEngine::GetBoxPos()
 	return wallActor->getGlobalPose().p;
 }
 
-void cleanDeadTraps() {
-
-}
 
 void PhysicsEngine::stepPhysics()
 {

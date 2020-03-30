@@ -77,7 +77,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
 			Caltrops* c = (Caltrops*)pairs[i].triggerActor->userData;
 
-			cout << "CALTROPS ID: " << c->id << " VEHICLE: "<<v->ID<<"\n";
+			//cout << "CALTROPS ID: " << c->id << " VEHICLE: "<<v->ID<<"\n";
 
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != c->id && !c->isDead()) {
@@ -97,7 +97,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
 			Smoke* s = (Smoke*)pairs[i].triggerActor->userData;
 
-			cout << "SMOKE ID: " << s->id << " VEHICLE: " << v->ID << "\n";
+			//cout << "SMOKE ID: " << s->id << " VEHICLE: " << v->ID << "\n";
 
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != s->id && !s->isDead()) {
@@ -114,7 +114,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
 			Oil* o = (Oil*)pairs[i].triggerActor->userData;
 
-			cout << "OIL ID: " << o->id << " VEHICLE: " << v->ID << "\n";
+			//cout << "OIL ID: " << o->id << " VEHICLE: " << v->ID << "\n";
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != o->id && !o->isDead()) {
 				//oil gameplay effect

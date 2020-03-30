@@ -111,7 +111,6 @@ public:
 	void createTrackOil(float x, float y, float z, float duration);	//this is used for the track ai
 	void createTrackSmoke(float x, float y, float z, float duration);	//this is used for the track ai
 
-	void cleanDeadTraps();
 
 	void update_dir_render4Vehicle(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShininess, float Dir_x, float Dir_y, float Dir_z);
 
