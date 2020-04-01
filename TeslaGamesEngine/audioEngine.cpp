@@ -58,11 +58,9 @@ void AudioEngine::initialize() {
 	
 }
 void AudioEngine::updateListenerPosition(float x, float y, float z) {
-	printf("SOmeone updated listener: \n");
 	alListener3f(AL_POSITION, x, y, z);
 }
 void AudioEngine::updateListenerOrientatation(glm::vec3 front, glm::vec3 up) {
-	printf("SOmeone updated listenerOri: \n");
 	ALfloat listenerOri[] = { front.x, front.y, front.z, up.x, up.y, up.z };
 	alListenerfv(AL_ORIENTATION, listenerOri);
 }
