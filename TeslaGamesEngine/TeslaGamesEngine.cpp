@@ -1217,6 +1217,10 @@ int main()
 								loseFlag = true;
 							}
 						}
+						if (v->getHealthComponent()->GetHealth() <= 0) {		//if no health
+							winFlag = false;
+							loseFlag = true;
+						}
 					}
 				}
 

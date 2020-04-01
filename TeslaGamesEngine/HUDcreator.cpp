@@ -209,12 +209,7 @@ void HUDcreator::use() {
 
 	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(ortho));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-/*
-	for (int i = 0; i < HUDList.size(); ++i) {
-		TextureList[i].UseTexture();
-		HUDList[i]->renderHUD();
-	}
-*/
+
 
 	//weapon UI
 	weaponTexture.UseTexture();
@@ -234,7 +229,6 @@ void HUDcreator::use() {
 	//HUDList[3]->renderHUD();
 
 	//health bar
-	//model = glm::translate(model, glm::vec3(1200 - 12 * currentHealth, 0, 0));
 	model = glm::translate(model, glm::vec3(1200.0 / 1600.0 * mainWindow.getWidth(), 0, 0));
 	model = glm::scale(model, glm::vec3(currentHealth / 100, 1, 1));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
