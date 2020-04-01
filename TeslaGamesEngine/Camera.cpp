@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Camera.h"
+#include "global.h"
 
 #include <iostream>
 
@@ -202,8 +203,11 @@ void Camera::update()
 
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
-	updateListenerPosition();
-	updateListenerOrientation(front, up);
+
+	if (multiplayerFlag == false) {
+		updateListenerPosition();
+		updateListenerOrientation(front, up);
+	}
 }
 
 Camera::~Camera()

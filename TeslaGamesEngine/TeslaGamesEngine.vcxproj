@@ -248,7 +248,6 @@
     <ClInclude Include="TrackDrivingPoint.h" />
     <ClInclude Include="TrackInteractableStrip.h" />
     <ClInclude Include="Transform.h" />
-    <ClInclude Include="Turret.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
@@ -324,7 +323,6 @@
     <ClCompile Include="TrackDrivingPoint.cpp" />
     <ClCompile Include="TrackInteractableStrip.cpp" />
     <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>

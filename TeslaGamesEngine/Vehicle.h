@@ -21,6 +21,7 @@
 #include "Smoke.h"
 #include "Oil.h"
 #include "LapMarker.h"
+#include "Global.h"
 
 //#include "Bullet.h"
 #include "TrackDrivingPoint.h"

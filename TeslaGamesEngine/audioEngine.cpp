@@ -26,7 +26,14 @@ void AudioEngine::initialize() {
 	CheckError();
 
 	ALfloat listenerOri[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f };
-	alListener3f(AL_POSITION, 0, 0, 1.0f);
+	if (multiplayerFlag == true) {
+		alListener3f(AL_POSITION, 0, 1.0, -1.f);
+		printf("SOmeone updated source: \n");
+	}
+	else {
+		alListener3f(AL_POSITION, 0,0,0);
+	}
+	
 	alListener3f(AL_VELOCITY, 0, 0, 0);
 	alListenerfv(AL_ORIENTATION, listenerOri);
 	CheckError();
@@ -51,9 +58,11 @@ void AudioEngine::initialize() {
 	
 }
 void AudioEngine::updateListenerPosition(float x, float y, float z) {
+	printf("SOmeone updated listener: \n");
 	alListener3f(AL_POSITION, x, y, z);
 }
 void AudioEngine::updateListenerOrientatation(glm::vec3 front, glm::vec3 up) {
+	printf("SOmeone updated listenerOri: \n");
 	ALfloat listenerOri[] = { front.x, front.y, front.z, up.x, up.y, up.z };
 	alListenerfv(AL_ORIENTATION, listenerOri);
 }
