@@ -1296,9 +1296,10 @@ int main()
 			ImGui::Text("Driving mode and Position");
 			ImGui::Text("Frame per Second counter"); // Display some text (you can use a format strings too)
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			// ImGui::Text(": %i Xpos: %.2f Ypos: %.2f Zpos: %.2f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
+			ImGui::Text(": %i Xpos: %.2f Ypos: %.2f Zpos: %.2f", physEng->getModeType(), physEng->playerVehicles[0]->GetPosition().x, 
+				physEng->playerVehicles[0]->GetPosition().y, physEng->playerVehicles[0]->GetPosition().z);
 			// ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
-			ImGui::Text("Camera Xvec: %f Yvec: %f Zvec: %f", cameras[0].getCameraPosition().x, cameras[0].getCameraPosition().y, cameras[0].getCameraPosition().z);
+			//mGui::Text("Camera Xvec: %f Yvec: %f Zvec: %f", cameras[0].getCameraPosition().x, cameras[0].getCameraPosition().y, cameras[0].getCameraPosition().z);
 			// ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
 
 				ImGui::End();
