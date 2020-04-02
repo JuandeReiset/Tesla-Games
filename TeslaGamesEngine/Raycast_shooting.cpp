@@ -25,11 +25,10 @@ void Raycast_shooting::determine_hit(glm::vec3 startpos, glm::vec3 Dir) {
 
 void Raycast_shooting::determine_hit_AI() {
 
-	int iSecret = rand() % 10 + 1;
-
-	if (iSecret > 2) {
+	//int iSecret = rand() % 10 + 1;
+	//if (iSecret > 2) {
 		handle_hit(target_vehicle);
-	}
+	//}
 	
 
 }
