@@ -1254,6 +1254,8 @@ int main()
 				hud.setBulletNum(physEng->playerVehicles[player]->getShootingComponent()->ammo);
 				hud.setHealth(physEng->playerVehicles[player]->getHealthComponent()->GetHealth());
 				hud.setDisabled(physEng->playerVehicles[player]->affectedBySmoke);
+				hud.setSmoked(physEng->playerVehicles[player]->affectedBySmoke);
+				hud.setOiled(physEng->playerVehicles[player]->affectedByOil);
 				hud.use();
 			}
 

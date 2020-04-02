@@ -121,6 +121,14 @@ void HUDcreator::loadHUD() {
 	HUD* bulletNum2 = new HUD();
 	bulletNum2->createHUD(bulletNum2Vertices, HUDindices, 20, 6);
 	HUDList.push_back(bulletNum2);
+
+	HUD* oiled = new HUD();
+	oiled->createHUD(oiledVertices, HUDindices, 20, 6);
+	HUDList.push_back(oiled);
+	
+	HUD* smoked = new HUD();
+	smoked->createHUD(smokedVertices, HUDindices, 20, 6);
+	HUDList.push_back(smoked);
 }
 
 void HUDcreator::loadTextures() {
@@ -179,6 +187,10 @@ void HUDcreator::loadTextures() {
 	bulletSymbolTexture.LoadTextureAlpha();
 	outOfBulletTexture = Texture("Textures/ShootingDisabled.png");
 	outOfBulletTexture.LoadTextureAlpha();
+	smokedTexture = Texture("Textures/smoked.png");
+	smokedTexture.LoadTextureAlpha();
+	oiledTexture = Texture("Textures/oiled.png");
+	oiledTexture.LoadTextureAlpha();
 
 	return;
 }
@@ -312,6 +324,16 @@ void HUDcreator::use() {
 	HUDList[28]->renderHUD();
 	bulletNum2.UseTexture();
 	HUDList[29]->renderHUD();
+
+	if (isOiled) {
+		oiledTexture.UseTexture();
+		HUDList[30]->renderHUD();
+	}
+
+	if (isSmoked) {
+		smokedTexture.UseTexture();
+		HUDList[31]->renderHUD();
+	}
 
 	glEnable(GL_DEPTH_TEST);
 
