@@ -93,7 +93,10 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	//Work out if the vehicle is in the air.
 	gIsVehicleInAir = gVehicle4W->getRigidDynamicActor()->isSleeping() ? false : PxVehicleIsInAir(vehicleQueryResults[0]);
 
-	audioUpdate();
+	if (multiplayerFlag == false) {
+		audioUpdate();
+	}
+	
 	float curSpeed = gVehicle4W->computeForwardSpeed();
 	float curAccel = gVehicleInputData.getAnalogAccel();
 	
@@ -466,6 +469,9 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 	this->health.initAudioForHealthComponent(engine);
 
 	float initialSoundVolume = 15.f;
+	if (multiplayerFlag == true) {
+		initialSoundVolume = 45.f;
+	}
 
 	this->accelerateFromRest.setVolume(initialSoundVolume);
 	this->accelerateFromMotion.setVolume(initialSoundVolume);

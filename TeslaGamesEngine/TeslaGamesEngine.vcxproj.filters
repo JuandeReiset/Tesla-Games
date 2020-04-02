@@ -46,7 +46,6 @@
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="ShootComp.cpp" />
-    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="HUDcreator.cpp" />
@@ -116,7 +115,6 @@
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="ShootComp.h" />
-    <ClInclude Include="Turret.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="HUDcreator.h" />
     <ClInclude Include="Shadow.h" />

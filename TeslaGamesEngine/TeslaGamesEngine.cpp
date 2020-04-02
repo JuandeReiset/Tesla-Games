@@ -591,9 +591,6 @@ int main()
 
 		if (setupGame) {
 			//Reset this variable to reset the game
-			physEng->initAudioForVehicles(&audioSystem);
-			cameras[0].initializeAudio(&audioSystem);
-
 			setupGame = false;
 
 			int gameMode = menu.getSelectedGameMode();
@@ -601,12 +598,21 @@ int main()
 			int AINum = menu.getSelectedNumOfAI();
 			std::cout << trackNum << std::endl;
 
+			physEng->initAudioForVehicles(&audioSystem);
+			cameras[0].initializeAudio(&audioSystem);
+
 			if (trackNum == trackTypeConstants::HYPERLOOP) {
 				racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 
 				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_HYPERLOOP);
-				raceMusic.setVolume(0.35f);
+				if (multiplayerFlag == false) {
+					raceMusic.setVolume(0.35f);
+				}
+				else {
+					raceMusic.setVolume(0.20f);
+				}
+				
 				raceMusic.loopSound(true);
 			}
 			else if (trackNum == trackTypeConstants::STARLINK) {
@@ -614,7 +620,12 @@ int main()
 				racetrack_floor.LoadModel("Models/track2final_Tfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
 
 				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_STARLINK);
-				raceMusic.setVolume(0.35f);
+				if (multiplayerFlag == false) {
+					raceMusic.setVolume(0.35f);
+				}
+				else {
+					raceMusic.setVolume(0.20f);
+				}
 				raceMusic.loopSound(true);
 			}
 
