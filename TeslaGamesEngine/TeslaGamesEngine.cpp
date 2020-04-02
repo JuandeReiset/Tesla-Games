@@ -331,6 +331,7 @@ int main()
 	//bool startScreenFlag = true;
 	//int menuFlag = 0;
 	bool setupGame = true;
+	bool resetFlag = false;
 
 	HUDcreator hud;
 	hud.load();
@@ -551,6 +552,10 @@ int main()
 		}
 
 		while (startScreenFlag) {
+			if (resetFlag) {
+				//reset game, waiting for physic engine reset function to be done
+				resetFlag = false;
+			}
 			if (!mainMenuMusic.isSoundPlaying()) {
 				mainMenuMusic.playSound();
 			}
