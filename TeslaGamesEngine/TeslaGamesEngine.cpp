@@ -354,6 +354,9 @@ int main()
 	bool winFlag = false;
 	bool loseFlag = false;
 
+	bool winFlags[4];
+	bool loseFlags[4];
+
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureAlpha();
 	dirtTexture = Texture("Textures/dirt.png");
@@ -1215,8 +1218,8 @@ int main()
 				glEnable(GL_DEPTH_TEST);
 
 				// HUD
-				//check physEng to see if the win condition has been hit
-				if (physEng->gameFinished) {
+				/*			//check physEng to see if the win condition has been hit
+				if (physEng->gameFinished) 
 					for (auto v : vehicles) {
 						if (v->hasWon) {
 							if (v->isPlayer) {	//winner is player
@@ -1228,18 +1231,49 @@ int main()
 								loseFlag = true;
 							}
 						}
-						if (v->getHealthComponent()->GetHealth() <= 0) {		//if no health
-							winFlag = false;
-							loseFlag = true;
+					}
+				}
+				*/
+
+				auto playerVehicle = physEng->playerVehicles[player];
+
+				//if player has no health, then lose the game
+				if (playerVehicle->getHealthComponent()->GetHealth() <= 0) {
+					winFlags[player] = false;
+					loseFlags[player] = true;
+				}
+
+				if (physEng->gameFinished) {
+					if (playerVehicle->hasWon) {
+						winFlags[player] = true;
+						loseFlags[player] = false;
+					}
+					else {
+						//if AI wins
+						for (auto v : physEng->enemyVehicles) {
+							if (v->hasWon) {
+								winFlags[player] = false;
+								loseFlags[player] = true;
+							}
 						}
+						//if other player wins
+						for (int i = 0; i < physEng->playerVehicles.size(); ++i) {
+							if (i != player) {
+								if (physEng->playerVehicles[i]->hasWon) {
+									winFlags[player] = false;
+									loseFlags[player] = true;
+								}
+							}
+						}
+						
 					}
 				}
 
-				if (winFlag == true)
+				if (winFlags[player] == true)
 					hud.setGameState(true);
-				if (loseFlag == true)
+				if (loseFlags[player] == true)
 					hud.setGameState(false);
-				if (winFlag)
+				if (winFlags[player])
 					hud.setLapNumber(physEng->playerVehicles[player]->numLaps);
 				else
 					hud.setLapNumber(physEng->playerVehicles[player]->numLaps + 1);
