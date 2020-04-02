@@ -26,7 +26,14 @@ void AudioEngine::initialize() {
 	CheckError();
 
 	ALfloat listenerOri[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f };
-	alListener3f(AL_POSITION, 0, 0, 1.0f);
+	if (multiplayerFlag == true) {
+		alListener3f(AL_POSITION, 0, 1.0, -1.f);
+		printf("SOmeone updated source: \n");
+	}
+	else {
+		alListener3f(AL_POSITION, 0,0,0);
+	}
+	
 	alListener3f(AL_VELOCITY, 0, 0, 0);
 	alListenerfv(AL_ORIENTATION, listenerOri);
 	CheckError();
