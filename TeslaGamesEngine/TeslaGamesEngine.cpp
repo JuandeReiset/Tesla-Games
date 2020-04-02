@@ -271,11 +271,8 @@ void parseControllerInput(Controller* controller)
 		pauseFlag = true;
 	}
 
-	//press up to suicide (for testing health bar)
-	if (controller->isButtonDown(XButtons.DPad_Up)) {
-		player->update_health();
 
-		std::cout << "Current health: " << player->getHealthComponent()->GetHealth() << std::endl;
+	if (controller->isButtonDown(XButtons.DPad_Up)) {
 	}
 	
 	//Sticks and triggers
