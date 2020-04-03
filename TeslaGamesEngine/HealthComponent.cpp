@@ -5,6 +5,9 @@ HealthComponent::HealthComponent(double h) : localHealth(h) {}
 HealthComponent::~HealthComponent() {};
 
 double HealthComponent::GetHealth() {
+	if (localHealth <= 0)
+		localHealth = 0;
+
 	return localHealth;
 }
 
