@@ -1231,23 +1231,6 @@ int main()
 				
 
 				// HUD
-				/*			//check physEng to see if the win condition has been hit
-				if (physEng->gameFinished) 
-					for (auto v : vehicles) {
-						if (v->hasWon) {
-							if (v->isPlayer) {	//winner is player
-								winFlag = true;
-								loseFlag = false;
-							}
-							else {	//winner is ai
-								winFlag = false;
-								loseFlag = true;
-							}
-						}
-					}
-				}
-				*/
-
 				auto playerVehicle = physEng->playerVehicles[player];
 
 				//if player has no health, then lose the game
