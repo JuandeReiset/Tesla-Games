@@ -20,6 +20,14 @@ void MultiplayerScreen::loadVertices() {
 	HUD* right = new HUD();
 	right->createHUD(rightVertices, indices, 20, 6);
 	HUDList.push_back(right);
+
+	HUD* ready = new HUD();
+	ready->createHUD(readyVertices, indices, 20, 6);
+	HUDList.push_back(ready);
+
+	HUD* back = new HUD();
+	back->createHUD(backVertices, indices, 20, 6);
+	HUDList.push_back(back);
 }
 
 void MultiplayerScreen::loadTextures() {
@@ -58,6 +66,12 @@ void MultiplayerScreen::loadShader() {
 	hudShader.createHUDFromFiles(vHshader, fHshader);
 }
 
+void MultiplayerScreen::load() {
+	loadShader();
+	loadTextures();
+	loadVertices();
+}
+
 void MultiplayerScreen::use() {
 	hudShader.UseShader();
 
@@ -88,5 +102,95 @@ void MultiplayerScreen::use() {
 	rightTexture.UseTexture();
 	HUDList[4]->renderHUD();
 
+	readyTexture.UseTexture();
+	HUDList[5]->renderHUD();
+
+	backTexture.UseTexture();
+	HUDList[6]->renderHUD();
+
 	glEnable(GL_DEPTH_TEST);
+}
+
+
+void MultiplayerScreen::setPlayerNum(int num) {
+	numOfPlayer = num;
+	maxPlayer = num;
+
+	setPlayerNumTexture();
+}
+
+void MultiplayerScreen::setPlayerNumTexture() {
+	switch (numOfPlayer){
+	case 2:
+		numTxt = dig2Texture;
+		break;
+	case 3:
+		numTxt = dig3Texture;
+		break;
+	case 4:
+		numTxt = dig4Texture;
+	default:
+		break;
+	}
+}
+
+void MultiplayerScreen::loadController(Controller* controller) {
+	controller->update();
+	GLfloat now = glfwGetTime();
+	if (now - last >= 0.1)
+		resetArrow();
+
+	if (controller->isButtonDown(XButtons.DPad_Left)) {
+		if(numOfPlayer > 2)
+			--numOfPlayer;
+		
+		arrow = 0;
+
+		setArrow();
+		setPlayerNumTexture();
+	}
+	else if (controller->isButtonDown(XButtons.DPad_Right)) {
+
+		if (numOfPlayer < maxPlayer)
+			++numOfPlayer;
+
+		arrow = 1;
+		
+		setArrow();
+		setPlayerNumTexture();
+	}
+	else if (controller->isButtonDown(XButtons.A)) {
+		multiplayerScreenFlag = false;
+		menuFlag = true;
+		readyScreenFlag = false;
+		startScreenFlag = false;
+		pauseFlag = false;
+		gameFlag = false;
+	}
+	else if (controller->isButtonDown(XButtons.B)) {
+		multiplayerScreenFlag = false;
+		menuFlag = false;
+		startScreenFlag = true;
+		gameFlag = false;
+		readyScreenFlag = false;
+		pauseFlag = false;
+	}
+	controller->refreshState();
+
+}
+
+void MultiplayerScreen::setArrow() {
+	last = glfwGetTime();
+
+	if (arrow == 0)
+		leftTexture = left2Texture;
+	else if (arrow == 1)
+		rightTexture = right2Texture;
+
+	arrow = -1;
+}
+
+void MultiplayerScreen::resetArrow() {
+	leftTexture = left1Texture;
+	rightTexture = right1Texture;
 }

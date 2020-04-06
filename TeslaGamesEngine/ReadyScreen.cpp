@@ -104,6 +104,7 @@ void ReadyScreen::loadController(Controller *controller) {
 
 	if (controller->isButtonDown(XButtons.A)) {
 		
+		multiplayerScreenFlag = false;
 		readyScreenFlag = false;
 		gameFlag = true;
 		startScreenFlag = false;
@@ -111,6 +112,7 @@ void ReadyScreen::loadController(Controller *controller) {
 		pauseFlag = false;
 	}
 	else if (controller->isButtonDown(XButtons.B)) {
+		multiplayerScreenFlag = false;
 		readyScreenFlag = false;
 		menuFlag = true;
 		startScreenFlag = false;

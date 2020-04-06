@@ -59,6 +59,7 @@
 #include "Menu.h"
 #include "ReadyScreen.h"
 #include "PauseScreen.h"
+#include "MultiplayerScreen.h"
 
 //Shadow stuff
 #include "Shadow.h"
@@ -343,6 +344,8 @@ int main()
 	readyScreen.load();
 	PauseScreen pauseScreen;
 	pauseScreen.load();
+	MultiplayerScreen multiplayerScreen;
+	multiplayerScreen.load();
 
 
 	physEng = new PhysicsEngine();
@@ -520,12 +523,24 @@ int main()
 	std::vector<Controller> controllers;
 	Controller player1 = Controller(1);
 	Controller player2 = Controller(2);
-	controllers.push_back(player1);
-	controllers.push_back(player2);
+	Controller player3 = Controller(3);
+	Controller player4 = Controller(4);
+	
+	if(player1.isConnected())
+		controllers.push_back(player1);
+	if(player2.isConnected())
+		controllers.push_back(player2);
+	if (player3.isConnected());
+		controllers.push_back(player3);
+	if(player4.isConnected())
+		controllers.push_back(player4);
 
 
-	std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
-	std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
+
+
+	//std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
+	//std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
+	std::cout << controllers.size() - 1 << " Controllers are connected" << std::endl;
 
 	bool P1Connected = controllers[0].isConnected();
 	bool P2Connected = controllers[1].isConnected();
@@ -561,21 +576,26 @@ int main()
 			if (!mainMenuMusic.isSoundPlaying()) {
 				mainMenuMusic.playSound();
 			}
-			if (fromGameFlag) {
-				if (glfwGetTime() - backTime > 0.5) {
-					startScreen.loadController(&player1);
-					fromGameFlag = false;
-				}
-			}
-			else
-				startScreen.loadController(&player1);
+			
+			startScreen.loadController(&player1);
 
 			startScreen.use();
 			menu.resetAiNum();
 
 			mainWindow.swapBuffers();
 		}
+		std::cout << "multi" << multiplayerScreenFlag << std::endl;
+		std::cout << "menu" << menuFlag << std::endl;
+		while (multiplayerScreenFlag) {
+			multiplayerScreen.setPlayerNum(controllers.size() - 1);
+			menuFlag = false;
+			multiplayerScreen.loadController(&controllers[0]);
 
+			multiplayerScreen.use();
+			mainWindow.swapBuffers();
+		}
+		std::cout << "multi" << multiplayerScreenFlag << std::endl;
+		std::cout << "menu" << menuFlag << std::endl;
 		while (menuFlag) {
 			menu.setAiDefault(multiplayerFlag);
 			menu.loadController(&player1);

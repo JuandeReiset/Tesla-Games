@@ -24,9 +24,14 @@ public:
 	void load();
 	void loadShader();
 
+	void setPlayerNum(int num);
+	void loadController(Controller* controller);
+
 private:
 	std::vector<HUD*> HUDList;
 	Shader hudShader;
+	GLfloat last;
+	int arrow = -1;
 
 	unsigned int indices[6] = {
 		0, 1, 3,
@@ -91,5 +96,26 @@ private:
 		960.0f / 1600 * mainWindow.getWidth(), 650 / 900.0f * mainWindow.getHeight(), 0.0f,		1.0f, 1.0f,
 		960.0f / 1600 * mainWindow.getWidth(), 550.f / 900.0f * mainWindow.getHeight(), 0.0f,	1.0f, 0.0f
 	};
+
+	GLfloat readyVertices[20] = {
+		675.0f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 0.0f,	0.0f, 0.0f,
+		675.0f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 0.0f,		0.0f, 1.0f,
+		925.0f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 0.0f,		1.0f, 1.0f,
+		925.0f / 1600 * mainWindow.getWidth(), 700.f / 900.0f * mainWindow.getHeight(), 0.0f,	1.0f, 0.0f
+	};
+
+	GLfloat backVertices[20] = {
+		1400.f / 1600 * mainWindow.getWidth(), 820.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		1400.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		1600.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		1600.f / 1600 * mainWindow.getWidth(), 820.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+
+	int numOfPlayer;
+	int maxPlayer = 4;
+
+	void setPlayerNumTexture();
+	void setArrow();
+	void resetArrow();
 };
 
