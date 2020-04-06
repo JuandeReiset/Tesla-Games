@@ -118,8 +118,10 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 
 	//update distance for position/ranking
 	updateDistance();
-
 	
+	//Update the list of caltrops that can hurt the racer
+	updateCaltropEffectList();
+
 	if (this->isAICar) {
 		PxVec3 pos = this->GetPosition();
 		PxVec3 target = PxVec3(this->curTarget.x, this->curTarget.y, this->curTarget.z);
@@ -653,18 +655,8 @@ void Vehicle::keyPress(unsigned char key, const PxTransform& camera)
 	PX_UNUSED(camera);
 	PX_UNUSED(key);
 }
-void Vehicle::Tick(float deltaTime) {
-	/*std::cout << "Current health:" << currentHealth() << std::endl;
-	if (currentHealth() <= 0)
-		dead_flag = 1;
+void Vehicle::Tick(float deltaTime) {}
 
-	if (ID == combat.GetTargetID())
-		getDamage(combat.GetDamage());
-
-	if (turret.is_there_ammo())
-		armed = false;
-		*/
-}
 double Vehicle::currentHealth() {
 	return health.GetHealth();
 }
@@ -672,13 +664,60 @@ double Vehicle::currentHealth() {
 void Vehicle::takeTrapDamage(double dmgAmount) {
 	this->health.takeTrapDamage(dmgAmount);
 }
-void Vehicle::takeBulletDamage(double dmgAmount) {
-	this->health.takeDamageFromBullet(dmgAmount);
+
+void Vehicle::takeCaltropDamage(int caltropId, double dmgAmount) {
+	bool foundCaltropAlreadyInList = false;
+	int caltropEffectTimeToLive = 45; //number is number of frames bewteen hits allowed
+
+	for (int i = 0; i < this->caltropEffectPairList.size(); i = i + 2) {
+		int id = this->caltropEffectPairList[i];
+		if (caltropId == id) {
+			foundCaltropAlreadyInList = true;
+			break;
+		}
+	}
+	if (foundCaltropAlreadyInList == false) {
+		this->caltropEffectPairList.push_back(caltropId);
+		this->caltropEffectPairList.push_back(caltropEffectTimeToLive);
+		this->takeTrapDamage(dmgAmount);
+	}
 }
 
-void Vehicle::firelazer() {
-	//turret.fire();
-	//health.SetHealth(0);
+void Vehicle::updateCaltropEffectList() {
+
+	std::vector<int> indiciesToRemove;
+
+	for (int i = 0; i < this->caltropEffectPairList.size(); i = i + 2) {
+		int indexOfCaltrop = this->caltropEffectPairList[i];
+		int framesToLive = this->caltropEffectPairList[i + 1];
+		framesToLive--;
+		if (framesToLive <= 0) {
+			indiciesToRemove.push_back(i);
+		}
+		else {
+			this->caltropEffectPairList[i + 1] = framesToLive;
+		}
+	}
+
+	int initial = indiciesToRemove.size() - 1;
+	//Going in reverse to remove issues of earlier indicies being removed causing the indicies of later elements to change
+	//[1,2,3,4,5] 4 is at index 3
+	//[1,2,4,5] 4 is at index 2
+	//This would make the indicies in the vector invalid
+	for (int i = initial; i > -1; i--) {
+
+		int index = indiciesToRemove[i];
+
+		//Erase the caltropId
+		this->caltropEffectPairList.erase(this->caltropEffectPairList.begin() + index);
+
+		//Erase the frame counter that is now 0 that winds up in the same position
+		this->caltropEffectPairList.erase(this->caltropEffectPairList.begin() + index);
+	}
+}
+
+void Vehicle::takeBulletDamage(double dmgAmount) {
+	this->health.takeDamageFromBullet(dmgAmount);
 }
 
 //adds one ability point

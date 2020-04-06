@@ -10,6 +10,7 @@
 #include <vector>
 #include <memory>
 #include <list>
+#include <thread>
 
 // Rendering includes
 #include <GL\glew.h>
@@ -271,11 +272,9 @@ void parseControllerInput(Controller* controller)
 		pauseFlag = true;
 	}
 
-	//press up to suicide (for testing health bar)
+
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
 		player->update_health();
-
-		std::cout << "Current health: " << player->getHealthComponent()->GetHealth() << std::endl;
 	}
 	
 	//Sticks and triggers
@@ -328,9 +327,10 @@ int main()
 	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
-	//bool startScreenFlag = true;
-	//int menuFlag = 0;
 	bool setupGame = true;
+	bool resetFlag = false;
+	bool allDeadFlag = false;
+	int isNextFrame = 0;
 
 	HUDcreator hud;
 	hud.load();
@@ -351,8 +351,8 @@ int main()
 	CreateShaders();
 	createShadows();
 
-	bool winFlag = false;
-	bool loseFlag = false;
+	bool winFlags[4]{ false };
+	bool loseFlags[4]{ false };
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureAlpha();
@@ -548,6 +548,16 @@ int main()
 		}
 
 		while (startScreenFlag) {
+			int display_w, display_h;
+			glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
+			glViewport(0, 0, display_w, display_h);
+
+
+			if (resetFlag) {
+				//reset game, waiting for physic engine reset function to be done
+				resetFlag = false;
+			}
+			isNextFrame = 0;
 			if (!mainMenuMusic.isSoundPlaying()) {
 				mainMenuMusic.playSound();
 			}
@@ -1194,8 +1204,11 @@ int main()
 					//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 					glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameras[player].calculateViewMatrix()));
 
-					shadowTexture.UseTexture();
-					shadowList[0]->renderShadow();
+					//if vehicle is dead, remove the shadow
+					if (v->getHealthComponent()->GetHealth() > 0) {
+						shadowTexture.UseTexture();
+						shadowList[0]->renderShadow();
+					}
 				}
 
 				// AI vehicles' shadows 
@@ -1206,17 +1219,20 @@ int main()
 					glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 					//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 					glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameras[player].calculateViewMatrix()));
-
-
-					shadowTexture.UseTexture();
-					shadowList[0]->renderShadow();
+					
+					//if vehicle is dead, remove the shadow
+					if (v->getHealthComponent()->GetHealth() > 0) {
+						shadowTexture.UseTexture();
+						shadowList[0]->renderShadow();
+					}
 				}
 
 				glEnable(GL_DEPTH_TEST);
+				
 
 				// HUD
-				//check physEng to see if the win condition has been hit
-				if (physEng->gameFinished) {
+				/*			//check physEng to see if the win condition has been hit
+				if (physEng->gameFinished) 
 					for (auto v : vehicles) {
 						if (v->hasWon) {
 							if (v->isPlayer) {	//winner is player
@@ -1230,12 +1246,47 @@ int main()
 						}
 					}
 				}
+				*/
 
-				if (winFlag == true)
+				auto playerVehicle = physEng->playerVehicles[player];
+
+				//if player has no health, then lose the game
+				if (playerVehicle->getHealthComponent()->GetHealth() <= 0) {
+					winFlags[player] = false;
+					loseFlags[player] = true;
+				}
+
+				if (physEng->gameFinished) {
+					if (playerVehicle->hasWon) {
+						winFlags[player] = true;
+						loseFlags[player] = false;
+					}
+					else {
+						//if AI wins
+						for (auto v : physEng->enemyVehicles) {
+							if (v->hasWon) {
+								winFlags[player] = false;
+								loseFlags[player] = true;
+							}
+						}
+						//if other player wins
+						for (int i = 0; i < physEng->playerVehicles.size(); ++i) {
+							if (i != player) {
+								if (physEng->playerVehicles[i]->hasWon) {
+									winFlags[player] = false;
+									loseFlags[player] = true;
+								}
+							}
+						}
+						
+					}
+				}
+
+				if (winFlags[player] == true)
 					hud.setGameState(true);
-				if (loseFlag == true)
+				if (loseFlags[player] == true)
 					hud.setGameState(false);
-				if (winFlag)
+				if (winFlags[player])
 					hud.setLapNumber(physEng->playerVehicles[player]->numLaps);
 				else
 					hud.setLapNumber(physEng->playerVehicles[player]->numLaps + 1);
@@ -1261,6 +1312,8 @@ int main()
 				hud.setBulletNum(physEng->playerVehicles[player]->getShootingComponent()->ammo);
 				hud.setHealth(physEng->playerVehicles[player]->getHealthComponent()->GetHealth());
 				hud.setDisabled(physEng->playerVehicles[player]->affectedBySmoke);
+				hud.setSmoked(physEng->playerVehicles[player]->affectedBySmoke);
+				hud.setOiled(physEng->playerVehicles[player]->affectedByOil);
 				hud.use();
 			}
 
@@ -1314,6 +1367,25 @@ int main()
 			// ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
 
 				ImGui::End();
+			}
+			
+		
+			allDeadFlag = true;
+			for (auto v : physEng->playerVehicles) {
+				if (v->getHealthComponent()->GetHealth() > 0)
+					allDeadFlag = false;
+			}
+
+			//if all players are dead or the game is finished, pause the game for 5 seconds and then return to title 
+			if (physEng->gameFinished || allDeadFlag) {
+				if (isNextFrame == 10) {
+					std::this_thread::sleep_for(std::chrono::seconds(5));
+
+					gameFlag = false;
+					startScreenFlag = true;
+				}
+
+				++isNextFrame;
 			}
 
 			// Rendering imgui

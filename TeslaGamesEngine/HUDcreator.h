@@ -32,12 +32,16 @@ public:
 	void setBulletNum(int bullet);
 	void setHealth(float health) { currentHealth = health; };
 	void setDisabled(bool isDisabled);
-
+	void setSmoked(bool affectedBySmoke) { isSmoked = affectedBySmoke; };
+	void setOiled(bool affectedByOil) { isOiled = affectedByOil; }
+	
 private:
 	int id;
 	float size = 1.0f;										//HUD size
 	bool winOrLose = false;									//is someone finshed laps?
 	float currentHealth = 100;
+	bool isSmoked = false;
+	bool isOiled = false;
 
 	std::vector<HUD*> HUDList;
 	std::vector<Texture> TextureList;
@@ -73,9 +77,11 @@ private:
 	Texture personTexture;
 	Texture cupTexture;
 	Texture winTexture;
-	Texture  loseTexture;
+	Texture loseTexture;
 	Texture outOfBulletTexture;
 	Texture bulletSymbolTexture;
+	Texture smokedTexture;
+	Texture oiledTexture;
 
 	Texture abilityNum;
 	Texture weaponTexture;
@@ -299,5 +305,18 @@ private:
 		210.f / 1600.f * mainWindow.getWidth() * size, 650.f / 900.f * mainWindow.getHeight() * size, 0.f,			1.f, 0.f
 	};
 
+	GLfloat smokedVertices[20] = {
+		1300.0f / 1600 * mainWindow.getWidth() * size, 720.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1300.0f / 1600 * mainWindow.getWidth() * size, 820.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1400.0f / 1600 * mainWindow.getWidth() * size, 820.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1400.0f / 1600 * mainWindow.getWidth() * size, 720.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
+
+	GLfloat oiledVertices[20] = {
+		1450.0f / 1600 * mainWindow.getWidth() * size, 720.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 0.0f,
+		1450.0f / 1600 * mainWindow.getWidth() * size, 820.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		0.0f, 1.0f,
+		1550.0f / 1600 * mainWindow.getWidth() * size, 820.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 1.0f,
+		1550.0f / 1600 * mainWindow.getWidth() * size, 720.0f / 900.0f * mainWindow.getHeight() * size, 0.0f,		1.0f, 0.0f
+	};
 };
 
