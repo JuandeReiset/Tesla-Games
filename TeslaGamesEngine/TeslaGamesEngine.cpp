@@ -477,8 +477,8 @@ int main()
 	std::vector<Model> playerChassisModels;
 	std::vector<Model> playerTurretModels;
 
-	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_yellowchasis.obj");
-	T_turret.LoadModel("Models/TeslaGamesTruck2_yellowturret.obj");
+	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_chassis_mod.obj");
+	T_turret.LoadModel("Models/TeslaGamesTruck2_turret_mod.obj");
 
 	Teslacar2_chasis.LoadModel("Models/TeslaGamesTruck2_bluechasis.obj");
 	T2_turret.LoadModel("Models/TeslaGamesTruck2_blueturret.obj");
