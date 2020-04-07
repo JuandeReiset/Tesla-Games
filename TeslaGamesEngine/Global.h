@@ -15,5 +15,6 @@ extern bool readyScreenFlag;
 extern bool pauseFlag;
 extern bool fromGameFlag;
 extern bool multiplayerFlag;
+extern bool multiplayerScreenFlag;
 
 extern float backTime;
