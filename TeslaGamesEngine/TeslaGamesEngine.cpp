@@ -59,6 +59,7 @@
 #include "Menu.h"
 #include "ReadyScreen.h"
 #include "PauseScreen.h"
+#include "MultiplayerScreen.h"
 
 //Shadow stuff
 #include "Shadow.h"
@@ -393,6 +394,8 @@ int main()
 	readyScreen.load();
 	PauseScreen pauseScreen;
 	pauseScreen.load();
+	MultiplayerScreen multiplayerScreen;
+	multiplayerScreen.load();
 
 
 	physEng = new PhysicsEngine();
@@ -578,12 +581,24 @@ int main()
 	std::vector<Controller> controllers;
 	Controller player1 = Controller(1);
 	Controller player2 = Controller(2);
-	controllers.push_back(player1);
-	controllers.push_back(player2);
+	Controller player3 = Controller(3);
+	Controller player4 = Controller(4);
+	
+	if(player1.isConnected())
+		controllers.push_back(player1);
+	if(player2.isConnected())
+		controllers.push_back(player2);
+	if (player3.isConnected());
+		controllers.push_back(player3);
+	if(player4.isConnected())
+		controllers.push_back(player4);
 
 
-	std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
-	std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
+	int numOfPlayer;//the number of controller that will be used during the game
+
+	//std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
+	//std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
+	std::cout << controllers.size() - 1 << " Controllers are connected" << std::endl;
 
 	bool P1Connected = controllers[0].isConnected();
 	bool P2Connected = controllers[1].isConnected();
@@ -615,20 +630,27 @@ int main()
 			if (!mainMenuMusic.isSoundPlaying()) {
 				mainMenuMusic.playSound();
 			}
-			if (fromGameFlag) {
-				if (glfwGetTime() - backTime > 0.5) {
-					startScreen.loadController(&player1);
-					fromGameFlag = false;
-				}
-			}
-			else
-				startScreen.loadController(&player1);
+			
+			startScreen.loadController(&player1);
+			player1.refreshState();
 
 			startScreen.use();
 			menu.resetAiNum();
 
 			mainWindow.swapBuffers();
 		}
+
+		while (multiplayerScreenFlag) {
+			multiplayerScreen.setPlayerNum(controllers.size() - 1);
+			menuFlag = false;
+			multiplayerScreen.loadController(&player1);
+			player1.refreshState();
+
+			multiplayerScreen.use();
+			mainWindow.swapBuffers();
+		}
+
+		numOfPlayer = multiplayerScreen.getNumOfPlayer();//the number of controllers that will be used during the game
 
 		while (menuFlag) {
 			menu.setAiDefault(multiplayerFlag);
@@ -637,18 +659,29 @@ int main()
 			mainWindow.swapBuffers();
 		}
 
+		readyScreen.setNumOfPlayer(numOfPlayer);
 		while (readyScreenFlag) {
-			readyScreen.loadController(&player1);
+			switch (numOfPlayer) {
+			case 4:
+				readyScreen.loadController(&player4, 3);
+			case 3:
+				readyScreen.loadController(&player3, 2);
+			case 2:
+				readyScreen.loadController(&player2, 1);
+			case 1:
+				readyScreen.loadController(&player1, 0);
+			}
 			readyScreen.use();
 			mainWindow.swapBuffers();
 		}
 
+		readyScreen.reset();
 		while (pauseFlag) {
 			int display_w, display_h;
 			glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
 			glViewport(0, 0, display_w, display_h);
 			audioSystem.pauseAllActiveSources();
-			pauseScreen.loadController(&controllers[0]);
+			pauseScreen.loadController(&player1);
 			pauseScreen.use();
 			mainWindow.swapBuffers();
 		}
@@ -798,10 +831,22 @@ int main()
 		while (gameFlag)
 		{
 			/* Parse input */
-			if (P1Connected)
+			/*if (P1Connected)
 				parseControllerInput(&controllers[0]);
 			if (P2Connected)
 				parseControllerInput(&controllers[1]);
+			*/
+
+			switch (numOfPlayer) {
+				case 4:
+					parseControllerInput(&player4);
+				case 3:
+					parseControllerInput(&player3);
+				case 2:
+					parseControllerInput(&player2);
+				case 1:
+					parseControllerInput(&player1);
+			}
 
 			GLfloat now = glfwGetTime();
 			deltaTime = now - lastTime;
@@ -1290,23 +1335,6 @@ int main()
 				
 
 				// HUD
-				/*			//check physEng to see if the win condition has been hit
-				if (physEng->gameFinished) 
-					for (auto v : vehicles) {
-						if (v->hasWon) {
-							if (v->isPlayer) {	//winner is player
-								winFlag = true;
-								loseFlag = false;
-							}
-							else {	//winner is ai
-								winFlag = false;
-								loseFlag = true;
-							}
-						}
-					}
-				}
-				*/
-
 				auto playerVehicle = physEng->playerVehicles[player];
 
 				//if player has no health, then lose the game

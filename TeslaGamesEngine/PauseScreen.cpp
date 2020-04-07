@@ -101,6 +101,7 @@ void PauseScreen::loadController(Controller* controller) {
 	}
 	else if (controller->isButtonDown(XButtons.A)) {
 		if (op == 0) {
+			multiplayerScreenFlag = false;
 			pauseFlag = false;
 			gameFlag = true;
 			startScreenFlag = false;
@@ -108,6 +109,7 @@ void PauseScreen::loadController(Controller* controller) {
 			readyScreenFlag = false;
 		}
 		else if (op == 1) {
+			multiplayerScreenFlag = false;
 			pauseFlag = false;
 			startScreenFlag = true;
 			gameFlag = false;
@@ -115,10 +117,11 @@ void PauseScreen::loadController(Controller* controller) {
 			readyScreenFlag = false;
 			op = 0;
 			fromGameFlag = true;
-			backTime = glfwGetTime();
 			setOption();
 		}
 	}
+	controller->refreshState();
+
 }
 
 void PauseScreen::setOption() {

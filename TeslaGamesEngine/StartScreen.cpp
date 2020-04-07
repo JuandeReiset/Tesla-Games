@@ -138,6 +138,7 @@ void StartScreen::loadController(Controller *controller) {
 	}
 	else if (controller->isButtonDown(XButtons.A)) {
 		if (op == 0) {
+			multiplayerScreenFlag = false;
 			startScreenFlag = false;
 			menuFlag = true;
 			gameFlag = false;
@@ -146,7 +147,8 @@ void StartScreen::loadController(Controller *controller) {
 			multiplayerFlag = false;
 		}
 		else if (op == 1) {
-			menuFlag = true;
+			multiplayerScreenFlag = true;
+			menuFlag = false;
 			startScreenFlag = false;
 			gameFlag = false;
 			readyScreenFlag = false;
@@ -154,6 +156,7 @@ void StartScreen::loadController(Controller *controller) {
 			multiplayerFlag = true;
 		}
 		else if (op == 2) {
+			multiplayerScreenFlag = false;
 			closeWindowFlag = true;
 			startScreenFlag = false;
 			gameFlag = false;
@@ -164,5 +167,4 @@ void StartScreen::loadController(Controller *controller) {
 	}
 
 	controller->refreshState();
-
 }

@@ -248,6 +248,7 @@ void Menu::loadController(Controller* controller) {
 	else if (controller->isButtonDown(XButtons.A)) {
 		if (op == 2) {
 			menuFlag = false;
+			multiplayerScreenFlag = false;
 			readyScreenFlag = true;
 			startScreenFlag = false;
 			pauseFlag = false;
@@ -259,6 +260,7 @@ void Menu::loadController(Controller* controller) {
 	}
 	else if (controller->isButtonDown(XButtons.B)) {
 		menuFlag = false;
+		multiplayerScreenFlag = false;
 		startScreenFlag = true;
 		gameFlag = false;
 		readyScreenFlag = false;

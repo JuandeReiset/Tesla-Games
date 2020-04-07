@@ -69,6 +69,7 @@
     <ClCompile Include="PauseScreen.cpp" />
     <ClCompile Include="Raycast_shooting.cpp" />
     <ClCompile Include="AmmoBox.cpp" />
+    <ClCompile Include="MultiplayerScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="PauseScreen.h" />
     <ClInclude Include="Raycast_shooting.h" />
     <ClInclude Include="AmmoBox.h" />
+    <ClInclude Include="MultiplayerScreen.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TeslaGamesEngine1.rc" />
