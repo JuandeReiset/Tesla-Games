@@ -65,7 +65,8 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
 			LapMarker* l = (LapMarker*)pairs[i].triggerActor->userData;
 
-			 std::cout << "LAP MARKER VALUE: " << l->markerValue << std::endl;
+			if(v->isPlayer)
+				//std::cout << "LAP MARKER VALUE: " << l->markerValue << std::endl;
 
 			//hardcoded number of laps and markers
 			v->hitLapMarker(l->markerValue, 1);	//5 laps
