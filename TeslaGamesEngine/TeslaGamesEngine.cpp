@@ -699,6 +699,9 @@ int main()
 			physEng->initAudioForVehicles(&audioSystem);
 			cameras[0].initializeAudio(&audioSystem);
 
+			racetrack_floor.ClearModel();
+			racetrack_walls.ClearModel();
+
 			if (trackNum == trackTypeConstants::HYPERLOOP) {
 				
 				racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
