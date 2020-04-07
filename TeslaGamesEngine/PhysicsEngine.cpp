@@ -44,6 +44,7 @@ PhysicsEngine::PhysicsEngine() {
 
 	gameFinished = false;
 }
+
 void PhysicsEngine::initAudioForVehicles(AudioEngine* audio) {
 	this->audioEngine = audio;
 }
@@ -389,9 +390,8 @@ void PhysicsEngine::cleanupPhysics()
 			enemyVehicles.at(i)->cleanupPhysics(gAllocator);
 		}
 	}
+	
 
-
-	box->release();
 	PX_RELEASE(gGroundPlane);
 	
 	PX_RELEASE(gMaterial);

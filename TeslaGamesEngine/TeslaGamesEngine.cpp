@@ -196,11 +196,52 @@ static const char* fShadow_shader = "Shaders/shadow_shader.frag";
 // Multiplayer stuff
 int players = 2;
 
+bool setupGame;
+bool allDeadFlag;
+int isNextFrame;
+
+bool winFlags[4]{ false };
+bool loseFlags[4]{ false };
+
+std::vector<AIShootingComponent> aiShootingComponents;
+//all vehicles
+std::vector<Vehicle*> vehicles;
+
 
 struct yawPitch {
 	float yaw;
 	float pitch;
 };
+
+//resets the physics engine and other variables needed
+void resetGame() {
+	//std::cout << "RESET GAME HIT\n";
+	setupGame = true;
+	allDeadFlag = false;
+	isNextFrame = 0;
+
+	int sizeWinFlags = (sizeof(winFlags) / sizeof(*winFlags));
+	int sizeLoseFlags = (sizeof(loseFlags) / sizeof(*loseFlags));
+
+	for (int i = 0; i < sizeWinFlags; i++) {
+		winFlags[i] = false;
+	}
+
+	for (int i = 0; i < sizeLoseFlags; i++) {
+		loseFlags[i] = false;
+	}
+
+	//clear vehicles list and aiShootCompList
+	vehicles.clear();
+	aiShootingComponents.clear();
+
+	physEng->cleanupPhysics();
+
+	physEng = new PhysicsEngine();
+
+	setupGame = true;
+
+}
 
 void update(localAxis a, float yaw, float pitch) {
 	a.front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
@@ -320,6 +361,8 @@ void SetPlayers(int p)
 
 }
 
+
+
 int main()
 {
 	const char* glsl_version = "#version 130"; // USED FOR IMGUI SETTING
@@ -327,10 +370,9 @@ int main()
 	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
-	bool setupGame = true;
-	bool resetFlag = false;
-	bool allDeadFlag = false;
-	int isNextFrame = 0;
+	setupGame = true;
+	allDeadFlag = false;
+	isNextFrame = 0;
 
 	HUDcreator hud;
 	hud.load();
@@ -351,8 +393,16 @@ int main()
 	CreateShaders();
 	createShadows();
 
-	bool winFlags[4]{ false };
-	bool loseFlags[4]{ false };
+	int sizeWinFlags = (sizeof(winFlags) / sizeof(*winFlags));
+	int sizeLoseFlags = (sizeof(loseFlags) / sizeof(*loseFlags));
+
+	for (int i = 0; i < sizeWinFlags; i++) {
+		winFlags[i] = false;
+	}
+
+	for (int i = 0; i < sizeLoseFlags; i++) {
+		loseFlags[i] = false;
+	}
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureAlpha();
@@ -533,10 +583,9 @@ int main()
 
 	//This does all the Ai stuff as far TeslaGameEngine is concerned
 	Track raceTrack;
-	std::vector<AIShootingComponent> aiShootingComponents;
 
-	//all vehicles
-	std::vector<Vehicle*> vehicles;
+
+
 
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	cameras[0].setFront(front.x, front.y, front.z);
@@ -552,11 +601,8 @@ int main()
 			glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
 			glViewport(0, 0, display_w, display_h);
 
+			resetGame();
 
-			if (resetFlag) {
-				//reset game, waiting for physic engine reset function to be done
-				resetFlag = false;
-			}
 			isNextFrame = 0;
 			if (!mainMenuMusic.isSoundPlaying()) {
 				mainMenuMusic.playSound();
@@ -666,6 +712,7 @@ int main()
 			if (!multiplayerFlag) {
 				players = 1;
 			}
+			std::cout << "SIZE OF ALL VEHICLES AND AISHOOTCOMP LIST SHOULD BE 0:  " << vehicles.size() << " " << aiShootingComponents.size() << "\n";
 
 			for (int i = 0; i < AINum; i++) {
 				physEng->addEnemyVehicle(i);
@@ -737,6 +784,11 @@ int main()
 			physEng->allVehicles = vehicles;
 		}
 
+		//std::cout << "PRINTING ALL VEHICLE LISTS\n\n";
+
+		
+
+
 		while (gameFlag)
 		{
 			/* Parse input */
@@ -790,7 +842,6 @@ int main()
 			for (int i = 0; i < aiShootingComponents.size(); i++) {
 				aiShootingComponents[i].Aim();
 			}
-
 			/* Render */ 
 			// Clear the window
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1406,6 +1457,7 @@ int main()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
+
 	
 	return 0;
 }
