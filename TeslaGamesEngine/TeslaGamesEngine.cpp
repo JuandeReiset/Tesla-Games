@@ -197,11 +197,60 @@ static const char* fShadow_shader = "Shaders/shadow_shader.frag";
 // Multiplayer stuff
 int players = 2;
 
+bool setupGame;
+bool allDeadFlag;
+int isNextFrame;
+
+bool winFlags[4]{ false };
+bool loseFlags[4]{ false };
+
+std::vector<AIShootingComponent> aiShootingComponents;
+//all vehicles
+std::vector<Vehicle*> vehicles;
+
 
 struct yawPitch {
 	float yaw;
 	float pitch;
 };
+
+//resets the physics engine and other variables needed
+void resetGame() {
+	//std::cout << "RESET GAME HIT\n";
+	setupGame = true;
+	allDeadFlag = false;
+	isNextFrame = 0;
+
+	int sizeWinFlags = (sizeof(winFlags) / sizeof(*winFlags));
+	int sizeLoseFlags = (sizeof(loseFlags) / sizeof(*loseFlags));
+
+	for (int i = 0; i < sizeWinFlags; i++) {
+		winFlags[i] = false;
+	}
+
+	for (int i = 0; i < sizeLoseFlags; i++) {
+		loseFlags[i] = false;
+	}
+
+	//clear vehicles list and aiShootCompList
+	vehicles.clear();
+	aiShootingComponents.clear();
+
+	for (auto m : meshList) {
+		m->ClearMesh();
+	}
+	meshList.clear();
+	racetrack.ClearModel();
+	//racetrack_floor.ClearModel();
+	//racetrack_walls.ClearModel();
+
+	physEng->cleanupPhysics();
+
+	physEng = new PhysicsEngine();
+
+	setupGame = true;
+	std::cout << "END OF RESET METHOD\n\n";
+}
 
 void update(localAxis a, float yaw, float pitch) {
 	a.front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
@@ -321,6 +370,8 @@ void SetPlayers(int p)
 
 }
 
+
+
 int main()
 {
 	const char* glsl_version = "#version 130"; // USED FOR IMGUI SETTING
@@ -328,10 +379,9 @@ int main()
 	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
-	bool setupGame = true;
-	bool resetFlag = false;
-	bool allDeadFlag = false;
-	int isNextFrame = 0;
+	setupGame = true;
+	allDeadFlag = false;
+	isNextFrame = 0;
 
 	HUDcreator hud;
 	hud.load();
@@ -354,8 +404,16 @@ int main()
 	CreateShaders();
 	createShadows();
 
-	bool winFlags[4]{ false };
-	bool loseFlags[4]{ false };
+	int sizeWinFlags = (sizeof(winFlags) / sizeof(*winFlags));
+	int sizeLoseFlags = (sizeof(loseFlags) / sizeof(*loseFlags));
+
+	for (int i = 0; i < sizeWinFlags; i++) {
+		winFlags[i] = false;
+	}
+
+	for (int i = 0; i < sizeLoseFlags; i++) {
+		loseFlags[i] = false;
+	}
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureAlpha();
@@ -548,10 +606,9 @@ int main()
 
 	//This does all the Ai stuff as far TeslaGameEngine is concerned
 	Track raceTrack;
-	std::vector<AIShootingComponent> aiShootingComponents;
 
-	//all vehicles
-	std::vector<Vehicle*> vehicles;
+
+
 
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	cameras[0].setFront(front.x, front.y, front.z);
@@ -567,11 +624,8 @@ int main()
 			glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
 			glViewport(0, 0, display_w, display_h);
 
+			resetGame();
 
-			if (resetFlag) {
-				//reset game, waiting for physic engine reset function to be done
-				resetFlag = false;
-			}
 			isNextFrame = 0;
 			if (!mainMenuMusic.isSoundPlaying()) {
 				mainMenuMusic.playSound();
@@ -636,6 +690,7 @@ int main()
 			//Reset this variable to reset the game
 			setupGame = false;
 
+
 			int gameMode = menu.getSelectedGameMode();
 			int trackNum = menu.getSelectedTrack();
 			int AINum = menu.getSelectedNumOfAI();
@@ -644,10 +699,14 @@ int main()
 			physEng->initAudioForVehicles(&audioSystem);
 			cameras[0].initializeAudio(&audioSystem);
 
+			racetrack_floor.ClearModel();
+			racetrack_walls.ClearModel();
+
 			if (trackNum == trackTypeConstants::HYPERLOOP) {
+				
 				racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
-
+				std::cout << "LOADED HYPERLOOP TRACK\n\n";
 				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_HYPERLOOP);
 				if (multiplayerFlag == false) {
 					raceMusic.setVolume(0.35f);
@@ -661,7 +720,7 @@ int main()
 			else if (trackNum == trackTypeConstants::STARLINK) {
 				racetrack_walls.LoadModel("Models/track2final_Twalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2final_Tfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
-
+				std::cout << "LOADED STARLINK TRACK\n\n";
 				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_STARLINK);
 				if (multiplayerFlag == false) {
 					raceMusic.setVolume(0.35f);
@@ -699,6 +758,7 @@ int main()
 			if (!multiplayerFlag) {
 				players = 1;
 			}
+			std::cout << "SIZE OF ALL VEHICLES AND AISHOOTCOMP LIST SHOULD BE 0:  " << vehicles.size() << " " << aiShootingComponents.size() << "\n";
 
 			for (int i = 0; i < AINum; i++) {
 				physEng->addEnemyVehicle(i);
@@ -770,6 +830,7 @@ int main()
 			physEng->allVehicles = vehicles;
 		}
 
+
 		while (gameFlag)
 		{
 			/* Parse input */
@@ -835,7 +896,6 @@ int main()
 			for (int i = 0; i < aiShootingComponents.size(); i++) {
 				aiShootingComponents[i].Aim();
 			}
-
 			/* Render */ 
 			// Clear the window
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -940,8 +1000,10 @@ int main()
 				model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2));
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+				std::cout << "RIGHT BEFORE RENDERING TRACK\n";
 				racetrack_walls.RenderModel();
 				racetrack_floor.RenderModel();
+				std::cout << "RIGHT AFTER RENDERING TRACK\n";
 
 
 				/* Can uncomment to draw the TrackDrivingPoints if needed for testing
@@ -1434,6 +1496,7 @@ int main()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
+
 	
 	return 0;
 }
