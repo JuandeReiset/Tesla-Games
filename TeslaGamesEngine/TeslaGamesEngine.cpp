@@ -208,6 +208,8 @@ std::vector<AIShootingComponent> aiShootingComponents;
 std::vector<Vehicle*> vehicles;
 
 
+
+
 struct yawPitch {
 	float yaw;
 	float pitch;
@@ -248,6 +250,7 @@ void resetGame() {
 	physEng = new PhysicsEngine();
 
 	setupGame = true;
+
 	std::cout << "END OF RESET METHOD\n\n";
 }
 
@@ -610,6 +613,8 @@ int main()
 			glViewport(0, 0, display_w, display_h);
 
 			resetGame();
+			audioSystem.killSource(&raceMusic);
+
 
 			isNextFrame = 0;
 			if (!mainMenuMusic.isSoundPlaying()) {
@@ -656,7 +661,7 @@ int main()
 		if (setupGame) {
 			//Reset this variable to reset the game
 			setupGame = false;
-
+			
 
 			int gameMode = menu.getSelectedGameMode();
 			int trackNum = menu.getSelectedTrack();
@@ -952,10 +957,10 @@ int main()
 				model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2));
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-				std::cout << "RIGHT BEFORE RENDERING TRACK\n";
+				//std::cout << "RIGHT BEFORE RENDERING TRACK\n";
 				racetrack_walls.RenderModel();
 				racetrack_floor.RenderModel();
-				std::cout << "RIGHT AFTER RENDERING TRACK\n";
+				//std::cout << "RIGHT AFTER RENDERING TRACK\n";
 
 
 				/* Can uncomment to draw the TrackDrivingPoints if needed for testing
