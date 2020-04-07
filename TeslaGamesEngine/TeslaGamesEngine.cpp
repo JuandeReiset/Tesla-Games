@@ -536,7 +536,7 @@ int main()
 		controllers.push_back(player4);
 
 
-
+	int numOfPlayer;//the number of controller that will be used during the game
 
 	//std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
 	//std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
@@ -585,8 +585,7 @@ int main()
 
 			mainWindow.swapBuffers();
 		}
-		//std::cout << "multi" << multiplayerScreenFlag << std::endl;
-		//std::cout << "menu" << menuFlag << std::endl;
+
 		while (multiplayerScreenFlag) {
 			multiplayerScreen.setPlayerNum(controllers.size() - 1);
 			menuFlag = false;
@@ -596,8 +595,9 @@ int main()
 			multiplayerScreen.use();
 			mainWindow.swapBuffers();
 		}
-		//std::cout << "multi" << multiplayerScreenFlag << std::endl;
-		//std::cout << "menu" << menuFlag << std::endl;
+
+		numOfPlayer = multiplayerScreen.getNumOfPlayer();//the number of controllers that will be used during the game
+
 		while (menuFlag) {
 			menu.setAiDefault(multiplayerFlag);
 			menu.loadController(&player1);
@@ -605,12 +605,23 @@ int main()
 			mainWindow.swapBuffers();
 		}
 
+		readyScreen.setNumOfPlayer(numOfPlayer);
 		while (readyScreenFlag) {
-			readyScreen.loadController(&player1);
+			switch (numOfPlayer) {
+			case 4:
+				readyScreen.loadController(&player4, 3);
+			case 3:
+				readyScreen.loadController(&player3, 2);
+			case 2:
+				readyScreen.loadController(&player2, 1);
+			case 1:
+				readyScreen.loadController(&player1, 0);
+			}
 			readyScreen.use();
 			mainWindow.swapBuffers();
 		}
 
+		readyScreen.reset();
 		while (pauseFlag) {
 			int display_w, display_h;
 			glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
@@ -762,10 +773,22 @@ int main()
 		while (gameFlag)
 		{
 			/* Parse input */
-			if (P1Connected)
+			/*if (P1Connected)
 				parseControllerInput(&controllers[0]);
 			if (P2Connected)
 				parseControllerInput(&controllers[1]);
+			*/
+
+			switch (numOfPlayer) {
+				case 4:
+					parseControllerInput(&player4);
+				case 3:
+					parseControllerInput(&player3);
+				case 2:
+					parseControllerInput(&player2);
+				case 1:
+					parseControllerInput(&player1);
+			}
 
 			GLfloat now = glfwGetTime();
 			deltaTime = now - lastTime;

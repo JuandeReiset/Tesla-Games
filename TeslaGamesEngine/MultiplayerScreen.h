@@ -26,6 +26,7 @@ public:
 
 	void setPlayerNum(int num);
 	void loadController(Controller* controller);
+	int getNumOfPlayer() { return numOfPlayer; };
 
 private:
 	std::vector<HUD*> HUDList;
@@ -111,7 +112,7 @@ private:
 		1600.f / 1600 * mainWindow.getWidth(), 820.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 
-	int numOfPlayer;
+	int numOfPlayer = 1;
 	int maxPlayer = 4;
 
 	void setPlayerNumTexture();

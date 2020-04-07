@@ -24,6 +24,14 @@ void ReadyScreen::loadVertices() {
 	HUD* player2 = new HUD();
 	player2->createHUD(player2Vertices, indices, 20, 6);
 	HUDList.push_back(player2);
+
+	HUD* player3 = new HUD();
+	player3->createHUD(player3Vertices, indices, 20, 6);
+	HUDList.push_back(player3);
+
+	HUD* player4 = new HUD();
+	player4->createHUD(player4Vertices, indices, 20, 6);
+	HUDList.push_back(player4);
 }
 
 void ReadyScreen::loadTextures() {
@@ -44,6 +52,14 @@ void ReadyScreen::loadTextures() {
 
 	player2Texture = Texture("Textures/p2.png");
 	player2Texture.LoadTextureAlpha();
+
+	player3Texture = Texture("Textures/p3.png");
+	player3Texture.LoadTextureAlpha();
+
+	player4Texture = Texture("Textures/p4.png");
+	player4Texture.LoadTextureAlpha();
+
+	
 }
 
 void ReadyScreen::loadShader() {
@@ -83,7 +99,7 @@ void ReadyScreen::use() {
 
 	backTexture.UseTexture();
 	HUDList[3]->renderHUD();
-/*
+
 	if (p1Ready) {
 		player1Texture.UseTexture();
 		HUDList[4]->renderHUD();
@@ -93,23 +109,40 @@ void ReadyScreen::use() {
 		player2Texture.UseTexture();
 		HUDList[5]->renderHUD();
 	}
-*/
+
+	if (p3Ready) {
+		player3Texture.UseTexture();
+		HUDList[6]->renderHUD();
+	}
+
+	if (p4Ready) {
+		player4Texture.UseTexture();
+		HUDList[7]->renderHUD();
+	}
+
 	glEnable(GL_DEPTH_TEST);
 
 	return;
 }
 
-void ReadyScreen::loadController(Controller *controller) {
+void ReadyScreen::loadController(Controller *controller, int num) {
 	controller->update();
 
 	if (controller->isButtonDown(XButtons.A)) {
-		
-		multiplayerScreenFlag = false;
-		readyScreenFlag = false;
-		gameFlag = true;
-		startScreenFlag = false;
-		menuFlag = false;
-		pauseFlag = false;
+		switch (num) {
+		case 0:
+			p1Ready = true;
+			break;
+		case 1:
+			p2Ready = true;
+			break;
+		case 2:
+			p3Ready = true;
+			break;
+		case 3:
+			p4Ready = true;
+			break;
+		}
 	}
 	else if (controller->isButtonDown(XButtons.B)) {
 		multiplayerScreenFlag = false;
@@ -120,5 +153,54 @@ void ReadyScreen::loadController(Controller *controller) {
 		pauseFlag = false;
 	}
 
+	switch (numOfPlayer) {
+	case 1:
+		if (p1Ready) {
+			multiplayerScreenFlag = false;
+			readyScreenFlag = false;
+			gameFlag = true;
+			startScreenFlag = false;
+			menuFlag = false;
+			pauseFlag = false;
+		}
+		break;
+	case 2:
+		if(p1Ready && p2Ready){
+			multiplayerScreenFlag = false;
+			readyScreenFlag = false;
+			gameFlag = true;
+			startScreenFlag = false;
+			menuFlag = false;
+			pauseFlag = false;
+		}
+		break;
+	case 3:
+		if(p1Ready&&p2Ready&&p3Ready){
+			multiplayerScreenFlag = false;
+			readyScreenFlag = false;
+			gameFlag = true;
+			startScreenFlag = false;
+			menuFlag = false;
+			pauseFlag = false;
+		}
+		break;
+	case 4:
+		if (p1Ready && p2Ready && p3Ready && p4Ready) {
+			multiplayerScreenFlag = false;
+			readyScreenFlag = false;
+			gameFlag = true;
+			startScreenFlag = false;
+			menuFlag = false;
+			pauseFlag = false;
+		}
+	}
+
 	controller->refreshState();
+}
+
+void ReadyScreen::reset() {
+	p1Ready = false;
+	p2Ready = false;
+	p3Ready = false;
+	p4Ready = false;
 }
