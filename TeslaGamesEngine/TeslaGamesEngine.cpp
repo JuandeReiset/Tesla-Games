@@ -578,24 +578,26 @@ int main()
 			}
 			
 			startScreen.loadController(&player1);
+			player1.refreshState();
 
 			startScreen.use();
 			menu.resetAiNum();
 
 			mainWindow.swapBuffers();
 		}
-		std::cout << "multi" << multiplayerScreenFlag << std::endl;
-		std::cout << "menu" << menuFlag << std::endl;
+		//std::cout << "multi" << multiplayerScreenFlag << std::endl;
+		//std::cout << "menu" << menuFlag << std::endl;
 		while (multiplayerScreenFlag) {
 			multiplayerScreen.setPlayerNum(controllers.size() - 1);
 			menuFlag = false;
-			multiplayerScreen.loadController(&controllers[0]);
+			multiplayerScreen.loadController(&player1);
+			player1.refreshState();
 
 			multiplayerScreen.use();
 			mainWindow.swapBuffers();
 		}
-		std::cout << "multi" << multiplayerScreenFlag << std::endl;
-		std::cout << "menu" << menuFlag << std::endl;
+		//std::cout << "multi" << multiplayerScreenFlag << std::endl;
+		//std::cout << "menu" << menuFlag << std::endl;
 		while (menuFlag) {
 			menu.setAiDefault(multiplayerFlag);
 			menu.loadController(&player1);
@@ -614,7 +616,7 @@ int main()
 			glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
 			glViewport(0, 0, display_w, display_h);
 			audioSystem.pauseAllActiveSources();
-			pauseScreen.loadController(&controllers[0]);
+			pauseScreen.loadController(&player1);
 			pauseScreen.use();
 			mainWindow.swapBuffers();
 		}
