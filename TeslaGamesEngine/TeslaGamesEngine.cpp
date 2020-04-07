@@ -235,12 +235,20 @@ void resetGame() {
 	vehicles.clear();
 	aiShootingComponents.clear();
 
+	for (auto m : meshList) {
+		m->ClearMesh();
+	}
+	meshList.clear();
+	racetrack.ClearModel();
+	//racetrack_floor.ClearModel();
+	//racetrack_walls.ClearModel();
+
 	physEng->cleanupPhysics();
 
 	physEng = new PhysicsEngine();
 
 	setupGame = true;
-
+	std::cout << "END OF RESET METHOD\n\n";
 }
 
 void update(localAxis a, float yaw, float pitch) {
@@ -649,6 +657,7 @@ int main()
 			//Reset this variable to reset the game
 			setupGame = false;
 
+
 			int gameMode = menu.getSelectedGameMode();
 			int trackNum = menu.getSelectedTrack();
 			int AINum = menu.getSelectedNumOfAI();
@@ -658,9 +667,10 @@ int main()
 			cameras[0].initializeAudio(&audioSystem);
 
 			if (trackNum == trackTypeConstants::HYPERLOOP) {
+				
 				racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
-
+				std::cout << "LOADED HYPERLOOP TRACK\n\n";
 				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_HYPERLOOP);
 				if (multiplayerFlag == false) {
 					raceMusic.setVolume(0.35f);
@@ -674,7 +684,7 @@ int main()
 			else if (trackNum == trackTypeConstants::STARLINK) {
 				racetrack_walls.LoadModel("Models/track2final_Twalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2final_Tfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
-
+				std::cout << "LOADED STARLINK TRACK\n\n";
 				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_STARLINK);
 				if (multiplayerFlag == false) {
 					raceMusic.setVolume(0.35f);
@@ -783,10 +793,6 @@ int main()
 
 			physEng->allVehicles = vehicles;
 		}
-
-		//std::cout << "PRINTING ALL VEHICLE LISTS\n\n";
-
-		
 
 
 		while (gameFlag)
@@ -946,8 +952,10 @@ int main()
 				model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2));
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+				std::cout << "RIGHT BEFORE RENDERING TRACK\n";
 				racetrack_walls.RenderModel();
 				racetrack_floor.RenderModel();
+				std::cout << "RIGHT AFTER RENDERING TRACK\n";
 
 
 				/* Can uncomment to draw the TrackDrivingPoints if needed for testing
