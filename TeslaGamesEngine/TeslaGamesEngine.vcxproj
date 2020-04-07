@@ -217,6 +217,7 @@
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="MultiplayerScreen.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Oil.h" />
     <ClInclude Include="PauseScreen.h" />
@@ -285,6 +286,7 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="MultiplayerScreen.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Oil.cpp" />
     <ClCompile Include="PauseScreen.cpp" />
