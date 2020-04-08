@@ -145,7 +145,6 @@ Model racetrack;
 Model racetrack_walls;
 Model racetrack_floor;
 Model bulletobj;
-Model boxTest;
 Model oil;
 
 //Pickup models
@@ -595,8 +594,8 @@ int main()
 	std::vector<Model> playerChassisModels;
 	std::vector<Model> playerTurretModels;
 
-	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_chassis_mod.obj");
-	T_turret.LoadModel("Models/TeslaGamesTruck2_turret_mod.obj");
+	Teslacar_chasis.LoadModel("Models/TeslaGamesTruck2_yellowchasis.obj");
+	T_turret.LoadModel("Models/TeslaGamesTruck2_yellowturret.obj");
 
 	Teslacar2_chasis.LoadModel("Models/TeslaGamesTruck2_bluechasis.obj");
 	T2_turret.LoadModel("Models/TeslaGamesTruck2_blueturret.obj");
@@ -620,7 +619,6 @@ int main()
 	TeslacarAI_chasis.LoadModel("Models/TeslaGamesTruck2_redchasis.obj");
 	TAI_turret.LoadModel("Models/TeslaGamesTruck2_redturret.obj");
 	//////////////////////////////////////////////////////////////////////////
-	boxTest.LoadModel("Models/wall.obj");
 	//caltrop.LoadModel("Models/caltrops.obj");
 	//racetrack.LoadModel("Models/track2.obj");
 	
@@ -1112,7 +1110,6 @@ int main()
 						model = glm::scale(model, glm::vec3(0.8f, 0.8, 0.8f));	//keep these scale values!
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-						// boxTest.RenderModel();
 						defense_pickup.RenderModel();
 						++pickup;
 					}
@@ -1136,7 +1133,6 @@ int main()
 						model = glm::scale(model, glm::vec3(0.8f, 0.8, 0.8f));	//keep these scale values!
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-						// boxTest.RenderModel();
 						ammo_pickup.RenderModel();
 						++ammo;
 					}
