@@ -517,8 +517,8 @@ int main()
 	mainMenuMusic.loopSound(true);
 
 	// Multiplayer set up begins
-	// Manually set the number of players
-	// TODO: Remove this after testing and change it to strictly menu selection
+	// Manually set the maximum number of players
+	// TODO: Change this to detect number of controllers connected after testing phase
 	SetPlayers(4);
 
 	glm::mat4 projection;
@@ -526,7 +526,7 @@ int main()
 	glm::mat4 projFull = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()), 0.1f, 1000.0f);
 	glm::mat4 projHalf = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()) * 2, 0.1f, 1000.0f);
 
-		switch (players) {
+	switch (players) {
 		case 1:
 			// Player 1
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
@@ -556,7 +556,37 @@ int main()
 			break;
 		default:
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
-		}
+	}
+
+	// Controller handling
+	std::vector<Controller> controllers;
+	Controller player1 = Controller(1);
+	Controller player2 = Controller(2);
+	Controller player3 = Controller(3);
+	Controller player4 = Controller(4);
+
+	if (players >= 1) {
+		controllers.push_back(player1);
+	}
+	if (players >= 2) {
+		controllers.push_back(player2);
+	}
+	if (players >= 3) {
+		controllers.push_back(player3);
+	}
+	if (players >= 4) {
+		controllers.push_back(player4);
+	}
+
+
+	int numOfPlayer;//the number of controller that will be used during the game
+
+	// std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
+	// std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
+	std::cout << controllers.size() << " Controllers are connected" << std::endl;
+
+	bool P1Connected = controllers[0].isConnected();
+	bool P2Connected = controllers[1].isConnected();
 
 	// Multiplayer set up ends
 
@@ -604,37 +634,6 @@ int main()
 	drivingPointModel.LoadModel("Models/bullet.obj");
 	// Loop until window closed
 
-	//Controller
-	std::vector<Controller> controllers;
-	Controller player1 = Controller(1);
-	Controller player2 = Controller(2);
-	Controller player3 = Controller(3);
-	Controller player4 = Controller(4);
-	
-	/*if(player1.isConnected())
-		controllers.push_back(player1);
-	if(player2.isConnected())
-		controllers.push_back(player2);
-	if (player3.isConnected());
-		controllers.push_back(player3);
-	if(player4.isConnected())
-		controllers.push_back(player4);*/
-
-	controllers.push_back(player1);
-	controllers.push_back(player2);
-	controllers.push_back(player3);
-	controllers.push_back(player4);
-
-
-	int numOfPlayer;//the number of controller that will be used during the game
-
-	//std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
-	//std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
-	std::cout << controllers.size() - 1 << " Controllers are connected" << std::endl;
-
-	bool P1Connected = controllers[0].isConnected();
-	bool P2Connected = controllers[1].isConnected();
-
 
 	//This does all the Ai stuff as far TeslaGameEngine is concerned
 	Track raceTrack;
@@ -674,9 +673,9 @@ int main()
 			mainWindow.swapBuffers();
 		}
 
+		multiplayerScreen.setPlayerNum(controllers.size());
 		while (multiplayerScreenFlag) {
 			resetGame();
-			multiplayerScreen.setPlayerNum(controllers.size());
 			menuFlag = false;
 			multiplayerScreen.loadController(&player1);
 			player1.refreshState();
@@ -698,14 +697,15 @@ int main()
 		readyScreen.setNumOfPlayer(numOfPlayer);
 		while (readyScreenFlag) {
 			switch (numOfPlayer) {
+			// Force controllers 2-4 to be ready
 			case 4:
-				readyScreen.loadController(&player4, 3);
+				readyScreen.loadController(&player4, 3, true);
 			case 3:
-				readyScreen.loadController(&player3, 2);
+				readyScreen.loadController(&player3, 2, true);
 			case 2:
-				readyScreen.loadController(&player2, 1);
+				readyScreen.loadController(&player2, 1, true);
 			case 1:
-				readyScreen.loadController(&player1, 0);
+				readyScreen.loadController(&player1, 0, false);
 			}
 			readyScreen.use();
 			mainWindow.swapBuffers();
@@ -775,6 +775,9 @@ int main()
 			// TODO: Using to make multiplayer testing easier. Will remove
 			if (!multiplayerFlag) {
 				players = 1;
+			}
+			else {
+				SetPlayers(multiplayerScreen.getNumOfPlayer());
 			}
 
 			for (int i = 0; i < AINum; i++) {
@@ -868,10 +871,9 @@ int main()
 					parseControllerInput(&player1);
 			}*/
 
-			parseControllerInput(&controllers[0]);
-			parseControllerInput(&controllers[1]);
-			parseControllerInput(&controllers[2]);
-			parseControllerInput(&controllers[3]);
+			for (int i = 0; i < players; i++) {
+				parseControllerInput(&controllers[i]);
+			}
 
 			GLfloat now = glfwGetTime();
 			deltaTime = now - lastTime;

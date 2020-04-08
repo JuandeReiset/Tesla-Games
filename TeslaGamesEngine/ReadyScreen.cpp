@@ -125,16 +125,11 @@ void ReadyScreen::use() {
 	return;
 }
 
-void ReadyScreen::loadController(Controller *controller, int num) {
+void ReadyScreen::loadController(Controller *controller, int num, bool force) {
 	controller->update();
 
-	// Force players 2-4 to be ready 
-	// TODO: Remove, just for testing
-	p2Ready = true;
-	p3Ready = true;
-	p4Ready = true;
-
-	if (controller->isButtonDown(XButtons.A)) {
+	// Consider a controller ready if we force it
+	if (controller->isButtonDown(XButtons.A) | force) {
 		switch (num) {
 		case 0:
 			p1Ready = true;
