@@ -644,6 +644,25 @@ int main()
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	cameras[0].setFront(front.x, front.y, front.z);
 
+	Texture bbTex = Texture("Textures/HUD/healthbar.png");
+	bbTex.LoadTextureAlpha();
+
+	// Initialize billboard plain
+	unsigned int bbindices[] = {
+							0, 2, 1,
+							1, 2, 3
+	};
+
+	GLfloat billboard[] = {
+		-1.0f, -1.0f, 0.0f,	  0.0f, 0.0f,    0.0f, -1.0f, 0.0f,
+		 1.0f, -1.0f, 0.0f,	 1.0f, 0.0f,    0.0f, -1.0f, 0.0f,
+		-1.0f, 1.0f, 0.0f,	  0.0f, 1.0f,   0.0f, -1.0f, 0.0f,
+		 1.0f, 1.0f, 0.0f,   1.0f, 1.0f,   0.0f, -1.0f, 0.0f
+	};
+
+	Mesh* bb = new Mesh();
+	bb->CreateMesh(billboard, bbindices, 32, 6);
+
 	while (!mainWindow.getShouldClose()) {
 		if (closeWindowFlag) {
 			mainWindow.setWindowClose();
@@ -1314,6 +1333,17 @@ int main()
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						TAI_turret.RenderModel();
 
+						auto dir = cameras[player].getCameraDirection();
+						auto angle = atan2((float)dir.x, (float)dir.z);
+						model = glm::mat4(1.0f);
+						model = glm::translate(model, tem + glm::vec3(0, 2.5, 0));
+						model = glm::rotate(model, angle, glm::vec3(0, 1, 0));
+						// model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						// Change the texture used to show effects and stuff
+						bbTex.UseTexture();
+						dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+						bb->RenderMesh();
 						
 					}
 				}
@@ -1353,6 +1383,19 @@ int main()
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						// This
 						playerTurretModels[i].RenderModel();
+
+						// Draw billboard
+						auto dir = cameras[player].getCameraDirection();
+						auto angle = atan2((float)dir.x, (float)dir.z);
+						model = glm::mat4(1.0f);
+						model = glm::translate(model, tem + glm::vec3(0, 2.5, 0));
+						model = glm::rotate(model, angle, glm::vec3(0, 1, 0));
+						// model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						bbTex.UseTexture();
+						dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+						bb->RenderMesh();
+
 					}
 				}
 
