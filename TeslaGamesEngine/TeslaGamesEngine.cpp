@@ -195,7 +195,7 @@ static const char* vShadow_shader = "Shaders/shadow_shader.vert";
 static const char* fShadow_shader = "Shaders/shadow_shader.frag";
 
 // Multiplayer stuff
-int players = 2;
+int players = 4;
 
 bool setupGame;
 bool allDeadFlag;
@@ -365,7 +365,7 @@ void parseControllerInput(Controller* controller)
 
 void SetPlayers(int p)
 {
-	int MAXPLAYERS = 2;
+	int MAXPLAYERS = 4;
 	if (p > MAXPLAYERS) {
 		players = MAXPLAYERS;
 	}
@@ -517,9 +517,14 @@ int main()
 	mainMenuMusic.loopSound(true);
 
 	// Multiplayer set up begins
-	SetPlayers(2);
+	// Manually set the number of players
+	// TODO: Remove this after testing and change it to strictly menu selection
+	SetPlayers(4);
 
 	glm::mat4 projection;
+
+	glm::mat4 projFull = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()), 0.1f, 1000.0f);
+	glm::mat4 projHalf = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()) * 2, 0.1f, 1000.0f);
 
 		switch (players) {
 		case 1:
@@ -532,9 +537,23 @@ int main()
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
 			break;
 		case 3:
-			// Fall through for now
+			// Player 1
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 2
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 3
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			break;
 		case 4:
-			// Fall through for now
+			// Player 1
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 2
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 3
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 4
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			break;
 		default:
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
 		}
@@ -743,24 +762,6 @@ int main()
 				raceMusic.loopSound(true);
 			}
 
-			if (multiplayerFlag) {
-				switch (players) {
-				case 2:
-					projection = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()) * 2, 0.1f, 1000.0f);
-					break;
-				case 3:
-					// Fall through for now
-				case 4:
-					// Fall through for now
-				default:
-					projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-					break;
-				}
-			}
-			else {
-				projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-			}
-
 			raceTrack.initializeTrackPoints(trackNum);
 			raceTrack.initializeLapMarkers(trackNum);
 			physEng->setTrack(&raceTrack);
@@ -776,7 +777,8 @@ int main()
 			}
 
 			for (int i = 0; i < players; i++) {
-				physEng->addPlayerVehicle(AINum + controllers[i].getIndex());
+				physEng->addPlayerVehicle(AINum + i + 1);
+				//physEng->addPlayerVehicle(AINum + controllers[i].getIndex());
 			}
 
 			if (trackNum == trackTypeConstants::STARLINK) {
@@ -935,6 +937,27 @@ int main()
 			// Render for each player
 			for (int player = 0; player < players; player++) {
 
+				// Determine projection matrix
+				if (multiplayerFlag) {
+					if (players == 2) {
+						projection = projHalf;
+					}
+					if (players == 3) {
+						if (player == 0) {
+							projection = projHalf;
+						}
+						else {
+							projection = projFull;
+						}
+					}
+					if (players == 4) {
+						projection = projFull;
+					}
+				}
+				else {
+					projection = projFull;
+				}
+
 				//  Get values from physics engine
 				const physx::PxVehicleDrive4W* vehicle = physEng->playerVehicles[player]->gVehicle4W;	
 				const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
@@ -949,11 +972,38 @@ int main()
 
 				// Setup viewports depending on if it is or is not multiplayer
 				if (multiplayerFlag) {
-					if (player == 0) {
-						glViewport(0, display_h / 2, display_w, display_h / 2);
+					if (players == 2) {
+						if (player == 0) {
+							glViewport(0, display_h / 2, display_w, display_h / 2);
+						}
+						if (player == 1) {
+							glViewport(0, 0, display_w, display_h / 2);
+						}
 					}
-					if (player == 1) {
-						glViewport(0, 0, display_w, display_h / 2);
+					else if (players == 3) {
+						if (player == 0) {
+							glViewport(0, display_h / 2, display_w, display_h / 2);
+						}
+						if (player == 1) {
+							glViewport(0, 0, display_w / 2, display_h / 2);
+						}
+						if (player == 2) {
+							glViewport(display_w / 2, 0, display_w / 2, display_h / 2);
+						}
+					}
+					else if (players == 4) {
+						if (player == 0) {
+							glViewport(0, display_h / 2, display_w / 2, display_h / 2);
+						}
+						if (player == 1) {
+							glViewport(display_w / 2, display_h / 2, display_w / 2, display_h / 2);
+						}
+						if (player == 2) {
+							glViewport(0, 0, display_w / 2, display_h / 2);
+						}
+						if (player == 3) {
+							glViewport(display_w / 2, 0, display_w / 2, display_h / 2);
+						}
 					}
 				}
 				else {
