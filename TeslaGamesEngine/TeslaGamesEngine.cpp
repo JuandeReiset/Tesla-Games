@@ -842,7 +842,7 @@ int main()
 			for (auto ai : aiVehicles) {
 				//std::cout << "AI OWNER ID: " << ai->ID << "\n";
 				AIShootingComponent aiShooting = AIShootingComponent(ai);
-				aiShooting.SetVehicles(vehicles);
+				aiShooting.SetVehicles(physEng->allVehicles);
 				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
 				aiShootingComponents.push_back(aiShooting);
 			}

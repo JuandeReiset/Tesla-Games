@@ -35,7 +35,7 @@ void AIShootingComponent::Aim()
 				auto shooting = owner->getShootingComponent();
 				auto pos = owner->GetPosition();
 				// Setting ammo to 0 because of performance issues. Remove when those are fixed
-				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess,Shootdir.x,Shootdir.y,Shootdir.z);
+				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess, Shootdir.x, Shootdir.y, Shootdir.z);
 				raycast_handler.determine_hit_AI(); //Determines if the target gets hit by AI or not
 				lastFiredTime = glfwGetTime();
 				//target->update_health();
@@ -43,24 +43,24 @@ void AIShootingComponent::Aim()
 		}
 		// Target not in view, find new target
 		else {
+
 			target = nullptr;
 		}
+	}
 
-		float currentTime = glfwGetTime();
-		if (shouldUseAbility && owner->ability > 0 && (currentTime - lastAbilityTime) > abilityCooldownTime) {
-			// This is the AI shooting component. Use this to call abilities
-			auto shooting = owner->getShootingComponent();
-			PxVec3 p(owner->GetPosition());
-			wantToPlaceTrap = rand() % 3 + 1; // Choose random ability
+	float currentTime = glfwGetTime();
+	if (shouldUseAbility && owner->ability > 0 && (currentTime - lastAbilityTime) > abilityCooldownTime) {
+		// This is the AI shooting component. Use this to call abilities
+		auto shooting = owner->getShootingComponent();
+		PxVec3 p(owner->GetPosition());
+		wantToPlaceTrap = rand() % 3 + 1; // Choose random ability
 			
-			// Set random cooldown from 0 to 10 seconds
-			//abilityCooldownTime = 10.f * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX));
-			//min 3 max 10
-			lastAbilityTime = currentTime;
-		}
-		else {
-			wantToPlaceTrap = -1;
-		}
+		// Set random cooldown from 3 to 10 seconds
+		abilityCooldownTime = 3.f + (7.f * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)));
+		lastAbilityTime = currentTime;
+	}
+	else {
+		wantToPlaceTrap = -1;
 	}
 }
 
@@ -72,12 +72,15 @@ void AIShootingComponent::SetVehicles(std::vector<Vehicle*> vehiclesToSet)
 
 Vehicle * AIShootingComponent::FindTarget()
 {
+	Vehicle* aTarget = nullptr;
+
 	// See if any other vehicle is in range
 	for (auto aVehicle : vehicles) {
 		if (IsTargetInView(aVehicle) && aVehicle != owner) {
 			//aVehicle->update_health();
 			raycast_handler.set_Target(aVehicle);//Sets the target for the raycast
-			return aVehicle;
+			aTarget = aVehicle;
+			break;
 		}
 	}
 
@@ -90,7 +93,7 @@ Vehicle * AIShootingComponent::FindTarget()
 		}
 	}
 
-	return nullptr;
+	return aTarget;
 }
 
 
@@ -121,8 +124,10 @@ bool AIShootingComponent::IsTargetInView(Vehicle* aTarget)
 	// Check if target is within an 80 degree cone in front of vehicle
 	if (abs(acos(toTarget.dot(forwardDirection))) * (180.f / 3.14) < 40.f) {
 		return true;
+		
 	}
 	return false;
+	
 }
 
 bool AIShootingComponent::IsReloading()
