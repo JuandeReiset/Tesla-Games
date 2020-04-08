@@ -115,6 +115,26 @@ void PhysicsEngine::stepPhysics()
 		}
 	}
 
+	// Handle ai shooting & placing traps
+	for (auto ai : aiShootingComponents) {
+		ai.Aim();
+		if (ai.wantToPlaceTrap > 0) {
+			switch (ai.wantToPlaceTrap) {
+			case 1:		//caltrops
+				createCaltropsTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
+				//std::cout << "OWNER ID: " << ai.owner->ID << "\n";
+				break;
+			case 2:		//oil
+				createOilTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
+				break;
+			case 3:		//smoke
+				createSmokeTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
+				break;
+			}
+		}
+
+	}
+
 	//Scene update.
 	gScene->simulate(timestep);
 	gScene->fetchResults(true);
