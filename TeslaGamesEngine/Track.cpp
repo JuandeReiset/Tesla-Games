@@ -1341,6 +1341,7 @@ float Track::getAngleToTurnBy(TrackDrivingPoint* currentTarget, Vehicle* v) {
 //adds the correct lap markers to the vector
 void Track::initializeLapMarkers(int trackType)
 {
+	lapMarkers.clear();
 	if (trackType == trackTypeConstants::HYPERLOOP) {
 		for (int i = 0; i < 5; i++) {
 			LapMarker* l = new LapMarker(i);

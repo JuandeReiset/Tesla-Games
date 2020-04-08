@@ -209,6 +209,8 @@ std::vector<AIShootingComponent> aiShootingComponents;
 std::vector<Vehicle*> vehicles;
 
 
+
+
 struct yawPitch {
 	float yaw;
 	float pitch;
@@ -216,7 +218,6 @@ struct yawPitch {
 
 //resets the physics engine and other variables needed
 void resetGame() {
-	//std::cout << "RESET GAME HIT\n";
 	setupGame = true;
 	allDeadFlag = false;
 	isNextFrame = 0;
@@ -241,15 +242,12 @@ void resetGame() {
 	}
 	meshList.clear();
 	racetrack.ClearModel();
-	//racetrack_floor.ClearModel();
-	//racetrack_walls.ClearModel();
 
 	physEng->cleanupPhysics();
 
 	physEng = new PhysicsEngine();
 
 	setupGame = true;
-	std::cout << "END OF RESET METHOD\n\n";
 }
 
 void update(localAxis a, float yaw, float pitch) {
@@ -322,11 +320,21 @@ void parseControllerInput(Controller* controller)
 		pauseFlag = true;
 	}
 
-
+/*
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
 		player->update_health();
 	}
-	
+	*/
+
+	if (controller->isButtonDown(XButtons.DPad_Left)) {
+		//std::cout << "PRESSED SMOKE BUTTON\n";
+	}
+	if (controller->isButtonDown(XButtons.DPad_Right)) {
+		//std::cout << "PRESSED OIL BUTTON\n";
+	}
+	if (controller->isButtonDown(XButtons.DPad_Down)) {
+		//std::cout << "PRESSED CALTROPS BUTTON\n";
+	}
 	//Sticks and triggers
 	if (!controller->LStick_InDeadzone()) {
 		//physEng.turn(controller->leftStick_X());
@@ -625,6 +633,8 @@ int main()
 			glViewport(0, 0, display_w, display_h);
 
 			resetGame();
+			audioSystem.killSource(&raceMusic);
+
 
 			isNextFrame = 0;
 			if (!mainMenuMusic.isSoundPlaying()) {
@@ -641,6 +651,7 @@ int main()
 		}
 
 		while (multiplayerScreenFlag) {
+			resetGame();
 			multiplayerScreen.setPlayerNum(controllers.size() - 1);
 			menuFlag = false;
 			multiplayerScreen.loadController(&player1);
@@ -653,6 +664,7 @@ int main()
 		numOfPlayer = multiplayerScreen.getNumOfPlayer();//the number of controllers that will be used during the game
 
 		while (menuFlag) {
+			resetGame();
 			menu.setAiDefault(multiplayerFlag);
 			menu.loadController(&player1);
 			menu.use();
@@ -689,12 +701,12 @@ int main()
 		if (setupGame) {
 			//Reset this variable to reset the game
 			setupGame = false;
-
+			
 
 			int gameMode = menu.getSelectedGameMode();
 			int trackNum = menu.getSelectedTrack();
 			int AINum = menu.getSelectedNumOfAI();
-			std::cout << trackNum << std::endl;
+			//std::cout << trackNum << std::endl;
 
 			physEng->initAudioForVehicles(&audioSystem);
 			cameras[0].initializeAudio(&audioSystem);
@@ -758,7 +770,6 @@ int main()
 			if (!multiplayerFlag) {
 				players = 1;
 			}
-			std::cout << "SIZE OF ALL VEHICLES AND AISHOOTCOMP LIST SHOULD BE 0:  " << vehicles.size() << " " << aiShootingComponents.size() << "\n";
 
 			for (int i = 0; i < AINum; i++) {
 				physEng->addEnemyVehicle(i);
@@ -1000,10 +1011,10 @@ int main()
 				model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2));
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-				std::cout << "RIGHT BEFORE RENDERING TRACK\n";
+				//std::cout << "RIGHT BEFORE RENDERING TRACK\n";
 				racetrack_walls.RenderModel();
 				racetrack_floor.RenderModel();
-				std::cout << "RIGHT AFTER RENDERING TRACK\n";
+				//std::cout << "RIGHT AFTER RENDERING TRACK\n";
 
 
 				/* Can uncomment to draw the TrackDrivingPoints if needed for testing
@@ -1139,6 +1150,7 @@ int main()
 
 				// Draw and create caltrops
 				if (controllers[player].isButtonDown(XButtons.DPad_Down) && !physEng->playerVehicles[player]->affectedBySmoke) {
+
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
 					physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 5.f, physEng->playerVehicles[player]->ID);
 				}
@@ -1161,6 +1173,7 @@ int main()
 
 				// Draw and create oil
 				if (controllers[player].isButtonDown(XButtons.DPad_Right) && !physEng->playerVehicles[player]->affectedBySmoke) {
+					std::cout << "PRESSED OIL BUTTON\n";
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
 					physEng->createOilTriggerVolume(p.x, p.y, p.z, 5.f, physEng->playerVehicles[player]->ID);
 				}
@@ -1183,6 +1196,7 @@ int main()
 
 				// Draw and create smoke
 				if (controllers[player].isButtonDown(XButtons.DPad_Left) && !physEng->playerVehicles[player]->affectedBySmoke) {
+					std::cout << "PRESSED SMOKE BUTTON\n";
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
 					physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 5.f, physEng->playerVehicles[player]->ID);
 				}
@@ -1336,6 +1350,7 @@ int main()
 
 				glEnable(GL_DEPTH_TEST);
 				
+				//std::cout << "WIN LOSE FLAGS: " << winFlags[player] << " " << loseFlags[player] << "\n";
 
 				// HUD
 				auto playerVehicle = physEng->playerVehicles[player];
