@@ -195,7 +195,7 @@ static const char* vShadow_shader = "Shaders/shadow_shader.vert";
 static const char* fShadow_shader = "Shaders/shadow_shader.frag";
 
 // Multiplayer stuff
-int players = 2;
+int players = 4;
 
 bool setupGame;
 bool allDeadFlag;
@@ -365,7 +365,7 @@ void parseControllerInput(Controller* controller)
 
 void SetPlayers(int p)
 {
-	int MAXPLAYERS = 2;
+	int MAXPLAYERS = 4;
 	if (p > MAXPLAYERS) {
 		players = MAXPLAYERS;
 	}
@@ -517,11 +517,16 @@ int main()
 	mainMenuMusic.loopSound(true);
 
 	// Multiplayer set up begins
-	SetPlayers(2);
+	// Manually set the maximum number of players
+	// TODO: Change this to detect number of controllers connected after testing phase
+	SetPlayers(4);
 
 	glm::mat4 projection;
 
-		switch (players) {
+	glm::mat4 projFull = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()), 0.1f, 1000.0f);
+	glm::mat4 projHalf = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()) * 2, 0.1f, 1000.0f);
+
+	switch (players) {
 		case 1:
 			// Player 1
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
@@ -532,12 +537,56 @@ int main()
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
 			break;
 		case 3:
-			// Fall through for now
+			// Player 1
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 2
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 3
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			break;
 		case 4:
-			// Fall through for now
+			// Player 1
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 2
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 3
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 4
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			break;
 		default:
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
-		}
+	}
+
+	// Controller handling
+	std::vector<Controller> controllers;
+	Controller player1 = Controller(1);
+	Controller player2 = Controller(2);
+	Controller player3 = Controller(3);
+	Controller player4 = Controller(4);
+
+	if (players >= 1) {
+		controllers.push_back(player1);
+	}
+	if (players >= 2) {
+		controllers.push_back(player2);
+	}
+	if (players >= 3) {
+		controllers.push_back(player3);
+	}
+	if (players >= 4) {
+		controllers.push_back(player4);
+	}
+
+
+	int numOfPlayer;//the number of controller that will be used during the game
+
+	// std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
+	// std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
+	std::cout << controllers.size() << " Controllers are connected" << std::endl;
+
+	bool P1Connected = controllers[0].isConnected();
+	bool P2Connected = controllers[1].isConnected();
 
 	// Multiplayer set up ends
 
@@ -585,32 +634,6 @@ int main()
 	drivingPointModel.LoadModel("Models/bullet.obj");
 	// Loop until window closed
 
-	//Controller
-	std::vector<Controller> controllers;
-	Controller player1 = Controller(1);
-	Controller player2 = Controller(2);
-	Controller player3 = Controller(3);
-	Controller player4 = Controller(4);
-	
-	if(player1.isConnected())
-		controllers.push_back(player1);
-	if(player2.isConnected())
-		controllers.push_back(player2);
-	if (player3.isConnected());
-		controllers.push_back(player3);
-	if(player4.isConnected())
-		controllers.push_back(player4);
-
-
-	int numOfPlayer;//the number of controller that will be used during the game
-
-	//std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
-	//std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
-	std::cout << controllers.size() - 1 << " Controllers are connected" << std::endl;
-
-	bool P1Connected = controllers[0].isConnected();
-	bool P2Connected = controllers[1].isConnected();
-
 
 	//This does all the Ai stuff as far TeslaGameEngine is concerned
 	Track raceTrack;
@@ -650,9 +673,9 @@ int main()
 			mainWindow.swapBuffers();
 		}
 
+		multiplayerScreen.setPlayerNum(controllers.size());
 		while (multiplayerScreenFlag) {
 			resetGame();
-			multiplayerScreen.setPlayerNum(controllers.size() - 1);
 			menuFlag = false;
 			multiplayerScreen.loadController(&player1);
 			player1.refreshState();
@@ -674,14 +697,15 @@ int main()
 		readyScreen.setNumOfPlayer(numOfPlayer);
 		while (readyScreenFlag) {
 			switch (numOfPlayer) {
+			// Force controllers 2-4 to be ready
 			case 4:
-				readyScreen.loadController(&player4, 3);
+				readyScreen.loadController(&player4, 3, true);
 			case 3:
-				readyScreen.loadController(&player3, 2);
+				readyScreen.loadController(&player3, 2, true);
 			case 2:
-				readyScreen.loadController(&player2, 1);
+				readyScreen.loadController(&player2, 1, true);
 			case 1:
-				readyScreen.loadController(&player1, 0);
+				readyScreen.loadController(&player1, 0, false);
 			}
 			readyScreen.use();
 			mainWindow.swapBuffers();
@@ -743,24 +767,6 @@ int main()
 				raceMusic.loopSound(true);
 			}
 
-			if (multiplayerFlag) {
-				switch (players) {
-				case 2:
-					projection = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()) * 2, 0.1f, 1000.0f);
-					break;
-				case 3:
-					// Fall through for now
-				case 4:
-					// Fall through for now
-				default:
-					projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-					break;
-				}
-			}
-			else {
-				projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-			}
-
 			raceTrack.initializeTrackPoints(trackNum);
 			raceTrack.initializeLapMarkers(trackNum);
 			physEng->setTrack(&raceTrack);
@@ -769,6 +775,9 @@ int main()
 			// TODO: Using to make multiplayer testing easier. Will remove
 			if (!multiplayerFlag) {
 				players = 1;
+			}
+			else {
+				SetPlayers(multiplayerScreen.getNumOfPlayer());
 			}
 
 			for (int i = 0; i < AINum; i++) {
@@ -851,7 +860,7 @@ int main()
 				parseControllerInput(&controllers[1]);
 			*/
 
-			switch (numOfPlayer) {
+			/*switch (numOfPlayer) {
 				case 4:
 					parseControllerInput(&player4);
 				case 3:
@@ -860,6 +869,10 @@ int main()
 					parseControllerInput(&player2);
 				case 1:
 					parseControllerInput(&player1);
+			}*/
+
+			for (int i = 0; i < players; i++) {
+				parseControllerInput(&controllers[i]);
 			}
 
 			GLfloat now = glfwGetTime();
@@ -935,6 +948,27 @@ int main()
 			// Render for each player
 			for (int player = 0; player < players; player++) {
 
+				// Determine projection matrix
+				if (multiplayerFlag) {
+					if (players == 2) {
+						projection = projHalf;
+					}
+					if (players == 3) {
+						if (player == 0) {
+							projection = projHalf;
+						}
+						else {
+							projection = projFull;
+						}
+					}
+					if (players == 4) {
+						projection = projFull;
+					}
+				}
+				else {
+					projection = projFull;
+				}
+
 				//  Get values from physics engine
 				const physx::PxVehicleDrive4W* vehicle = physEng->playerVehicles[player]->gVehicle4W;	
 				const physx::PxRigidDynamic* vDynamic = vehicle->getRigidDynamicActor();
@@ -949,11 +983,38 @@ int main()
 
 				// Setup viewports depending on if it is or is not multiplayer
 				if (multiplayerFlag) {
-					if (player == 0) {
-						glViewport(0, display_h / 2, display_w, display_h / 2);
+					if (players == 2) {
+						if (player == 0) {
+							glViewport(0, display_h / 2, display_w, display_h / 2);
+						}
+						if (player == 1) {
+							glViewport(0, 0, display_w, display_h / 2);
+						}
 					}
-					if (player == 1) {
-						glViewport(0, 0, display_w, display_h / 2);
+					else if (players == 3) {
+						if (player == 0) {
+							glViewport(0, display_h / 2, display_w, display_h / 2);
+						}
+						if (player == 1) {
+							glViewport(0, 0, display_w / 2, display_h / 2);
+						}
+						if (player == 2) {
+							glViewport(display_w / 2, 0, display_w / 2, display_h / 2);
+						}
+					}
+					else if (players == 4) {
+						if (player == 0) {
+							glViewport(0, display_h / 2, display_w / 2, display_h / 2);
+						}
+						if (player == 1) {
+							glViewport(display_w / 2, display_h / 2, display_w / 2, display_h / 2);
+						}
+						if (player == 2) {
+							glViewport(0, 0, display_w / 2, display_h / 2);
+						}
+						if (player == 3) {
+							glViewport(display_w / 2, 0, display_w / 2, display_h / 2);
+						}
 					}
 				}
 				else {

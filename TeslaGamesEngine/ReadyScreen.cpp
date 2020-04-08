@@ -125,10 +125,11 @@ void ReadyScreen::use() {
 	return;
 }
 
-void ReadyScreen::loadController(Controller *controller, int num) {
+void ReadyScreen::loadController(Controller *controller, int num, bool force) {
 	controller->update();
 
-	if (controller->isButtonDown(XButtons.A)) {
+	// Consider a controller ready if we force it
+	if (controller->isButtonDown(XButtons.A) | force) {
 		switch (num) {
 		case 0:
 			p1Ready = true;

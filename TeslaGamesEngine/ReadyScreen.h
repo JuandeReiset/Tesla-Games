@@ -23,7 +23,7 @@ public:
 	void use();
 	void load();
 	void loadShader();
-	void loadController(Controller* controller, int num);
+	void loadController(Controller* controller, int num, bool force);
 
 	void setNumOfPlayer(int num) { numOfPlayer = num; };
 	void reset();
