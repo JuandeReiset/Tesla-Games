@@ -579,7 +579,7 @@ int main()
 	}
 
 
-	int numOfPlayer;//the number of controller that will be used during the game
+	int numOfPlayer = players;//the number of controller that will be used during the game
 
 	// std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
 	// std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
@@ -684,7 +684,12 @@ int main()
 			mainWindow.swapBuffers();
 		}
 
-		numOfPlayer = multiplayerScreen.getNumOfPlayer();//the number of controllers that will be used during the game
+		if (multiplayerFlag) {
+			numOfPlayer = multiplayerScreen.getNumOfPlayer();//the number of controllers that will be used during the game
+		}
+		else {
+			numOfPlayer = 1;
+		}
 
 		while (menuFlag) {
 			resetGame();
