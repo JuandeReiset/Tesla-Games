@@ -2,6 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <openAL/al.h>
 #include <openAL/alc.h>
+#include "Global.h"
 
 class AudioBoomBox
 {  

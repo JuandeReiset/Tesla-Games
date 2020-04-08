@@ -1,7 +1,8 @@
 #pragma once
 #include "ShootComp.h"
+#include "Raycast_shooting.h"
 #include "Vehicle.h"
-
+#include <glm\glm.hpp>
 
 enum class AimingState
 {
@@ -29,6 +30,9 @@ public:
 
 	~AIShootingComponent();
 
+	int wantToPlaceTrap;
+	Vehicle* owner;
+
 private:
 	Vehicle* FindTarget();
 	bool IsTargetInView(Vehicle* aTarget);
@@ -36,9 +40,9 @@ private:
 	bool IsReloading();
 	void FindAimingState();
 	bool AimAtTarget();
-
+    glm::vec3 Shootdir;
 	std::vector<Vehicle*> vehicles;
-	Vehicle* owner;
+	
 	Vehicle* target;
 	AimingState aimingState;
 	float threshold;
@@ -48,6 +52,8 @@ private:
 	bool shouldUseAbility;
 	float lastAbilityTime;
 	float abilityCooldownTime;
+
+	Raycast_shooting raycast_handler;
 
 	GLuint uniformModel = 0;
 	GLuint uniformSpecular= 0;

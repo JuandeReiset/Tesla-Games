@@ -109,7 +109,7 @@ void Menu::loadTextures() {
 	rightdownTexture = right1Texture;
 	rightupTexture = right1Texture;
 	trackTxt = track12Txt;
-	aiNumTxt = dig9Texture;
+	aiNumTxt = dig4Texture;
 	aiTxt = ai1Txt;
 	startTxt = start1Txt;
 
@@ -206,10 +206,19 @@ void Menu::loadController(Controller* controller) {
 			arrow = 0;
 		}
 		else if (op == 1) {
-			if (an == 0)
-				;
-			else
-				--an;
+			if (multiplayer) {
+				if (an == 0)
+					;
+				else
+					--an;
+			}
+			else{
+				if (an == 1)
+					;
+				else
+					--an;
+			}
+
 
 			arrow = 2;
 		}
@@ -226,7 +235,7 @@ void Menu::loadController(Controller* controller) {
 			arrow = 1;
 		}
 		else if (op == 1) {
-			if (an == 9)
+			if (an == 8)
 				;
 			else
 				++an;
@@ -239,14 +248,19 @@ void Menu::loadController(Controller* controller) {
 	else if (controller->isButtonDown(XButtons.A)) {
 		if (op == 2) {
 			menuFlag = false;
+			multiplayerScreenFlag = false;
 			readyScreenFlag = true;
 			startScreenFlag = false;
 			pauseFlag = false;
 			gameFlag = false;
+
+			op = 0;
+			setOption(op, tn, an);
 		}
 	}
 	else if (controller->isButtonDown(XButtons.B)) {
 		menuFlag = false;
+		multiplayerScreenFlag = false;
 		startScreenFlag = true;
 		gameFlag = false;
 		readyScreenFlag = false;
@@ -357,4 +371,9 @@ void Menu::setArrow() {
 		rightdownTexture = right2Texture;
 
 	arrow = -1;
+}
+
+void Menu::resetAiNum() {
+	an = 4;
+	aiNumTxt = dig4Texture;
 }

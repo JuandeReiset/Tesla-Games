@@ -217,6 +217,7 @@
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="MultiplayerScreen.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Oil.h" />
     <ClInclude Include="PauseScreen.h" />
@@ -231,6 +232,7 @@
     <ClInclude Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h" />
     <ClInclude Include="PickupBox.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="Raycast_shooting.h" />
     <ClInclude Include="ReadyScreen.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="resource.h" />
@@ -247,7 +249,6 @@
     <ClInclude Include="TrackDrivingPoint.h" />
     <ClInclude Include="TrackInteractableStrip.h" />
     <ClInclude Include="Transform.h" />
-    <ClInclude Include="Turret.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
@@ -285,6 +286,7 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="MultiplayerScreen.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Oil.cpp" />
     <ClCompile Include="PauseScreen.cpp" />
@@ -307,6 +309,7 @@
     <ClCompile Include="PhysX\vehicle4W\snippetvehiclecommon\SnippetVehicleTireFriction.cpp" />
     <ClCompile Include="PickupBox.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="Raycast_shooting.cpp" />
     <ClCompile Include="ReadyScreen.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -322,7 +325,6 @@
     <ClCompile Include="TrackDrivingPoint.cpp" />
     <ClCompile Include="TrackInteractableStrip.cpp" />
     <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>

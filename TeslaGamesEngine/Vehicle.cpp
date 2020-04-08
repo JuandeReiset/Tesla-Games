@@ -66,6 +66,9 @@ Vehicle::Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial
 	numberOfMarkersInTrack = markers->size();
 	totalMarkersHit = 0;
 	lapMarkers = markers;
+
+	hasWon = false;
+	winRank = 0;
 }
 Vehicle::Vehicle(int id) : ID(id) {}
 Vehicle::~Vehicle() { cleanup(); }
@@ -90,7 +93,10 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 	//Work out if the vehicle is in the air.
 	gIsVehicleInAir = gVehicle4W->getRigidDynamicActor()->isSleeping() ? false : PxVehicleIsInAir(vehicleQueryResults[0]);
 
-	audioUpdate();
+	if (multiplayerFlag == false) {
+		audioUpdate();
+	}
+	
 	float curSpeed = gVehicle4W->computeForwardSpeed();
 	float curAccel = gVehicleInputData.getAnalogAccel();
 	
@@ -112,8 +118,10 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 
 	//update distance for position/ranking
 	updateDistance();
-
 	
+	//Update the list of caltrops that can hurt the racer
+	updateCaltropEffectList();
+
 	if (this->isAICar) {
 		PxVec3 pos = this->GetPosition();
 		PxVec3 target = PxVec3(this->curTarget.x, this->curTarget.y, this->curTarget.z);
@@ -170,7 +178,7 @@ void Vehicle::updateDistance()
 void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 {
 	if (expectedMarker == val) {	//good hit
-		std::cout << "HIT LAP MARKER " << val << "!\n";
+		//std::cout << "HIT LAP MARKER " << val << "!\n";
 		totalMarkersHit++;
 		//update expected and current marker vals
 		expectedMarker = (expectedMarker + 1) % numberOfMarkersInTrack;
@@ -179,28 +187,20 @@ void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 		//start marker is 0, first marker after start is 1
 		if (currentMarker == 0 && expectedMarker == 1) {	//completed a lap
 			numLaps++;
-			if (numLaps == trackTotalLaps) {	//you win!
-				lapWinCondition();
+			if (numLaps == trackTotalLaps && ranking == 1) {	//you win!
+				wins();
 			}
 		}
 	}
 }
 
-//modify for multiple players
-//store a vector of winners in phys eng 
-//when this method is tripped, add the vehicle (based on id) to that vector
-//Maybe do a check in collider where hitLapMarker returns a value, if true add the vehicle to a list
-//and share that list with phys eng?
-void Vehicle::lapWinCondition()
+
+void Vehicle::wins()
 {
-	if (isPlayer) {
-		std::cout << "CONGRATULATIONS PLAYER!! YOU WIN!\n";
-	}
-	else {
-		std::cout << "ENEMY OPPONENT HAS WON!\n";
-	}
-	
+	hasWon = true;
+	winRank = ranking;
 }
+
 
 void Vehicle::initAITrackPoints(std::vector<std::unique_ptr<TrackDrivingPoint>>* listOfPoints) {
 	this->listOfPoints = listOfPoints;
@@ -471,6 +471,9 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 	this->health.initAudioForHealthComponent(engine);
 
 	float initialSoundVolume = 15.f;
+	if (multiplayerFlag == true) {
+		initialSoundVolume = 45.f;
+	}
 
 	this->accelerateFromRest.setVolume(initialSoundVolume);
 	this->accelerateFromMotion.setVolume(initialSoundVolume);
@@ -525,7 +528,7 @@ VehicleDesc Vehicle::initVehicleDesc(PxMaterial* gMaterial)	//pass in gMaterial 
 	return vehicleDesc;
 }
 
-//cleans the physx objects. Gets called in PhysicsEngine
+//cleans the physx objects. Gets called in PhysicsEngine (also cleans audio)
 void Vehicle::cleanupPhysics(PxDefaultAllocator gAllocator) {
 	gVehicle4W->getRigidDynamicActor()->release();
 	gVehicle4W->free();
@@ -534,6 +537,8 @@ void Vehicle::cleanupPhysics(PxDefaultAllocator gAllocator) {
 	gVehicleSceneQueryData->free(gAllocator);
 	PX_RELEASE(gFrictionPairs);
 	PxCloseVehicleSDK();
+
+	cleanup();
 }
 
 //this should go with the vehicle class
@@ -652,18 +657,8 @@ void Vehicle::keyPress(unsigned char key, const PxTransform& camera)
 	PX_UNUSED(camera);
 	PX_UNUSED(key);
 }
-void Vehicle::Tick(float deltaTime) {
-	/*std::cout << "Current health:" << currentHealth() << std::endl;
-	if (currentHealth() <= 0)
-		dead_flag = 1;
+void Vehicle::Tick(float deltaTime) {}
 
-	if (ID == combat.GetTargetID())
-		getDamage(combat.GetDamage());
-
-	if (turret.is_there_ammo())
-		armed = false;
-		*/
-}
 double Vehicle::currentHealth() {
 	return health.GetHealth();
 }
@@ -671,13 +666,60 @@ double Vehicle::currentHealth() {
 void Vehicle::takeTrapDamage(double dmgAmount) {
 	this->health.takeTrapDamage(dmgAmount);
 }
-void Vehicle::takeBulletDamage(double dmgAmount) {
-	this->health.takeDamageFromBullet(dmgAmount);
+
+void Vehicle::takeCaltropDamage(int caltropId, double dmgAmount) {
+	bool foundCaltropAlreadyInList = false;
+	int caltropEffectTimeToLive = 45; //number is number of frames bewteen hits allowed
+
+	for (int i = 0; i < this->caltropEffectPairList.size(); i = i + 2) {
+		int id = this->caltropEffectPairList[i];
+		if (caltropId == id) {
+			foundCaltropAlreadyInList = true;
+			break;
+		}
+	}
+	if (foundCaltropAlreadyInList == false) {
+		this->caltropEffectPairList.push_back(caltropId);
+		this->caltropEffectPairList.push_back(caltropEffectTimeToLive);
+		this->takeTrapDamage(dmgAmount);
+	}
 }
 
-void Vehicle::firelazer() {
-	//turret.fire();
-	//health.SetHealth(0);
+void Vehicle::updateCaltropEffectList() {
+
+	std::vector<int> indiciesToRemove;
+
+	for (int i = 0; i < this->caltropEffectPairList.size(); i = i + 2) {
+		int indexOfCaltrop = this->caltropEffectPairList[i];
+		int framesToLive = this->caltropEffectPairList[i + 1];
+		framesToLive--;
+		if (framesToLive <= 0) {
+			indiciesToRemove.push_back(i);
+		}
+		else {
+			this->caltropEffectPairList[i + 1] = framesToLive;
+		}
+	}
+
+	int initial = indiciesToRemove.size() - 1;
+	//Going in reverse to remove issues of earlier indicies being removed causing the indicies of later elements to change
+	//[1,2,3,4,5] 4 is at index 3
+	//[1,2,4,5] 4 is at index 2
+	//This would make the indicies in the vector invalid
+	for (int i = initial; i > -1; i--) {
+
+		int index = indiciesToRemove[i];
+
+		//Erase the caltropId
+		this->caltropEffectPairList.erase(this->caltropEffectPairList.begin() + index);
+
+		//Erase the frame counter that is now 0 that winds up in the same position
+		this->caltropEffectPairList.erase(this->caltropEffectPairList.begin() + index);
+	}
+}
+
+void Vehicle::takeBulletDamage(double dmgAmount) {
+	this->health.takeDamageFromBullet(dmgAmount);
 }
 
 //adds one ability point
@@ -698,7 +740,7 @@ void Vehicle::ammo()
 }
 
 //drops caltrops and adds the newly added caltrop to the given list
-void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList, float duration) {
+void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList, float duration, PxScene* gScene, PxPhysics* gPhysics, PxVec3 position) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -710,12 +752,29 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList, float duration) {
 	caltrop->createCaltrops(glm::vec3(pos.x, pos.y, pos.z));
 	catropsList->push_back(caltrop);
 
+	PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
+	PxTransform transform(position, PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	catropsList->back()->actor = actor;
+	actor->setName(CALTROPS.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	catropsList->back()->actor->userData = catropsList->back();
+
+	gScene->addActor(*actor);
+
 	--ability;
 
 	this->deployCaltropsEffect.playSound();
 }
 
-void Vehicle::useOil(std::list<Oil*> *oilList, float duration) {
+void Vehicle::useOil(std::list<Oil*> *oilList, float duration, PxScene* gScene, PxPhysics* gPhysics, PxVec3 position) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -727,11 +786,28 @@ void Vehicle::useOil(std::list<Oil*> *oilList, float duration) {
 	oil->createOil(glm::vec3(pos.x, pos.y, pos.z));
 	oilList->push_back(oil);
 
+	PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
+	PxTransform transform(position, PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	oilList->back()->actor = actor;
+	actor->setName(OIL.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	oilList->back()->actor->userData = oilList->back();
+
+	gScene->addActor(*actor);
+
 	--ability;
 	this->deployOilEffect.playSound();
 }
 
-void Vehicle::useSmoke(std::list<Smoke*>* smokeList, float duration) {
+void Vehicle::useSmoke(std::list<Smoke*>* smokeList, float duration, PxScene* gScene, PxPhysics* gPhysics, PxVec3 position) {
 	if (ability == 0 || affectedBySmoke)
 		return;
 
@@ -742,6 +818,23 @@ void Vehicle::useSmoke(std::list<Smoke*>* smokeList, float duration) {
 	Smoke* smoke = new Smoke(ID, duration);
 	smoke->createSmoke(glm::vec3(pos.x, pos.y, pos.z));
 	smokeList->push_back(smoke);
+
+	PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
+	PxTransform transform(position, PxQuat(PxIDENTITY()));
+	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+
+	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
+	smokeList->back()->actor = actor;
+	actor->setName(SMOKE.c_str());
+	PxShape* shape;
+	actor->getShapes(&shape, 1);
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	smokeList->back()->actor->userData = smokeList->back();
+
+	gScene->addActor(*actor);
 
 	--ability;
 	this->deploySmokeEffect.playSound();

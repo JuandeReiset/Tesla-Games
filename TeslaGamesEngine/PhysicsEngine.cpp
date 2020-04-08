@@ -40,13 +40,11 @@ PhysicsEngine::PhysicsEngine() {
 	boxwall->setSimulationFilterData(obstFilterData);
 	wallActor->setGlobalPose(PxTransform(PxVec3(0, 2, 5)));
 	wallActor->attachShape(*boxwall);
-	//gScene->addActor(*wallActor);
 
-	//createPickupTriggerVolume(0, 0, 0);
-	createPickupTriggerVolume(0, 2, 10);
-	createPickupTriggerVolume(2, 2, 10);
-	//createPickupTriggerVolume(33, 1, -87);
+
+	gameFinished = false;
 }
+
 void PhysicsEngine::initAudioForVehicles(AudioEngine* audio) {
 	this->audioEngine = audio;
 }
@@ -87,12 +85,18 @@ physx::PxVec3 PhysicsEngine::GetBoxPos()
 	return wallActor->getGlobalPose().p;
 }
 
+
 void PhysicsEngine::stepPhysics()
 {
 	const PxF32 timestep = 1.0f / 60.0f;
 
+	sortVehicles();
 
-  sortVehicles();
+	cleanupTheDead();
+
+	if (!gameFinished) {
+		gameFinished = winConditionCheck();
+	}
   
 	for (auto player : playerVehicles) {
 		player->update(timestep, gScene);
@@ -139,6 +143,60 @@ PLEASE PLEASE PLEASE USE THESE FUNCTIONS FOR ADDING TRIGGER VOLUMES! THIS WILL P
 void PhysicsEngine::sortVehicles()
 {
 	sort(allVehicles.begin(), allVehicles.end(), VehicleComparator());
+}
+
+void PhysicsEngine::cleanupTheDead()
+{
+	auto it = aliveVehicles.begin();
+
+	//remove any dead vehicles from list
+	while (it != aliveVehicles.end()) {
+		if ((*it)->currentHealth() <= 0) {
+			(*it)->hasWon = false;	//just in case the car wins and dies in the same frame
+			it = aliveVehicles.erase(it);
+		}
+		else {
+			++it;
+		}
+	}
+}
+
+
+bool PhysicsEngine::winConditionCheck()
+{
+	//1 alive vehicle left
+	if (aliveVehicles.size() == 1 && aliveVehicles.front()->currentHealth() > 0) {
+		aliveVehicles.front()->wins();
+		return true;
+	}
+
+	//if all players are dead, signal that the ai has a win!
+	bool allPlayersDead = true;
+	for (int i = 0; i < playerVehicles.size(); i++) {
+		if (playerVehicles[i]->currentHealth() > 0) {
+			allPlayersDead = false;
+		}
+	}
+	
+	if (allPlayersDead) {
+		//set ai to winners
+		for (int i = 0; i < enemyVehicles.size(); i++) {
+			enemyVehicles.at(i)->wins();
+		}
+		return true;
+	}
+
+
+	auto it = aliveVehicles.begin();
+	while(it != aliveVehicles.end()) {
+		if ((*it)->hasWon) {	
+			//must have won from the lap marker win condition
+			return true;
+		}
+		it++;
+	}
+
+	return false;
 }
 
 
@@ -216,104 +274,45 @@ void PhysicsEngine::createLapMarkerTriggerVolume(int lapMarkerValue, PxVec3 posi
 	lapmarkers.push_back(lapMarker);
 }
 
-void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float duration, int player)
+void PhysicsEngine::createCaltropsTriggerVolume(float x, float y, float z, float duration, int id)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useCaltrops(&caltropsList, duration);
 
-	if(caltropsList.back() == NULL) {
-		std::cout << "\nError: Could not create caltrops! No more charges!\n";
-	} 
-	else {
-		std::cout << "X  Y  Z: " << x << " " << y << " " << z << "\n";
-		PxBoxGeometry geometry(PxVec3(1.25f,1.f, 1.25f));
-		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
-		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+	auto iter = std::find_if(allVehicles.begin(), allVehicles.end(), [&id](const Vehicle* v) {return v->ID == id; });
+	int index = std::distance(allVehicles.begin(), iter);
 
-		PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
-		caltropsList.back()->actor = actor;
-		actor->setName(CALTROPS.c_str());
-		PxShape* shape;
-		actor->getShapes(&shape, 1);
-		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
-		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
-
-		caltropsList.back()->actor->userData = caltropsList.back();
-
-		gScene->addActor(*actor);
-	}
+	allVehicles[index]->useCaltrops(&caltropsList, duration, gScene, gPhysics, PxVec3(x, y, z));
 }
 
-void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float duration, int player)
+void PhysicsEngine::createSmokeTriggerVolume(float x, float y, float z, float duration, int id)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useSmoke(&smokeList, duration);
+	auto iter = std::find_if(allVehicles.begin(), allVehicles.end(), [&id](const Vehicle* v) {return v->ID == id; });
+	int index = std::distance(allVehicles.begin(), iter);
 
-	if (smokeList.back() == NULL) {
-		std::cout << "\nError: Could not create smoke! No more charges!\n";
-	}
-	else {
-		PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
-		
-		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
-		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
-
-		PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
-		smokeList.back()->actor = actor;
-		actor->setName(SMOKE.c_str());
-		PxShape* shape;
-		actor->getShapes(&shape, 1);
-		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
-		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
-
-		
-		smokeList.back()->actor->userData = smokeList.back();
-
-		gScene->addActor(*actor);
-	}
+	allVehicles[index]->useSmoke(&smokeList, duration, gScene, gPhysics, PxVec3(x, y, z));
 }
 
-void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float duration, int player)
+void PhysicsEngine::createOilTriggerVolume(float x, float y, float z, float duration, int id)
 {
 	//this creates a caltrop according to vehicle ability point logic at vehicle position and
 	//adds it to the end of the list that gets passed in
-	playerVehicles[player]->useOil(&oilList, duration);
+	auto iter = std::find_if(allVehicles.begin(), allVehicles.end(), [&id](const Vehicle* v) {return v->ID == id; });
+	int index = std::distance(allVehicles.begin(), iter);
 
-	if (oilList.back() == NULL) {
-		std::cout << "\nError: Could not create oil! No more charges!\n";
-	}
-	else {
-		PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
-		PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
-		PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
-
-		PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
-		oilList.back()->actor = actor;
-		actor->setName(OIL.c_str());
-		PxShape* shape;
-		actor->getShapes(&shape, 1);
-		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
-		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
-
-		oilList.back()->actor->userData = oilList.back();
-
-		gScene->addActor(*actor);
-	}
+	allVehicles[index]->useOil(&oilList, duration, gScene, gPhysics, PxVec3(x,y,z));
 }
 
 void PhysicsEngine::createTrackCaltrops(float x, float y, float z, float duration)
 {
 	//we'll say the id for track traps is -1
-	Caltrops* caltrop = new Caltrops(-1, duration);
+	Caltrops* caltrop = new Caltrops(-69420, duration);
 	caltrop->createCaltrops(glm::vec3(x, y, z));
 	caltropsList.push_back(caltrop);
 
-	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -334,11 +333,11 @@ void PhysicsEngine::createTrackCaltrops(float x, float y, float z, float duratio
 void PhysicsEngine::createTrackOil(float x, float y, float z, float duration)
 {
 	//we'll say the id for track traps is -1
-	Oil* oil = new Oil(-1, duration);
+	Oil* oil = new Oil(-69420, duration);
 	oil->createOil(glm::vec3(x, y, z));
 	oilList.push_back(oil);
 
-	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -359,11 +358,11 @@ void PhysicsEngine::createTrackOil(float x, float y, float z, float duration)
 void PhysicsEngine::createTrackSmoke(float x, float y, float z, float duration)
 {
 	//we'll say the id for track traps is -1
-	Smoke* smoke = new Smoke(-1, duration);
+	Smoke* smoke = new Smoke(-69420, duration);
 	smoke->createSmoke(glm::vec3(x, y, z));
 	smokeList.push_back(smoke);
 
-	PxBoxGeometry geometry(PxVec3(1.25f, 1.f, 1.25f));
+	PxBoxGeometry geometry(PxVec3(2.2f, 5.f, 2.2f));	//smoke is good
 	PxTransform transform(PxVec3(x, y, z), PxQuat(PxIDENTITY()));
 	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 
@@ -391,9 +390,8 @@ void PhysicsEngine::cleanupPhysics()
 			enemyVehicles.at(i)->cleanupPhysics(gAllocator);
 		}
 	}
+	
 
-
-	box->release();
 	PX_RELEASE(gGroundPlane);
 	
 	PX_RELEASE(gMaterial);

@@ -14,6 +14,9 @@ void TrackInteractableStrip::setLaneStatus(int atIndex, int newStatus) {
 	this->clearLaneStatus(atIndex);
 	//TODO:
 	//Stephen plz
+	//sets the list of points in the trip to these types
+
+	//these change on a lap to lap basis
 	if (newStatus == trackInteractableObjects::AMMO_PICKUP) {
 
 	}
@@ -37,6 +40,8 @@ void TrackInteractableStrip::clearLaneStatus(int atIndex) {
 
 	//Remove status or something
 	//TODO: Stephen plz
+	//resets the list of points, may not need these he just put these here for help
+	//should just change points to empty
 	if (oldAction == trackInteractableObjects::AMMO_PICKUP) {
 
 	}

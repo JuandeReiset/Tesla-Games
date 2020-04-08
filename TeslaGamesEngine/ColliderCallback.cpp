@@ -37,10 +37,11 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;	//this holds a ptr to the actual Vehicle object
 			PickupBox* p = (PickupBox*)pairs[i].triggerActor->userData;	//this holds a ptr to the actual PickupBox object
 
+
 			//if the box hasnt been picked up yet
 			//if you are ranked 1 the pickup is disabled, or if you have max charges
-			if (!p->getIsPicked() && v->ranking != 1 && v->ability != 9) {	//this avoids hitting the same box multiple times
-				cout << "\nTrigger Block: Pickup Box\n";
+			if (!p->getIsPicked() /*&& v->ranking != 1 && v->ability != 9*/) {	//this avoids hitting the same box multiple times
+				//cout << "\nTrigger Block: Pickup Box\n";
 				p->setIsPicked();
 				v->pickup();
 			}
@@ -50,8 +51,8 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			AmmoBox* a = (AmmoBox*)pairs[i].triggerActor->userData;	//this holds a ptr to the actual PickupBox object
 
 			//if the box hasnt been picked up yet
-			if (!a->getIsPicked() && v->ranking != 1 && v->getShootingComponent()->ammo != 10) {	//this avoids hitting the same box multiple times
-				cout << "\nTrigger Block: Ammo Box\n";
+			if (!a->getIsPicked() /*&& v->ranking != 1 && v->getShootingComponent()->ammo != 10*/) {	//this avoids hitting the same box multiple times
+				//cout << "\nTrigger Block: Ammo Box\n";
 				a->setIsPicked();
 				v->ammo();
 			}
@@ -64,58 +65,66 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
 			LapMarker* l = (LapMarker*)pairs[i].triggerActor->userData;
 
-			// std::cout << "LAP MARKER VALUE: " << l->markerValue << std::endl;
+			if(v->isPlayer)
+				//std::cout << "LAP MARKER VALUE: " << l->markerValue << std::endl;
 
 			//hardcoded number of laps and markers
-			v->hitLapMarker(l->markerValue, 5);	//5 laps
+			v->hitLapMarker(l->markerValue, 1);	//5 laps
 			
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "caltrops") == 0) {
-			cout << "\nTrigger Block: Caltrops\n";
+			//cout << "\nTrigger Block: Caltrops\n";
 
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
 			Caltrops* c = (Caltrops*)pairs[i].triggerActor->userData;
 
+			//cout << "CALTROPS ID: " << c->id << " VEHICLE: "<<v->ID<<"\n";
+
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != c->id) {
-				if (!(!v->isPlayer && c->id == -1)) {
-					cout << "DAMAGE DEALT\n";
+
+				if (!(!v->isPlayer && c->id == -69420)) {
+					
+					//cout << "DAMAGE DEALT\n";
 					//do damage
-					v->takeTrapDamage(5);
+					v->takeCaltropDamage(c->id, 1);
 				} 
-				else
-					cout << "AI TRACK TRAP COLLISION\n";
+				//else
+					//cout << "AI TRACK TRAP COLLISION\n";
 				
 			}
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "smoke") == 0) {
-			cout << "\nTrigger Block: Smoke\n";
+			//cout << "\nTrigger Block: Smoke\n";
 
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
 			Smoke* s = (Smoke*)pairs[i].triggerActor->userData;
 
+			//cout << "SMOKE ID: " << s->id << " VEHICLE: " << v->ID << "\n";
+
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != s->id) {
 				//smoke gameplay effect
-				if(!v->affectedBySmoke && !(!v->isPlayer && s->id == -1))
+				if(!v->affectedBySmoke && !(!v->isPlayer && s->id == -69420))
 					v->enableSmokeEffect();
-				else
-					cout << "AI TRACK TRAP COLLISION\n";
+				//else
+					//cout << "AI TRACK TRAP COLLISION\n";
 			}
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "oil") == 0) {
-			cout << "\nTrigger Block: Oil\n";
+			//cout << "\nTrigger Block: Oil\n";
 
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
 			Oil* o = (Oil*)pairs[i].triggerActor->userData;
 
+			//cout << "OIL ID: " << o->id << " VEHICLE: " << v->ID << "\n";
 			//should do damage (1pt) and should not hit the player it was placed by
 			if (v->ID != o->id) {
 				//oil gameplay effect
-				if(!v->affectedByOil && !(!v->isPlayer && o->id == -1))
+				if(!v->affectedByOil && !(!v->isPlayer && o->id == -69420))
 					v->enableOilEffect();
-				else
-					cout << "AI TRACK TRAP COLLISION\n";
+				//else
+					//cout << "AI TRACK TRAP COLLISION\n";
 			}
 		}
 	}

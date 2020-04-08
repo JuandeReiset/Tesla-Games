@@ -21,6 +21,7 @@
 #include "Smoke.h"
 #include "Oil.h"
 #include "LapMarker.h"
+#include "Global.h"
 
 //#include "Bullet.h"
 #include "TrackDrivingPoint.h"
@@ -33,6 +34,14 @@ using namespace physx;
 class Vehicle : public Object
 {
 public:
+
+	const std::string VEHICLE = "vehicle";
+	const std::string PICKUP = "pickup";
+	const std::string LAPMARKER = "lapmarker";
+	const std::string CALTROPS = "caltrops";
+	const std::string SMOKE = "smoke";
+	const std::string OIL = "oil";
+	const std::string AMMO = "ammo";
 	std::vector<LapMarker*>* lapMarkers;
 
 	Vehicle(PxPhysics* gPhysics, PxCooking* gCooking, PxMaterial* gMaterial, PxScene* gScene, PxDefaultAllocator gAllocator, float x, float y, float z, int id, std::vector<LapMarker*>* markers);	//added id to this
@@ -55,7 +64,9 @@ public:
 	int expectedMarker;
 	int numLaps;
 	void hitLapMarker(int val, int trackTotalLaps);
-	void lapWinCondition();
+	void wins();
+	bool hasWon;
+	int winRank;
 
 	void initAITrackPoints(std::vector<std::unique_ptr<TrackDrivingPoint>>* listOfPoints);
 	void incrementAITrackPoint();
@@ -109,6 +120,9 @@ public:
 
 	float GetForwardsSpeed();
 
+	//Using vector not list, for random access is done 60 times, whereas erasure is doen 4 times in a second, the object not complicated since they ints
+	std::vector<int> caltropEffectPairList;
+
 	PxRigidDynamic* actor;
 
 	bool collidingWithVolume = false;
@@ -130,17 +144,18 @@ public:
 	void Tick(float deltaTime);
 	double currentHealth();											//get the current health
 	void takeTrapDamage(double dmgAmount);
+	void takeCaltropDamage(int caltropId, double dmgAmount);
+	void updateCaltropEffectList();
 	void takeBulletDamage(double dmgAmount);									//get damage for damaging object
-	void firelazer();
 
 	void pickup();													//pick up a(n) item/ability
 	//ammo pickup, increases ammo by 1 to a max of 10
 	void ammo();
 
 	//pls add your ability stuff here
-	void useCaltrops(std::list<Caltrops*> *caltropsList, float duration);
-	void useSmoke(std::list<Smoke*> *smokeList, float duration);
-	void useOil(std::list<Oil*> *oilList, float duration);
+	void useCaltrops(std::list<Caltrops*> *caltropsList, float duration, PxScene* gScene, PxPhysics* gPhysics, PxVec3 position);
+	void useSmoke(std::list<Smoke*> *smokeList, float duration, PxScene* gScene, PxPhysics* gPhysics, PxVec3 position);
+	void useOil(std::list<Oil*> *oilList, float duration, PxScene* gScene, PxPhysics* gPhysics, PxVec3 position);
 
 	bool affectedBySmoke;
 	float smokeStartTime, smokeDuration;

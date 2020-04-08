@@ -46,7 +46,6 @@
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="ShootComp.cpp" />
-    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="HUDcreator.cpp" />
@@ -68,7 +67,9 @@
     <ClCompile Include="TrackInteractableStrip.cpp" />
     <ClCompile Include="ReadyScreen.cpp" />
     <ClCompile Include="PauseScreen.cpp" />
+    <ClCompile Include="Raycast_shooting.cpp" />
     <ClCompile Include="AmmoBox.cpp" />
+    <ClCompile Include="MultiplayerScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -115,7 +116,6 @@
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="ShootComp.h" />
-    <ClInclude Include="Turret.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="HUDcreator.h" />
     <ClInclude Include="Shadow.h" />
@@ -138,7 +138,9 @@
     <ClInclude Include="TrackInteractableStrip.h" />
     <ClInclude Include="ReadyScreen.h" />
     <ClInclude Include="PauseScreen.h" />
+    <ClInclude Include="Raycast_shooting.h" />
     <ClInclude Include="AmmoBox.h" />
+    <ClInclude Include="MultiplayerScreen.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TeslaGamesEngine1.rc" />

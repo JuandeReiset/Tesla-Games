@@ -258,7 +258,7 @@ void Model::LoadMaterials(const aiScene * scene)
 }
 
 void Model::ClearModel()
-{
+{/*
 	for (size_t i = 0; i < meshList.size(); i++)
 	{
 		if (meshList[i])
@@ -276,6 +276,11 @@ void Model::ClearModel()
 			textureList[i] = nullptr;
 		}
 	}
+	*/
+
+	meshList.clear();
+	textureList.clear();
+
 }
 
 Model::~Model()

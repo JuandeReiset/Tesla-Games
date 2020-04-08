@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "audioEngine.h"
+#include "Global.h"
 
 /*
 * HealthComponent class inherits from Component class, representing the health of the bound object

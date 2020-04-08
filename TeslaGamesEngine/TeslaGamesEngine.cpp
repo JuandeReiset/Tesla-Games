@@ -10,6 +10,7 @@
 #include <vector>
 #include <memory>
 #include <list>
+#include <thread>
 
 // Rendering includes
 #include <GL\glew.h>
@@ -43,6 +44,9 @@
 #include "AudioEngine.h"
 #include "AudioBoomBox.h"
 
+// Raycasting stuff
+#include "Raycast_shooting.h"
+
 //Controller stuff
 #include "Controller.h"
 
@@ -55,6 +59,7 @@
 #include "Menu.h"
 #include "ReadyScreen.h"
 #include "PauseScreen.h"
+#include "MultiplayerScreen.h"
 
 //Shadow stuff
 #include "Shadow.h"
@@ -160,6 +165,8 @@ GLfloat lastTime = 0.0f;
 
 bool isCameraFlipped = false;
 
+Raycast_shooting raycast_handler;
+
 float shoot_distance_x = 0; // Bullet vector movement for x
 float shoot_distance_y = 0; // Bullet vector movement for y
 float shoot_distance_z = 0; //Bullet vector movement for z
@@ -188,13 +195,60 @@ static const char* vShadow_shader = "Shaders/shadow_shader.vert";
 static const char* fShadow_shader = "Shaders/shadow_shader.frag";
 
 // Multiplayer stuff
-int players = 2;
+int players = 4;
+
+bool setupGame;
+bool allDeadFlag;
+int isNextFrame;
+
+bool winFlags[4]{ false };
+bool loseFlags[4]{ false };
+
+std::vector<AIShootingComponent> aiShootingComponents;
+//all vehicles
+std::vector<Vehicle*> vehicles;
+
+
 
 
 struct yawPitch {
 	float yaw;
 	float pitch;
 };
+
+//resets the physics engine and other variables needed
+void resetGame() {
+	setupGame = true;
+	allDeadFlag = false;
+	isNextFrame = 0;
+
+	int sizeWinFlags = (sizeof(winFlags) / sizeof(*winFlags));
+	int sizeLoseFlags = (sizeof(loseFlags) / sizeof(*loseFlags));
+
+	for (int i = 0; i < sizeWinFlags; i++) {
+		winFlags[i] = false;
+	}
+
+	for (int i = 0; i < sizeLoseFlags; i++) {
+		loseFlags[i] = false;
+	}
+
+	//clear vehicles list and aiShootCompList
+	vehicles.clear();
+	aiShootingComponents.clear();
+
+	for (auto m : meshList) {
+		m->ClearMesh();
+	}
+	meshList.clear();
+	racetrack.ClearModel();
+
+	physEng->cleanupPhysics();
+
+	physEng = new PhysicsEngine();
+
+	setupGame = true;
+}
 
 void update(localAxis a, float yaw, float pitch) {
 	a.front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
@@ -266,13 +320,21 @@ void parseControllerInput(Controller* controller)
 		pauseFlag = true;
 	}
 
-	//press up to suicide (for testing health bar)
+/*
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
 		player->update_health();
-
-		std::cout << "Current health: " << player->getHealthComponent()->GetHealth() << std::endl;
 	}
-	
+	*/
+
+	if (controller->isButtonDown(XButtons.DPad_Left)) {
+		//std::cout << "PRESSED SMOKE BUTTON\n";
+	}
+	if (controller->isButtonDown(XButtons.DPad_Right)) {
+		//std::cout << "PRESSED OIL BUTTON\n";
+	}
+	if (controller->isButtonDown(XButtons.DPad_Down)) {
+		//std::cout << "PRESSED CALTROPS BUTTON\n";
+	}
 	//Sticks and triggers
 	if (!controller->LStick_InDeadzone()) {
 		//physEng.turn(controller->leftStick_X());
@@ -303,7 +365,7 @@ void parseControllerInput(Controller* controller)
 
 void SetPlayers(int p)
 {
-	int MAXPLAYERS = 2;
+	int MAXPLAYERS = 4;
 	if (p > MAXPLAYERS) {
 		players = MAXPLAYERS;
 	}
@@ -316,6 +378,8 @@ void SetPlayers(int p)
 
 }
 
+
+
 int main()
 {
 	const char* glsl_version = "#version 130"; // USED FOR IMGUI SETTING
@@ -323,9 +387,9 @@ int main()
 	mainWindow = Window(1280, 720);
 	mainWindow.Initialise();
 
-	//bool startScreenFlag = true;
-	//int menuFlag = 0;
-	bool setupGame = true;
+	setupGame = true;
+	allDeadFlag = false;
+	isNextFrame = 0;
 
 	HUDcreator hud;
 	hud.load();
@@ -338,18 +402,26 @@ int main()
 	readyScreen.load();
 	PauseScreen pauseScreen;
 	pauseScreen.load();
+	MultiplayerScreen multiplayerScreen;
+	multiplayerScreen.load();
 
 
 	physEng = new PhysicsEngine();
-
-	physEng->createPickupTriggerVolume(18, -2, -67);
 
 	// Rendering setup
 	CreateShaders();
 	createShadows();
 
-	bool winFlag = false;
-	bool loseFlag = false;
+	int sizeWinFlags = (sizeof(winFlags) / sizeof(*winFlags));
+	int sizeLoseFlags = (sizeof(loseFlags) / sizeof(*loseFlags));
+
+	for (int i = 0; i < sizeWinFlags; i++) {
+		winFlags[i] = false;
+	}
+
+	for (int i = 0; i < sizeLoseFlags; i++) {
+		loseFlags[i] = false;
+	}
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureAlpha();
@@ -445,11 +517,16 @@ int main()
 	mainMenuMusic.loopSound(true);
 
 	// Multiplayer set up begins
-	SetPlayers(2);
+	// Manually set the maximum number of players
+	// TODO: Change this to detect number of controllers connected after testing phase
+	SetPlayers(4);
 
 	glm::mat4 projection;
 
-		switch (players) {
+	glm::mat4 projFull = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()), 0.1f, 1000.0f);
+	glm::mat4 projHalf = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()) * 2, 0.1f, 1000.0f);
+
+	switch (players) {
 		case 1:
 			// Player 1
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
@@ -460,12 +537,56 @@ int main()
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
 			break;
 		case 3:
-			// Fall through for now
+			// Player 1
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 2
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 3
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			break;
 		case 4:
-			// Fall through for now
+			// Player 1
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 2
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 3
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			// Player 4
+			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			break;
 		default:
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
-		}
+	}
+
+	// Controller handling
+	std::vector<Controller> controllers;
+	Controller player1 = Controller(1);
+	Controller player2 = Controller(2);
+	Controller player3 = Controller(3);
+	Controller player4 = Controller(4);
+
+	if (players >= 1) {
+		controllers.push_back(player1);
+	}
+	if (players >= 2) {
+		controllers.push_back(player2);
+	}
+	if (players >= 3) {
+		controllers.push_back(player3);
+	}
+	if (players >= 4) {
+		controllers.push_back(player4);
+	}
+
+
+	int numOfPlayer;//the number of controller that will be used during the game
+
+	// std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
+	// std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
+	std::cout << controllers.size() << " Controllers are connected" << std::endl;
+
+	bool P1Connected = controllers[0].isConnected();
+	bool P2Connected = controllers[1].isConnected();
 
 	// Multiplayer set up ends
 
@@ -513,26 +634,12 @@ int main()
 	drivingPointModel.LoadModel("Models/bullet.obj");
 	// Loop until window closed
 
-	//Controller
-	std::vector<Controller> controllers;
-	Controller player1 = Controller(1);
-	Controller player2 = Controller(2);
-	controllers.push_back(player1);
-	controllers.push_back(player2);
-
-
-	std::cout << "Player1 connected: " << controllers[0].isConnected() << std::endl;
-	std::cout << "Player2 connected: " << controllers[1].isConnected() << std::endl;
-
-	bool P1Connected = controllers[0].isConnected();
-	bool P2Connected = controllers[1].isConnected();
-
 
 	//This does all the Ai stuff as far TeslaGameEngine is concerned
 	Track raceTrack;
-	std::vector<AIShootingComponent> aiShootingComponents;
 
-	std::vector<Vehicle*> vehicles;
+
+
 
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	cameras[0].setFront(front.x, front.y, front.z);
@@ -544,90 +651,120 @@ int main()
 		}
 
 		while (startScreenFlag) {
+			int display_w, display_h;
+			glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
+			glViewport(0, 0, display_w, display_h);
+
+			resetGame();
+			audioSystem.killSource(&raceMusic);
+
+
+			isNextFrame = 0;
 			if (!mainMenuMusic.isSoundPlaying()) {
 				mainMenuMusic.playSound();
 			}
-			if (fromGameFlag) {
-				if (glfwGetTime() - backTime > 0.5) {
-					startScreen.loadController(&player1);
-					fromGameFlag = false;
-				}
-			}
-			else
-				startScreen.loadController(&player1);
+			
+			startScreen.loadController(&player1);
+			player1.refreshState();
 
 			startScreen.use();
+			menu.resetAiNum();
 
 			mainWindow.swapBuffers();
 		}
 
+		multiplayerScreen.setPlayerNum(controllers.size());
+		while (multiplayerScreenFlag) {
+			resetGame();
+			menuFlag = false;
+			multiplayerScreen.loadController(&player1);
+			player1.refreshState();
+
+			multiplayerScreen.use();
+			mainWindow.swapBuffers();
+		}
+
+		numOfPlayer = multiplayerScreen.getNumOfPlayer();//the number of controllers that will be used during the game
+
 		while (menuFlag) {
+			resetGame();
+			menu.setAiDefault(multiplayerFlag);
 			menu.loadController(&player1);
 			menu.use();
 			mainWindow.swapBuffers();
 		}
 
+		readyScreen.setNumOfPlayer(numOfPlayer);
 		while (readyScreenFlag) {
-			readyScreen.loadController(&player1);
+			switch (numOfPlayer) {
+			// Force controllers 2-4 to be ready
+			case 4:
+				readyScreen.loadController(&player4, 3, true);
+			case 3:
+				readyScreen.loadController(&player3, 2, true);
+			case 2:
+				readyScreen.loadController(&player2, 1, true);
+			case 1:
+				readyScreen.loadController(&player1, 0, false);
+			}
 			readyScreen.use();
 			mainWindow.swapBuffers();
 		}
 
+		readyScreen.reset();
 		while (pauseFlag) {
 			int display_w, display_h;
 			glfwGetFramebufferSize(mainWindow.getWindow(), &display_w, &display_h);
 			glViewport(0, 0, display_w, display_h);
 			audioSystem.pauseAllActiveSources();
-			pauseScreen.loadController(&controllers[0]);
+			pauseScreen.loadController(&player1);
 			pauseScreen.use();
 			mainWindow.swapBuffers();
 		}
 
 		if (setupGame) {
 			//Reset this variable to reset the game
-			physEng->initAudioForVehicles(&audioSystem);
-			cameras[0].initializeAudio(&audioSystem);
-
 			setupGame = false;
+			
 
 			int gameMode = menu.getSelectedGameMode();
 			int trackNum = menu.getSelectedTrack();
 			int AINum = menu.getSelectedNumOfAI();
-			std::cout << trackNum << std::endl;
+			//std::cout << trackNum << std::endl;
+
+			physEng->initAudioForVehicles(&audioSystem);
+			cameras[0].initializeAudio(&audioSystem);
+
+			racetrack_floor.ClearModel();
+			racetrack_walls.ClearModel();
 
 			if (trackNum == trackTypeConstants::HYPERLOOP) {
+				
 				racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
-
+				std::cout << "LOADED HYPERLOOP TRACK\n\n";
 				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_HYPERLOOP);
-				raceMusic.setVolume(0.35f);
+				if (multiplayerFlag == false) {
+					raceMusic.setVolume(0.35f);
+				}
+				else {
+					raceMusic.setVolume(0.20f);
+				}
+				
 				raceMusic.loopSound(true);
 			}
 			else if (trackNum == trackTypeConstants::STARLINK) {
 				racetrack_walls.LoadModel("Models/track2final_Twalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2final_Tfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
-
+				std::cout << "LOADED STARLINK TRACK\n\n";
 				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_STARLINK);
-				raceMusic.setVolume(0.35f);
-				raceMusic.loopSound(true);
-			}
-
-			if (multiplayerFlag) {
-				switch (players) {
-				case 2:
-					projection = glm::perspective(45.0f, (GLfloat)(mainWindow.getBufferWidth() / mainWindow.getBufferHeight()) * 2, 0.1f, 1000.0f);
-					break;
-				case 3:
-					// Fall through for now
-				case 4:
-					// Fall through for now
-				default:
-					projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-					break;
+				if (multiplayerFlag == false) {
+					raceMusic.setVolume(0.35f);
 				}
-			}
-			else {
-				projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+				else {
+					raceMusic.setVolume(0.20f);
+				}
+				raceMusic.loopSound(true);
 			}
 
 			raceTrack.initializeTrackPoints(trackNum);
@@ -638,6 +775,9 @@ int main()
 			// TODO: Using to make multiplayer testing easier. Will remove
 			if (!multiplayerFlag) {
 				players = 1;
+			}
+			else {
+				SetPlayers(multiplayerScreen.getNumOfPlayer());
 			}
 
 			for (int i = 0; i < AINum; i++) {
@@ -653,6 +793,7 @@ int main()
 					AI->incrementAITrackPoint();
 				}
 			}
+
 
 			//setup all track traps
 			for (int i = 0; i < raceTrack.listOfLaneStrips.size(); i++) {
@@ -687,8 +828,14 @@ int main()
 			vehicles.insert(vehicles.end(), playerVehicles.begin(), playerVehicles.end());
 			vehicles.insert(vehicles.end(), aiVehicles.begin(), aiVehicles.end());
 			physEng->allVehicles = vehicles;
+
+			//copy the vector of vehicles to the list of alive vehicles
+			std::copy(vehicles.begin(), vehicles.end(), std::back_inserter(physEng->aliveVehicles));
+
+			raycast_handler.set_vehiclelist(vehicles);
 			shaderList[0].UseShader();
 			for (auto ai : aiVehicles) {
+				//std::cout << "AI OWNER ID: " << ai->ID << "\n";
 				AIShootingComponent aiShooting = AIShootingComponent(ai);
 				aiShooting.SetVehicles(vehicles);
 				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
@@ -703,13 +850,30 @@ int main()
 			physEng->allVehicles = vehicles;
 		}
 
+
 		while (gameFlag)
 		{
 			/* Parse input */
-			if (P1Connected)
+			/*if (P1Connected)
 				parseControllerInput(&controllers[0]);
 			if (P2Connected)
 				parseControllerInput(&controllers[1]);
+			*/
+
+			/*switch (numOfPlayer) {
+				case 4:
+					parseControllerInput(&player4);
+				case 3:
+					parseControllerInput(&player3);
+				case 2:
+					parseControllerInput(&player2);
+				case 1:
+					parseControllerInput(&player1);
+			}*/
+
+			for (int i = 0; i < players; i++) {
+				parseControllerInput(&controllers[i]);
+			}
 
 			GLfloat now = glfwGetTime();
 			deltaTime = now - lastTime;
@@ -756,15 +920,54 @@ int main()
 			for (int i = 0; i < aiShootingComponents.size(); i++) {
 				aiShootingComponents[i].Aim();
 			}
-
 			/* Render */ 
 			// Clear the window
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+			//handle ai placing traps
+			for (auto ai : aiShootingComponents) {
+				if (ai.wantToPlaceTrap > 0) {
+					switch (ai.wantToPlaceTrap) {
+					case 1:		//caltrops
+						physEng->createCaltropsTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
+						//std::cout << "OWNER ID: " << ai.owner->ID << "\n";
+						break;
+					case 2:		//oil
+						physEng->createOilTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
+						break;
+					case 3:		//smoke
+						physEng->createSmokeTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
+						break;
+					}
+				}
+				
+			}
+
 			// Render for each player
 			for (int player = 0; player < players; player++) {
+
+				// Determine projection matrix
+				if (multiplayerFlag) {
+					if (players == 2) {
+						projection = projHalf;
+					}
+					if (players == 3) {
+						if (player == 0) {
+							projection = projHalf;
+						}
+						else {
+							projection = projFull;
+						}
+					}
+					if (players == 4) {
+						projection = projFull;
+					}
+				}
+				else {
+					projection = projFull;
+				}
 
 				//  Get values from physics engine
 				const physx::PxVehicleDrive4W* vehicle = physEng->playerVehicles[player]->gVehicle4W;	
@@ -780,11 +983,38 @@ int main()
 
 				// Setup viewports depending on if it is or is not multiplayer
 				if (multiplayerFlag) {
-					if (player == 0) {
-						glViewport(0, display_h / 2, display_w, display_h / 2);
+					if (players == 2) {
+						if (player == 0) {
+							glViewport(0, display_h / 2, display_w, display_h / 2);
+						}
+						if (player == 1) {
+							glViewport(0, 0, display_w, display_h / 2);
+						}
 					}
-					if (player == 1) {
-						glViewport(0, 0, display_w, display_h / 2);
+					else if (players == 3) {
+						if (player == 0) {
+							glViewport(0, display_h / 2, display_w, display_h / 2);
+						}
+						if (player == 1) {
+							glViewport(0, 0, display_w / 2, display_h / 2);
+						}
+						if (player == 2) {
+							glViewport(display_w / 2, 0, display_w / 2, display_h / 2);
+						}
+					}
+					else if (players == 4) {
+						if (player == 0) {
+							glViewport(0, display_h / 2, display_w / 2, display_h / 2);
+						}
+						if (player == 1) {
+							glViewport(display_w / 2, display_h / 2, display_w / 2, display_h / 2);
+						}
+						if (player == 2) {
+							glViewport(0, 0, display_w / 2, display_h / 2);
+						}
+						if (player == 3) {
+							glViewport(display_w / 2, 0, display_w / 2, display_h / 2);
+						}
 					}
 				}
 				else {
@@ -842,8 +1072,10 @@ int main()
 				model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2));
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+				//std::cout << "RIGHT BEFORE RENDERING TRACK\n";
 				racetrack_walls.RenderModel();
 				racetrack_floor.RenderModel();
+				//std::cout << "RIGHT AFTER RENDERING TRACK\n";
 
 
 				/* Can uncomment to draw the TrackDrivingPoints if needed for testing
@@ -914,27 +1146,6 @@ int main()
 
 				glm::vec3 camDir = cameras[player].getCameraDirection();
 				if ((ha->GetHealth()) > 0) {
-					// Draw bullets after Refactor. If affected by smoke they cant shoot
-					if ((controllers[player].isButtonDown(XButtons.R_Shoulder) || controllers[player].isButtonDown(XButtons.L_Shoulder)) && !physEng->playerVehicles[player]->affectedBySmoke) {
-						if (isCameraFlipped) {
-							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
-						}
-						else {
-							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
-						}
-					}
-
-					// Player 2 can fire with Q as well (only when no controller detected)
-					if (player == 1 && keys['Q'] && !physEng->playerVehicles[player]->affectedBySmoke && !P2Connected) {
-						if (isCameraFlipped) {
-							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
-						}
-						else {
-							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
-						}
-						keys['Q'] = false;
-					}
-					ba->renderAllBullets();
 
 					physx::PxMat44 modelMat(vDynamic->getGlobalPose());	// Make model matrix from transform of rigid dynamic
 					modelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	// Scales the model
@@ -961,20 +1172,58 @@ int main()
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 					}
 
-					playerTurretModels[player].RenderModel(); //renders turret	
+					playerTurretModels[player].RenderModel(); //renders turret
+
+					// Draw bullets after Refactor. If affected by smoke they cant shoot
+					if ((controllers[player].isButtonDown(XButtons.R_Shoulder) || controllers[player].isButtonDown(XButtons.L_Shoulder)) && !physEng->playerVehicles[player]->affectedBySmoke) {
+						if (isCameraFlipped) {
+							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+							glm::vec3 startcoords = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
+							glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
+							//raycast_handler.set_STARTPOS(startcoords);
+							raycast_handler.set_Owner(physEng->playerVehicles[player]);
+							//std::cout << "DETERMINE HIT REACHED" << std::endl;
+							raycast_handler.determine_hit(startcoords, shootdir);
+						}
+						else {
+							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
+							glm::vec3 startcoords = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
+							glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
+							//raycast_handler.set_STARTPOS(startcoords);
+							raycast_handler.set_Owner(physEng->playerVehicles[player]);
+							//std::cout << "DETERMINE HIT REACHED" << std::endl;
+							raycast_handler.determine_hit(startcoords, shootdir);
+						}
+					}
+
+					// Player 2 can fire with Q as well (only when no controller detected)
+					if (player == 1 && keys['Q'] && !physEng->playerVehicles[player]->affectedBySmoke && !P2Connected) {
+						if (isCameraFlipped) {
+							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
+						}
+						else {
+							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
+						}
+						keys['Q'] = false;
+					}
+					ba->renderAllBullets();	
 				}
 
 				// Draw and create caltrops
 				if (controllers[player].isButtonDown(XButtons.DPad_Down) && !physEng->playerVehicles[player]->affectedBySmoke) {
+
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 5.f, player);
+					physEng->createCaltropsTriggerVolume(p.x, p.y, p.z, 5.f, physEng->playerVehicles[player]->ID);
 				}
 
+				//std::cout << "CALTROPS SIZE: " << physEng->caltropsList.size() << "\n";
 				auto c = physEng->caltropsList.begin();
 				while (c != physEng->caltropsList.end()) {	//remove dead caltrops
 					if ((*c)->isDead()) {
+						(*c)->id = 1000;
 						physEng->gScene->removeActor(*((*c)->actor));
-						physEng->caltropsList.erase(c++);
+						physEng->caltropsList.erase(c);
+						c++;
 					}
 					else {
 						(*c)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
@@ -985,15 +1234,19 @@ int main()
 
 				// Draw and create oil
 				if (controllers[player].isButtonDown(XButtons.DPad_Right) && !physEng->playerVehicles[player]->affectedBySmoke) {
+					std::cout << "PRESSED OIL BUTTON\n";
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createOilTriggerVolume(p.x, p.y, p.z, 5.f, player);
+					physEng->createOilTriggerVolume(p.x, p.y, p.z, 5.f, physEng->playerVehicles[player]->ID);
 				}
 
+				//std::cout << "OIL SIZE: " << physEng->oilList.size()<<"\n";
 				auto o = physEng->oilList.begin();
 				while (o != physEng->oilList.end()) {	//remove dead caltrops
 					if ((*o)->isDead()) {
+						(*o)->id = 1000;
 						physEng->gScene->removeActor(*((*o)->actor));
-						physEng->oilList.erase(o++);
+						physEng->oilList.erase(o);
+						o++;
 					}
 					else {
 						(*o)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
@@ -1004,15 +1257,19 @@ int main()
 
 				// Draw and create smoke
 				if (controllers[player].isButtonDown(XButtons.DPad_Left) && !physEng->playerVehicles[player]->affectedBySmoke) {
+					std::cout << "PRESSED SMOKE BUTTON\n";
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
-					physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 5.f, player);
+					physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 5.f, physEng->playerVehicles[player]->ID);
 				}
 
+				//std::cout << "SMOKE SIZE: " << physEng->smokeList.size() << "\n";
 				auto s = physEng->smokeList.begin();
 				while (s != physEng->smokeList.end()) {	//remove dead smoke
 					if ((*s)->isDead()) {
+						(*s)->id = 1000;
 						physEng->gScene->removeActor(*((*s)->actor));
-						physEng->smokeList.erase(s++);
+						physEng->smokeList.erase(s);
+						s++;
 					}
 					else {
 						(*s)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
@@ -1051,8 +1308,12 @@ int main()
 						model = glm::rotate(model, angletoUse, y_rot);
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						TAI_turret.RenderModel();
+
+						
 					}
 				}
+
+				
 
 				// Render other players cars
 				if (multiplayerFlag) {
@@ -1125,8 +1386,11 @@ int main()
 					//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 					glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameras[player].calculateViewMatrix()));
 
-					shadowTexture.UseTexture();
-					shadowList[0]->renderShadow();
+					//if vehicle is dead, remove the shadow
+					if (v->getHealthComponent()->GetHealth() > 0) {
+						shadowTexture.UseTexture();
+						shadowList[0]->renderShadow();
+					}
 				}
 
 				// AI vehicles' shadows 
@@ -1137,27 +1401,58 @@ int main()
 					glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 					//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 					glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameras[player].calculateViewMatrix()));
-
-
-					shadowTexture.UseTexture();
-					shadowList[0]->renderShadow();
+					
+					//if vehicle is dead, remove the shadow
+					if (v->getHealthComponent()->GetHealth() > 0) {
+						shadowTexture.UseTexture();
+						shadowList[0]->renderShadow();
+					}
 				}
 
 				glEnable(GL_DEPTH_TEST);
+				
+				//std::cout << "WIN LOSE FLAGS: " << winFlags[player] << " " << loseFlags[player] << "\n";
 
 				// HUD
-				if (physEng->playerVehicles[player]->numLaps == 5)
-					winFlag = true;
-				else
-					for (auto v : physEng->enemyVehicles)
-						if (v->numLaps == 5)
-							loseFlag = true;
+				auto playerVehicle = physEng->playerVehicles[player];
 
-				if (winFlag == true)
+				//if player has no health, then lose the game
+				if (playerVehicle->getHealthComponent()->GetHealth() <= 0) {
+					winFlags[player] = false;
+					loseFlags[player] = true;
+				}
+
+				if (physEng->gameFinished) {
+					if (playerVehicle->hasWon) {
+						winFlags[player] = true;
+						loseFlags[player] = false;
+					}
+					else {
+						//if AI wins
+						for (auto v : physEng->enemyVehicles) {
+							if (v->hasWon) {
+								winFlags[player] = false;
+								loseFlags[player] = true;
+							}
+						}
+						//if other player wins
+						for (int i = 0; i < physEng->playerVehicles.size(); ++i) {
+							if (i != player) {
+								if (physEng->playerVehicles[i]->hasWon) {
+									winFlags[player] = false;
+									loseFlags[player] = true;
+								}
+							}
+						}
+						
+					}
+				}
+
+				if (winFlags[player] == true)
 					hud.setGameState(true);
-				if (loseFlag == true)
+				if (loseFlags[player] == true)
 					hud.setGameState(false);
-				if (winFlag)
+				if (winFlags[player])
 					hud.setLapNumber(physEng->playerVehicles[player]->numLaps);
 				else
 					hud.setLapNumber(physEng->playerVehicles[player]->numLaps + 1);
@@ -1170,7 +1465,7 @@ int main()
 				int index = std::distance(physEng->allVehicles.begin(), iter);
 				//assign ranking for vehicle here
 				physEng->playerVehicles[player]->ranking = index + 1;
-				std::cout << "PLAYER " << player << " IS IN " << index + 1 << " PLACE!\n";
+				//std::cout << "PLAYER " << player << " IS IN " << index + 1 << " PLACE!\n";
 				
 ///////////////////////////////////////////////////RANKING////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1182,9 +1477,13 @@ int main()
 				hud.setPositionNumber(index + 1);
 				hud.setBulletNum(physEng->playerVehicles[player]->getShootingComponent()->ammo);
 				hud.setHealth(physEng->playerVehicles[player]->getHealthComponent()->GetHealth());
-
+				hud.setDisabled(physEng->playerVehicles[player]->affectedBySmoke);
+				hud.setSmoked(physEng->playerVehicles[player]->affectedBySmoke);
+				hud.setOiled(physEng->playerVehicles[player]->affectedByOil);
 				hud.use();
 			}
+
+			
 
 			//move ranking here (currently here since ai needs ranking here
 			//we technically do the players twice, once just above and once here
@@ -1227,12 +1526,32 @@ int main()
 			ImGui::Text("Driving mode and Position");
 			ImGui::Text("Frame per Second counter"); // Display some text (you can use a format strings too)
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			// ImGui::Text(": %i Xpos: %.2f Ypos: %.2f Zpos: %.2f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
+			ImGui::Text(": %i Xpos: %.2f Ypos: %.2f Zpos: %.2f", physEng->getModeType(), physEng->playerVehicles[0]->GetPosition().x, 
+				physEng->playerVehicles[0]->GetPosition().y, physEng->playerVehicles[0]->GetPosition().z);
 			// ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
-			ImGui::Text("Camera Xvec: %f Yvec: %f Zvec: %f", cameras[0].getCameraPosition().x, cameras[0].getCameraPosition().y, cameras[0].getCameraPosition().z);
+			//mGui::Text("Camera Xvec: %f Yvec: %f Zvec: %f", cameras[0].getCameraPosition().x, cameras[0].getCameraPosition().y, cameras[0].getCameraPosition().z);
 			// ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
 
 				ImGui::End();
+			}
+			
+		
+			allDeadFlag = true;
+			for (auto v : physEng->playerVehicles) {
+				if (v->getHealthComponent()->GetHealth() > 0)
+					allDeadFlag = false;
+			}
+
+			//if all players are dead or the game is finished, pause the game for 5 seconds and then return to title 
+			if (physEng->gameFinished || allDeadFlag) {
+				if (isNextFrame == 10) {
+					std::this_thread::sleep_for(std::chrono::seconds(5));
+
+					gameFlag = false;
+					startScreenFlag = true;
+				}
+
+				++isNextFrame;
 			}
 
 			// Rendering imgui
@@ -1253,6 +1572,7 @@ int main()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
+
 	
 	return 0;
 }
