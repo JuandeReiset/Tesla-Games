@@ -35,6 +35,8 @@ public:
 	void setCenter(float x, float y, float z);
 	void setFront(float x, float y, float z);
 
+	glm::vec3 getPosition() { return position; }
+
 	glm::mat4 calculateViewMatrix();
 	void calculateAngleAroundTarget(float xChange);
 	void calculatePos(glm::vec3 carPos, float theta);
