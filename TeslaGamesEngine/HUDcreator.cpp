@@ -687,3 +687,12 @@ void HUDcreator::setDisabled(bool isDisabled) {
 
 	}
 }
+
+void HUDcreator::reset() {
+	size = 1.0f;										
+	winOrLose = false;
+	currentHealth = 100;
+	isSmoked = false;
+	isOiled = false;
+
+}
