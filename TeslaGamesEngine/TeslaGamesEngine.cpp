@@ -611,14 +611,19 @@ int main()
 	Controller player3 = Controller(3);
 	Controller player4 = Controller(4);
 	
-	if(player1.isConnected())
+	/*if(player1.isConnected())
 		controllers.push_back(player1);
 	if(player2.isConnected())
 		controllers.push_back(player2);
 	if (player3.isConnected());
 		controllers.push_back(player3);
 	if(player4.isConnected())
-		controllers.push_back(player4);
+		controllers.push_back(player4);*/
+
+	controllers.push_back(player1);
+	controllers.push_back(player2);
+	controllers.push_back(player3);
+	controllers.push_back(player4);
 
 
 	int numOfPlayer;//the number of controller that will be used during the game
@@ -671,7 +676,7 @@ int main()
 
 		while (multiplayerScreenFlag) {
 			resetGame();
-			multiplayerScreen.setPlayerNum(controllers.size() - 1);
+			multiplayerScreen.setPlayerNum(controllers.size());
 			menuFlag = false;
 			multiplayerScreen.loadController(&player1);
 			player1.refreshState();
@@ -777,8 +782,7 @@ int main()
 			}
 
 			for (int i = 0; i < players; i++) {
-				physEng->addPlayerVehicle(AINum + i + 1);
-				//physEng->addPlayerVehicle(AINum + controllers[i].getIndex());
+				physEng->addPlayerVehicle(AINum + controllers[i].getIndex());
 			}
 
 			if (trackNum == trackTypeConstants::STARLINK) {
@@ -853,7 +857,7 @@ int main()
 				parseControllerInput(&controllers[1]);
 			*/
 
-			switch (numOfPlayer) {
+			/*switch (numOfPlayer) {
 				case 4:
 					parseControllerInput(&player4);
 				case 3:
@@ -862,7 +866,12 @@ int main()
 					parseControllerInput(&player2);
 				case 1:
 					parseControllerInput(&player1);
-			}
+			}*/
+
+			parseControllerInput(&controllers[0]);
+			parseControllerInput(&controllers[1]);
+			parseControllerInput(&controllers[2]);
+			parseControllerInput(&controllers[3]);
 
 			GLfloat now = glfwGetTime();
 			deltaTime = now - lastTime;

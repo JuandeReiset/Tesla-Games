@@ -128,6 +128,12 @@ void ReadyScreen::use() {
 void ReadyScreen::loadController(Controller *controller, int num) {
 	controller->update();
 
+	// Force players 2-4 to be ready 
+	// TODO: Remove, just for testing
+	p2Ready = true;
+	p3Ready = true;
+	p4Ready = true;
+
 	if (controller->isButtonDown(XButtons.A)) {
 		switch (num) {
 		case 0:
