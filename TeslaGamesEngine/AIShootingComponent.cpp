@@ -16,7 +16,8 @@ AIShootingComponent::AIShootingComponent(Vehicle * v)
 {
 	wantToPlaceTrap = 0;
 	owner = v;
-	abilityCooldownTime = 10.f;
+	abilityCooldownTime = 3.f + (7.f * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)));
+	lastAbilityTime = glfwGetTime();
 }
 
 void AIShootingComponent::Aim()
@@ -100,13 +101,15 @@ Vehicle * AIShootingComponent::FindTarget()
 bool AIShootingComponent::IsVehicleBehind(Vehicle* aTarget)
 {
 	physx::PxVec3 toTarget = aTarget->GetPosition() - owner->GetPosition();
+	// Get length to target too
+	auto distance = toTarget.magnitude();
 	toTarget.normalize();
-	// Check that it stays within the cone in front (-40 > 40)
+	// Check that it stays within the cone in behind (-10 > 10)
 	physx::PxVec3 backwardDirection = owner->GetTransform().q.getBasisVector2();
 	backwardDirection *= -1.f;
 
 	// Check if target is within an 80 degree cone in behind of vehicle
-	if (abs(acos(toTarget.dot(backwardDirection))) * (180.f / 3.14) < 40.f) {
+	if ((abs(acos(toTarget.dot(backwardDirection))) * (180.f / 3.14) < 10.f) && distance < 25.f) {
 		return true;
 	}
 
@@ -116,6 +119,7 @@ bool AIShootingComponent::IsVehicleBehind(Vehicle* aTarget)
 bool AIShootingComponent::IsTargetInView(Vehicle* aTarget)
 {
 	physx::PxVec3 toTarget = aTarget->GetPosition() - owner->GetPosition();
+	auto distance = toTarget.magnitude();
 	toTarget.normalize();
 	// TODO: Rotate aim direction towards target
 	// Check that it stays within the cone in front (-40 > 40)
