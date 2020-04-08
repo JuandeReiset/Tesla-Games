@@ -23,6 +23,7 @@
 #include <string>
 #include "audioEngine.h"
 #include "Track.h"
+#include "AIShootingComponent.h"
 
 class PhysicsEngine
 {
@@ -76,6 +77,7 @@ public:
 	std::vector<Vehicle*> playerVehicles;
 	// Vehicle* player;	//the player vehicle
 	std::vector<Vehicle*> enemyVehicles;	//the AI vehicles
+	std::vector<AIShootingComponent> aiShootingComponents; // The AI shooting components
 	std::vector<LapMarker*> lapmarkers;		//the lap markers
 	std::list<PickupBox*> pickupBoxes;	//the pickup boxes
 	std::list<Caltrops*> caltropsList;

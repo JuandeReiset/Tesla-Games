@@ -847,6 +847,8 @@ int main()
 				aiShootingComponents.push_back(aiShooting);
 			}
 
+			physEng->aiShootingComponents = aiShootingComponents;
+
 			physEng->loadLapMarkers();
 			for (auto v : vehicles) {
 				v->numberOfMarkersInTrack = physEng->lapmarkers.size();
@@ -920,35 +922,11 @@ int main()
 			// Physics
 			physEng->stepPhysics();
 
-			// AI - should only go once per game loop
-			// TODO: Move this call
-			for (int i = 0; i < aiShootingComponents.size(); i++) {
-				aiShootingComponents[i].Aim();
-			}
 			/* Render */ 
 			// Clear the window
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-			//handle ai placing traps
-			for (auto ai : aiShootingComponents) {
-				if (ai.wantToPlaceTrap > 0) {
-					switch (ai.wantToPlaceTrap) {
-					case 1:		//caltrops
-						physEng->createCaltropsTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
-						//std::cout << "OWNER ID: " << ai.owner->ID << "\n";
-						break;
-					case 2:		//oil
-						physEng->createOilTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
-						break;
-					case 3:		//smoke
-						physEng->createSmokeTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
-						break;
-					}
-				}
-				
-			}
 
 			// Render for each player
 			for (int player = 0; player < players; player++) {
