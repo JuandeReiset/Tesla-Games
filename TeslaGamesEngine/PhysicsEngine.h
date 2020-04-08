@@ -124,8 +124,9 @@ public:
 
 	void setTrack(Track* t);
 
-private:
 	void cleanupPhysics();
+
+private:
 	AudioEngine* audioEngine;
 	Track* raceTrack;
 
@@ -141,7 +142,6 @@ private:
 	bool gVehicleOrderComplete = false;
 	bool gMimicKeyInputs = false;
 	physx::PxRigidStatic* gGroundPlane = NULL;
-	physx::PxRigidStatic* box = NULL;
 	physx::PxShape* shape = NULL;
 	physx::PxPvd* gPvd = NULL;
 };

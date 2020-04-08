@@ -528,7 +528,7 @@ VehicleDesc Vehicle::initVehicleDesc(PxMaterial* gMaterial)	//pass in gMaterial 
 	return vehicleDesc;
 }
 
-//cleans the physx objects. Gets called in PhysicsEngine
+//cleans the physx objects. Gets called in PhysicsEngine (also cleans audio)
 void Vehicle::cleanupPhysics(PxDefaultAllocator gAllocator) {
 	gVehicle4W->getRigidDynamicActor()->release();
 	gVehicle4W->free();
@@ -537,6 +537,8 @@ void Vehicle::cleanupPhysics(PxDefaultAllocator gAllocator) {
 	gVehicleSceneQueryData->free(gAllocator);
 	PX_RELEASE(gFrictionPairs);
 	PxCloseVehicleSDK();
+
+	cleanup();
 }
 
 //this should go with the vehicle class
