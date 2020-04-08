@@ -657,7 +657,12 @@ int main()
 
 			resetGame();
 			audioSystem.killSource(&raceMusic);
+			hud.reset();
 
+			for (int i = 0; i < 4; ++i) {
+				winFlags[i] = false;
+				loseFlags[i] = false;
+			}
 
 			isNextFrame = 0;
 			if (!mainMenuMusic.isSoundPlaying()) {
@@ -780,6 +785,7 @@ int main()
 			// TODO: Using to make multiplayer testing easier. Will remove
 			if (!multiplayerFlag) {
 				players = 1;
+				numOfPlayer = 1;
 			}
 			else {
 				SetPlayers(multiplayerScreen.getNumOfPlayer());
@@ -1547,10 +1553,10 @@ int main()
 					allDeadFlag = false;
 			}
 
-			//if all players are dead or the game is finished, pause the game for 5 seconds and then return to title 
+			//if all players are dead or the game is finished, pause the game for 3 seconds and then return to title 
 			if (physEng->gameFinished || allDeadFlag) {
-				if (isNextFrame == 10) {
-					std::this_thread::sleep_for(std::chrono::seconds(5));
+				if (isNextFrame == 30) {
+					std::this_thread::sleep_for(std::chrono::seconds(3));
 
 					gameFlag = false;
 					startScreenFlag = true;
