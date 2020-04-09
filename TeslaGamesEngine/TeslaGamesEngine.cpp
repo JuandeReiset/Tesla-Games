@@ -1142,7 +1142,14 @@ int main()
 					// Reset model
 					model = glm::mat4(1.0f);
 					glm::vec3 y_rot(0.0, 1.0, 0.0); // Axis of rotation
+
+					//offset of turret from the center of the vehicle
+					//float xOffset = 2.f * cos(glm::radians(90.f));
+					//float zOffset = 2.f * sin(glm::radians(90.f));
 					glm::vec3 tem = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
+					//apply offset to current vehicle position
+					//tem = glm::vec3(tem.x-xOffset,tem.y,tem.z-zOffset);
+
 					model = glm::translate(model, tem); // Update turret pos with position of vehicle
 					model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); // Resize turret
 					// TODO: This moves to ShootComp class
