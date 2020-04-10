@@ -642,24 +642,42 @@ int main()
 	glm::vec3 front = glm::normalize(glm::vec3(0.f, -0.5f, 1.f));
 	cameras[0].setFront(front.x, front.y, front.z);
 
-	Texture bbTex = Texture("Textures/HUD/healthbar.png");
-	bbTex.LoadTextureAlpha();
+	Texture healthTex = Texture("Textures/HUD/healthbar.png");
+	healthTex.LoadTextureAlpha();
+
+	Texture barTex = Texture("Textures/HUD/emptybar.png");
+	barTex.LoadTextureAlpha();
 
 	// Initialize billboard plain
-	unsigned int bbindices[] = {
+	unsigned int h_indices[] = {
 							0, 2, 1,
 							1, 2, 3
 	};
 
-	GLfloat billboard[] = {
+	GLfloat h_vertices[] = {
 		-1.0f, -1.0f, 0.0f,	  0.0f, 0.0f,    0.0f, -1.0f, 0.0f,
 		 1.0f, -1.0f, 0.0f,	 1.0f, 0.0f,    0.0f, -1.0f, 0.0f,
 		-1.0f, 1.0f, 0.0f,	  0.0f, 1.0f,   0.0f, -1.0f, 0.0f,
 		 1.0f, 1.0f, 0.0f,   1.0f, 1.0f,   0.0f, -1.0f, 0.0f
 	};
 
-	Mesh* bb = new Mesh();
-	bb->CreateMesh(billboard, bbindices, 32, 6);
+	Mesh* healthBB = new Mesh();
+	healthBB->CreateMesh(h_vertices, h_indices, 32, 6);
+
+	unsigned int b_indices[] = {
+						0, 2, 1,
+						1, 2, 3
+	};
+
+	GLfloat b_vertices[] = {
+		-1.0f, -1.0f, 0.001f,	  0.0f, 0.0f,    0.0f, -1.0f, 0.0f,
+		 1.0f, -1.0f, 0.001f,	 1.0f, 0.0f,    0.0f, -1.0f, 0.0f,
+		-1.0f, 1.0f, 0.001f,	  0.0f, 1.0f,   0.0f, -1.0f, 0.0f,
+		 1.0f, 1.0f, 0.001f,   1.0f, 1.0f,   0.0f, -1.0f, 0.0f
+	};
+
+	Mesh* barBB = new Mesh();
+	barBB->CreateMesh(b_vertices, b_indices, 32, 6);
 
 	while (!mainWindow.getShouldClose()) {
 		if (closeWindowFlag) {
@@ -1319,19 +1337,29 @@ int main()
 						model = glm::rotate(model, angletoUse, y_rot);
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						TAI_turret.RenderModel();
-
+				
+						// Draw billboard
+						auto h = v->getHealthComponent()->GetHealth() / 100.f;
 						auto dir = cameras[player].getCameraDirection();
 						auto angle = atan2((float)dir.x, (float)dir.z);
+
 						model = glm::mat4(1.0f);
 						model = glm::translate(model, tem + glm::vec3(0, 2.5, 0));
 						model = glm::rotate(model, angle, glm::vec3(0, 1, 0));
-						// model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+						model = glm::scale(model, glm::vec3(1.0f, 0.1f, 1.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-						// Change the texture used to show effects and stuff
-						bbTex.UseTexture();
+						barTex.UseTexture();
 						dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-						bb->RenderMesh();
-						
+						barBB->RenderMesh();
+
+						model = glm::mat4(1.0f);
+						model = glm::translate(model, tem + glm::vec3(0, 2.5, 0));
+						model = glm::rotate(model, angle, glm::vec3(0, 1, 0));
+						model = glm::scale(model, glm::vec3(h, 0.1f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						healthTex.UseTexture();
+						dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+						healthBB->RenderMesh();
 					}
 				}
 
@@ -1372,16 +1400,28 @@ int main()
 						playerTurretModels[i].RenderModel();
 
 						// Draw billboard
+						auto h = v->getHealthComponent()->GetHealth() / 100.f;
 						auto dir = cameras[player].getCameraDirection();
 						auto angle = atan2((float)dir.x, (float)dir.z);
+
 						model = glm::mat4(1.0f);
 						model = glm::translate(model, tem + glm::vec3(0, 2.5, 0));
 						model = glm::rotate(model, angle, glm::vec3(0, 1, 0));
-						// model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+						model = glm::scale(model, glm::vec3(1.0f, 0.1f, 1.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-						bbTex.UseTexture();
+						barTex.UseTexture();
 						dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-						bb->RenderMesh();
+						barBB->RenderMesh();
+
+						model = glm::mat4(1.0f);
+						model = glm::translate(model, tem + glm::vec3(0, 2.5, 0));
+						model = glm::rotate(model, angle, glm::vec3(0, 1, 0));
+						model = glm::scale(model, glm::vec3(h, 0.1f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						healthTex.UseTexture();
+						dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+						healthBB->RenderMesh();
+
 
 					}
 				}

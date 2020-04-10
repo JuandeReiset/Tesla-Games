@@ -491,8 +491,10 @@ VehicleDesc Vehicle::initVehicleDesc(PxMaterial* gMaterial)	//pass in gMaterial 
 	//Set up the chassis mass, dimensions, moment of inertia, and center of mass offset.
 	//The moment of inertia is just the moment of inertia of a cuboid but modified for easier steering.
 	//Center of mass offset is 0.65m above the base of the chassis and 0.25m towards the front.
-	const PxF32 chassisMass = 1500.0f;
+
+	const PxF32 chassisMass = 2000.0f;
 	const PxVec3 chassisDims(2.5f, 2.0f, 6.2f);
+  
 	const PxVec3 chassisMOI
 	((chassisDims.y * chassisDims.y + chassisDims.z * chassisDims.z) * chassisMass / 12.0f,
 		(chassisDims.x * chassisDims.x + chassisDims.z * chassisDims.z) * 0.8f * chassisMass / 12.0f,
@@ -505,7 +507,7 @@ VehicleDesc Vehicle::initVehicleDesc(PxMaterial* gMaterial)	//pass in gMaterial 
 	const PxF32 wheelRadius = 0.5f;
 	const PxF32 wheelWidth = 0.4f;
 	const PxF32 wheelMOI = 0.5f * wheelMass * wheelRadius * wheelRadius;
-	const PxU32 nbWheels = 6;
+	const PxU32 nbWheels = 4;
 
 	VehicleDesc vehicleDesc;
 
@@ -788,7 +790,7 @@ void Vehicle::useOil(std::list<Oil*> *oilList, float duration, PxScene* gScene, 
 
 	PxBoxGeometry geometry(PxVec3(1.5f, 5.f, 1.5f));
 	PxTransform transform(position, PxQuat(PxIDENTITY()));
-	PxMaterial* material = gPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+	PxMaterial* material = gPhysics->createMaterial(0.005f, 0.005f, 0.2f);
 
 	PxRigidStatic* actor = PxCreateStatic(*gPhysics, transform, geometry, *material);
 	oilList->back()->actor = actor;
