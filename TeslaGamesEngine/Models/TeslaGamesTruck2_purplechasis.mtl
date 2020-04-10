@@ -1,7 +1,7 @@
 # Blender MTL File: 'TeslaGamesTruck2_mod_purple.blend'
 # Material Count: 6
 
-newmtl TeslaBlack
+newmtl TeslaBlack.004
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.123710 0.123710 0.123710
@@ -12,7 +12,7 @@ d 1.000000
 illum 2
 map_Kd C:\\Users\\juanl\\Downloads\\Black_photo.jpg
 
-newmtl TeslaFrontLight
+newmtl TeslaFrontLight.004
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -23,7 +23,7 @@ d 1.000000
 illum 2
 map_Kd C:\\Users\\juanl\\Downloads\\Colors for tesla models\\Purple_T.jpg
 
-newmtl TeslaRearLight
+newmtl TeslaRearLight.004
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -32,9 +32,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\juanl\\Downloads\\redTailight.jpg
+map_Kd C:\\Users\\juanl\\Downloads\\Colors for tesla models\\Purple_T.jpg
 
-newmtl Tesla_Logo
+newmtl Tesla_Logo.003
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -45,7 +45,7 @@ d 1.000000
 illum 2
 map_Kd C:\\Users\\juanl\\Downloads\\logo4.jpg
 
-newmtl Teslacbase
+newmtl Teslacbase.004
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -56,7 +56,7 @@ d 1.000000
 illum 2
 map_Kd C:\\Users\\juanl\\Downloads\\whitemetal.jpg
 
-newmtl Windowtext
+newmtl Windowtext.004
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
