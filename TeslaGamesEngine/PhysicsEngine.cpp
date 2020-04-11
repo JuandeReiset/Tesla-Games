@@ -18,7 +18,7 @@ PhysicsEngine::PhysicsEngine() {
 
 	//set scene
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+	sceneDesc.gravity = PxVec3(0.0f, -11.81f, 0.0f);
 
 	PxU32 numWorkers = 1;
 	gDispatcher = PxDefaultCpuDispatcherCreate(numWorkers);
@@ -30,7 +30,7 @@ PhysicsEngine::PhysicsEngine() {
 	sceneDesc.simulationEventCallback = colliderCallback;
 
 	gScene = gPhysics->createScene(sceneDesc);
-	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+	gMaterial = gPhysics->createMaterial(0.95f, 0.9f, 0.2f);
 	gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 
 	//create obstacle (needed for now)
