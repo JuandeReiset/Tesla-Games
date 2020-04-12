@@ -140,12 +140,6 @@ void ShootComp::increase_ammo()
 
 void ShootComp::recharge() {
 	if (ammo < 10) {
-		if (ammo == 6) {
-			ammo += 4;
-		}
-		else if (ammo == 7) {
-			ammo += 3;
-		}
 		else if (ammo == 8) {
 			ammo += 2;
 		}
@@ -153,7 +147,7 @@ void ShootComp::recharge() {
 			ammo += 1;
 		}
 		else {
-			ammo += 5;
+			ammo += 3;
 		}
 	}
 
