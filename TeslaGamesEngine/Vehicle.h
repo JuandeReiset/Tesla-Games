@@ -77,7 +77,7 @@ public:
 	bool isAICarStuck = false;
 	int AICarStuckFrameCounter = 0;
 	int AICarStuckMoveCounter = 0;
-	TrackDrivingPoint oldStuckTarget = TrackDrivingPoint(0,0,0,-1);
+	TrackDrivingPoint oldStuckTarget = TrackDrivingPoint(0,0,0,-1,0);
 
 
 

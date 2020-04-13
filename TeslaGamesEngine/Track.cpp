@@ -9,10 +9,10 @@ Track::Track(int trackType) {
 }
 Track::~Track() {}
 void Track::addPointToList(float x, float y, float z, int action) {
-	this->listOfPoints.push_back(std::make_unique<TrackDrivingPoint>(x, y, z, action));
+	this->listOfPoints.push_back(std::make_unique<TrackDrivingPoint>(x, y, z, action, 0));
 }
 void Track::addStartPointToList(float x, float y, float z) {
-	this->listOfStartPoints.push_back(std::make_unique<TrackDrivingPoint>(x, y, z, trackDrivingPointActions::START_LINE));
+	this->listOfStartPoints.push_back(std::make_unique<TrackDrivingPoint>(x, y, z, trackDrivingPointActions::START_LINE, 0));
 }
 void Track::addInteractableStripToList() {
 	this->listOfLaneStrips.push_back(std::make_unique<TrackInteractableStrip>());
@@ -90,12 +90,12 @@ void Track::initializeTrackPoints(int trackType) {
 		this->addInteractableStripToList();
 
 		TrackInteractableStrip& z0 = *this->listOfLaneStrips.at(0);
-		z0.addLanePoint(-49.00, -2.60, -44.00, trackInteractableObjects::TESLA_PICKUP);
-		z0.addLanePoint(-53.02, -2.60, -49.00, trackInteractableObjects::TESLA_PICKUP);
-		z0.addLanePoint(-57.23, -2.60, -54.00, trackInteractableObjects::TESLA_PICKUP);
-		z0.addLanePoint(-61.18, -2.60, -59.00, trackInteractableObjects::AMMO_PICKUP);
-		z0.addLanePoint(-65.44, -2.60, -64.00, trackInteractableObjects::AMMO_PICKUP);
-		z0.addLanePoint(-69.88, -2.60, -70.00, trackInteractableObjects::AMMO_PICKUP);
+		z0.addLanePoint(-49.00, -2.60, -44.00, trackInteractableObjects::TESLA_PICKUP, 0);
+		z0.addLanePoint(-53.02, -2.60, -49.00, trackInteractableObjects::AMMO_PICKUP, 0);
+		z0.addLanePoint(-57.23, -2.60, -54.00, trackInteractableObjects::TESLA_PICKUP, 0);
+		z0.addLanePoint(-61.18, -2.60, -59.00, trackInteractableObjects::AMMO_PICKUP, 0);
+		z0.addLanePoint(-65.44, -2.60, -64.00, trackInteractableObjects::TESLA_PICKUP, 0);
+		z0.addLanePoint(-69.88, -2.60, -70.00, trackInteractableObjects::AMMO_PICKUP, 0);
 
 		TrackInteractableStrip& z1 = *this->listOfLaneStrips.at(1);
 		//these work
@@ -107,11 +107,11 @@ void Track::initializeTrackPoints(int trackType) {
 		z1.addLanePoint(-92.22, -2.64, 4.48, trackInteractableObjects::OIL);
 
 		TrackInteractableStrip& z2 = *this->listOfLaneStrips.at(2);
-		z2.addLanePoint(10.36, -2.55, 34.32, trackInteractableObjects::TESLA_PICKUP);
-		z2.addLanePoint(9.95, -2.55, 40.86, trackInteractableObjects::AMMO_PICKUP);
-		z2.addLanePoint(9.41, -2.60, 49.43, trackInteractableObjects::TESLA_PICKUP);
-		z2.addLanePoint(8.89, -2.64, 57.65, trackInteractableObjects::AMMO_PICKUP);
-		z2.addLanePoint(8.43, -2.68, 64.97, trackInteractableObjects::TESLA_PICKUP);
+		z2.addLanePoint(10.36, -2.55, 34.32, trackInteractableObjects::TESLA_PICKUP, 1);
+		z2.addLanePoint(9.95, -2.55, 40.86, trackInteractableObjects::AMMO_PICKUP, 0);
+		z2.addLanePoint(9.41, -2.60, 49.43, trackInteractableObjects::TESLA_PICKUP, 1);
+		z2.addLanePoint(8.89, -2.64, 57.65, trackInteractableObjects::AMMO_PICKUP, 0);
+		z2.addLanePoint(8.43, -2.68, 64.97, trackInteractableObjects::TESLA_PICKUP, 1);
 
 		TrackInteractableStrip& z3 = *this->listOfLaneStrips.at(3);
 		z3.addLanePoint(31.58, -2.52, 32.87, trackInteractableObjects::CALTROPS);

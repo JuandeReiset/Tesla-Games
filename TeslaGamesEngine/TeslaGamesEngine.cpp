@@ -847,24 +847,27 @@ int main()
 				for (int j = 0; j < zone.listOfLanePoints.size(); j++) {
 					TrackDrivingPoint& p = *zone.listOfLanePoints[j];
 					
-					switch (p.actionToTake)
-					{
-					case -2:	//ammo pickup
-						physEng->createAmmoTriggerVolume(p.x, p.y, p.z);
-						break;
-					case -3:	//normal pickup
-						physEng->createPickupTriggerVolume(p.x, p.y, p.z);
-						break;
-					case -4:	//caltrops
-						physEng->createTrackCaltrops(p.x, p.y, p.z, -1.f);	//make new function for track placement
-						break;
-					case -5:	//oil
-						physEng->createTrackOil(p.x, p.y, p.z, -1.f);	//make new function for track placement
-						break;
-					case -6:	//smoke
-						physEng->createTrackSmoke(p.x, p.y, p.z, -1.f);	//make new function for track placement
-						break;
+					if (p.lapToBeAdded == 0) {	//only add the traps that are present at the very start of the game
+						switch (p.actionToTake)
+						{
+						case -2:	//ammo pickup
+							physEng->createAmmoTriggerVolume(p.x, p.y, p.z);
+							break;
+						case -3:	//normal pickup
+							physEng->createPickupTriggerVolume(p.x, p.y, p.z);
+							break;
+						case -4:	//caltrops
+							physEng->createTrackCaltrops(p.x, p.y, p.z, -1.f);	//make new function for track placement
+							break;
+						case -5:	//oil
+							physEng->createTrackOil(p.x, p.y, p.z, -1.f);	//make new function for track placement
+							break;
+						case -6:	//smoke
+							physEng->createTrackSmoke(p.x, p.y, p.z, -1.f);	//make new function for track placement
+							break;
+						}
 					}
+
 				}
 			}
 
