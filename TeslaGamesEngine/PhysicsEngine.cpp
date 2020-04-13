@@ -135,6 +135,8 @@ void PhysicsEngine::stepPhysics()
 
 	}
 
+	//check for track traps update
+
 	//Scene update.
 	gScene->simulate(timestep);
 	gScene->fetchResults(true);

@@ -178,7 +178,10 @@ void Vehicle::updateDistance()
 void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 {
 	if (expectedMarker == val) {	//good hit
-		//std::cout << "HIT LAP MARKER " << val << "!\n";
+		if (isPlayer) {
+			//std::cout << "HIT LAP MARKER " << val << "!\n";
+		}
+			
 		totalMarkersHit++;
 		//update expected and current marker vals
 		expectedMarker = (expectedMarker + 1) % numberOfMarkersInTrack;
@@ -187,6 +190,10 @@ void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 		//start marker is 0, first marker after start is 1
 		if (currentMarker == 0 && expectedMarker == 1) {	//completed a lap
 			numLaps++;
+			if (isPlayer) {
+				//std::cout << "You have completed " << numLaps << " laps!\n";
+			}
+				
 			if (numLaps == trackTotalLaps && ranking == 1) {	//you win!
 				wins();
 			}
@@ -732,7 +739,7 @@ void Vehicle::pickup() {
 	else
 		++ability;
 
-	std::cout << "ability:" << ability << std::endl;
+	//std::cout << "ability:" << ability << std::endl;
 }
 
 //ammo pickup, increases ammo by 1 to a max of 10
@@ -746,7 +753,7 @@ void Vehicle::useCaltrops(std::list<Caltrops*> *catropsList, float duration, PxS
 	if (ability == 0 || affectedBySmoke)
 		return;
 
-	std::cout << "\nAbility Points: " << ability;
+	//std::cout << "\nAbility Points: " << ability;
 
 	PxVec3 pos = GetPosition();
 
@@ -780,7 +787,7 @@ void Vehicle::useOil(std::list<Oil*> *oilList, float duration, PxScene* gScene, 
 	if (ability == 0 || affectedBySmoke)
 		return;
 
-	std::cout << "\nAbility Points: " << ability;
+	//std::cout << "\nAbility Points: " << ability;
 
 	PxVec3 pos = GetPosition();
 
@@ -813,7 +820,7 @@ void Vehicle::useSmoke(std::list<Smoke*>* smokeList, float duration, PxScene* gS
 	if (ability == 0 || affectedBySmoke)
 		return;
 
-	std::cout << "\nAbility Points: " << ability;
+	//std::cout << "\nAbility Points: " << ability;
 
 	PxVec3 pos = GetPosition();
 
@@ -846,14 +853,14 @@ void Vehicle::enableSmokeEffect()
 {
 	affectedBySmoke = true;
 	smokeStartTime = glfwGetTime();
-	std::cout << "SMOKE ACTIVATED" << std::endl;
+	//std::cout << "SMOKE ACTIVATED" << std::endl;
 	this->takeTrapDamage(0.f);
 }
 
 void Vehicle::disableSmokeEffect()
 {
 	affectedBySmoke = false;
-	std::cout << "SMOKE DEACTIVATED" << std::endl;
+	//std::cout << "SMOKE DEACTIVATED" << std::endl;
 }
 
 void Vehicle::updateSmoke()
@@ -867,7 +874,7 @@ void Vehicle::enableOilEffect()
 {
 	affectedByOil = true;
 	oilStartTime = glfwGetTime();
-	std::cout << "OIL ACTIVATED" << std::endl;
+	//std::cout << "OIL ACTIVATED" << std::endl;
 
 	actor->setMass(actor->getMass() * 0.3f);
 
@@ -884,7 +891,7 @@ void Vehicle::enableOilEffect()
 void Vehicle::disableOilEffect()
 {
 	affectedByOil = false;
-	std::cout << "OIL DEACTIVATED" << std::endl;
+	//std::cout << "OIL DEACTIVATED" << std::endl;
 
 	actor->setMass(actor->getMass() / 0.3f);
 }

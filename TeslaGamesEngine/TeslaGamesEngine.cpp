@@ -787,7 +787,7 @@ int main()
 				
 				racetrack_walls.LoadModel("Models/track2finalwalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2finalfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
-				std::cout << "LOADED HYPERLOOP TRACK\n\n";
+				//std::cout << "LOADED HYPERLOOP TRACK\n\n";
 				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_HYPERLOOP);
 				if (multiplayerFlag == false) {
 					raceMusic.setVolume(0.35f);
@@ -801,7 +801,7 @@ int main()
 			else if (trackNum == trackTypeConstants::STARLINK) {
 				racetrack_walls.LoadModel("Models/track2final_Twalls.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, false);
 				racetrack_floor.LoadModel("Models/track2final_Tfloor.obj", physEng->gPhysics, physEng->gCooking, physEng->gMaterial, physEng->gScene, true);
-				std::cout << "LOADED STARLINK TRACK\n\n";
+				//std::cout << "LOADED STARLINK TRACK\n\n";
 				raceMusic = audioSystem.createBoomBox(audioConstants::SOUND_FILE_TTG_RACE_STARLINK);
 				if (multiplayerFlag == false) {
 					raceMusic.setVolume(0.35f);
@@ -1263,7 +1263,7 @@ int main()
 
 				// Draw and create oil
 				if (controllers[player].isButtonDown(XButtons.DPad_Right) && !physEng->playerVehicles[player]->affectedBySmoke) {
-					std::cout << "PRESSED OIL BUTTON\n";
+					//std::cout << "PRESSED OIL BUTTON\n";
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
 					physEng->createOilTriggerVolume(p.x, p.y, p.z, 5.f, physEng->playerVehicles[player]->ID);
 				}
@@ -1286,7 +1286,7 @@ int main()
 
 				// Draw and create smoke
 				if (controllers[player].isButtonDown(XButtons.DPad_Left) && !physEng->playerVehicles[player]->affectedBySmoke) {
-					std::cout << "PRESSED SMOKE BUTTON\n";
+					//std::cout << "PRESSED SMOKE BUTTON\n";
 					PxVec3 p(physEng->playerVehicles[player]->GetPosition());
 					physEng->createSmokeTriggerVolume(p.x, p.y, p.z, 5.f, physEng->playerVehicles[player]->ID);
 				}
@@ -1569,6 +1569,10 @@ int main()
 				auto iter = std::find_if(physEng->allVehicles.begin(), physEng->allVehicles.end(), [&carID](const Vehicle* v) {return v->ID == carID; });
 				int index = std::distance(physEng->allVehicles.begin(), iter);
 				physEng->allVehicles[i]->ranking = index + 1;
+
+				if (physEng->allVehicles[i]->isPlayer) {
+					//std::cout << "Player Ranking: " << physEng->allVehicles[i]->ranking << "\n";
+				}
 			}
 
 

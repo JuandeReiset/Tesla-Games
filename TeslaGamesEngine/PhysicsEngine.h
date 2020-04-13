@@ -132,6 +132,8 @@ private:
 	AudioEngine* audioEngine;
 	Track* raceTrack;
 
+	int trapLapAmount;
+
 	physx::PxDefaultAllocator gAllocator;
 	physx::PxDefaultErrorCallback gErrorCallback;
 	physx::PxFoundation* gFoundation = NULL;
