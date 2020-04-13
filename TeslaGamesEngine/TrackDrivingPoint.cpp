@@ -4,7 +4,7 @@ TrackDrivingPoint::TrackDrivingPoint(float x, float y, float z, int action, int 
 	this->y = y;
 	this->z = z;
 	this->actionToTake = action;
-	this->actionToTake = lap;
+	this->lapToBeAdded = lap;
 }
 TrackDrivingPoint::TrackDrivingPoint() {}
 TrackDrivingPoint::~TrackDrivingPoint() {}

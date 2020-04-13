@@ -33,7 +33,7 @@ class TrackDrivingPoint
 		int actionToTake;
 		float pointDistanceLimit = 15.f;
 
-		//value of 0 gets added on race start
+
 		int lapToBeAdded;
 };
 
