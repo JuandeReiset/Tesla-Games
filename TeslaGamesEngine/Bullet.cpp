@@ -43,11 +43,11 @@ void Bullet::createBullet(glm::vec3 carPos, GLuint uniModel, GLuint uniSpecularI
 void Bullet::renderBullet() {
 	
 	shoot_distance_x += Direction_x * bullet_speed;
-	shoot_distance_y += Direction_y * bullet_speed -0.01f;
+	shoot_distance_y += Direction_y * bullet_speed;
 	shoot_distance_z += Direction_z * bullet_speed;
 
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(position.x + shoot_distance_x, position.y+0.5f+shoot_distance_y, position.z + shoot_distance_z));
+	model = glm::translate(model, glm::vec3(position.x + shoot_distance_x, position.y+shoot_distance_y, position.z + shoot_distance_z));
 
 	model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
 	

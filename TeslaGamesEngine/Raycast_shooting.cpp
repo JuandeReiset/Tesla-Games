@@ -46,9 +46,9 @@ bool Raycast_shooting::is_in_direction(Vehicle* possible_target,glm::vec3 Shootd
 	physx::PxVec3 fineRayEnd = owner->GetPosition();  //point of the raycast
 	float travelled = 0.0;						// how far we've walked across the whole ray when we cross over the terrain the first time
 	bool intersectionFound = false;				// result that we send back
-	float vehicle_bounds_z = 5.f;
-	float vehicle_bounds_y = 2.f;
-	float vehicle_bounds_x = 2.5f;
+	float vehicle_bounds_z = 7.f;
+	float vehicle_bounds_y = 4.f;
+	float vehicle_bounds_x = 5.f;
 	while (!intersectionFound && travelled <= rayLength)
 	{
 		travelled += 1.f;
