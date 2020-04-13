@@ -43,6 +43,7 @@ PhysicsEngine::PhysicsEngine() {
 
 
 	gameFinished = false;
+	trapLapAmount = 0;
 }
 
 void PhysicsEngine::initAudioForVehicles(AudioEngine* audio) {
@@ -134,6 +135,51 @@ void PhysicsEngine::stepPhysics()
 		}
 
 	}
+
+	//check for track traps update
+	bool needToAddTraps = false;
+
+	for (auto player : playerVehicles) {
+		if (player->numLaps > trapLapAmount) {	//if 1st place player completes a new lap
+			trapLapAmount++;
+			needToAddTraps = true;
+		}
+	}
+
+	if (needToAddTraps) {
+		//loop through all the trap points in raceTrack and add the ones
+		//that need to be added based on the current lap amount
+		for (int i = 0; i < raceTrack->listOfLaneStrips.size(); i++) {
+			TrackInteractableStrip& zone = *raceTrack->listOfLaneStrips.at(i);
+			for (int j = 0; j < zone.listOfLanePoints.size(); j++) {
+				TrackDrivingPoint& p = *zone.listOfLanePoints[j];
+
+				if (p.lapToBeAdded == trapLapAmount) {	//only add the traps that are present at the very start of the game
+					switch (p.actionToTake)
+					{
+					case -2:	//ammo pickup
+						createAmmoTriggerVolume(p.x, p.y, p.z);
+						break;
+					case -3:	//normal pickup
+						createPickupTriggerVolume(p.x, p.y, p.z);
+						break;
+					case -4:	//caltrops
+						createTrackCaltrops(p.x, p.y, p.z, -1.f);	//make new function for track placement
+						break;
+					case -5:	//oil
+						createTrackOil(p.x, p.y, p.z, -1.f);	//make new function for track placement
+						break;
+					case -6:	//smoke
+						createTrackSmoke(p.x, p.y, p.z, -1.f);	//make new function for track placement
+						break;
+					}
+				}
+
+			}
+		}
+
+	}
+
 
 	//Scene update.
 	gScene->simulate(timestep);

@@ -2,8 +2,8 @@
 TrackInteractableStrip::TrackInteractableStrip() {};
 TrackInteractableStrip::~TrackInteractableStrip() { this->listOfLanePoints.clear(); };
 
-void TrackInteractableStrip::addLanePoint(float x, float y, float z, int status) {
-	this->listOfLanePoints.push_back(std::make_unique<TrackDrivingPoint>(x, y, z, status));
+void TrackInteractableStrip::addLanePoint(float x, float y, float z, int status, int lap) {
+	this->listOfLanePoints.push_back(std::make_unique<TrackDrivingPoint>(x, y, z, status, lap));
 }
 void TrackInteractableStrip::setLaneStatus(int atIndex, int newStatus) {
 

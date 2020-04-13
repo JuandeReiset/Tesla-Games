@@ -24,7 +24,7 @@ class TrackDrivingPoint
 	public:
 		friend bool operator== (TrackDrivingPoint & lhs, TrackDrivingPoint & rhs);
 		TrackDrivingPoint();
-		TrackDrivingPoint(float x, float y, float z, int action);
+		TrackDrivingPoint(float x, float y, float z, int action, int lap);
 		~TrackDrivingPoint();
 		void switchAction(int newAction);
 		float x;
@@ -32,5 +32,8 @@ class TrackDrivingPoint
 		float z;
 		int actionToTake;
 		float pointDistanceLimit = 15.f;
+
+
+		int lapToBeAdded;
 };
 
