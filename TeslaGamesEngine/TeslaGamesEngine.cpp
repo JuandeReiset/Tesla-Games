@@ -147,6 +147,11 @@ Model racetrack_floor;
 Model bulletobj;
 Model oil;
 
+//track traps objs
+Model trackOil;
+Model trackSmoke;
+Model trackCaltrops;
+
 //Pickup models
 Model defense_pickup;
 Model ammo_pickup;
@@ -628,6 +633,10 @@ int main()
 	ammo_pickup.LoadModel("Models/ammo_box.obj");
 
 	oil.LoadModel("Models/oil.obj");
+
+	trackOil.LoadModel("Models/Oil_red.obj");
+	trackSmoke.LoadModel("Models/smoke_red.obj");
+	trackCaltrops.LoadModel("Models/caltrops_red.obj");
 
 	drivingPointModel.LoadModel("Models/bullet.obj");
 	// Loop until window closed
@@ -1258,6 +1267,12 @@ int main()
 						c++;
 					}
 					else {
+						if ((*c)->id == -69420) {	//use red track model
+
+						}
+						else {	//use normal model
+
+						}
 						(*c)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
 						(*c)->renderCaltrops();
 						++c;
@@ -1281,6 +1296,13 @@ int main()
 						o++;
 					}
 					else {
+
+						if ((*o)->id == -69420) {	//use red track model
+
+						}
+						else {	//use normal model
+
+						}
 						(*o)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
 						(*o)->renderOil();
 						++o;
@@ -1304,6 +1326,13 @@ int main()
 						s++;
 					}
 					else {
+
+						if ((*s)->id == -69420) {	//use red track model
+
+						}
+						else {	//use normal model
+
+						}
 						(*s)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
 						(*s)->renderSmoke();
 						++s;
