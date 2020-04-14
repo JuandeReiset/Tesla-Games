@@ -52,7 +52,8 @@ void Oil::renderOil() {
 	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
 	if (id == (-69420)) {
-		trackoilObj.RenderModel(); 
+		//trackoilObj.RenderModel(); 
+		oilObj.RenderModel();
 	}
 	else {
 		oilObj.RenderModel();
