@@ -31,6 +31,7 @@ private:
 	float life, birthTime, currentTime;											//each smoke can exist 5 sec, if currentTime - birthTime > life, then destroy the instance
 	glm::vec3 position;															//the position of the smoke
 	Model smokeObj;
+	Model tracksmokeObj;
 
 	glm::mat4 model;															//model matrix
 	GLuint uniformModel, uniformSpecularIntensity, uniformShininess;

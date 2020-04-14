@@ -7,6 +7,8 @@ Smoke::Smoke(int idInput, float duration) {
 	currentTime = glfwGetTime();
 
 	smokeObj.LoadModel("Models/smoke.obj");
+	tracksmokeObj.LoadModel("Models/smoke_red.obj");
+
 	model = glm::mat4(1.f);
 	uniformModel = 0;
 	uniformSpecularIntensity = 0;
@@ -49,7 +51,12 @@ void Smoke::renderSmoke() {
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
-	smokeObj.RenderModel();
+	if (id == (-69420)) {
+		tracksmokeObj.RenderModel();
+	}
+	else {
+		smokeObj.RenderModel();
+	}
 }
 
 Smoke::~Smoke() {
