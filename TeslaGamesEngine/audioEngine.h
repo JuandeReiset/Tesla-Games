@@ -13,24 +13,19 @@
 
 namespace audioConstants
 {
-	const int SOUND_FILE_BOUNCE = 0;
-	const int SOUND_FILE_FINALCOUNT = 1;
-	const int SOUND_FILE_TTG_MAIN_MENU = 2;
-	const int SOUND_FILE_TTG_RACE_HYPERLOOP = 3;
-	const int SOUND_FILE_TTG_RACE_STARLINK = 16;
-
-	const int SOUND_FILE_ACCEL_REST = 4;
-	const int SOUND_FILE_ACCEL_MOTION = 5;
-	const int SOUND_FILE_BOOST_START = 6;
-	const int SOUND_FILE_BOOST_MAX = 7;
-	const int SOUND_FILE_SPEED_MAX = 8;
-	const int SOUND_FILE_TURRET_FIRE = 9;
-	const int SOUND_FILE_HIT_BULLET = 10;
-	const int SOUND_FILE_HIT_TRAP = 11;
-	const int SOUND_FILE_HIT_COLLISION = 12;
-	const int SOUND_FILE_DEPLOY_CALTROPS = 13;
-	const int SOUND_FILE_DEPLOY_OIL = 14;
-	const int SOUND_FILE_DEPLOY_SMOKE = 15;
+	const int SOUND_FILE_TTG_MAIN_MENU = 0;
+	const int SOUND_FILE_TTG_RACE_HYPERLOOP = 1;
+	const int SOUND_FILE_TTG_RACE_STARLINK = 2;
+	const int SOUND_FILE_ACCEL_REST = 3;
+	const int SOUND_FILE_ACCEL_MOTION = 4;
+	const int SOUND_FILE_BOOST_MAX = 5;
+	const int SOUND_FILE_SPEED_MAX = 6;
+	const int SOUND_FILE_TURRET_FIRE = 7;
+	const int SOUND_FILE_HIT_BULLET = 8;
+	const int SOUND_FILE_HIT_TRAP = 9;
+	const int SOUND_FILE_DEPLOY_CALTROPS = 10;
+	const int SOUND_FILE_DEPLOY_OIL = 11;
+	const int SOUND_FILE_DEPLOY_SMOKE = 12;
 
 }
 
@@ -56,7 +51,7 @@ class AudioEngine
 		bool _strcmp(const char* base, const char* cp);
 		bool loadWavFile(const char* filename, ALuint* buffer);
 
-		static const int NUM_OF_SOUND_EFFECTS_POSSIBLE = 17;
+		static const int NUM_OF_SOUND_EFFECTS_POSSIBLE = 13;
 		const char* soundFiles[NUM_OF_SOUND_EFFECTS_POSSIBLE];
 
 		int sourcesMade;
