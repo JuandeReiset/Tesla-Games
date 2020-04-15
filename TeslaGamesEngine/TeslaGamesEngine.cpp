@@ -324,11 +324,11 @@ void parseControllerInput(Controller* controller)
 		pauseFlag = true;
 	}
 
-
+/*
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
 		player->update_health();
 	}
-	
+*/
 
 	if (controller->isButtonDown(XButtons.DPad_Left)) {
 		//std::cout << "PRESSED SMOKE BUTTON\n";
