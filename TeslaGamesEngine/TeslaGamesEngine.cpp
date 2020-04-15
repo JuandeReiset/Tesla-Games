@@ -931,8 +931,10 @@ int main()
 					parseControllerInput(&player1);
 			}*/
 
+			
 			for (int i = 0; i < players; i++) {
-				parseControllerInput(&controllers[i]);
+				if(physEng->playerVehicles[i]->getHealthComponent()->GetHealth() > 0)
+					parseControllerInput(&controllers[i]);
 			}
 
 			GLfloat now = glfwGetTime();
@@ -1591,7 +1593,6 @@ int main()
 				hud.setOiled(physEng->playerVehicles[player]->affectedByOil);
 				hud.use();
 				hud.resetWinOrLose();
-				std::cout << player << " " << loseFlags[player] << std::endl;
 			}
 
 			
