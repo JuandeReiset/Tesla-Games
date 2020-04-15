@@ -395,6 +395,8 @@ int main()
 	allDeadFlag = false;
 	isNextFrame = 0;
 
+	int isVehicleDead[20]{ 0 };
+
 	HUDcreator hud;
 	hud.load();
 
@@ -972,6 +974,22 @@ int main()
 				hideDebug = false;
 			}
 
+			//physx collider stuff
+			/*
+			for (auto v : physEng->allVehicles) {
+				if (v->getHealthComponent()->GetHealth() <= 0)
+					physEng->gScene->removeActor(*v->actor);
+			}
+			*/
+
+			for (int i = 0; i < physEng->allVehicles.size(); ++i) {
+				if (physEng->allVehicles[i]->getHealthComponent()->GetHealth() <= 0) {
+					if (!isVehicleDead[i]) {
+						physEng->gScene->removeActor(*(physEng->allVehicles[i])->actor);
+						isVehicleDead[i] = 1;
+					}
+				}
+			}
 			/* Game logic */ 
 
 			// Physics
@@ -1522,7 +1540,6 @@ int main()
 
 				glEnable(GL_DEPTH_TEST);
 				
-				//std::cout << "WIN LOSE FLAGS: " << winFlags[player] << " " << loseFlags[player] << "\n";
 
 				// HUD
 				auto playerVehicle = physEng->playerVehicles[player];
