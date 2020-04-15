@@ -974,13 +974,6 @@ int main()
 				hideDebug = false;
 			}
 
-			//physx collider stuff
-			/*
-			for (auto v : physEng->allVehicles) {
-				if (v->getHealthComponent()->GetHealth() <= 0)
-					physEng->gScene->removeActor(*v->actor);
-			}
-			*/
 
 			for (int i = 0; i < physEng->allVehicles.size(); ++i) {
 				if (physEng->allVehicles[i]->getHealthComponent()->GetHealth() <= 0) {
