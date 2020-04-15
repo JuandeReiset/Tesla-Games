@@ -514,7 +514,10 @@ VehicleDesc Vehicle::initVehicleDesc(PxMaterial* gMaterial)	//pass in gMaterial 
 	const PxF32 wheelRadius = 0.5f;
 	const PxF32 wheelWidth = 0.4f;
 	const PxF32 wheelMOI = 0.5f * wheelMass * wheelRadius * wheelRadius;
-	const PxU32 nbWheels = 4;
+
+	//4 makes the car very snappy and responsive
+	//6 makes it a little less slidy but also more "tanky" 
+	const PxU32 nbWheels = 6;
 
 	VehicleDesc vehicleDesc;
 
