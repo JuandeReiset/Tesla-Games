@@ -7,7 +7,7 @@ Oil::Oil(int idInput, float duration) {
 	currentTime = glfwGetTime();
 
 	oilObj.LoadModel("Models/Oil.obj");
-	trackoilObj.LoadModel("Models/Oil_red.obj");
+	trackoilObj.LoadModel("Models/Oil.obj");
 	model = glm::mat4(1.f);
 	uniformModel = 0;
 	uniformSpecularIntensity = 0;
