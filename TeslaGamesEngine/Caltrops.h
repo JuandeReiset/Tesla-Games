@@ -32,6 +32,7 @@ private:
 	float life, birthTime, currentTime;											//each caltrop can exist 5 sec, if currentTime - birthTime > life, then destroy the instance
 	glm::vec3 position;															//the position of the caltrops
 	Model caltropsObj;
+	Model trackcaltropsObj;
 
 	glm::mat4 model;															//model matrix
 	GLuint uniformModel, uniformSpecularIntensity, uniformShininess;

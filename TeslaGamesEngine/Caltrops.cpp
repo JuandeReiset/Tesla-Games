@@ -7,6 +7,7 @@ Caltrops::Caltrops(int idInput, float duration) {
 	currentTime = glfwGetTime();
 
 	caltropsObj.LoadModel("Models/caltrops.obj");
+	trackcaltropsObj.LoadModel("Models/caltrops_red.obj");
 
 	model = glm::mat4(1.f);
 	uniformModel = 0;
@@ -51,7 +52,12 @@ void Caltrops::renderCaltrops() {
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
-	caltropsObj.RenderModel();
+	if (id == (-69420)) {
+		trackcaltropsObj.RenderModel();
+	}
+	else {
+		caltropsObj.RenderModel();
+	}
 }
 
 Caltrops::~Caltrops() {

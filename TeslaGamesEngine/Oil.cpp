@@ -7,6 +7,7 @@ Oil::Oil(int idInput, float duration) {
 	currentTime = glfwGetTime();
 
 	oilObj.LoadModel("Models/Oil.obj");
+	trackoilObj.LoadModel("Models/Oil.obj");
 	model = glm::mat4(1.f);
 	uniformModel = 0;
 	uniformSpecularIntensity = 0;
@@ -50,7 +51,13 @@ void Oil::renderOil() {
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
-	oilObj.RenderModel();
+	if (id == (-69420)) {
+		trackoilObj.RenderModel(); 
+		//oilObj.RenderModel();
+	}
+	else {
+		oilObj.RenderModel();
+	}
 }
 
 Oil::~Oil() {

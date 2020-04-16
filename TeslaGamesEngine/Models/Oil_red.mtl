@@ -1,4 +1,4 @@
-# Blender MTL File: 'Oil_red.blend'
+# Blender MTL File: 'Oil.blend'
 # Material Count: 1
 
 newmtl Fluid_Domain_Material
@@ -10,4 +10,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\juanl\\Downloads\\petrotext_red.jpg
+map_Kd C:\\Users\\juanl\\Downloads\\petrotext.jpg

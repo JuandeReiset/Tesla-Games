@@ -31,6 +31,7 @@ private:
 	float life, birthTime, currentTime;											//each Oil can exist 5 sec, if currentTime - birthTime > life, then destroy the instance
 	glm::vec3 position;															//the Oil of the caltrops
 	Model oilObj;
+	Model trackoilObj;
 
 	glm::mat4 model;															//model matrix
 	GLuint uniformModel, uniformSpecularIntensity, uniformShininess;

@@ -23,8 +23,9 @@ void HealthComponent::initAudioForHealthComponent(AudioEngine* engine) {
 	this->trapDamageEffect = this->audioEngine->createBoomBox(audioConstants::SOUND_FILE_HIT_TRAP);
 
 	float initialSoundVolume = 15.f;
+	float bulletSoundVolume = 30.f;
 
-	this->bulletHitEffect.setVolume(initialSoundVolume);
+	this->bulletHitEffect.setVolume(bulletSoundVolume);
 	this->trapDamageEffect.setVolume(initialSoundVolume);
 }
 

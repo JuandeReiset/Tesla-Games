@@ -1281,12 +1281,6 @@ int main()
 						c++;
 					}
 					else {
-						if ((*c)->id == -69420) {	//use red track model
-
-						}
-						else {	//use normal model
-
-						}
 						(*c)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
 						(*c)->renderCaltrops();
 						++c;
@@ -1310,13 +1304,6 @@ int main()
 						o++;
 					}
 					else {
-
-						if ((*o)->id == -69420) {	//use red track model
-
-						}
-						else {	//use normal model
-
-						}
 						(*o)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
 						(*o)->renderOil();
 						++o;
@@ -1340,13 +1327,6 @@ int main()
 						s++;
 					}
 					else {
-
-						if ((*s)->id == -69420) {	//use red track model
-
-						}
-						else {	//use normal model
-
-						}
 						(*s)->load(uniformModel, uniformSpecularIntensity, uniformShininess);
 						(*s)->renderSmoke();
 						++s;
