@@ -44,7 +44,7 @@ bool Raycast_shooting::is_in_direction(Vehicle* possible_target,glm::vec3 Shootd
 	bool intersectionFound = false;				// result that we send back
 	float vehicle_bounds_z = 7.f;
 	float vehicle_bounds_y = 7.f;
-	float vehicle_bounds_x = 5.5f;
+	float vehicle_bounds_x = 6.f;
 	while (!intersectionFound && travelled <= rayLength)
 	{
 		travelled += 1.f;
