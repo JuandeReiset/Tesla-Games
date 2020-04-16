@@ -34,7 +34,7 @@ public:
 	void setDisabled(bool isDisabled);
 	void setSmoked(bool affectedBySmoke) { isSmoked = affectedBySmoke; };
 	void setOiled(bool affectedByOil) { isOiled = affectedByOil; }
-
+	void resetWinOrLose() { winOrLose = false; };
 	void reset();
 	
 private:

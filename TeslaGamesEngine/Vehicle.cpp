@@ -272,7 +272,6 @@ HealthComponent* Vehicle::getHealthComponent() {
 void Vehicle::cleanup() {
 	this->audioEngine->killSource(&this->accelerateFromRest);
 	this->audioEngine->killSource(&this->accelerateFromMotion);
-	this->audioEngine->killSource(&this->boostStart);
 	this->audioEngine->killSource(&this->boostMax);
 	this->audioEngine->killSource(&this->maxSpeed);
 
@@ -286,7 +285,6 @@ void Vehicle::audioUpdate() {
 
 	this->accelerateFromRest.updateSourcePosition(position.x, position.y, position.z);
 	this->accelerateFromMotion.updateSourcePosition(position.x, position.y, position.z);
-	this->boostStart.updateSourcePosition(position.x, position.y, position.z);
 	this->boostMax.updateSourcePosition(position.x, position.y, position.z);
 	this->maxSpeed.updateSourcePosition(position.x, position.y, position.z);
 
@@ -312,14 +310,12 @@ void Vehicle::handleSound() {
 	if (curSpeed <= speedSoundBoundary && slideSpeed <= slideSpeedBoundary) {
 		this->accelerateFromRest.stopSound();
 		this->accelerateFromMotion.stopSound();
-		this->boostStart.stopSound();
 		this->boostMax.stopSound();
 		this->maxSpeed.stopSound();
 	}
 	else if (curSpeed <= speedSoundBoundary && slideSpeed > slideSpeedBoundary) {
 		this->accelerateFromRest.stopSound();
 		this->accelerateFromMotion.stopSound();
-		this->boostStart.stopSound();
 		this->boostMax.stopSound();
 		if (!this->maxSpeed.isSoundPlaying()) {
 			this->maxSpeed.playSound();
@@ -465,7 +461,6 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 	this->audioEngine = engine;
 	this->accelerateFromRest = audioEngine->createBoomBox(audioConstants::SOUND_FILE_ACCEL_REST);
 	this->accelerateFromMotion = audioEngine->createBoomBox(audioConstants::SOUND_FILE_ACCEL_MOTION);
-	this->boostStart = audioEngine->createBoomBox(audioConstants::SOUND_FILE_BOOST_START);
 	this->boostMax = audioEngine->createBoomBox(audioConstants::SOUND_FILE_BOOST_MAX);
 	this->maxSpeed = audioEngine->createBoomBox(audioConstants::SOUND_FILE_SPEED_MAX);
 
@@ -483,7 +478,6 @@ void Vehicle::initVehicleAudio(AudioEngine* engine) {
 
 	this->accelerateFromRest.setVolume(initialSoundVolume);
 	this->accelerateFromMotion.setVolume(initialSoundVolume);
-	this->boostStart.setVolume(initialSoundVolume);
 	this->boostMax.setVolume(initialSoundVolume);
 	this->maxSpeed.setVolume(initialSoundVolume);
 	this->deployCaltropsEffect.setVolume(initialSoundVolume);
@@ -513,7 +507,10 @@ VehicleDesc Vehicle::initVehicleDesc(PxMaterial* gMaterial)	//pass in gMaterial 
 	const PxF32 wheelRadius = 0.5f;
 	const PxF32 wheelWidth = 0.4f;
 	const PxF32 wheelMOI = 0.5f * wheelMass * wheelRadius * wheelRadius;
-	const PxU32 nbWheels = 4;
+
+	//4 makes the car very snappy and responsive
+	//6 makes it a little less slidy but also more "tanky" 
+	const PxU32 nbWheels = 6;
 
 	VehicleDesc vehicleDesc;
 

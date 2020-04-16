@@ -328,7 +328,7 @@ void parseControllerInput(Controller* controller)
 	if (controller->isButtonDown(XButtons.DPad_Up)) {
 		player->update_health();
 	}
-	*/
+*/
 
 	if (controller->isButtonDown(XButtons.DPad_Left)) {
 		//std::cout << "PRESSED SMOKE BUTTON\n";
@@ -394,6 +394,8 @@ int main()
 	setupGame = true;
 	allDeadFlag = false;
 	isNextFrame = 0;
+
+	int isVehicleDead[20]{ 0 };
 
 	HUDcreator hud;
 	hud.load();
@@ -534,6 +536,7 @@ int main()
 		case 1:
 			// Player 1
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
+			break;
 		case 2:
 			// Player 1
 			cameras.push_back(Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 20.0f, -20.0f, 5.0f, 2.f));
@@ -931,8 +934,10 @@ int main()
 					parseControllerInput(&player1);
 			}*/
 
+			
 			for (int i = 0; i < players; i++) {
-				parseControllerInput(&controllers[i]);
+				if(physEng->playerVehicles[i]->getHealthComponent()->GetHealth() > 0)
+					parseControllerInput(&controllers[i]);
 			}
 
 			GLfloat now = glfwGetTime();
@@ -970,6 +975,15 @@ int main()
 				hideDebug = false;
 			}
 
+
+			for (int i = 0; i < physEng->allVehicles.size(); ++i) {
+				if (physEng->allVehicles[i]->getHealthComponent()->GetHealth() <= 0) {
+					if (!isVehicleDead[i]) {
+						physEng->gScene->removeActor(*(physEng->allVehicles[i])->actor);
+						isVehicleDead[i] = 1;
+					}
+				}
+			}
 			/* Game logic */ 
 
 			// Physics
@@ -1002,7 +1016,7 @@ int main()
 					}
 				}
 				else {
-					projection = projFull;
+					projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);;
 				}
 
 				//  Get values from physics engine
@@ -1381,60 +1395,62 @@ int main()
 				if (multiplayerFlag) {
 					for (int i = 0; i < physEng->playerVehicles.size(); i++) {
 						if (i == player) continue; // Don't render self
-						Vehicle* v = physEng->playerVehicles.at(i);
-						const physx::PxVehicleDrive4W* enemyV = v->gVehicle4W;	// Get vehicle
-						const physx::PxRigidDynamic* enemyvDynamic = enemyV->getRigidDynamicActor();
-						physx::PxQuat enemyvehicleQuaternion = enemyvDynamic->getGlobalPose().q;
-						physx::PxVec3 enemyv_dir = enemyvehicleQuaternion.getBasisVector2();
-						const physx::PxVec3 enemyvehiclePositionPhysx = enemyvDynamic->getGlobalPose().p;
-						glm::vec3 enemyvehiclePosition(enemyvehiclePositionPhysx.x, enemyvehiclePositionPhysx.y, enemyvehiclePositionPhysx.z);
+						if (physEng->playerVehicles[i]->getHealthComponent()->GetHealth() > 0) {
 
-						physx::PxMat44 enemymodelMat(enemyvDynamic->getGlobalPose());	// <ake model matrix from transform of rigid dynamic
-						enemymodelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	// Scales the model
-						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, enemymodelMat.front());
+							Vehicle* v = physEng->playerVehicles.at(i);
+							const physx::PxVehicleDrive4W* enemyV = v->gVehicle4W;	// Get vehicle
+							const physx::PxRigidDynamic* enemyvDynamic = enemyV->getRigidDynamicActor();
+							physx::PxQuat enemyvehicleQuaternion = enemyvDynamic->getGlobalPose().q;
+							physx::PxVec3 enemyv_dir = enemyvehicleQuaternion.getBasisVector2();
+							const physx::PxVec3 enemyvehiclePositionPhysx = enemyvDynamic->getGlobalPose().p;
+							glm::vec3 enemyvehiclePosition(enemyvehiclePositionPhysx.x, enemyvehiclePositionPhysx.y, enemyvehiclePositionPhysx.z);
 
-						shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-						// This
-						playerChassisModels[i].RenderModel();
+							physx::PxMat44 enemymodelMat(enemyvDynamic->getGlobalPose());	// <ake model matrix from transform of rigid dynamic
+							enemymodelMat.scale(physx::PxVec4(0.3f, 0.3f, 0.3f, 1.f));	// Scales the model
+							glUniformMatrix4fv(uniformModel, 1, GL_FALSE, enemymodelMat.front());
 
-						model = glm::mat4(1.0f);
-						glm::vec3 y_rot(0.0, 1.0, 0.0); // Axis of rotation
-						glm::vec3 tem = glm::vec3(enemymodelMat.getPosition().x, enemymodelMat.getPosition().y, enemymodelMat.getPosition().z);
-						model = glm::translate(model, tem); // Update turret pos with position of vehicle
-						model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); // Resize turret
-						auto aimdir_x = v->getShootingComponent()->Direction_x;
-						auto aimdir_z = v->getShootingComponent()->Direction_z;
-						float angleAroundY = glm::degrees(atan2(aimdir_x, aimdir_z)); // Calculate angle of rotation
-						float angletoUse = angleAroundY * 3.14 / 180; // Convert to radians
-						model = glm::rotate(model, angletoUse, y_rot);
-						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-						// This
-						playerTurretModels[i].RenderModel();
+							shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+							// This
+							playerChassisModels[i].RenderModel();
 
-						// Draw billboard
-						auto h = v->getHealthComponent()->GetHealth() / 100.f;
-						auto dir = cameras[player].getCameraDirection();
-						auto angle = atan2((float)dir.x, (float)dir.z);
+							model = glm::mat4(1.0f);
+							glm::vec3 y_rot(0.0, 1.0, 0.0); // Axis of rotation
+							glm::vec3 tem = glm::vec3(enemymodelMat.getPosition().x, enemymodelMat.getPosition().y, enemymodelMat.getPosition().z);
+							model = glm::translate(model, tem); // Update turret pos with position of vehicle
+							model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f)); // Resize turret
+							auto aimdir_x = v->getShootingComponent()->Direction_x;
+							auto aimdir_z = v->getShootingComponent()->Direction_z;
+							float angleAroundY = glm::degrees(atan2(aimdir_x, aimdir_z)); // Calculate angle of rotation
+							float angletoUse = angleAroundY * 3.14 / 180; // Convert to radians
+							model = glm::rotate(model, angletoUse, y_rot);
+							glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+							// This
+							playerTurretModels[i].RenderModel();
 
-						model = glm::mat4(1.0f);
-						model = glm::translate(model, tem + glm::vec3(0, 2.5, 0));
-						model = glm::rotate(model, angle, glm::vec3(0, 1, 0));
-						model = glm::scale(model, glm::vec3(1.0f, 0.1f, 1.0f));
-						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-						barTex.UseTexture();
-						dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-						barBB->RenderMesh();
+							// Draw billboard
+							auto h = v->getHealthComponent()->GetHealth() / 100.f;
+							auto dir = cameras[player].getCameraDirection();
+							auto angle = atan2((float)dir.x, (float)dir.z);
 
-						model = glm::mat4(1.0f);
-						model = glm::translate(model, tem + glm::vec3(0, 2.5, 0));
-						model = glm::rotate(model, angle, glm::vec3(0, 1, 0));
-						model = glm::scale(model, glm::vec3(h, 0.1f, 1.0f));
-						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-						healthTex.UseTexture();
-						dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-						healthBB->RenderMesh();
+							model = glm::mat4(1.0f);
+							model = glm::translate(model, tem + glm::vec3(0, 2.5, 0));
+							model = glm::rotate(model, angle, glm::vec3(0, 1, 0));
+							model = glm::scale(model, glm::vec3(1.0f, 0.1f, 1.0f));
+							glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+							barTex.UseTexture();
+							dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+							barBB->RenderMesh();
 
+							model = glm::mat4(1.0f);
+							model = glm::translate(model, tem + glm::vec3(0, 2.5, 0));
+							model = glm::rotate(model, angle, glm::vec3(0, 1, 0));
+							model = glm::scale(model, glm::vec3(h, 0.1f, 1.0f));
+							glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+							healthTex.UseTexture();
+							dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+							healthBB->RenderMesh();
 
+						}
 					}
 				}
 
@@ -1498,7 +1514,6 @@ int main()
 
 				glEnable(GL_DEPTH_TEST);
 				
-				//std::cout << "WIN LOSE FLAGS: " << winFlags[player] << " " << loseFlags[player] << "\n";
 
 				// HUD
 				auto playerVehicle = physEng->playerVehicles[player];
@@ -1568,6 +1583,7 @@ int main()
 				hud.setSmoked(physEng->playerVehicles[player]->affectedBySmoke);
 				hud.setOiled(physEng->playerVehicles[player]->affectedByOil);
 				hud.use();
+				hud.resetWinOrLose();
 			}
 
 			
