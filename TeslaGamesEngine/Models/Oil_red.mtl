@@ -1,7 +1,7 @@
-# Blender MTL File: 'Oil_red.blend'
+# Blender MTL File: 'Oil.blend'
 # Material Count: 1
 
-newmtl Fluid_Domain_Material.001
+newmtl Fluid_Domain_Material
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
