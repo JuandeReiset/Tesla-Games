@@ -1003,7 +1003,7 @@ int main()
 					}
 				}
 				else {
-					projection = projFull;
+					projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);;
 				}
 
 				//  Get values from physics engine
