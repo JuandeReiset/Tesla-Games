@@ -15,7 +15,7 @@ void Raycast_shooting::determine_hit(glm::vec3 startpos, glm::vec3 Dir) {
 			if (is_in_direction(aVehicle, Dir) && aVehicle != owner) {
 			
 				handle_hit(aVehicle);
-				
+				std::cout << "ENEMY VEHICLE HIT" << std::endl;
 				//break;
 			}
 		}
@@ -25,11 +25,7 @@ void Raycast_shooting::determine_hit(glm::vec3 startpos, glm::vec3 Dir) {
 
 void Raycast_shooting::determine_hit_AI() {
 
-	//int iSecret = rand() % 10 + 1;
-	//if (iSecret > 2) {
 		handle_hit(target_vehicle);
-	//}
-	
 
 }
 
@@ -47,7 +43,7 @@ bool Raycast_shooting::is_in_direction(Vehicle* possible_target,glm::vec3 Shootd
 	float travelled = 0.0;						// how far we've walked across the whole ray when we cross over the terrain the first time
 	bool intersectionFound = false;				// result that we send back
 	float vehicle_bounds_z = 7.f;
-	float vehicle_bounds_y = 5.f;
+	float vehicle_bounds_y = 7.f;
 	float vehicle_bounds_x = 5.5f;
 	while (!intersectionFound && travelled <= rayLength)
 	{
@@ -62,9 +58,9 @@ bool Raycast_shooting::is_in_direction(Vehicle* possible_target,glm::vec3 Shootd
 				if (fineRayEnd.z > tcp.z - vehicle_bounds_z && fineRayEnd.z < tcp.z + vehicle_bounds_z)
 				{
 					intersectionFound = true;
-					std::cout << "HIT INTERSECTIONS" << std::endl;
-					std::cout << "iNTERSECTION FOUND AT: Pos X " << fineRayEnd.x << " Pos Y " << fineRayEnd.y << "Pos Z " << fineRayEnd.z << std::endl;
-					std::cout << "The Target vehicle position was at: Pos X " << tcp.x << " Pos Y " << tcp.y << "Pos Z " << tcp.z << std::endl << std::endl<< std::endl;
+					//std::cout << "HIT INTERSECTIONS" << std::endl;
+					//std::cout << "iNTERSECTION FOUND AT: Pos X " << fineRayEnd.x << " Pos Y " << fineRayEnd.y << "Pos Z " << fineRayEnd.z << std::endl;
+					//std::cout << "The Target vehicle position was at: Pos X " << tcp.x << " Pos Y " << tcp.y << "Pos Z " << tcp.z << std::endl << std::endl<< std::endl;
 				}
 			}
 		}
