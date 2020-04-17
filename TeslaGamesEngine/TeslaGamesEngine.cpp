@@ -38,7 +38,6 @@
 #include "HealthComponent.h"
 #include "DamagingObject.h"
 #include "Vehicle.h"
-#include "Game.h"
 
 //AudioStuff
 #include "AudioEngine.h"
@@ -1136,7 +1135,7 @@ int main()
 					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 					shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 					drivingPointModel.RenderModel();
-				}*/ 
+				}*/
 
 				// Draw pickup boxes
 				auto pickup = physEng->pickupBoxes.begin();
