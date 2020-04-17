@@ -1128,7 +1128,7 @@ int main()
 				//std::cout << "RIGHT AFTER RENDERING TRACK\n";
 
 
-				//Can uncomment to draw the TrackDrivingPoints if needed for testing
+				/* Can uncomment to draw the TrackDrivingPoints if needed for testing
 				for (int i = 0; i < raceTrack.listOfPoints.size(); i++) {
 					TrackDrivingPoint point = *raceTrack.listOfPoints.at(i);
 					model = model = glm::mat4(1.0f);
@@ -1136,7 +1136,7 @@ int main()
 					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 					shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 					drivingPointModel.RenderModel();
-				}
+				}*/ 
 
 				// Draw pickup boxes
 				auto pickup = physEng->pickupBoxes.begin();
@@ -1602,7 +1602,6 @@ int main()
 					//std::cout << "Player Ranking: " << physEng->allVehicles[i]->ranking << "\n";
 				}
 			}
-
 
 
 			//move position loop here

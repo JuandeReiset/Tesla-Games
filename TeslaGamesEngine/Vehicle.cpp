@@ -127,8 +127,6 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 		PxVec3 target = PxVec3(this->curTarget.x, this->curTarget.y, this->curTarget.z);
 		PxVec3 toTargetVec = (target - pos);
 		float distanceToTarget = toTargetVec.magnitude();
-		float speed = std::abs(this->gVehicle4W->computeForwardSpeed());
-		float sideways = std::abs(this->gVehicle4W->computeSidewaysSpeed());
 
 		if (distanceToTarget <= this->curTarget.pointDistanceLimit) {
 			this->incrementAITrackPoint();
@@ -136,7 +134,7 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 		}
 		else {
 			//Check for getting stuck
-			this->AICarStuckFrameCounter = (AICarStuckFrameCounter + 1) % 300;
+			this->AICarStuckFrameCounter = (AICarStuckFrameCounter + 1) % 480;
 			if (this->AICarStuckFrameCounter == 0 || this->isAICarStuck == true) {
 				if (this->oldStuckTarget.actionToTake == -1) {
 					this->oldStuckTarget = this->curTarget;
@@ -144,8 +142,8 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 				else {
 					if (this->oldStuckTarget == this->curTarget) {
 						if (this->isAICarStuck == false) {
-							
-							if (speed < 1.5f) {
+							float speed = std::abs(this->gVehicle4W->computeForwardSpeed());
+							if (speed < 3.f) {
 								this->isAICarStuck = true;
 							}
 						}
@@ -160,28 +158,6 @@ void Vehicle::update(PxF32 timestep, PxScene* gScene)
 						this->oldStuckTarget = this->curTarget;
 					}
 				}
-			}
-		}
-
-		//Check for going the wrong way
-		if (speed > 3.f && sideways < 3.f) {
-			int futureIndex = (this->trackPointListIndex + 1) % this->listOfPoints->size();
-			PxVec3 futureTarget = PxVec3(this->listOfPoints->at(futureIndex)->x, this->listOfPoints->at(futureIndex)->y, this->listOfPoints->at(futureIndex)->z);
-
-			PxVec3 toFutureTarget = futureTarget - pos;
-
-			toTargetVec = toTargetVec.getNormalized();
-			toFutureTarget = toFutureTarget.getNormalized();
-
-			PxVec3 vehicleFront = this->GetTransform().q.getBasisVector2();
-			PxVec3 vehicleFrontNormal = vehicleFront.getNormalized();
-
-			float dotToTarget = vehicleFront.dot(toTargetVec);
-			float dotToFuture = vehicleFront.dot(toFutureTarget);
-
-			if (dotToTarget > 0 && dotToFuture < 0) {
-				this->incrementAITrackPoint();
-				bool isAICarStuck = false;
 			}
 		}
 	}
