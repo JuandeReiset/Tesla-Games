@@ -36,5 +36,6 @@ private:
 	glm::mat4 model;															//model matrix
 	GLuint uniformModel, uniformSpecularIntensity, uniformShininess;
 	Material shinyMaterial;
+	Material dullMaterial;
 };
 
