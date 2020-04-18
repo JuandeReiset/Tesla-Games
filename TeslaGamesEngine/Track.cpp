@@ -22,34 +22,8 @@ void Track::initializeTrackPoints(int trackType) {
 	this->listOfPoints.clear();
 	this->listOfLaneStrips.clear();
 	this->listOfStartPoints.clear();
-	if (trackType == trackTypeConstants::OVAL_TEST) {
-		this->addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
-		this->addPointToList(-3.70, -2.26, -72.82, trackDrivingPointActions::SLOW_DOWN);
-		this->addPointToList(-42.75, -3.45, -70.97, trackDrivingPointActions::TURN_IN);
-		this->addPointToList(-69.11, -2.60, -43.99, trackDrivingPointActions::APEX_MINOR);
-		this->addPointToList(-87.52, -2.61, -25.72, trackDrivingPointActions::APEX_MAJOR);
-		this->addPointToList(-59.48, -2.58, 16.92, trackDrivingPointActions::APEX_MINOR);
-		this->addPointToList(-19.16, -2.58, 43.87, trackDrivingPointActions::TURN_EXIT);
-		this->addPointToList(58.33, -2.60, 42.76, trackDrivingPointActions::SLOW_DOWN);
-		this->addPointToList(122.95, -2.62, 32.60, trackDrivingPointActions::TURN_IN);
-		this->addPointToList(150.05, -2.63, 5.78, trackDrivingPointActions::APEX_MAJOR);
-		this->addPointToList(129.00, -2.58, -57.16, trackDrivingPointActions::TURN_EXIT);
-		/*
-		this->addPointToList(69.10, -2.65, -71.48, trackDrivingPointActions::START);
-		this->addPointToList(12.70, -2.48, -70.30, trackDrivingPointActions::SLOW_DOWN);
-		this->addPointToList(-56.95, -2.70, -68.95, trackDrivingPointActions::TURN_IN);
-		this->addPointToList(-77.63, -2.60, -36.85, trackDrivingPointActions::APEX_MINOR);
-		this->addPointToList(-69.18, -2.59, 7.72, trackDrivingPointActions::APEX_MAJOR);
-		this->addPointToList(-53.39, -2.59, 31.98, trackDrivingPointActions::APEX_MINOR);
-		this->addPointToList(10.72, -2.64, 57.39, trackDrivingPointActions::TURN_EXIT);
-		this->addPointToList(58.33, -2.60, 54.76, trackDrivingPointActions::SLOW_DOWN);
-		this->addPointToList(115.87, -2.68, 41.60, trackDrivingPointActions::TURN_IN);
-		this->addPointToList(150.66, -2.68, 18.69, trackDrivingPointActions::APEX_MINOR);
-		this->addPointToList(152.05, -2.68, -34.12, trackDrivingPointActions::APEX_MAJOR);
-		this->addPointToList(102.00, -2.66, -70.70, trackDrivingPointActions::TURN_EXIT);
-		*/
-	}
-	else if (trackType == trackTypeConstants::HYPERLOOP) {
+	
+	if (trackType == trackTypeConstants::HYPERLOOP) {
 		this->addStartPointToList(60, 5, -57);
 		this->addStartPointToList(60, 5, -66);
 		this->addStartPointToList(60, 5, -75);
@@ -157,16 +131,16 @@ void Track::initializeTrackPoints(int trackType) {
 		this->addPointToList(95.98, -1.99, -69.30, trackDrivingPointActions::START);
 		this->addPointToList(65.58, -1.85, -72.65, trackDrivingPointActions::SLOW_DOWN);
 		this->addPointToList(20.02, -1.69, -76.91, trackDrivingPointActions::TURN_IN);
-		this->addPointToList(-43.79, -1.40, -104.40, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(-48.67, -1.42, -94.54, trackDrivingPointActions::APEX_MINOR);
 		this->addPointToList(-100.40, -0.95, -143.83, trackDrivingPointActions::APEX_MAJOR);
 		this->addPointToList(-129.06, -0.21, -199.76, trackDrivingPointActions::APEX_MINOR);
 		this->addPointToList(-120.09, -0.20, -242.94, trackDrivingPointActions::APEX_MAJOR);
-		this->addPointToList(-73.43, 0.30, -271.54, trackDrivingPointActions::TURN_EXIT);
+		this->addPointToList(-78.96, 0.44, -282.85, trackDrivingPointActions::TURN_EXIT);
 		
 		this->addPointToList(77.38, -0.69, -337.53, trackDrivingPointActions::SLOW_DOWN);
 		this->addPointToList(248.30, 0.48, -398.24, trackDrivingPointActions::TURN_IN);
 		this->addPointToList(312.24, 0.98, -411.54, trackDrivingPointActions::APEX_MAJOR);
-		this->addPointToList(380.36, 0.39, -359.26, trackDrivingPointActions::TURN_EXIT);
+		this->addPointToList(381.51, 0.54, -375.50, trackDrivingPointActions::TURN_EXIT);
 		
 		this->addPointToList(400.80, 0.24, -311.17, trackDrivingPointActions::SLOW_DOWN);
 		this->addPointToList(399.08, 0.22, -278.28, trackDrivingPointActions::TURN_IN);

@@ -7,7 +7,6 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="DamageComponent.cpp" />
     <ClCompile Include="DamagingObject.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -51,7 +50,6 @@
     <ClCompile Include="HUDcreator.cpp" />
     <ClCompile Include="Caltrops.cpp" />
     <ClCompile Include="DrawableComponent.cpp" />
-    <ClCompile Include="AIDrivingComponent.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="ColliderCallback.cpp" />
     <ClCompile Include="PickupBox.cpp" />
@@ -78,7 +76,6 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="DamageComponent.h" />
     <ClInclude Include="DamagingObject.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="ImGui\imconfig.h" />
@@ -121,7 +118,6 @@
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="Caltrops.h" />
     <ClInclude Include="DrawableComponent.h" />
-    <ClInclude Include="AIDrivingComponent.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="ColliderCallback.h" />
     <ClInclude Include="resource1.h" />
