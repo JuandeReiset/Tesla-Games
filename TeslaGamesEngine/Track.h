@@ -40,6 +40,7 @@ class Track
 
 		std::vector<LapMarker*> lapMarkers;
 		void initializeLapMarkers(int trackType);
+		bool isStarlink = false;
 
 		std::vector<std::unique_ptr<TrackDrivingPoint>> listOfPoints;
 		std::vector<std::unique_ptr<TrackInteractableStrip>> listOfLaneStrips;
