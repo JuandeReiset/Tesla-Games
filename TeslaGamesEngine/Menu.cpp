@@ -45,6 +45,17 @@ void Menu::loadVertices() {
 	back->createHUD(backVertices, indices, 20, 6);
 	HUDList.push_back(back);
 
+	HUD* select = new HUD();
+	select->createHUD(selectVertices, indices, 20, 6);
+	HUDList.push_back(select);
+
+	HUD* dpad = new HUD();
+	dpad->createHUD(dpadVertices, indices, 20, 6);
+	HUDList.push_back(dpad);
+	
+	HUD* aiNotAvailable = new HUD();
+	aiNotAvailable->createHUD(aiNotAvailableVertices, indices, 20, 6);
+	HUDList.push_back(aiNotAvailable);
 }
 
 void Menu::loadTextures() {
@@ -102,7 +113,13 @@ void Menu::loadTextures() {
 	start1Txt.LoadTextureAlpha();
 	start2Txt = Texture("Textures/start2.png");
 	start2Txt.LoadTextureAlpha();
-	
+	dpadTexture = Texture("Textures/dpad.png");
+	dpadTexture.LoadTextureAlpha();
+	selectTexture = Texture("Textures/a_select.png");
+	selectTexture.LoadTextureAlpha();
+	aiNotAvailableTexture = Texture("Textures/ai_not_available.png");
+	aiNotAvailableTexture.LoadTextureAlpha();
+
 	trackTexture = track1Texture;
 	leftdownTexture = left1Texture;
 	leftupTexture = left1Texture;
@@ -172,12 +189,24 @@ void Menu::use() {
 	backTexture.UseTexture();
 	HUDList[10]->renderHUD();
 
+	selectTexture.UseTexture();
+	HUDList[11]->renderHUD();
+
+	dpadTexture.UseTexture();
+	HUDList[12]->renderHUD();
+
+	if (multiplayer) {
+		aiNotAvailableTexture.UseTexture();
+		HUDList[13]->renderHUD();
+	}
+
 	glEnable(GL_DEPTH_TEST);
 }
 
 void Menu::loadController(Controller* controller) {
 	controller->update();
 	
+
 	GLfloat now = glfwGetTime();
 	if(now - last >= 0.1)
 		resetArrow();
@@ -207,10 +236,7 @@ void Menu::loadController(Controller* controller) {
 		}
 		else if (op == 1) {
 			if (multiplayer) {
-				if (an == 0)
-					;
-				else
-					--an;
+				an = 0;
 			}
 			else{
 				if (an == 1)
@@ -235,10 +261,7 @@ void Menu::loadController(Controller* controller) {
 			arrow = 1;
 		}
 		else if (op == 1) {
-			if (an == 8)
-				;
-			else
-				++an;
+			an = 0;
 
 			arrow = 3;
 		}
@@ -376,4 +399,38 @@ void Menu::setArrow() {
 void Menu::resetAiNum() {
 	an = 4;
 	aiNumTxt = dig4Texture;
+}
+
+void Menu::loadDefaultAi() {
+	switch (an) {
+	case 0:
+		aiNumTxt = dig0Texture;
+		break;
+	case 1:
+		aiNumTxt = dig1Texture;
+		break;
+	case 2:
+		aiNumTxt = dig2Texture;
+		break;
+	case 3:
+		aiNumTxt = dig3Texture;
+		break;
+	case 4:
+		aiNumTxt = dig4Texture;
+		break;
+	case 5:
+		aiNumTxt = dig5Texture;
+		break;
+	case 6:
+		aiNumTxt = dig6Texture;
+		break;
+	case 7:
+		aiNumTxt = dig7Texture;
+		break;
+	case 8:
+		aiNumTxt = dig8Texture;
+		break;
+	case 9:
+		aiNumTxt = dig9Texture;
+	}
 }

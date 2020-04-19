@@ -743,7 +743,10 @@ int main()
 		}
 
 		while (menuFlag) {
+			if (multiplayerFlag)
+				menu.an = 0;
 			resetGame();
+			menu.loadDefaultAi();
 			menu.setAiDefault(multiplayerFlag);
 			menu.loadController(&player1);
 			menu.use();

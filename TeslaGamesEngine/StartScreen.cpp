@@ -21,7 +21,13 @@ void StartScreen::loadVertices() {
 	exit->createHUD(exitVertices, indices, 20, 6);
 	HUDList.push_back(exit);
 
-	return;
+	HUD* select = new HUD();
+	select->createHUD(selectVertices, indices, 20, 6);
+	HUDList.push_back(select);
+
+	HUD* dpad = new HUD();
+	dpad->createHUD(dpadVertices, indices, 20, 6);
+	HUDList.push_back(dpad);
 }
 
 void StartScreen::loadTextures() {
@@ -48,6 +54,10 @@ void StartScreen::loadTextures() {
 	exitText2 = Texture("Textures/exit2.png");
 	exitText2.LoadTextureAlpha();
 	exitText = exitText1;
+	dpadTexture = Texture("Textures/dpad.png");
+	dpadTexture.LoadTextureAlpha();
+	selectTexture = Texture("Textures/a_select.png");
+	selectTexture.LoadTextureAlpha();
 
 	return;
 }
@@ -95,6 +105,12 @@ void StartScreen::use() {
 
 	exitText.UseTexture();
 	HUDList[4]->renderHUD();
+
+	selectTexture.UseTexture();
+	HUDList[5]->renderHUD();
+
+	dpadTexture.UseTexture();
+	HUDList[6]->renderHUD();
 
 	glEnable(GL_DEPTH_TEST);
 
