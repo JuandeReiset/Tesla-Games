@@ -155,18 +155,18 @@ void Track::initializeTrackPoints(int trackType) {
 		this->addPointToList(268.15, -0.68, -94.31, trackDrivingPointActions::APEX_MAJOR);
 		this->addPointToList(288.34, -2.60, -44.34, trackDrivingPointActions::TURN_EXIT);
 
-		this->addPointToList(310.29, 0.20, -30.34, trackDrivingPointActions::SLOW_DOWN);
-		this->addPointToList(335.97, 3.60, -22.34, trackDrivingPointActions::TURN_IN);
-		this->addPointToList(370.36, 7.54, 52.89, trackDrivingPointActions::APEX_MINOR);
-		this->addPointToList(330.30, 0.95, 141.30, trackDrivingPointActions::APEX_MAJOR);
-		this->addPointToList(265.89, -0.76, 160.50, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(303.29, -0.12, -22.34, trackDrivingPointActions::SLOW_DOWN);
+		this->addPointToList(329.69, 3.87, 1.55, trackDrivingPointActions::TURN_IN);
+		this->addPointToList(360.60, 6.92, 48.36, trackDrivingPointActions::APEX_MINOR);
+		this->addPointToList(324.48, 0.91, 131.67, trackDrivingPointActions::APEX_MAJOR);
+		this->addPointToList(235.04, -0.81, 158.35, trackDrivingPointActions::APEX_MINOR);
 		this->addPointToList(187.04, -0.94, 130.97, trackDrivingPointActions::APEX_MAJOR);
-		this->addPointToList(155.03, -1.11, 80.15, trackDrivingPointActions::TURN_EXIT);
+		this->addPointToList(171.73, -1.01, 85.73, trackDrivingPointActions::TURN_EXIT);
 
 		this->addPointToList(175.50, -1.05, 43.83, trackDrivingPointActions::SLOW_DOWN);
 		this->addPointToList(189.69, -1.60, 1.65, trackDrivingPointActions::TURN_IN);
 		this->addPointToList(163.57, -2.39, -58.84, trackDrivingPointActions::APEX_MAJOR);
-		this->addPointToList(136.60, -2.22, -70.44, trackDrivingPointActions::TURN_EXIT);
+		this->addPointToList(138.60, -2.22, -72.44, trackDrivingPointActions::TURN_EXIT);
 
 
 		//InteractZonePoints
