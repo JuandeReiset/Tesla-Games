@@ -1233,7 +1233,7 @@ int main()
 						if (isCameraFlipped) {
 							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
 							glm::vec3 startcoords = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
-							glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
+							glm::vec3 shootdir = glm::vec3(camDir.x, Direction.y, camDir.z);
 							//raycast_handler.set_STARTPOS(startcoords);
 							raycast_handler.set_Owner(physEng->playerVehicles[player]);
 							//std::cout << "DETERMINE HIT REACHED" << std::endl;
@@ -1242,7 +1242,7 @@ int main()
 						else {
 							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
 							glm::vec3 startcoords = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
-							glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
+							glm::vec3 shootdir = glm::vec3(camDir.x, Direction.y, camDir.z);
 							//raycast_handler.set_STARTPOS(startcoords);
 							raycast_handler.set_Owner(physEng->playerVehicles[player]);
 							//std::cout << "DETERMINE HIT REACHED" << std::endl;
