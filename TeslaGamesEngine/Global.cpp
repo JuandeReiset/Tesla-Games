@@ -16,4 +16,5 @@ bool pauseFlag = false;
 bool fromGameFlag = false;
 bool multiplayerFlag = false;
 bool multiplayerScreenFlag = false;
+int selectedTrackType = 0;
 float backTime = 0.f;

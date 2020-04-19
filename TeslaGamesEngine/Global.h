@@ -17,4 +17,6 @@ extern bool fromGameFlag;
 extern bool multiplayerFlag;
 extern bool multiplayerScreenFlag;
 
+extern int selectedTrackType; //0 for hyperloop, 1 for starlink
+
 extern float backTime;

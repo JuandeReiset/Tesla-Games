@@ -7,6 +7,7 @@
 #include "LapMarker.h"
 #include "Vehicle.h"
 #include "TrackInteractableStrip.h"
+#include "Global.h"
 
 namespace trackTypeConstants
 {

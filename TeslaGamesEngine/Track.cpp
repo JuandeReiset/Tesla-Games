@@ -25,6 +25,7 @@ void Track::initializeTrackPoints(int trackType) {
 	
 	if (trackType == trackTypeConstants::HYPERLOOP) {
 		this->isStarlink = false;
+		selectedTrackType = 0;
 
 		this->addStartPointToList(60, 5, -57);
 		this->addStartPointToList(60, 5, -66);
@@ -115,6 +116,7 @@ void Track::initializeTrackPoints(int trackType) {
 	}
 	else if (trackType == trackTypeConstants::STARLINK) {
 		this->isStarlink = true;
+		selectedTrackType = 1;
 		this->addStartPointToList(51, 5, -59);
 		this->addStartPointToList(51, 5, -66);
 		this->addStartPointToList(51, 5, -73);
