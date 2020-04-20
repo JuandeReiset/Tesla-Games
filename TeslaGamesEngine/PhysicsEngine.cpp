@@ -218,6 +218,11 @@ void PhysicsEngine::cleanupTheDead()
 	//remove any dead vehicles from list
 	while (it != aliveVehicles.end()) {
 		if ((*it)->currentHealth() <= 0) {
+			//move vehicle below the map
+			PxVec3 newPos((*it)->actor->getGlobalPose().p.x, (*it)->actor->getGlobalPose().p.y - 100, (*it)->actor->getGlobalPose().p.z);
+			PxTransform a(newPos);
+			(*it)->actor->setGlobalPose(a);
+
 			(*it)->hasWon = false;	//just in case the car wins and dies in the same frame
 			it = aliveVehicles.erase(it);
 		}
