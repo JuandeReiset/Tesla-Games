@@ -46,7 +46,7 @@ void AIShootingComponent::Aim()
 					shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess, Shootdir.x, Shootdir.y, Shootdir.z);
 					raycast_handler.determine_hit_AI(); //Determines if the target gets hit by AI or not
 					lastFiredTime = glfwGetTime();
-					aimingState = AimingState::Reloading;
+					//aimingState = AimingState::Reloading;
 				}
 			}
 			// Target not in view, find new target
