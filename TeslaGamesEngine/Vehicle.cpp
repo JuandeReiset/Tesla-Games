@@ -76,6 +76,9 @@ Vehicle::~Vehicle() { cleanup(); }
 //takes in timestep, updates all vehicle physics. Called by PhysicsEngine
 void Vehicle::update(PxF32 timestep, PxScene* gScene)
 { 
+	if (isPlayer) {
+		//std::cout << "X Y Z: " << actor->getGlobalPose().p.x << " " << actor->getGlobalPose().p.y << " " << actor->getGlobalPose().p.z << "\n";
+	}
 	//only tick if alive
 	if (currentHealth() > 0) {
 		PxVehicleDrive4WSmoothAnalogRawInputsAndSetAnalogInputs(gPadSmoothingData, gSteerVsForwardSpeedTable, gVehicleInputData, timestep, gIsVehicleInAir, *gVehicle4W);
@@ -195,7 +198,7 @@ void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 		if (currentMarker == 0 && expectedMarker == 1) {	//completed a lap
 			numLaps++;
 			if (isPlayer) {
-				std::cout << "You have completed " << numLaps << " laps out of "<<trackTotalLaps<<"!\n";
+				//std::cout << "You have completed " << numLaps << " laps out of "<<trackTotalLaps<<"!\n";
 			}
 				
 			if (numLaps == trackTotalLaps && ranking == 1) {	//you win!
