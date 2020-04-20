@@ -58,16 +58,16 @@ Give a ⭐️ if this project helped you!
 
 Note the game can only be controlled by Xbox 360 or Xbox one controllers, offically supported by Microsoft. Controls will be shown in game. But here is a list of them
 
-RT - accelerate
-LT - brake/reverse
-RB/LB - fire turret
-LS - steer
-RS - aim
-click RS - re center camera
-B - handbrake
-Y - look behind
-Dpad - use shield weapon systems
-Start (or options) - pause
+- RT = accelerate
+- LT = brake/reverse
+- RB/LB = fire turret
+- LS = steer
+- RS = aim
+- click RS = re center camera
+- B = handbrake
+- Y = look behind
+- Dpad = use shield weapon systems
+- Start (or options) = pause
 
 # Premise
 - You have been a prisoner in Elonville for quite some time now. However through emperor Tesla's grace, you and other select prisoners have been given a chance at freedom with the Tesla Games! There is no 1st, 2nd 3rd, only a single winner and many losers. Win by either being the first to complete the laps, or by being the last one standing. Can you survive the machinations of The Tesla Games and the other racers? Really? Prove it.
