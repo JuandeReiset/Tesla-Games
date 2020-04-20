@@ -164,7 +164,7 @@ void AIShootingComponent::FindAimingState()
 	}
 	else if (IsReloading()) {
 		aimingState = AimingState::Reloading;
-		//std::cout << "VEHICLE STILL RELOADING" << std::endl;
+		std::cout << "VEHICLE STILL RELOADING" << std::endl;
 	}
 	else {
 		aimingState = AimingState::Locked;
