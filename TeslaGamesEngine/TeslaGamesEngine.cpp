@@ -166,7 +166,7 @@ SpotLight spotLights[MAX_SPOT_LIGHTS];
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 
-bool isCameraFlipped = false;
+// bool isCameraFlipped = false;
 
 Raycast_shooting raycast_handler;
 
@@ -316,7 +316,7 @@ void parseControllerInput(Controller* controller)
 		player->handbrakeTurn(0.0f, 0.f);
 	}
 
-	isCameraFlipped = (controller->isButtonPressed(XButtons.Y));
+	// isCameraFlipped = (controller->isButtonPressed(XButtons.Y));
 	
 	if (controller->isButtonDown(XButtons.Start)) {
 		gameFlag = false;
@@ -756,13 +756,15 @@ int main()
 		readyScreen.setNumOfPlayer(numOfPlayer);
 		while (readyScreenFlag) {
 			switch (numOfPlayer) {
+
 			// Force controllers 2-4 to be ready
+			// Change the boolean values to false to require them to manually ready
 			case 4:
-				readyScreen.loadController(&player4, 3, true);
+				readyScreen.loadController(&player4, 3, false);
 			case 3:
-				readyScreen.loadController(&player3, 2, true);
+				readyScreen.loadController(&player3, 2, false);
 			case 2:
-				readyScreen.loadController(&player2, 1, true);
+				readyScreen.loadController(&player2, 1, false);
 			case 1:
 				readyScreen.loadController(&player1, 0, false);
 			}
@@ -900,9 +902,11 @@ int main()
 			for (auto ai : aiVehicles) {
 				//std::cout << "AI OWNER ID: " << ai->ID << "\n";
 				AIShootingComponent aiShooting = AIShootingComponent(ai);
+				aiShooting.SetTrack(&raceTrack);
 				aiShooting.SetVehicles(physEng->allVehicles);
 				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
 				aiShootingComponents.push_back(aiShooting);
+				
 			}
 
 			physEng->aiShootingComponents = aiShootingComponents;
@@ -999,6 +1003,8 @@ int main()
 
 			// Render for each player
 			for (int player = 0; player < players; player++) {
+
+				bool isCameraFlipped = controllers[player].isButtonPressed(XButtons.Y);
 
 				// Determine projection matrix
 				if (multiplayerFlag) {
@@ -1123,7 +1129,7 @@ int main()
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2));
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+				dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 				//std::cout << "RIGHT BEFORE RENDERING TRACK\n";
 				racetrack_walls.RenderModel();
 				racetrack_floor.RenderModel();
@@ -1236,7 +1242,7 @@ int main()
 						if (isCameraFlipped) {
 							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, Direction.x, Direction.y, Direction.z);
 							glm::vec3 startcoords = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
-							glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
+							glm::vec3 shootdir = glm::vec3(camDir.x, Direction.y, camDir.z);
 							//raycast_handler.set_STARTPOS(startcoords);
 							raycast_handler.set_Owner(physEng->playerVehicles[player]);
 							//std::cout << "DETERMINE HIT REACHED" << std::endl;
@@ -1245,7 +1251,7 @@ int main()
 						else {
 							ba->fire(vehiclePosition, uniformModel, uniformSpecularIntensity, uniformShininess, camDir.x, Direction.y, camDir.z);
 							glm::vec3 startcoords = glm::vec3(modelMat.getPosition().x, modelMat.getPosition().y, modelMat.getPosition().z);
-							glm::vec3 shootdir = glm::vec3(Direction.x, Direction.y, Direction.z);
+							glm::vec3 shootdir = glm::vec3(camDir.x, Direction.y, camDir.z);
 							//raycast_handler.set_STARTPOS(startcoords);
 							raycast_handler.set_Owner(physEng->playerVehicles[player]);
 							//std::cout << "DETERMINE HIT REACHED" << std::endl;
