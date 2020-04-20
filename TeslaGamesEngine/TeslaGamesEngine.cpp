@@ -760,11 +760,11 @@ int main()
 			// Force controllers 2-4 to be ready
 			// Change the boolean values to false to require them to manually ready
 			case 4:
-				readyScreen.loadController(&player4, 3, true);
+				readyScreen.loadController(&player4, 3, false);
 			case 3:
-				readyScreen.loadController(&player3, 2, true);
+				readyScreen.loadController(&player3, 2, false);
 			case 2:
-				readyScreen.loadController(&player2, 1, true);
+				readyScreen.loadController(&player2, 1, false);
 			case 1:
 				readyScreen.loadController(&player1, 0, false);
 			}
