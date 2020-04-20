@@ -125,11 +125,12 @@ void PhysicsEngine::stepPhysics()
 				createCaltropsTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
 				//std::cout << "OWNER ID: " << ai.owner->ID << "\n";
 				break;
-			case 2:		//oil
-				createOilTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
-				break;
-			case 3:		//smoke
+			case 2:		//smoke
 				createSmokeTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
+				break;
+				
+			case 3:		//oil
+				createOilTriggerVolume(ai.owner->actor->getGlobalPose().p.x, ai.owner->actor->getGlobalPose().p.y, ai.owner->actor->getGlobalPose().p.z, 5.f, ai.owner->ID);
 				break;
 			}
 		}

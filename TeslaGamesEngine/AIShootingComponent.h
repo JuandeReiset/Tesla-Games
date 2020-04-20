@@ -2,6 +2,7 @@
 #include "ShootComp.h"
 #include "Raycast_shooting.h"
 #include "Vehicle.h"
+#include "Track.h"
 #include <glm\glm.hpp>
 
 enum class AimingState
@@ -22,6 +23,7 @@ public:
 
 	void Aim();
 	void SetVehicles(std::vector<Vehicle*> vehiclesToSet);
+	void SetTrack(Track* t) { racetrack = t; }
 
 	// TODO: Remove. This is for testing
 	void SetTarget(Vehicle* v) { target = v; }
@@ -46,6 +48,7 @@ private:
 	Vehicle* target;
 	AimingState aimingState;
 	float threshold;
+	Track* racetrack;
 
 	float lastFiredTime;
 
