@@ -35,6 +35,10 @@ public:
 	int wantToPlaceTrap;
 	Vehicle* owner;
 
+	bool shouldUseAbility;
+	float lastAbilityTime;
+	float abilityCooldownTime;
+
 private:
 	Vehicle* FindTarget();
 	bool IsTargetInView(Vehicle* aTarget);
@@ -52,9 +56,7 @@ private:
 
 	float lastFiredTime;
 
-	bool shouldUseAbility;
-	float lastAbilityTime;
-	float abilityCooldownTime;
+
 
 	Raycast_shooting raycast_handler;
 

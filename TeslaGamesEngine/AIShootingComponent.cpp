@@ -21,7 +21,7 @@ AIShootingComponent::AIShootingComponent(Vehicle * v)
 }
 
 void AIShootingComponent::Aim()
-{    
+{
 	//std::cout << "AIMING METHOD REACHED" << std::endl;
 	// Find a target
 	/*
@@ -32,38 +32,42 @@ void AIShootingComponent::Aim()
 	*/
 	//else {
 		// Aim at target if it is in view
-		target = FindTarget();
-		if (target) {
-			//std::cout << "THERE IS CURRENTLY A TARGET" << std::endl;
-			if (AimAtTarget()) {
-				FindAimingState();
-				// Fire at target if aim is locked
-				if (aimingState == AimingState::Locked) {
-					//std::cout << "FIRE @ " << glfwGetTime() << std::endl;
-					auto shooting = owner->getShootingComponent();
-					auto pos = owner->GetPosition();
-					// Setting ammo to 0 because of performance issues. Remove when those are fixed
-					shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess, Shootdir.x, Shootdir.y, Shootdir.z);
-					raycast_handler.determine_hit_AI(); //Determines if the target gets hit by AI or not
-					lastFiredTime = glfwGetTime();
-					aimingState = AimingState::Reloading;
-				}
-			}
-			// Target not in view, find new target
-			else {
-
-				target = nullptr;
+	target = FindTarget();
+	if (target) {
+		//std::cout << "THERE IS CURRENTLY A TARGET" << std::endl;
+		if (AimAtTarget()) {
+			FindAimingState();
+			// Fire at target if aim is locked
+			if (aimingState == AimingState::Locked) {
+				//std::cout << "FIRE @ " << glfwGetTime() << std::endl;
+				auto shooting = owner->getShootingComponent();
+				auto pos = owner->GetPosition();
+				// Setting ammo to 0 because of performance issues. Remove when those are fixed
+				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess, Shootdir.x, Shootdir.y, Shootdir.z);
+				raycast_handler.determine_hit_AI(); //Determines if the target gets hit by AI or not
+				lastFiredTime = glfwGetTime();
+				aimingState = AimingState::Reloading;
 			}
 		}
+		// Target not in view, find new target
+		else {
+
+			target = nullptr;
+		}
+	}
 	//}
 
 	float currentTime = glfwGetTime();
-	if (shouldUseAbility && owner->ability > 0 && (currentTime - lastAbilityTime) > abilityCooldownTime) {
+
+	bool canUseAbility = (currentTime - lastAbilityTime) > abilityCooldownTime;
+
+	if (shouldUseAbility && (owner->ability > 0) && canUseAbility) {
+
+		abilityCooldownTime = 5.f;
+		lastAbilityTime = glfwGetTime();
+
 		TrackDrivingPoint* currentTarget = &owner->curTarget;
 		float angleToTurn = abs(racetrack->getAngleToTurnBy(currentTarget, owner));
-		// This is the AI shooting component. Use this to call abilities
-		auto shooting = owner->getShootingComponent();
-		PxVec3 p(owner->GetPosition());
 		
 		if (angleToTurn > 25.f) {
 			wantToPlaceTrap = 3; // Choose oil
@@ -73,8 +77,7 @@ void AIShootingComponent::Aim()
 		}
 			
 		// Set random cooldown from 3 to 10 seconds
-		abilityCooldownTime = 3.f + (7.f * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)));
-		lastAbilityTime = currentTime;
+		
 	}
 	else {
 		wantToPlaceTrap = -1;
