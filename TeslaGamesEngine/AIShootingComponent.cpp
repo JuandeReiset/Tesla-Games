@@ -64,7 +64,6 @@ void AIShootingComponent::Aim()
 	if (shouldUseAbility && (owner->ability > 0) && canUseAbility) {
 
 		lastAbilityTime = glfwGetTime();
-		std::cout << lastAbilityTime;
 
 		TrackDrivingPoint* currentTarget = &owner->curTarget;
 		float angleToTurn = abs(racetrack->getAngleToTurnBy(currentTarget, owner));
