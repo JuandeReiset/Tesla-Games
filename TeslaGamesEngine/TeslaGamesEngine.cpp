@@ -1577,7 +1577,7 @@ int main()
 				
 
 				hud.setAbilityNumber(physEng->playerVehicles[player]->ability);
-				hud.setAliveNumber(physEng->allVehicles.size());
+				hud.setAliveNumber(physEng->aliveVehicles.size());
 				hud.setPositionNumber(index + 1);
 				hud.setBulletNum(physEng->playerVehicles[player]->getShootingComponent()->ammo);
 				hud.setHealth(physEng->playerVehicles[player]->getHealthComponent()->GetHealth());
