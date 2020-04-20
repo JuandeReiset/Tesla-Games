@@ -50,11 +50,11 @@ private:
 	float threshold;
 	Track* racetrack;
 
-	float lastFiredTime;
-
 	bool shouldUseAbility;
 	float lastAbilityTime;
 	float abilityCooldownTime;
+
+	float lastFiredTime;
 
 	Raycast_shooting raycast_handler;
 

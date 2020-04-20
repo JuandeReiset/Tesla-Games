@@ -1004,6 +1004,7 @@ int main()
 			// Render for each player
 			for (int player = 0; player < players; player++) {
 
+
 				bool isCameraFlipped = controllers[player].isButtonPressed(XButtons.Y);
 
 				// Determine projection matrix
@@ -1025,6 +1026,10 @@ int main()
 				}
 				else {
 					projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);;
+				}
+
+				if (physEng->playerVehicles[player]->currentHealth() <= 0) {
+					projection = glm::mat4(0.f);
 				}
 
 				//  Get values from physics engine
