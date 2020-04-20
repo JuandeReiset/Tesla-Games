@@ -15,6 +15,7 @@ Smoke::Smoke(int idInput, float duration) {
 	uniformShininess = 0;
 
 	shinyMaterial = Material(4.0f, 256);
+	dullMaterial = Material(0.3f, 4);
 }
 
 bool Smoke::isDead() {
@@ -49,7 +50,7 @@ void Smoke::load(GLuint uniModel, GLuint uniSpecularIntensity, GLuint uniShinine
 
 void Smoke::renderSmoke() {
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+	dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
 	if (id == (-69420)) {
 		tracksmokeObj.RenderModel();

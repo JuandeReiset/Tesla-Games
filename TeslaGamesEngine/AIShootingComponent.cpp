@@ -22,35 +22,42 @@ AIShootingComponent::AIShootingComponent(Vehicle * v)
 
 void AIShootingComponent::Aim()
 {    
+	//std::cout << "AIMING METHOD REACHED" << std::endl;
 	// Find a target
+	/*
 	if (!target) {
 		target = FindTarget();
+		//std::cout << "CURRENTLY FINDING TARGET" << std::endl;
 	}
-	else {
+	*/
+	//else {
 		// Aim at target if it is in view
-		if (AimAtTarget()) {
-			FindAimingState();
-			// Fire at target if aim is locked
-			if (aimingState == AimingState::Locked) {
-				//std::cout << "FIRE @ " << glfwGetTime() << std::endl;
-				auto shooting = owner->getShootingComponent();
-				auto pos = owner->GetPosition();
-				// Setting ammo to 0 because of performance issues. Remove when those are fixed
-				shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess, Shootdir.x, Shootdir.y, Shootdir.z);
-				raycast_handler.determine_hit_AI(); //Determines if the target gets hit by AI or not
-				lastFiredTime = glfwGetTime();
-				//target->update_health();
+		target = FindTarget();
+		if (target) {
+			//std::cout << "THERE IS CURRENTLY A TARGET" << std::endl;
+			if (AimAtTarget()) {
+				FindAimingState();
+				// Fire at target if aim is locked
+				if (aimingState == AimingState::Locked) {
+					//std::cout << "FIRE @ " << glfwGetTime() << std::endl;
+					auto shooting = owner->getShootingComponent();
+					auto pos = owner->GetPosition();
+					// Setting ammo to 0 because of performance issues. Remove when those are fixed
+					shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess, Shootdir.x, Shootdir.y, Shootdir.z);
+					raycast_handler.determine_hit_AI(); //Determines if the target gets hit by AI or not
+					lastFiredTime = glfwGetTime();
+					//aimingState = AimingState::Reloading;
+				}
+			}
+			// Target not in view, find new target
+			else {
+
+				target = nullptr;
 			}
 		}
-		// Target not in view, find new target
-		else {
-
-			target = nullptr;
-		}
-	}
+	//}
 
 	float currentTime = glfwGetTime();
-
 	if (shouldUseAbility && owner->ability > 0 && (currentTime - lastAbilityTime) > abilityCooldownTime) {
 		TrackDrivingPoint* currentTarget = &owner->curTarget;
 		float angleToTurn = abs(racetrack->getAngleToTurnBy(currentTarget, owner));
@@ -135,7 +142,7 @@ bool AIShootingComponent::IsTargetInView(Vehicle* aTarget)
 	physx::PxVec3 forwardDirection = owner->GetTransform().q.getBasisVector2();
 
 	// Check if target is within an 80 degree cone in front of vehicle
-	if (abs(acos(toTarget.dot(forwardDirection))) * (180.f / 3.14) < 40.f) {
+	if (abs(acos(toTarget.dot(forwardDirection))) * (180.f / 3.14) < 35.f) {
 		return true;
 		
 	}
@@ -145,10 +152,16 @@ bool AIShootingComponent::IsTargetInView(Vehicle* aTarget)
 
 bool AIShootingComponent::IsReloading()
 {
-	if (glfwGetTime() - lastFiredTime > 1.f) {
+	
+	float currentTime = glfwGetTime();
+	//std::cout << "CURRENT TIME CATCHED BY GLFW is" << currentTime << std::endl;
+	if (currentTime- lastFiredTime > 1.f) {
+		std::cout << "DONE RELOADING" << std::endl;
 		return false;
 	}
 	else {
+		std::cout << "STILL RELOADING" << std::endl;
+		std::cout <<"Current cooldown: " <<currentTime - lastFiredTime << std::endl;
 		return true;
 	}
 }
@@ -157,15 +170,19 @@ void AIShootingComponent::FindAimingState()
 {
 	if (owner->getShootingComponent()->ammo <= 0) {
 		aimingState = AimingState::NoAmmo;
+		//std::cout << "VEHICLE HAS NO AMMO"<<std::endl;
 	}
 	else if (target = nullptr) {
 		aimingState = AimingState::NoTarget;
+		std::cout << "NO TARGET FOUND" << std::endl;
 	}
 	else if (IsReloading()) {
 		aimingState = AimingState::Reloading;
+		std::cout << "VEHICLE STILL RELOADING" << std::endl;
 	}
 	else {
 		aimingState = AimingState::Locked;
+		//std::cout << "VEHICLE READY TO SHOOT" << std::endl;
 	}
 }
 
