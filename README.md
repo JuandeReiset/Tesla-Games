@@ -14,7 +14,9 @@ A project made by CPSC undergrads at the University of Calgary for the course CP
 
 
 ## Install
-Donwload the Repository to your computer either by downloading the zip or git cloning. If you just want the playable (no source code), the zip file "gameReleaseExe.zip" contains a built executable. Simply download this file, unzip it and run the exe file contained wihtin the folder
+Donwload the Repository to your computer either by downloading the zip or git cloning. 
+
+If you just want the playable (no source code), the zip file "gameReleaseExe.zip" contains a built executable. Simply download this file, unzip it and run the exe file contained within the folder
 
 
 ## Usage
