@@ -239,10 +239,12 @@ void Menu::loadController(Controller* controller) {
 				an = 0;
 			}
 			else{
-				if (an == 1)
-					;
-				else
+				if (an == 1) {
+					an == 8;
+				}
+				else {
 					--an;
+				}
 			}
 
 
@@ -261,8 +263,8 @@ void Menu::loadController(Controller* controller) {
 			arrow = 1;
 		}
 		else if (op == 1) {
-			an = 0;
-
+			an = an % 8; 
+			an++;
 			arrow = 3;
 		}
 		setOption(op, tn, an);
