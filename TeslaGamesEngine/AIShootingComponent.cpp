@@ -134,7 +134,7 @@ bool AIShootingComponent::IsTargetInView(Vehicle* aTarget)
 	physx::PxVec3 forwardDirection = owner->GetTransform().q.getBasisVector2();
 
 	// Check if target is within an 80 degree cone in front of vehicle
-	if (abs(acos(toTarget.dot(forwardDirection))) * (180.f / 3.14) < 40.f) {
+	if (abs(acos(toTarget.dot(forwardDirection))) * (180.f / 3.14) < 25.f) {
 		return true;
 		
 	}
