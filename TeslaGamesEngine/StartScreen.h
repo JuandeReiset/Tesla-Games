@@ -48,6 +48,8 @@ private:
 	Texture settingText2;
 	Texture exitText1;
 	Texture exitText2;
+	Texture dpadTexture;
+	Texture selectTexture;
 
 	// Vertex Shader of HUD_shader
 	const char* vHshader = "Shaders/HUD_shader.vert";
@@ -90,6 +92,19 @@ private:
 		1050.f / 1600 * mainWindow.getWidth(), 750.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 
+	GLfloat dpadVertices[20] = {
+		0.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		0.f / 1600 * mainWindow.getWidth(), 920.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 920.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+
+	GLfloat selectVertices[20] = {
+		0.f / 1600 * mainWindow.getWidth(), 760.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		0.f / 1600 * mainWindow.getWidth(), 880.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 880.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 760.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
 	void setOption(int op);
 };
 

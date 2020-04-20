@@ -307,7 +307,10 @@ void HUDcreator::use() {
 	HUDList[21]->renderHUD();
 	dig0Texture.UseTexture();
 	HUDList[22]->renderHUD();
-	dig5Texture.UseTexture();
+	if(selectedTrackType == 0)
+		dig5Texture.UseTexture();
+	if (selectedTrackType == 1)
+		dig3Texture.UseTexture();
 	HUDList[23]->renderHUD();
 /*
 	slashTexture.UseTexture();

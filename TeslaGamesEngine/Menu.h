@@ -27,10 +27,13 @@ public:
 	void loadController(Controller* controller);
 	void setAiDefault(bool multi) { multiplayer = multi; }
 	void resetAiNum();
+	void loadDefaultAi();
 
 	int getSelectedGameMode();
 	int getSelectedTrack();
 	int getSelectedNumOfAI();
+
+	unsigned int an = 4;
 
 private:
 	std::vector<HUD*> HUDList;
@@ -38,7 +41,7 @@ private:
 
 	unsigned int op = 0;
 	unsigned int tn = 0;
-	unsigned int an = 4;
+
 	int arrow = -1;
 	bool multiplayer;
 
@@ -60,6 +63,9 @@ private:
 	Texture aiTxt;
 	Texture aiNumTxt;
 	Texture backTexture;
+	Texture dpadTexture;
+	Texture selectTexture;
+	Texture aiNotAvailableTexture;
 
 	Texture track1Texture;
 	Texture track2Texture;
@@ -168,6 +174,27 @@ private:
 		1400.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
 		1600.f / 1600 * mainWindow.getWidth(), 900.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
 		1600.f / 1600 * mainWindow.getWidth(), 820.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+
+	GLfloat dpadVertices[20] = {
+		0.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		0.f / 1600 * mainWindow.getWidth(), 920.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 920.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+
+	GLfloat selectVertices[20] = {
+		0.f / 1600 * mainWindow.getWidth(), 760.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		0.f / 1600 * mainWindow.getWidth(), 880.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 880.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 760.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+
+	GLfloat aiNotAvailableVertices[20] = {
+		1000.f / 1600 * mainWindow.getWidth(), 560.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		1000.f / 1600 * mainWindow.getWidth(), 760.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		1400.f / 1600 * mainWindow.getWidth(), 760.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		1400.f / 1600 * mainWindow.getWidth(), 560.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 
  	void setOption(int op, int tn, int an);
