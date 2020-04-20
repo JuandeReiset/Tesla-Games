@@ -1129,7 +1129,7 @@ int main()
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(0.0f, -5.f, -3.2));
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-				shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+				dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 				//std::cout << "RIGHT BEFORE RENDERING TRACK\n";
 				racetrack_walls.RenderModel();
 				racetrack_floor.RenderModel();
