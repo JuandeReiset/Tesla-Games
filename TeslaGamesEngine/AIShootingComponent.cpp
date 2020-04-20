@@ -46,7 +46,7 @@ void AIShootingComponent::Aim()
 					shooting->fire(glm::vec3(pos.x, pos.y, pos.z), uniformModel, uniformSpecular, uniformShininess, Shootdir.x, Shootdir.y, Shootdir.z);
 					raycast_handler.determine_hit_AI(); //Determines if the target gets hit by AI or not
 					lastFiredTime = glfwGetTime();
-					//aimingState = AimingState::Reloading;
+					aimingState = AimingState::Reloading;
 				}
 			}
 			// Target not in view, find new target
@@ -155,13 +155,10 @@ bool AIShootingComponent::IsReloading()
 	
 	float currentTime = glfwGetTime();
 	//std::cout << "CURRENT TIME CATCHED BY GLFW is" << currentTime << std::endl;
-	if (currentTime- lastFiredTime > 1.f) {
-		std::cout << "DONE RELOADING" << std::endl;
+	if (currentTime - lastFiredTime > 1.f) {
 		return false;
 	}
 	else {
-		std::cout << "STILL RELOADING" << std::endl;
-		std::cout <<"Current cooldown: " <<currentTime - lastFiredTime << std::endl;
 		return true;
 	}
 }
