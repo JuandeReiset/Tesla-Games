@@ -16,8 +16,8 @@ AIShootingComponent::AIShootingComponent(Vehicle * v)
 {
 	wantToPlaceTrap = 0;
 	owner = v;
-	abilityCooldownTime = 3.f + (7.f * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)));
-	lastAbilityTime = glfwGetTime();
+	abilityCooldownTime = 5.f;
+	lastAbilityTime = 0.0f;
 }
 
 void AIShootingComponent::Aim()
@@ -58,13 +58,13 @@ void AIShootingComponent::Aim()
 	//}
 
 	float currentTime = glfwGetTime();
-
+	
 	bool canUseAbility = (currentTime - lastAbilityTime) > abilityCooldownTime;
 
 	if (shouldUseAbility && (owner->ability > 0) && canUseAbility) {
 
-		abilityCooldownTime = 5.f;
 		lastAbilityTime = glfwGetTime();
+		std::cout << lastAbilityTime;
 
 		TrackDrivingPoint* currentTarget = &owner->curTarget;
 		float angleToTurn = abs(racetrack->getAngleToTurnBy(currentTarget, owner));

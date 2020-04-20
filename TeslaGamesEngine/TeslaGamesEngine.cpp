@@ -760,11 +760,11 @@ int main()
 			// Force controllers 2-4 to be ready
 			// Change the boolean values to false to require them to manually ready
 			case 4:
-				readyScreen.loadController(&player4, 3, false);
+				readyScreen.loadController(&player4, 3, true);
 			case 3:
-				readyScreen.loadController(&player3, 2, false);
+				readyScreen.loadController(&player3, 2, true);
 			case 2:
-				readyScreen.loadController(&player2, 1, false);
+				readyScreen.loadController(&player2, 1, true);
 			case 1:
 				readyScreen.loadController(&player1, 0, false);
 			}
@@ -1004,6 +1004,7 @@ int main()
 			// Render for each player
 			for (int player = 0; player < players; player++) {
 
+
 				bool isCameraFlipped = controllers[player].isButtonPressed(XButtons.Y);
 
 				// Determine projection matrix
@@ -1025,6 +1026,10 @@ int main()
 				}
 				else {
 					projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);;
+				}
+
+				if (physEng->playerVehicles[player]->currentHealth() <= 0) {
+					projection = glm::mat4(0.f);
 				}
 
 				//  Get values from physics engine
