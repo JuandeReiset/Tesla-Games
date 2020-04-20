@@ -23,7 +23,7 @@ If you just want the playable (no source code), the zip file "gameReleaseExe.zip
 Press on the executable file, or open in Visual Studio (working currently on the 2017 and 2019 version) and run the project
 
 
-## The 5 Musk-ateers (Authors)
+## The 5 Musk-eteers (Authors)
 
 👤 **Asjad Hassan Malick**
 
