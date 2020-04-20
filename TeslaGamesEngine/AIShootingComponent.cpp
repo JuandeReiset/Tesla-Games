@@ -50,11 +50,20 @@ void AIShootingComponent::Aim()
 	}
 
 	float currentTime = glfwGetTime();
+
 	if (shouldUseAbility && owner->ability > 0 && (currentTime - lastAbilityTime) > abilityCooldownTime) {
+		TrackDrivingPoint* currentTarget = &owner->curTarget;
+		float angleToTurn = abs(racetrack->getAngleToTurnBy(currentTarget, owner));
 		// This is the AI shooting component. Use this to call abilities
 		auto shooting = owner->getShootingComponent();
 		PxVec3 p(owner->GetPosition());
-		wantToPlaceTrap = rand() % 3 + 1; // Choose random ability
+		
+		if (angleToTurn > 25.f) {
+			wantToPlaceTrap = 3; // Choose oil
+		}
+		else {
+			wantToPlaceTrap = rand() % 2 + 1; // Choose random ability from smoke or caltrops
+		}
 			
 		// Set random cooldown from 3 to 10 seconds
 		abilityCooldownTime = 3.f + (7.f * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)));
