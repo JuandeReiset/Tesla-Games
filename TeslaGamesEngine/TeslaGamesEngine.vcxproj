@@ -206,14 +206,6 @@ xcopy "$(SolutionDir)\TeslaGamesEngine\Textures\*" "$(OutDir)Textures\" /K /D /H
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="HUDcreator.h" />
-    <ClInclude Include="ImGui\imconfig.h" />
-    <ClInclude Include="ImGui\imgui.h" />
-    <ClInclude Include="ImGui\imgui_internal.h" />
-    <ClInclude Include="ImGui\imstb_rectpack.h" />
-    <ClInclude Include="ImGui\imstb_textedit.h" />
-    <ClInclude Include="ImGui\imstb_truetype.h" />
-    <ClInclude Include="imgui_impl_glfw.h" />
-    <ClInclude Include="imgui_impl_opengl3.h" />
     <ClInclude Include="LapMarker.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Material.h" />
@@ -275,12 +267,6 @@ xcopy "$(SolutionDir)\TeslaGamesEngine\Textures\*" "$(OutDir)Textures\" /K /D /H
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="HUDcreator.cpp" />
-    <ClCompile Include="ImGui\imgui.cpp" />
-    <ClCompile Include="ImGui\imgui_demo.cpp" />
-    <ClCompile Include="ImGui\imgui_draw.cpp" />
-    <ClCompile Include="ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="imgui_imple_opengl3.cpp" />
-    <ClCompile Include="imgui_impl_glfw.cpp" />
     <ClCompile Include="LapMarker.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Material.cpp" />

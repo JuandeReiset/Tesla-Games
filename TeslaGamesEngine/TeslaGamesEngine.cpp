@@ -71,12 +71,6 @@
 #include "AIDrivingComponent.h"
 #include "AIShootingComponent.h"
 
-// Stuff for imgui
-#include "imGui/imgui.h"
-#include "imGui/imgui_impl_glfw.h"
-#include "imGui/imgui_impl_opengl3.h"
-
-// end of stuff for imgui
 
 bool hideDebug = true;
 
@@ -494,23 +488,7 @@ int main()
 
 	glfwSwapInterval(1);
 
-	// Setup Dear ImGui context
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-	//ImGui::StyleColorsClassic();
-
-	// Setup Platform/Renderer bindings
-
-	ImGui_ImplGlfw_InitForOpenGL(mainWindow.getWindow(), true);
-	ImGui_ImplOpenGL3_Init(glsl_version);
-
-	// Imgui setting END
 
 	//Audio system setup
 	AudioEngine audioSystem = AudioEngine();
@@ -1626,29 +1604,6 @@ int main()
 			}
 
 
-			// ImGUI debugging info
-
-			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameras[0].calculateViewMatrix()));
-
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplGlfw_NewFrame();
-			ImGui::NewFrame();
-			{
-				static float f = 0.0f;
-				static int counter = 0;
-
-			ImGui::Begin("Debug");
-			ImGui::Text("Driving mode and Position");
-			ImGui::Text("Frame per Second counter"); // Display some text (you can use a format strings too)
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::Text(": %i Xpos: %.2f Ypos: %.2f Zpos: %.2f", physEng->getModeType(), physEng->playerVehicles[0]->GetPosition().x, 
-				physEng->playerVehicles[0]->GetPosition().y, physEng->playerVehicles[0]->GetPosition().z);
-			// ImGui::Text("Drivemode: %i Xpos: %f Ypos: %f Zpos: %f", physEng->getModeType(), carPos.x, carPos.y, carPos.z);
-			//mGui::Text("Camera Xvec: %f Yvec: %f Zvec: %f", cameras[0].getCameraPosition().x, cameras[0].getCameraPosition().y, cameras[0].getCameraPosition().z);
-			// ImGui::Text("Drivemode: %i Xvec: %f Yvec: %f Zvec: %f", physEng->getModeType(), v_dir.x, v_dir.y, v_dir.z);
-
-				ImGui::End();
-			}
 			
 		
 			allDeadFlag = true;
@@ -1669,11 +1624,7 @@ int main()
 				++isNextFrame;
 			}
 
-			// Rendering imgui
-			if (!hideDebug) {
-				ImGui::Render();
-				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-			}
+			
 
 			mainWindow.swapBuffers();
 
@@ -1683,10 +1634,7 @@ int main()
 		}
 	}
 
-	// Cleanup
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
+	
 
 	
 	return 0;
