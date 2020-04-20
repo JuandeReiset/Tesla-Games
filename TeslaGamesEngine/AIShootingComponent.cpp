@@ -58,6 +58,7 @@ void AIShootingComponent::Aim()
 	//}
 
 	float currentTime = glfwGetTime();
+	//std::cout << "CURRENT TIME CATCHED BY GLFW is" << currentTime << std::endl;
 	if (shouldUseAbility && owner->ability > 0 && (currentTime - lastAbilityTime) > abilityCooldownTime) {
 		// This is the AI shooting component. Use this to call abilities
 		auto shooting = owner->getShootingComponent();
@@ -144,10 +145,16 @@ bool AIShootingComponent::IsTargetInView(Vehicle* aTarget)
 
 bool AIShootingComponent::IsReloading()
 {
-	if (glfwGetTime() - lastFiredTime > 1.f) {
+	
+	float currentTime = glfwGetTime();
+	//std::cout << "CURRENT TIME CATCHED BY GLFW is" << currentTime << std::endl;
+	if (currentTime- lastFiredTime > 1.f) {
+		std::cout << "DONE RELOADING" << std::endl;
 		return false;
 	}
 	else {
+		std::cout << "STILL RELOADING" << std::endl;
+		std::cout <<"Current cooldown: " <<currentTime - lastFiredTime << std::endl;
 		return true;
 	}
 }
@@ -160,7 +167,7 @@ void AIShootingComponent::FindAimingState()
 	}
 	else if (target = nullptr) {
 		aimingState = AimingState::NoTarget;
-		//std::cout << "NO TARGET FOUND" << std::endl;
+		std::cout << "NO TARGET FOUND" << std::endl;
 	}
 	else if (IsReloading()) {
 		aimingState = AimingState::Reloading;
