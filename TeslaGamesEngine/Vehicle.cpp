@@ -269,7 +269,7 @@ ShootComp* Vehicle::getShootingComponent() {
 }
 
 void Vehicle::update_health() {
-	health.takeDamageFromBullet(10.f);
+	health.takeDamageFromBullet(5.f);
 }
 
 HealthComponent* Vehicle::getHealthComponent() {
