@@ -166,7 +166,7 @@ SpotLight spotLights[MAX_SPOT_LIGHTS];
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 
-bool isCameraFlipped = false;
+// bool isCameraFlipped = false;
 
 Raycast_shooting raycast_handler;
 
@@ -316,7 +316,7 @@ void parseControllerInput(Controller* controller)
 		player->handbrakeTurn(0.0f, 0.f);
 	}
 
-	isCameraFlipped = (controller->isButtonPressed(XButtons.Y));
+	// isCameraFlipped = (controller->isButtonPressed(XButtons.Y));
 	
 	if (controller->isButtonDown(XButtons.Start)) {
 		gameFlag = false;
@@ -743,7 +743,10 @@ int main()
 		}
 
 		while (menuFlag) {
+			if (multiplayerFlag)
+				menu.an = 0;
 			resetGame();
+			menu.loadDefaultAi();
 			menu.setAiDefault(multiplayerFlag);
 			menu.loadController(&player1);
 			menu.use();
@@ -753,7 +756,9 @@ int main()
 		readyScreen.setNumOfPlayer(numOfPlayer);
 		while (readyScreenFlag) {
 			switch (numOfPlayer) {
+
 			// Force controllers 2-4 to be ready
+			// Change the boolean values to false to require them to manually ready
 			case 4:
 				readyScreen.loadController(&player4, 3, true);
 			case 3:
@@ -897,9 +902,11 @@ int main()
 			for (auto ai : aiVehicles) {
 				//std::cout << "AI OWNER ID: " << ai->ID << "\n";
 				AIShootingComponent aiShooting = AIShootingComponent(ai);
+				aiShooting.SetTrack(&raceTrack);
 				aiShooting.SetVehicles(physEng->allVehicles);
 				aiShooting.SetUniformLocations(shaderList[0].GetModelLocation(), shaderList[0].GetSpecularIntensityLocation(), shaderList[0].GetShininessLocation());
 				aiShootingComponents.push_back(aiShooting);
+				
 			}
 
 			physEng->aiShootingComponents = aiShootingComponents;
@@ -996,6 +1003,8 @@ int main()
 
 			// Render for each player
 			for (int player = 0; player < players; player++) {
+
+				bool isCameraFlipped = controllers[player].isButtonPressed(XButtons.Y);
 
 				// Determine projection matrix
 				if (multiplayerFlag) {

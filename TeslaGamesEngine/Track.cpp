@@ -25,6 +25,7 @@ void Track::initializeTrackPoints(int trackType) {
 	
 	if (trackType == trackTypeConstants::HYPERLOOP) {
 		this->isStarlink = false;
+		selectedTrackType = 0;
 
 		this->addStartPointToList(60, 5, -57);
 		this->addStartPointToList(60, 5, -66);
@@ -66,28 +67,28 @@ void Track::initializeTrackPoints(int trackType) {
 		this->addInteractableStripToList();
 
 		TrackInteractableStrip& z0 = *this->listOfLaneStrips.at(0);
-		z0.addLanePoint(-49.00, -2.60, -44.00, trackInteractableObjects::TESLA_PICKUP, 0);
-		z0.addLanePoint(-53.02, -2.60, -49.00, trackInteractableObjects::AMMO_PICKUP, 0);
-		z0.addLanePoint(-57.23, -2.60, -54.00, trackInteractableObjects::TESLA_PICKUP, 0);
-		z0.addLanePoint(-61.18, -2.60, -59.00, trackInteractableObjects::AMMO_PICKUP, 0);
-		z0.addLanePoint(-65.44, -2.60, -64.00, trackInteractableObjects::TESLA_PICKUP, 0);
-		z0.addLanePoint(-69.88, -2.60, -70.00, trackInteractableObjects::AMMO_PICKUP, 0);
+		z0.addLanePoint(-4.65, -1, -52.59, trackInteractableObjects::TESLA_PICKUP, 0);
+		z0.addLanePoint(-4.76, -1.2, -59.96, trackInteractableObjects::AMMO_PICKUP, 0);
+		z0.addLanePoint(-4.87, -1.4, -67.33, trackInteractableObjects::TESLA_PICKUP, 0);
+		z0.addLanePoint(-4.98, -1.6, -74.7, trackInteractableObjects::AMMO_PICKUP, 0);
+		z0.addLanePoint(-5.09, -1.8, -82.07, trackInteractableObjects::TESLA_PICKUP, 0);
+		z0.addLanePoint(-5.20, -2, -89.44, trackInteractableObjects::AMMO_PICKUP, 0);
 
 		TrackInteractableStrip& z1 = *this->listOfLaneStrips.at(1);
 		//these work
-		z1.addLanePoint(-60.24, -2.60, -7.90, trackInteractableObjects::OIL, 3);
-		z1.addLanePoint(-68.14, -2.60, -4.85, trackInteractableObjects::EMPTY, 0);
-		z1.addLanePoint(-74, -2.60, -0.57, trackInteractableObjects::OIL, 3);
-		z1.addLanePoint(-78.62, -2.60, -0.79, trackInteractableObjects::OIL, 3);
-		z1.addLanePoint(-84.51, -2.62, 1.49, trackInteractableObjects::EMPTY, 0);
-		z1.addLanePoint(-92.22, -2.64, 4.48, trackInteractableObjects::OIL, 3);
+		z1.addLanePoint(-61.8, -2.57, -29.74, trackInteractableObjects::OIL, 3);
+		z1.addLanePoint(-69.43, -2.578, -30.524, trackInteractableObjects::EMPTY, 0);
+		z1.addLanePoint(-77.07, -2.586, -31.308, trackInteractableObjects::OIL, 3);
+		z1.addLanePoint(-84.702, -2.594, -32.092, trackInteractableObjects::OIL, 3);
+		z1.addLanePoint(-92.336, -2.602, -32.876, trackInteractableObjects::EMPTY, 0);
+		z1.addLanePoint(-99.97, -2.61, -33.66, trackInteractableObjects::OIL, 3);
 
 		TrackInteractableStrip& z2 = *this->listOfLaneStrips.at(2);
-		z2.addLanePoint(10.36, -2.55, 34.32, trackInteractableObjects::TESLA_PICKUP, 1);
-		z2.addLanePoint(9.95, -2.55, 40.86, trackInteractableObjects::AMMO_PICKUP, 0);
-		z2.addLanePoint(9.41, -2.60, 49.43, trackInteractableObjects::TESLA_PICKUP, 1);
-		z2.addLanePoint(8.89, -2.64, 57.65, trackInteractableObjects::AMMO_PICKUP, 0);
-		z2.addLanePoint(8.43, -2.68, 64.97, trackInteractableObjects::TESLA_PICKUP, 1);
+		z2.addLanePoint(-26.77, -2.51, 26.78, trackInteractableObjects::TESLA_PICKUP, 1);
+		z2.addLanePoint(-29.76, -2.555, 36.17, trackInteractableObjects::AMMO_PICKUP, 0);
+		z2.addLanePoint(-32.745, -2.60, 45.56, trackInteractableObjects::TESLA_PICKUP, 1);
+		z2.addLanePoint(-35.733, -2.645, 54.96, trackInteractableObjects::AMMO_PICKUP, 0);
+		z2.addLanePoint(-38.72, -2.69, 64.35, trackInteractableObjects::TESLA_PICKUP, 1);
 
 		TrackInteractableStrip& z3 = *this->listOfLaneStrips.at(3);
 		z3.addLanePoint(31.58, -2.52, 32.87, trackInteractableObjects::EMPTY, 0);
@@ -98,12 +99,12 @@ void Track::initializeTrackPoints(int trackType) {
 		z3.addLanePoint(35.12, -2.68, 62.29, trackInteractableObjects::EMPTY, 0);
 
 		TrackInteractableStrip& z4 = *this->listOfLaneStrips.at(4);
-		z4.addLanePoint(66.87, -2.48, 26.56, trackInteractableObjects::SMOKE, 2);
-		z4.addLanePoint(68.08, -2.53, 33.87, trackInteractableObjects::EMPTY, 0);
-		z4.addLanePoint(69.19, -2.58, 40.59, trackInteractableObjects::SMOKE, 2);
-		z4.addLanePoint(70.35, -2.62, 47.57, trackInteractableObjects::EMPTY, 0);
-		z4.addLanePoint(71.77, -2.68, 56.15, trackInteractableObjects::SMOKE, 2);
-		z4.addLanePoint(72.96, -2.75, 65.72, trackInteractableObjects::SMOKE, 2);
+		z4.addLanePoint(105.36, -2.45, 16.45, trackInteractableObjects::SMOKE, 2);
+		z4.addLanePoint(107.64, -2.516, 33.87, trackInteractableObjects::EMPTY, 0);
+		z4.addLanePoint(109.92, -2.582, 40.59, trackInteractableObjects::SMOKE, 2);
+		z4.addLanePoint(112.21, -2.648, 47.57, trackInteractableObjects::EMPTY, 0);
+		z4.addLanePoint(114.49, -2.714, 56.15, trackInteractableObjects::SMOKE, 2);
+		z4.addLanePoint(116.77, -2.78, 54.26, trackInteractableObjects::SMOKE, 2);
 
 		TrackInteractableStrip& z5 = *this->listOfLaneStrips.at(5);
 		z5.addLanePoint(132.83, -2.37, -17.07, trackInteractableObjects::CALTROPS, 4);
@@ -112,9 +113,11 @@ void Track::initializeTrackPoints(int trackType) {
 		z5.addLanePoint(149.83, -2.37, -17.07, trackInteractableObjects::CALTROPS, 4);
 		z5.addLanePoint(155.83, -2.37, -17.07, trackInteractableObjects::OIL, 4);
 		z5.addLanePoint(161.83, -2.37, -17.07, trackInteractableObjects::CALTROPS, 4);
+
 	}
 	else if (trackType == trackTypeConstants::STARLINK) {
 		this->isStarlink = true;
+		selectedTrackType = 1;
 		this->addStartPointToList(51, 5, -59);
 		this->addStartPointToList(51, 5, -66);
 		this->addStartPointToList(51, 5, -73);
@@ -189,60 +192,60 @@ void Track::initializeTrackPoints(int trackType) {
 		z0.addLanePoint(8, -1.65, -66.6, trackInteractableObjects::AMMO_PICKUP, 0);
 
 		TrackInteractableStrip& z1 = *this->listOfLaneStrips.at(1);
-		z1.addLanePoint(-69.5, -1.15, -137, trackInteractableObjects::TESLA_PICKUP, 1);
-		z1.addLanePoint(-74.5, -1.15, -133, trackInteractableObjects::AMMO_PICKUP, 1);
-		z1.addLanePoint(-79.5, -1.15, -129, trackInteractableObjects::TESLA_PICKUP, 1);
-		z1.addLanePoint(-84.5, -1.15, -125, trackInteractableObjects::AMMO_PICKUP, 1);
-		z1.addLanePoint(-89.5, -1.15, -121, trackInteractableObjects::TESLA_PICKUP, 1);
+		z1.addLanePoint(-69.5, -1.15, -137, trackInteractableObjects::TESLA_PICKUP, 0);
+		z1.addLanePoint(-74.5, -1.15, -133, trackInteractableObjects::AMMO_PICKUP, 0);
+		z1.addLanePoint(-79.5, -1.15, -129, trackInteractableObjects::TESLA_PICKUP, 0);
+		z1.addLanePoint(-84.5, -1.15, -125, trackInteractableObjects::AMMO_PICKUP, 0);
+		z1.addLanePoint(-89.5, -1.15, -121, trackInteractableObjects::TESLA_PICKUP, 0);
 
 		TrackInteractableStrip& z2 = *this->listOfLaneStrips.at(2);
-		z2.addLanePoint(-116, 0.06, -224, trackInteractableObjects::SMOKE, 2);
-		z2.addLanePoint(-121, 0.13, -226, trackInteractableObjects::SMOKE, 2);
+		z2.addLanePoint(-116, 0.06, -224, trackInteractableObjects::SMOKE, 1);
+		z2.addLanePoint(-121, 0.13, -226, trackInteractableObjects::SMOKE, 1);
 		z2.addLanePoint(-126, 0.20, -228, trackInteractableObjects::EMPTY, 0);
-		z2.addLanePoint(-131, 0.27, -230, trackInteractableObjects::SMOKE, 2);
-		z2.addLanePoint(-136, 0.34, -232, trackInteractableObjects::SMOKE, 2);
+		z2.addLanePoint(-131, 0.27, -230, trackInteractableObjects::SMOKE, 1);
+		z2.addLanePoint(-136, 0.34, -232, trackInteractableObjects::SMOKE, 1);
 
 		TrackInteractableStrip& z3 = *this->listOfLaneStrips.at(3);
-		z3.addLanePoint(20, -0.46, -307, trackInteractableObjects::OIL, 3);
+		z3.addLanePoint(20, -0.46, -307, trackInteractableObjects::OIL, 2);
 		z3.addLanePoint(17, -0.35, -313, trackInteractableObjects::EMPTY, 0);
-		z3.addLanePoint(13, -0.24, -319, trackInteractableObjects::OIL, 3);
-		z3.addLanePoint(10, -0.16, -325, trackInteractableObjects::CALTROPS, 3);
-		z3.addLanePoint(7, -0.07, -331, trackInteractableObjects::OIL, 3);
+		z3.addLanePoint(13, -0.24, -319, trackInteractableObjects::OIL, 2);
+		z3.addLanePoint(10, -0.16, -325, trackInteractableObjects::CALTROPS, 2);
+		z3.addLanePoint(7, -0.07, -331, trackInteractableObjects::OIL, 2);
 
 		TrackInteractableStrip& z4 = *this->listOfLaneStrips.at(4);
-		z4.addLanePoint(219, 0.42, -406, trackInteractableObjects::CALTROPS, 2);
-		z4.addLanePoint(221, 0.32, -400, trackInteractableObjects::CALTROPS, 2);
-		z4.addLanePoint(222, 0.26, -394, trackInteractableObjects::CALTROPS, 2);
+		z4.addLanePoint(219, 0.42, -406, trackInteractableObjects::CALTROPS, 1);
+		z4.addLanePoint(221, 0.32, -400, trackInteractableObjects::CALTROPS, 1);
+		z4.addLanePoint(222, 0.26, -394, trackInteractableObjects::CALTROPS, 1);
 		z4.addLanePoint(223, 0.16, -388, trackInteractableObjects::EMPTY, 0);
-		z4.addLanePoint(224, 0.11, -382, trackInteractableObjects::CALTROPS, 2);
+		z4.addLanePoint(224, 0.11, -382, trackInteractableObjects::CALTROPS, 1);
 
 		TrackInteractableStrip& z5 = *this->listOfLaneStrips.at(5);
-		z5.addLanePoint(381, 0.19, -316, trackInteractableObjects::TESLA_PICKUP, 1);
-		z5.addLanePoint(387, 0.21, -316, trackInteractableObjects::AMMO_PICKUP, 1);
-		z5.addLanePoint(393, 0.23, -316, trackInteractableObjects::TESLA_PICKUP, 1);
-		z5.addLanePoint(399, 0.25, -316, trackInteractableObjects::AMMO_PICKUP, 1);
-		z5.addLanePoint(405, 0.27, -316, trackInteractableObjects::TESLA_PICKUP, 1);
+		z5.addLanePoint(381, 0.19, -316, trackInteractableObjects::TESLA_PICKUP, 0);
+		z5.addLanePoint(387, 0.21, -316, trackInteractableObjects::AMMO_PICKUP, 0);
+		z5.addLanePoint(393, 0.23, -316, trackInteractableObjects::TESLA_PICKUP, 0);
+		z5.addLanePoint(399, 0.25, -316, trackInteractableObjects::AMMO_PICKUP, 0);
+		z5.addLanePoint(405, 0.27, -316, trackInteractableObjects::TESLA_PICKUP, 0);
 
 		TrackInteractableStrip& z6 = *this->listOfLaneStrips.at(6);
-		z6.addLanePoint(317, 0.47, -182, trackInteractableObjects::SMOKE, 4);
-		z6.addLanePoint(322, 0.49, -177, trackInteractableObjects::OIL, 4);
-		z6.addLanePoint(327, 0.51, -172, trackInteractableObjects::SMOKE, 4);
-		z6.addLanePoint(332, 0.52, -167, trackInteractableObjects::OIL, 4);
-		z6.addLanePoint(337, 0.53, -162, trackInteractableObjects::SMOKE, 4);
+		z6.addLanePoint(317, 0.47, -182, trackInteractableObjects::SMOKE, 2);
+		z6.addLanePoint(322, 0.49, -177, trackInteractableObjects::OIL, 2);
+		z6.addLanePoint(327, 0.51, -172, trackInteractableObjects::SMOKE, 2);
+		z6.addLanePoint(332, 0.52, -167, trackInteractableObjects::OIL, 2);
+		z6.addLanePoint(337, 0.53, -162, trackInteractableObjects::SMOKE, 2);
 
 		TrackInteractableStrip& z7 = *this->listOfLaneStrips.at(7);
-		z7.addLanePoint(270, -3.72, -57, trackInteractableObjects::SMOKE, 3);
-		z7.addLanePoint(275, -3.41, -60, trackInteractableObjects::OIL, 3);
-		z7.addLanePoint(280, -3.11, -63, trackInteractableObjects::SMOKE, 3);
-		z7.addLanePoint(285, -2.81, -66, trackInteractableObjects::OIL, 3);
+		z7.addLanePoint(270, -3.72, -57, trackInteractableObjects::SMOKE, 2);
+		z7.addLanePoint(275, -3.41, -60, trackInteractableObjects::OIL, 2);
+		z7.addLanePoint(280, -3.11, -63, trackInteractableObjects::SMOKE, 2);
+		z7.addLanePoint(285, -2.81, -66, trackInteractableObjects::OIL, 2);
 		z7.addLanePoint(290, -2.52, -69, trackInteractableObjects::EMPTY, 0);
 
 		TrackInteractableStrip& z8 = *this->listOfLaneStrips.at(8);
-		z8.addLanePoint(190, -1.31, 19.21, trackInteractableObjects::OIL, 4);
-		z8.addLanePoint(184, -1.34, 18.32, trackInteractableObjects::SMOKE, 4);
-		z8.addLanePoint(178, -1.36, 17.36, trackInteractableObjects::CALTROPS, 4);
-		z8.addLanePoint(172, -1.39, 16.40, trackInteractableObjects::OIL, 4);
-		z8.addLanePoint(166, -1.42, 15.51, trackInteractableObjects::SMOKE, 4);
+		z8.addLanePoint(190, -1.31, 19.21, trackInteractableObjects::OIL, 2);
+		z8.addLanePoint(184, -1.34, 18.32, trackInteractableObjects::SMOKE, 2);
+		z8.addLanePoint(178, -1.36, 17.36, trackInteractableObjects::CALTROPS, 2);
+		z8.addLanePoint(172, -1.39, 16.40, trackInteractableObjects::OIL, 2);
+		z8.addLanePoint(166, -1.42, 15.51, trackInteractableObjects::SMOKE, 2);
 
 	}
 }

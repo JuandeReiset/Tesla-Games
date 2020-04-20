@@ -28,6 +28,13 @@ void MultiplayerScreen::loadVertices() {
 	HUD* back = new HUD();
 	back->createHUD(backVertices, indices, 20, 6);
 	HUDList.push_back(back);
+	HUD* select = new HUD();
+	select->createHUD(selectVertices, indices, 20, 6);
+	HUDList.push_back(select);
+
+	HUD* dpad = new HUD();
+	dpad->createHUD(dpadVertices, indices, 20, 6);
+	HUDList.push_back(dpad);
 }
 
 void MultiplayerScreen::loadTextures() {
@@ -56,6 +63,10 @@ void MultiplayerScreen::loadTextures() {
 	backTexture.LoadTextureAlpha();
 	playerNumTxt = Texture("Textures/playerNum.png");
 	playerNumTxt.LoadTextureAlpha();
+	dpadTexture = Texture("Textures/dpad.png");
+	dpadTexture.LoadTextureAlpha();
+	selectTexture = Texture("Textures/a_select.png");
+	selectTexture.LoadTextureAlpha();
 
 	numTxt = dig1Texture;
 	leftTexture = left1Texture;
@@ -107,6 +118,12 @@ void MultiplayerScreen::use() {
 
 	backTexture.UseTexture();
 	HUDList[6]->renderHUD();
+
+	//selectTexture.UseTexture();
+	//HUDList[7]->renderHUD();
+
+	dpadTexture.UseTexture();
+	HUDList[8]->renderHUD();
 
 	glEnable(GL_DEPTH_TEST);
 }

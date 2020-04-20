@@ -57,6 +57,8 @@ private:
 	Texture left2Texture;
 	Texture right1Texture;
 	Texture right2Texture;
+	Texture dpadTexture;
+	Texture selectTexture;
 
 	Texture dig1Texture;
 	Texture dig2Texture;
@@ -112,6 +114,19 @@ private:
 		1600.f / 1600 * mainWindow.getWidth(), 820.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
 	};
 
+	GLfloat dpadVertices[20] = {
+		0.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		0.f / 1600 * mainWindow.getWidth(), 920.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 920.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 800.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
+
+	GLfloat selectVertices[20] = {
+		0.f / 1600 * mainWindow.getWidth(), 760.f / 900.0f * mainWindow.getHeight(), 1.0f,	0.0f, 0.0f,
+		0.f / 1600 * mainWindow.getWidth(), 880.f / 900.0f * mainWindow.getHeight(), 1.0f,		0.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 880.f / 900.0f * mainWindow.getHeight(), 1.0f,		1.0f, 1.0f,
+		300.f / 1600 * mainWindow.getWidth(), 760.f / 900.0f * mainWindow.getHeight(), 1.0f,	1.0f, 0.0f
+	};
 	int numOfPlayer = 1;
 	int maxPlayer = 4;
 
