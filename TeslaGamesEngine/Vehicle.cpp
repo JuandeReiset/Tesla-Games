@@ -75,92 +75,96 @@ Vehicle::~Vehicle() { cleanup(); }
 
 //takes in timestep, updates all vehicle physics. Called by PhysicsEngine
 void Vehicle::update(PxF32 timestep, PxScene* gScene)
-{
-	PxVehicleDrive4WSmoothAnalogRawInputsAndSetAnalogInputs(gPadSmoothingData, gSteerVsForwardSpeedTable, gVehicleInputData, timestep, gIsVehicleInAir, *gVehicle4W);
+{ 
+	//only tick if alive
+	if (currentHealth() > 0) {
+		PxVehicleDrive4WSmoothAnalogRawInputsAndSetAnalogInputs(gPadSmoothingData, gSteerVsForwardSpeedTable, gVehicleInputData, timestep, gIsVehicleInAir, *gVehicle4W);
 
-	//Raycasts.
-	PxVehicleWheels* vehicles[1] = { gVehicle4W };
-	PxRaycastQueryResult* raycastResults = gVehicleSceneQueryData->getRaycastQueryResultBuffer(0);
-	const PxU32 raycastResultsSize = gVehicleSceneQueryData->getQueryResultBufferSize();
-	PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicles, raycastResultsSize, raycastResults);
+		//Raycasts.
+		PxVehicleWheels* vehicles[1] = { gVehicle4W };
+		PxRaycastQueryResult* raycastResults = gVehicleSceneQueryData->getRaycastQueryResultBuffer(0);
+		const PxU32 raycastResultsSize = gVehicleSceneQueryData->getQueryResultBufferSize();
+		PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicles, raycastResultsSize, raycastResults);
 
-	//Vehicle update.
-	const PxVec3 grav = gScene->getGravity();
-	PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
-	PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, gVehicle4W->mWheelsSimData.getNbWheels()} };
-	PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
+		//Vehicle update.
+		const PxVec3 grav = gScene->getGravity();
+		PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
+		PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, gVehicle4W->mWheelsSimData.getNbWheels()} };
+		PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
 
-	//Work out if the vehicle is in the air.
-	gIsVehicleInAir = gVehicle4W->getRigidDynamicActor()->isSleeping() ? false : PxVehicleIsInAir(vehicleQueryResults[0]);
+		//Work out if the vehicle is in the air.
+		gIsVehicleInAir = gVehicle4W->getRigidDynamicActor()->isSleeping() ? false : PxVehicleIsInAir(vehicleQueryResults[0]);
 
-	if (multiplayerFlag == false) {
-		audioUpdate();
-	}
-	
-	float curSpeed = gVehicle4W->computeForwardSpeed();
-	float curAccel = gVehicleInputData.getAnalogAccel();
-	
-
-	speedFrameIndex++;
-	if (speedFrameIndex % 15 == 0) {
-		speedFrameIndex = 0;
-		previousSpeed = curSpeed;
-		previousAccel = curAccel;
-	}
-
-	update_turret();
-
-
-	//run smoke and oil effects 
-	updateCurrentTime();
-	updateSmoke();
-	updateOil();
-
-	//update distance for position/ranking
-	updateDistance();
-	
-	//Update the list of caltrops that can hurt the racer
-	updateCaltropEffectList();
-
-	if (this->isAICar) {
-		PxVec3 pos = this->GetPosition();
-		PxVec3 target = PxVec3(this->curTarget.x, this->curTarget.y, this->curTarget.z);
-		PxVec3 toTargetVec = (target - pos);
-		float distanceToTarget = toTargetVec.magnitude();
-
-		if (distanceToTarget <= this->curTarget.pointDistanceLimit) {
-			this->incrementAITrackPoint();
-			bool isAICarStuck = false;
+		if (multiplayerFlag == false) {
+			audioUpdate();
 		}
-		else {
-			//Check for getting stuck
-			this->AICarStuckFrameCounter = (AICarStuckFrameCounter + 1) % 480;
-			if (this->AICarStuckFrameCounter == 0 || this->isAICarStuck == true) {
-				if (this->oldStuckTarget.actionToTake == -1) {
-					this->oldStuckTarget = this->curTarget;
-				}
-				else {
-					if (this->oldStuckTarget == this->curTarget) {
-						if (this->isAICarStuck == false) {
-							float speed = std::abs(this->gVehicle4W->computeForwardSpeed());
-							if (speed < 3.f) {
-								this->isAICarStuck = true;
+
+		float curSpeed = gVehicle4W->computeForwardSpeed();
+		float curAccel = gVehicleInputData.getAnalogAccel();
+
+
+		speedFrameIndex++;
+		if (speedFrameIndex % 15 == 0) {
+			speedFrameIndex = 0;
+			previousSpeed = curSpeed;
+			previousAccel = curAccel;
+		}
+
+		update_turret();
+
+
+		//run smoke and oil effects 
+		updateCurrentTime();
+		updateSmoke();
+		updateOil();
+
+		//update distance for position/ranking
+		updateDistance();
+
+		//Update the list of caltrops that can hurt the racer
+		updateCaltropEffectList();
+
+		if (this->isAICar) {
+			PxVec3 pos = this->GetPosition();
+			PxVec3 target = PxVec3(this->curTarget.x, this->curTarget.y, this->curTarget.z);
+			PxVec3 toTargetVec = (target - pos);
+			float distanceToTarget = toTargetVec.magnitude();
+
+			if (distanceToTarget <= this->curTarget.pointDistanceLimit) {
+				this->incrementAITrackPoint();
+				bool isAICarStuck = false;
+			}
+			else {
+				//Check for getting stuck
+				this->AICarStuckFrameCounter = (AICarStuckFrameCounter + 1) % 480;
+				if (this->AICarStuckFrameCounter == 0 || this->isAICarStuck == true) {
+					if (this->oldStuckTarget.actionToTake == -1) {
+						this->oldStuckTarget = this->curTarget;
+					}
+					else {
+						if (this->oldStuckTarget == this->curTarget) {
+							if (this->isAICarStuck == false) {
+								float speed = std::abs(this->gVehicle4W->computeForwardSpeed());
+								if (speed < 3.f) {
+									this->isAICarStuck = true;
+								}
+							}
+							else {
+								this->AICarStuckMoveCounter = (this->AICarStuckMoveCounter + 1) % 120;
+								if (this->AICarStuckMoveCounter == 0) {
+									this->isAICarStuck = false;
+								}
 							}
 						}
 						else {
-							this->AICarStuckMoveCounter = (this->AICarStuckMoveCounter + 1) % 120;
-							if (this->AICarStuckMoveCounter == 0) {
-								this->isAICarStuck = false;
-							}
+							this->oldStuckTarget = this->curTarget;
 						}
-					}
-					else {
-						this->oldStuckTarget = this->curTarget;
 					}
 				}
 			}
 		}
 	}
+	
 }
 
 //updates the distance from this vehicle to the next lap marker

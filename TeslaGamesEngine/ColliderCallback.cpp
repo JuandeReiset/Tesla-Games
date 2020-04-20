@@ -89,7 +89,7 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 					
 					//cout << "DAMAGE DEALT\n";
 					//do damage
-					v->takeCaltropDamage(c->id, 1);
+					v->takeCaltropDamage(c->id, 10);
 				} 
 				//else
 					//cout << "AI TRACK TRAP COLLISION\n";
