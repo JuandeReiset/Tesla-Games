@@ -15,7 +15,7 @@ void Raycast_shooting::determine_hit(glm::vec3 startpos, glm::vec3 Dir) {
 			if (is_in_direction(aVehicle, Dir) && aVehicle != owner) {
 			
 				handle_hit(aVehicle);
-				std::cout << "ENEMY VEHICLE HIT" << std::endl;
+				//std::cout << "ENEMY VEHICLE HIT" << std::endl;
 				//break;
 			}
 		}
