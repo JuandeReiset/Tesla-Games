@@ -195,7 +195,7 @@ void Vehicle::hitLapMarker(int val, int trackTotalLaps)
 		if (currentMarker == 0 && expectedMarker == 1) {	//completed a lap
 			numLaps++;
 			if (isPlayer) {
-				//std::cout << "You have completed " << numLaps << " laps!\n";
+				std::cout << "You have completed " << numLaps << " laps out of "<<trackTotalLaps<<"!\n";
 			}
 				
 			if (numLaps == trackTotalLaps && ranking == 1) {	//you win!

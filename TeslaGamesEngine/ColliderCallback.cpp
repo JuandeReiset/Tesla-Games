@@ -65,13 +65,20 @@ void ColliderCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 			Vehicle* v = (Vehicle*)pairs[i].otherActor->userData;
 			LapMarker* l = (LapMarker*)pairs[i].triggerActor->userData;
 
+			//debug, pls ignore
 			if (v->isPlayer) {
 				//std::cout << "LAP MARKER VALUE: " << l->markerValue << std::endl;
 			}
 				
+			if (selectedTrackType == 0) {	//5 laps hyperloop
+				v->hitLapMarker(l->markerValue, 5);	//5 laps
+			}
+			else if (selectedTrackType == 1) {	//3 laps starlink
+				v->hitLapMarker(l->markerValue, 3);	//3 laps
+			}
 
-			//hardcoded number of laps and markers
-			v->hitLapMarker(l->markerValue, 5);	//5 laps
+
+			
 			
 		}
 		else if (strcmp(pairs[i].otherActor->getName(), "vehicle") == 0 && strcmp(pairs[i].triggerActor->getName(), "caltrops") == 0) {
