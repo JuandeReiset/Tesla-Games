@@ -17,7 +17,7 @@ AIShootingComponent::AIShootingComponent(Vehicle * v)
 	wantToPlaceTrap = 0;
 	owner = v;
 	abilityCooldownTime = 5.f;
-	lastAbilityTime = 0.0f;
+	lastAbilityTime = glfwGetTime();
 }
 
 void AIShootingComponent::Aim()
