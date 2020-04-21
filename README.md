@@ -84,8 +84,8 @@ Note the game can only be controlled by Xbox 360 or Xbox one controllers, offica
 - Each cybertruck comes with the ability to deploy EMP Caltrop mines, Electrified oil slick and nanite smoke screens. Courtesy of the SpaceX shield system.
   - The caltrops deal heavy damage to other vehicles. Affects AI or human.
   - The oil slick spins the vehicle out, and makes it harder to control the vehicle temporarily. Affects AI or Human.
-  - The smoke screen disables your weapon systems both turret and sheild temporarily. Affects AI or human.
-- Pickup boxes will appear on the track, afterall the emperor is quite bored and wants to have a show. Red boxes will give you turret ammo, wheras blue boxes allow for a use of the shield system.
+  - The smoke screen disables your weapon systems both turret and shield temporarily. Affects AI or human.
+- Pickup boxes will appear on the track, afterall the emperor is quite bored and wants to have a show. Red boxes will give you turret ammo, whereas blue boxes allow for a use of the shield system.
 - The emperor thought the games as is were too easy, and so through his infinite wisdom has placed versions of the sheild traps throughout the track that can appear at anytime. These look like a redder shade of the normal shield traps, and will **not** affect AI racers. However, they will mercilessly harm any human racer unfortunate to cross them. How's that for shifting the odds in your favour?
 
 Either be the first to complete all the laps, or be the last one standing.
