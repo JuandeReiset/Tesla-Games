@@ -12,6 +12,7 @@
 
 A project made by CPSC undergrads at the University of Calgary for the course CPSC 585
 
+Youtube link https://www.youtube.com/watch?v=ftquclzoR98&feature=youtu.be
 
 ## Install
 Donwload the Repository to your computer either by downloading the zip or git cloning. 
