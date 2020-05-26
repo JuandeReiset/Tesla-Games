@@ -18,6 +18,8 @@ Youtube link https://www.youtube.com/watch?v=ftquclzoR98&feature=youtu.be
 Donwload the Repository to your computer either by downloading the zip or git cloning. 
 
 If you just want the playable (no source code), the zip file "gameReleaseExe.zip" contains a built executable. Simply download this file, unzip it and run the exe file contained within the folder
+Zip file available here
+https://drive.google.com/open?id=1xoIi1LzCuTsXQABa3v6SpX8U8J2igY4b
 
 
 ## Usage
